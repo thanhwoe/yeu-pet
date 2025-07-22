@@ -7,7 +7,8 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { Text, TextInput, TextInputProps, View } from "react-native";
+import { TextInput, TextInputProps, View } from "react-native";
+import { Text } from "../ui/Text";
 import { CountryCodeSelector } from "./CodeSelector";
 
 interface InputControllerProps<T extends FieldValues> extends TextInputProps {
@@ -31,7 +32,7 @@ export const PhoneInputController = <T extends FieldValues>({
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const [phoneCode, setPhoneCode] = useState("+1");
+  const [phoneCode, setPhoneCode] = useState("+84");
 
   const handleSelectCountryCode = (code: string) => {
     setPhoneCode(code);
@@ -56,7 +57,7 @@ export const PhoneInputController = <T extends FieldValues>({
 
   return (
     <View aria-invalid={!!error?.message} className="gap-1">
-      <Text>{label}</Text>
+      <Text variant="caption1">{label}</Text>
       <View className="flex-row border border-gray-200 rounded-lg px-1 py-2 gap-2 items-center">
         <CountryCodeSelector
           value={phoneCode}
@@ -72,7 +73,9 @@ export const PhoneInputController = <T extends FieldValues>({
           {...props}
         />
       </View>
-      <Text className="text-red-500">{error?.message}</Text>
+      <Text className="text-red-500" variant="footnote">
+        {error?.message}
+      </Text>
     </View>
   );
 };

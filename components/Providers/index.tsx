@@ -6,17 +6,18 @@ import { NAV_THEME } from "@/theme";
 import { date } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
     [
       SafeAreaProvider,
+      QueryProvider,
       InitialProvider,
       GestureHandlerProvider,
       BottomSheetModalProvider,
@@ -89,4 +90,9 @@ const GestureHandlerProvider = ({ children }: Children) => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     {children}
   </GestureHandlerRootView>
+);
+
+const queryClient = new QueryClient();
+const QueryProvider = ({ children }: Children) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );

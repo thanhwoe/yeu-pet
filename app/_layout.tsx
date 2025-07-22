@@ -2,13 +2,15 @@ import { Stack } from "expo-router";
 import "react-native-reanimated";
 
 import { Providers } from "@/components/Providers";
+import { useUserInfoStore } from "@/stores/user-info";
 import "../global.css";
 
 export { ErrorBoundary } from "expo-router";
 
 export default function RootLayout() {
-  const isAuthenticated = true;
-  const isOnboardingComplete = true;
+  const { userInfo } = useUserInfoStore();
+  const isAuthenticated = !!userInfo;
+  const isOnboardingComplete = !!userInfo?.onboardingCompleted;
   return (
     <Providers>
       <Stack screenOptions={{ headerShown: false }}>

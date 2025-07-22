@@ -3,6 +3,7 @@ import * as React from "react";
 import { Pressable, PressableProps, ViewStyle } from "react-native";
 
 import { cn } from "@/utils";
+import { Spinner } from "../Spinner";
 import { Text, TextClassContext } from "../Text";
 
 const buttonVariants = cva("flex-row items-center justify-center gap-2", {
@@ -20,6 +21,7 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
       sm: "py-1 px-2.5 rounded-full",
       md: "ios:rounded-lg py-2 ios:py-1.5 ios:px-3.5 px-5 rounded-full",
       lg: "py-2.5 px-5 ios:py-2 rounded-xl gap-2",
+      CTA: "py-3 px-5 rounded-xl gap-2",
       icon: "ios:rounded-lg h-10 w-10 rounded-full",
     },
   },
@@ -43,6 +45,7 @@ const buttonTextVariants = cva("font-medium", {
       sm: "text-[15px] leading-5",
       md: "text-[17px] leading-7",
       lg: "text-[17px] leading-7",
+      CTA: "text-[17px] leading-7",
     },
   },
   defaultVariants: {
@@ -65,7 +68,9 @@ type ButtonVariantProps = Omit<
 
 type ButtonProps = Omit<PressableProps, "children"> &
   ButtonVariantProps &
-  React.PropsWithChildren;
+  React.PropsWithChildren & {
+    loading?: boolean;
+  };
 
 export const Button = ({
   className,
@@ -73,6 +78,7 @@ export const Button = ({
   size,
   style = BORDER_CURVE,
   children,
+  loading,
   ...props
 }: ButtonProps) => {
   return (
@@ -85,6 +91,7 @@ export const Button = ({
         style={style}
         {...props}
       >
+        {loading && <Spinner size={20} color="white" />}
         <Text>{children}</Text>
       </Pressable>
     </TextClassContext.Provider>

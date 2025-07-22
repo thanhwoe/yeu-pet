@@ -2,9 +2,10 @@ import { ISignUpForm, signUpSchema } from "@/constants/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import { InputController } from "../InputController";
 import { PhoneInputController } from "../PhoneInputController";
+import { Button } from "../ui/Button";
 
 interface IProps {
   onSubmit: (data: ISignUpForm) => Promise<void>;
@@ -26,11 +27,11 @@ export const SignUpForm = ({ onSubmit }: IProps) => {
   };
 
   return (
-    <View className="gap-2">
+    <View>
       <PhoneInputController<ISignUpForm>
         control={control}
         placeholder="Enter your phone number"
-        name="phoneNumber"
+        name="phone"
         label="Phone"
       />
       <InputController<ISignUpForm>
@@ -40,13 +41,33 @@ export const SignUpForm = ({ onSubmit }: IProps) => {
         placeholder="Password"
         secureTextEntry
       />
-      <TouchableOpacity
+      <InputController<ISignUpForm>
+        control={control}
+        name="email"
+        label="Email (Optional)"
+        placeholder="Email"
+      />
+      <InputController<ISignUpForm>
+        control={control}
+        name="firstName"
+        label="First Name"
+        placeholder="First Name"
+      />
+      <InputController<ISignUpForm>
+        control={control}
+        name="lastName"
+        label="Last Name"
+        placeholder="Last Name"
+      />
+      <Button
+        size="CTA"
+        className="mt-2"
         onPress={() => handleSubmit(handleSubmitForm)()}
         disabled={isPending}
-        className="bg-purple-500 py-5 items-center rounded-2xl mt-5"
+        loading={isPending}
       >
-        <Text className="text-slate-50 font-bold">Sign Up</Text>
-      </TouchableOpacity>
+        Sign Up
+      </Button>
     </View>
   );
 };

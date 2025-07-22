@@ -7,23 +7,30 @@ export const REGEX = {
 };
 
 export const signUpSchema = z.object({
-  phoneNumber: z
+  phone: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Phone number"),
     })
     .refine((val) => isValidPhoneNumber(val), {
       message: ERROR_MESSAGE.FIELD_INVALID("Phone number"),
     }),
+  email: z.email(ERROR_MESSAGE.FIELD_INVALID("Email")).optional(),
+  firstName: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("First name"),
+  }),
+  lastName: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Last name"),
+  }),
   password: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Password"),
     })
     .trim()
-    .min(8, ERROR_MESSAGE.FIELD_INVALID("Password")),
+    .min(8, ERROR_MESSAGE.PASSWORD_CANNOT_BE_LESS_THAN_8_CHARACTERS),
 });
 
 export const signInSchema = z.object({
-  phoneNumber: z
+  phone: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Phone number"),
     })
@@ -35,7 +42,7 @@ export const signInSchema = z.object({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Password"),
     })
     .trim()
-    .min(8, ERROR_MESSAGE.FIELD_INVALID("Password")),
+    .min(8, ERROR_MESSAGE.PASSWORD_CANNOT_BE_LESS_THAN_8_CHARACTERS),
 });
 
 export const reminderSchema = z.object({

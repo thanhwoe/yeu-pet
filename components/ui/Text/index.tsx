@@ -12,6 +12,7 @@ const textVariants = cva("text-foreground", {
       title3: "text-xl",
       heading: "text-[17px] leading-6 font-semibold",
       body: "text-[17px] leading-6",
+      body2: "text-[14px] leading-6",
       callout: "text-base",
       subhead: "text-[15px] leading-6",
       footnote: "text-[13px] leading-5",

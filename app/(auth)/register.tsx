@@ -1,26 +1,42 @@
 import { SignUpForm } from "@/components/SignUpForm";
+import { Text } from "@/components/ui/Text";
+import { ISignUpForm } from "@/constants/validation";
+import { signUpMutation } from "@/services";
+import { useUserInfoStore } from "@/stores/user-info";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 export default function RegisterScreen() {
-  const handleLogin = async () => {};
+  const { updateUserInfo } = useUserInfoStore();
+
+  const { mutate } = useMutation({
+    mutationFn: signUpMutation,
+    onSuccess: (res) => {
+      updateUserInfo(res.data);
+    },
+    onError: () => {},
+  });
+  const handleLogin = async (data: ISignUpForm) => {
+    mutate(data);
+  };
 
   return (
     <View className="flex-1 justify-center p-5 bg-white">
       <View className="mb-20">
-        <Text className="text-3xl">Create an account</Text>
-        <Text className="text-lg text-gray-500">
+        <Text variant="title1">Create an account</Text>
+        <Text variant="title3" className=" text-gray-500">
           Welcome to smatter pet care
         </Text>
       </View>
 
       <SignUpForm onSubmit={handleLogin} />
 
-      <View className="flex-row mt-10 justify-center">
+      <View className="flex-row mt-10 justify-center items-center">
         <Text>Already have an account? </Text>
-        <Link href="/login" className="text-purple-400 font-semibold">
-          Sign In
+        <Link href="/login">
+          <Text className="text-orange-400">Sign In</Text>
         </Link>
       </View>
     </View>

@@ -99,7 +99,7 @@ export const BottomSheet = ({
             paddingBottom: insets.bottom || 16,
             ...(!enableDynamicSizing && { flexGrow: 1 }),
           }}
-          bounces={false}
+          // bounces={false}
           className={className}
         >
           {children}

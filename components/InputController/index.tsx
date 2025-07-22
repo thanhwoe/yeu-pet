@@ -45,8 +45,8 @@ export const InputController = <T extends FieldValues>({
   const isTextArea = multiline || (numberOfLines && numberOfLines > 1);
 
   return (
-    <View aria-invalid={!!error?.message} className="gap-1 mb-1">
-      {label && <Text>{label}</Text>}
+    <View aria-invalid={!!error?.message} className="gap-1">
+      {label && <Text variant="caption1">{label}</Text>}
       <View
         className={`flex-row px-3 justify-center border border-gray-200 rounded-lg gap-2 ${
           isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
