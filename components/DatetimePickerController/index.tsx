@@ -186,8 +186,8 @@ export const DateTimePickerController = <T extends FieldValues>({
   );
 
   return (
-    <View className="gap-2">
-      {label && <Text>{label}</Text>}
+    <View className="gap-2 ">
+      {label && <Text variant="caption1">{label}</Text>}
       <View className="gap-1">
         <TouchableOpacity
           onPress={openPicker}
@@ -199,6 +199,7 @@ export const DateTimePickerController = <T extends FieldValues>({
             className="flex-1 py-1"
             editable={false}
             placeholder={placeholder}
+            pointerEvents="none"
           >
             {formatDisplayValue(value)}
           </TextInput>

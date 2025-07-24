@@ -10,17 +10,21 @@ const ImageStyleable = cssInterop(ExpoImage, {
   },
 });
 
-interface AvatarProps extends ImageProps, AvatarVariants {}
+interface AvatarProps extends ImageProps, AvatarVariants {
+  onPress?: () => void;
+}
 export const Avatar = ({
   variant,
   size,
   source,
   className,
+  onPress,
   ...props
 }: AvatarProps) => {
   return (
     <TouchableOpacity
       className={cn(avatarStyles({ variant, size, className }))}
+      onPress={onPress}
     >
       <ImageStyleable
         className={cn(imageStyles({ size }))}

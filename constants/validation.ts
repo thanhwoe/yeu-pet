@@ -55,6 +55,34 @@ export const reminderSchema = z.object({
   petId: z.string(),
 });
 
+export const petInfoSchema = z.object({
+  name: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
+  }),
+  age: z
+    .string()
+    .optional()
+    .refine((val) => Number(val) >= 0 && Number(val) <= 100, {
+      message: ERROR_MESSAGE.FIELD_INVALID("Age"),
+    }),
+  birthdate: z.date().optional(),
+  breed: z.string().optional(),
+  weight: z.string().optional(),
+  color: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
+  }),
+  avatar_url: z.string().optional(),
+  gender: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Gender"),
+  }),
+  species: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Species"),
+  }),
+  notes: z.string().optional(),
+});
+
+export type IPetInfoForm = z.infer<typeof petInfoSchema>;
+
 export type IReminderForm = z.infer<typeof reminderSchema>;
 
 export type ISignInForm = z.infer<typeof signInSchema>;

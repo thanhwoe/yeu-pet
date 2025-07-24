@@ -5,4 +5,7 @@ export const API_ROUTES = {
   UPDATE_PASSWORD: "/update-password",
 
   COMPLETE_ONBOARDING: "/complete-onboarding",
+
+  CREATE_PET: "/create-pet",
+  UPLOAD_FILE: "/upload-file",
 };
