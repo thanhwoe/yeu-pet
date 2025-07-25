@@ -1,7 +1,7 @@
 import { IPetInfoForm, petInfoSchema } from "@/constants/validation";
 import { date } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 import { AvatarInputController } from "../AvatarInputController";
@@ -13,15 +13,18 @@ import { UnitInputController } from "../UnitInputController";
 
 interface IProps {
   onSubmit: (data: IPetInfoForm) => Promise<void>;
+  defaultValues?: IPetInfoForm;
 }
 
-export const PetInfoForm = ({ onSubmit }: IProps) => {
+export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
   const [isPending, startTransition] = useTransition();
+  const [uploading, setUploading] = useState(false);
 
   const { control, handleSubmit, watch } = useForm<IPetInfoForm>({
     resolver: zodResolver(petInfoSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
+    defaultValues,
   });
   const birthdate = watch("birthdate");
 
@@ -66,6 +69,7 @@ export const PetInfoForm = ({ onSubmit }: IProps) => {
           control={control}
           name="avatar_url"
           label="Upload avatar"
+          onProcess={setUploading}
         />
       </View>
       <UnitInputController<IPetInfoForm>
@@ -133,10 +137,10 @@ export const PetInfoForm = ({ onSubmit }: IProps) => {
       />
       <Button
         onPress={() => handleSubmit(handleSubmitForm)()}
-        disabled={isPending}
-        loading={isPending}
+        disabled={isPending || uploading}
+        loading={isPending || uploading}
       >
-        Add Pet
+        {!!defaultValues ? "Update Pet" : "Add Pet"}
       </Button>
     </View>
   );

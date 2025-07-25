@@ -31,9 +31,13 @@ export const UnitInputController = <T extends FieldValues>({
     fieldState: { error },
   } = useController({ name, control, rules });
 
-  const [value, setValue] = useState("");
+  const [defaultVal, defaultUnit] = defaultValue
+    ? defaultValue?.split?.(" ")
+    : [];
 
-  const [unit, setUnit] = useState(options[0].value);
+  const [value, setValue] = useState(defaultVal ?? "");
+
+  const [unit, setUnit] = useState(defaultUnit ?? options[0].value);
 
   const handleSelectCountryCode = (code: string) => {
     setUnit(code);

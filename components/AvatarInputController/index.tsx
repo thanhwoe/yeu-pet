@@ -15,6 +15,7 @@ interface InputControllerProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
+  onProcess?: (val: boolean) => void;
 }
 
 const AvatarUploader = withUploadImage(Avatar);
@@ -24,6 +25,7 @@ export const AvatarInputController = <T extends FieldValues>({
   control,
   rules,
   label,
+  onProcess,
 }: InputControllerProps<T>) => {
   const {
     field: { value: defaultValue, onChange },
@@ -37,6 +39,7 @@ export const AvatarInputController = <T extends FieldValues>({
       </Text>
       <AvatarUploader
         onUpload={onChange}
+        onProcess={onProcess}
         size="huge"
         source={{
           uri: defaultValue || "https://avatar.iran.liara.run/public/32",

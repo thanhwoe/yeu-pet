@@ -1,7 +1,7 @@
 import { HomeHeader } from "@/components/Headers/HomeHeader";
 import { PetAvatarList } from "@/components/PetAvatarList";
 import { PetClinicList } from "@/components/PetClinicList";
-import { PetProfileCard } from "@/components/PetProfileCard";
+import { PetInfoCardList } from "@/components/PetInfoCardList";
 import { Tabs } from "@/components/Tabs";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
@@ -10,7 +10,7 @@ export default function HomeScreen() {
   const tabs = [
     {
       title: "Profile",
-      content: () => <PetProfileCard />,
+      content: () => <PetInfoCardList />,
     },
     {
       title: "Records",

@@ -64,21 +64,27 @@ export const petInfoSchema = z.object({
     .optional()
     .refine((val) => Number(val) >= 0 && Number(val) <= 100, {
       message: ERROR_MESSAGE.FIELD_INVALID("Age"),
-    }),
-  birthdate: z.date().optional(),
-  breed: z.string().optional(),
-  weight: z.string().optional(),
+    })
+    .nullable(),
+  birthdate: z.any().optional().nullable(),
+  breed: z.string().optional().nullable(),
+  weight: z.string().optional().nullable(),
   color: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
   }),
-  avatar_url: z.string().optional(),
+  avatar_url: z.string().optional().nullable(),
   gender: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Gender"),
   }),
   species: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Species"),
   }),
-  notes: z.string().optional(),
+  notes: z
+    .string()
+    .max(250, { message: "Notes must be at most 250 characters" })
+    .trim()
+    .optional()
+    .nullable(),
 });
 
 export type IPetInfoForm = z.infer<typeof petInfoSchema>;

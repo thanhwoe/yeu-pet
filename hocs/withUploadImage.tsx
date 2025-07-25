@@ -5,12 +5,13 @@ import { uploadFileMutation } from "@/services/file";
 import { useMutation } from "@tanstack/react-query";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { ComponentType, useCallback, useState } from "react";
+import { ComponentType, useCallback, useEffect, useState } from "react";
 import { Alert, Linking, TouchableOpacity, View } from "react-native";
 
 interface WithUploadImageProps {}
 interface InjectProps {
   onUpload: (val: string) => void;
+  onProcess?: (val: boolean) => void;
 }
 
 const openSettings = () =>
@@ -35,6 +36,10 @@ export const withUploadImage =
         console.log({ error });
       },
     });
+
+    useEffect(() => {
+      props.onProcess?.(isPending);
+    }, [isPending, props]);
 
     const handleShowOption = () => {
       setIsShowOptions(true);

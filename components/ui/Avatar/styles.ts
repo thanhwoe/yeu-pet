@@ -21,8 +21,13 @@ export const avatarStyles = cva("self-start overflow-hidden", {
   },
 });
 
-export const imageStyles = cva("", {
+export const imageStyles = cva("overflow-hidden", {
   variants: {
+    variant: {
+      simple: "rounded-full",
+      line: "rounded-full",
+      square: "rounded-xl",
+    },
     size: {
       small: "size-10",
       medium: "size-12",
@@ -31,6 +36,8 @@ export const imageStyles = cva("", {
     },
   },
   defaultVariants: {
+    variant: "simple",
+
     size: "medium",
   },
 });

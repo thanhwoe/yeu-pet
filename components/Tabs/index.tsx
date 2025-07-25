@@ -80,9 +80,7 @@ export const Tabs = ({ tabs }: IProps) => {
       </View>
 
       {/* Content Area */}
-      <View className="flex-1 bg-white rounded-2xl p-6 shadow-sm">
-        {tabs[activeTab].content()}
-      </View>
+      <View className="flex-1">{tabs[activeTab].content()}</View>
     </View>
   );
 };

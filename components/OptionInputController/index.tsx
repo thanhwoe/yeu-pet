@@ -33,7 +33,11 @@ export const OptionInputController = <T extends FieldValues>({
     fieldState: { error },
   } = useController({ name, control, rules });
 
-  const [value, setValue] = useState("");
+  const defaultLabel = options.find(
+    (item) => item.value === defaultValue
+  )?.label;
+
+  const [value, setValue] = useState(defaultLabel ?? "");
   const [showOptions, setShowOptions] = useState(false);
 
   const renderItem = ({ item }: { item: { label: string; value: string } }) => (
@@ -47,6 +51,7 @@ export const OptionInputController = <T extends FieldValues>({
           onChange(item.value);
           setValue(item.label);
           setShowOptions(false);
+          onBlur();
         }}
       >
         {item.label}

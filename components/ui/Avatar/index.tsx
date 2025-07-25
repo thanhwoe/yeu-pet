@@ -27,7 +27,7 @@ export const Avatar = ({
       onPress={onPress}
     >
       <ImageStyleable
-        className={cn(imageStyles({ size }))}
+        className={cn(imageStyles({ size, variant }))}
         cachePolicy="disk"
         contentFit="cover"
         transition={300}
