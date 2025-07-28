@@ -1,4 +1,6 @@
+export * from "./clinic";
 export * from "./common";
 export * from "./file";
+export * from "./pagination";
 export * from "./pet";
 export * from "./user";

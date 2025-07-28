@@ -131,7 +131,7 @@ export const PetAvatarList = () => {
         contentContainerClassName="gap-3 py-2"
       >
         {listPet.map((pet, index) => (
-          <View key={index} className="items-center gap-2">
+          <View key={index} className="items-center gap-2 flex-1 max-w-[68px]">
             <Avatar
               source={{
                 uri:
@@ -142,7 +142,9 @@ export const PetAvatarList = () => {
               size="large"
               onPress={() => setSelectedPet(pet)}
             />
-            <Text variant="footnote">{pet.name}</Text>
+            <Text variant="footnote" numberOfLines={1}>
+              {pet.name}
+            </Text>
           </View>
         ))}
         <View className="items-center gap-2">

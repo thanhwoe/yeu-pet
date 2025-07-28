@@ -7,9 +7,12 @@ export const API_ROUTES = {
   COMPLETE_ONBOARDING: "/complete-onboarding",
 
   CREATE_PET: "/create-pet",
-  LIST_PET: "pet",
-  UPDATE_PET: (id: string) => `pet/${id}/update`,
-  DELETE_PET: (id: string) => `pet/${id}/delete`,
+  LIST_PET: "/pet",
+  UPDATE_PET: (id: string) => `/pet/${id}/update`,
+  DELETE_PET: (id: string) => `/pet/${id}/delete`,
+
+  SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
+  LIST_CLINIC: "/clinic",
 
   UPLOAD_FILE: "/upload-file",
 };

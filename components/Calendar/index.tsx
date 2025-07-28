@@ -48,6 +48,7 @@ export const Calendar = ({ onEditAgenda }: IProps) => {
             disablePan
             style={{
               borderRadius: 20,
+              paddingBottom: 10,
             }}
             theme={{
               calendarBackground: "#FFFDF6",

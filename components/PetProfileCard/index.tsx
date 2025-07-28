@@ -51,7 +51,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
           }}
           className="p-1 bg-white"
         />
-        <View>
+        <View className="flex-1">
           <Text className="font-bold">{data.name}</Text>
           <Text className="capitalize">{data.species}</Text>
         </View>

@@ -42,7 +42,7 @@ export const Skeleton = ({ style, ...props }: SkeletonProps) => {
     <AnimatedLinearGradient
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      colors={["#FFBC4C", "#FED16A", "#FFDE63"]}
+      colors={["#FED16A", "#FFDE63", "#FFF4A4"]}
       style={[{ opacity: opacity }, style]}
       {...props}
     />

@@ -7,3 +7,11 @@ export const PET_KEY = {
   details: () => [...PET_KEY.all, "detail"] as const,
   detail: (id?: number) => [...PET_KEY.details(), id] as const,
 };
+
+export const CLINIC_KEY = {
+  all: [{ scope: "clinic" }] as const,
+  lists: () => [...CLINIC_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...CLINIC_KEY.lists(), { params }] as const,
+  details: () => [...CLINIC_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...CLINIC_KEY.details(), id] as const,
+};

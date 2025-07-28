@@ -5,7 +5,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { cssInterop } from "nativewind";
-import { PropsWithChildren, useEffect, useRef } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useRef } from "react";
 import { BackHandler, NativeEventSubscription, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Backdrop } from "./Backdrop";
@@ -28,6 +28,7 @@ export interface BottomSheetProps
    * Set to false if you have other scroll element inside the bottom sheet
    */
   useScrollView?: boolean;
+  footer?: ReactNode;
 }
 
 export const BottomSheet = ({
