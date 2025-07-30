@@ -1,3 +1,4 @@
+import { IPet } from "@/interfaces";
 import { cn } from "@/utils";
 import {
   Control,
@@ -6,7 +7,7 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Text } from "../ui/Text";
 
@@ -15,6 +16,7 @@ interface IPetPickerControllerProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
+  options: IPet[];
 }
 
 export const PetPickerController = <T extends FieldValues>({
@@ -22,33 +24,72 @@ export const PetPickerController = <T extends FieldValues>({
   control,
   label,
   rules,
+  options,
   ...props
 }: IPetPickerControllerProps<T>) => {
   const {
     field: { value, onChange },
-  } = useController({ name, control, rules });
+  } = useController({
+    name,
+    control,
+    rules,
+    defaultValue: options[0].pet_id as any,
+  });
+
+  const showAllButton = options.length > 1;
 
   return (
     <View>
-      {label && <Text>{label}</Text>}
+      {label && <Text variant="footnote">{label}</Text>}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerClassName="gap-3 py-2"
       >
-        {Array.from({ length: 5 }).map((_, index) => (
-          <View key={index} className="items-center gap-2">
+        {options.map((item, index) => (
+          <TouchableOpacity
+            onPress={() => {
+              onChange(item.pet_id);
+            }}
+            key={index}
+            className="items-center gap-2 max-w-[68px]"
+          >
             <Avatar
-              source={{ uri: "https://avatar.iran.liara.run/public/32" }}
+              source={{
+                uri:
+                  item.avatar_url || "https://avatar.iran.liara.run/public/32",
+              }}
               className={cn({
-                "border-red-200": index === 0,
+                "border-orange-400": value === item.pet_id,
               })}
               variant="line"
               size="medium"
             />
-            <Text variant="footnote">name</Text>
-          </View>
+            <Text variant="footnote" numberOfLines={1}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
         ))}
+        {/* {showAllButton && (
+          <TouchableOpacity
+            onPress={() => onChange(null)}
+            className="items-center gap-2 max-w-[68px]"
+          >
+            <Avatar
+              source={{
+                uri: "https://avatar.iran.liara.run/public/32",
+              }}
+              className={cn({
+                "border-red-200": value === null,
+              })}
+              variant="line"
+              size="medium"
+            />
+            <Text variant="footnote" numberOfLines={1}>
+              All
+            </Text>
+          </TouchableOpacity>
+        )} */}
       </ScrollView>
     </View>
   );

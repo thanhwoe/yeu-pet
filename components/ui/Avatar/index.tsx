@@ -25,6 +25,7 @@ export const Avatar = ({
     <TouchableOpacity
       className={cn(avatarStyles({ variant, size, className }))}
       onPress={onPress}
+      disabled={!onPress}
     >
       <ImageStyleable
         className={cn(imageStyles({ size, variant }))}

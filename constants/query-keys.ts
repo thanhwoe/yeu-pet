@@ -15,3 +15,12 @@ export const CLINIC_KEY = {
   details: () => [...CLINIC_KEY.all, "detail"] as const,
   detail: (id?: number) => [...CLINIC_KEY.details(), id] as const,
 };
+
+export const REMINDER_KEY = {
+  all: [{ scope: "reminder" }] as const,
+  lists: () => [...REMINDER_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...REMINDER_KEY.lists(), { params }] as const,
+  details: () => [...REMINDER_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...REMINDER_KEY.details(), id] as const,
+};

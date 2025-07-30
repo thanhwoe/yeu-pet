@@ -14,5 +14,10 @@ export const API_ROUTES = {
   SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
   LIST_CLINIC: "/clinic",
 
+  CREATE_REMINDER: "/reminder/create",
+  REMINDER: "/reminder",
+  UPDATE_REMINDER: (id: string) => `/reminder/${id}/update`,
+  DELETE_REMINDER: (id: string) => `/reminder/${id}/delete`,
+
   UPLOAD_FILE: "/upload-file",
 };

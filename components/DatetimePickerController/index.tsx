@@ -174,7 +174,7 @@ export const DateTimePickerController = <T extends FieldValues>({
                 minimumDate={minimumDate}
                 maximumDate={maximumDate}
                 themeVariant="light"
-                locale="vi"
+                locale="vi-VI"
                 textColor="#1F2937"
                 style={{ backgroundColor: "white" }}
               />

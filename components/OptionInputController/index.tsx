@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   Control,
   FieldValues,
@@ -7,7 +7,13 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { TextInput, TextInputProps, View } from "react-native";
+import {
+  Keyboard,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomSheet } from "../ui/BottomSheet";
 import { Text } from "../ui/Text";
@@ -17,7 +23,7 @@ interface InputControllerProps<T extends FieldValues> extends TextInputProps {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
-  options: { label: string; value: string }[];
+  options: { label: string; value: string; icon?: ReactNode }[];
 }
 
 export const OptionInputController = <T extends FieldValues>({
@@ -40,23 +46,28 @@ export const OptionInputController = <T extends FieldValues>({
   const [value, setValue] = useState(defaultLabel ?? "");
   const [showOptions, setShowOptions] = useState(false);
 
-  const renderItem = ({ item }: { item: { label: string; value: string } }) => (
-    <View
-      className={cn("py-3 px-4 border-b border-gray-200", {
-        "bg-orange-200": item.value === value,
-      })}
+  const renderItem = ({
+    item,
+  }: {
+    item: { label: string; value: string; icon?: ReactNode };
+  }) => (
+    <TouchableOpacity
+      className={cn(
+        "flex-row gap-3 items-center py-3 px-5 border-b border-gray-200",
+        {
+          "bg-orange-200": item.value === defaultValue,
+        }
+      )}
+      onPress={() => {
+        onChange(item.value);
+        setValue(item.label);
+        setShowOptions(false);
+        onBlur();
+      }}
     >
-      <Text
-        onPress={() => {
-          onChange(item.value);
-          setValue(item.label);
-          setShowOptions(false);
-          onBlur();
-        }}
-      >
-        {item.label}
-      </Text>
-    </View>
+      <Text>{item.label}</Text>
+      {item?.icon}
+    </TouchableOpacity>
   );
 
   return (
@@ -68,7 +79,10 @@ export const OptionInputController = <T extends FieldValues>({
           value={value}
           className="py-1 flex-1"
           onBlur={onBlur}
-          onPress={() => setShowOptions(true)}
+          onPress={() => {
+            setShowOptions(true);
+            Keyboard.dismiss();
+          }}
           editable={false}
           {...props}
         />

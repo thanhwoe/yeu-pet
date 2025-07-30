@@ -1,18 +1,39 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { IReminderInfo } from "@/interfaces";
+import { date } from "@/utils";
 import isEmpty from "lodash/isEmpty";
-import { PencilSimpleLineIcon, TrashIcon } from "phosphor-react-native";
+import {
+  BoneIcon as Bone,
+  PencilSimpleLineIcon,
+  PillIcon as Pill,
+  ScissorsIcon as Scissors,
+  SyringeIcon as Syringe,
+  TrashIcon,
+} from "phosphor-react-native";
 import React, { useCallback } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Text } from "../ui/Text";
 const EditIcon = withIconClassName(PencilSimpleLineIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
+const BoneIcon = withIconClassName(Bone);
+const SyringeIcon = withIconClassName(Syringe);
+const ScissorsIcon = withIconClassName(Scissors);
+const PillIcon = withIconClassName(Pill);
 
 interface ItemProps {
-  item: any;
-  onEdit?: () => void;
-  onDelete?: () => void;
+  item: IReminderInfo;
+  onEdit?: (item: IReminderInfo) => void;
+  onDelete?: (item: IReminderInfo) => void;
 }
+const iconMapping = {
+  feed: <BoneIcon size={20} weight="fill" className="text-orange-500" />,
+  vaccination: (
+    <SyringeIcon size={20} weight="fill" className="text-green-600" />
+  ),
+  grooming: <ScissorsIcon size={20} weight="fill" className="text-cyan-600" />,
+  medication: <PillIcon size={20} weight="fill" className="text-red-500" />,
+};
 
 export const AgendaItem = ({ item, onDelete, onEdit }: ItemProps) => {
   const itemPressed = useCallback(() => {
@@ -34,31 +55,39 @@ export const AgendaItem = ({ item, onDelete, onEdit }: ItemProps) => {
       onPress={itemPressed}
       className="flex-row mb-2 items-center p-4 border border-gray-100 rounded-2xl bg-white gap-4"
     >
-      <Avatar
-        source={{
-          uri: "https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        }}
-        variant="square"
-        size="large"
-        className="self-center"
-      />
-      <View>
-        <Text variant="title3" className="font-semibold">
+      <View className="justify-center items-center gap-2">
+        {iconMapping[item.type as keyof typeof iconMapping]}
+
+        <Avatar
+          source={{
+            uri:
+              item.petAvatar ||
+              "https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          }}
+          variant="square"
+          size="large"
+          className="self-center"
+        />
+      </View>
+      <View className="flex-1 gap-1">
+        <Text variant="body" className="font-semibold" numberOfLines={1}>
           {item.title}
         </Text>
-        <Text variant="body">{item.hour}</Text>
-        <Text variant="caption1">{item.duration}</Text>
+        <Text variant="body2">{date(item.time).format("hh:mm A")}</Text>
+        <Text variant="caption1" numberOfLines={2}>
+          {item.description}
+        </Text>
       </View>
-      <View className="gap-4 items-end flex-1">
+      <View className="gap-4 items-end">
         <TouchableOpacity
           className="bg-orange-100 p-2 rounded-full"
-          onPress={onEdit}
+          onPress={onEdit?.bind(this, item)}
         >
           <EditIcon size={20} className="text-orange-600" />
         </TouchableOpacity>
         <TouchableOpacity
           className="bg-orange-100 p-2 rounded-full"
-          onPress={onDelete}
+          onPress={onDelete?.bind(this, item)}
         >
           <DeleteIcon size={20} className="text-orange-600" />
         </TouchableOpacity>

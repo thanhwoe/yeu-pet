@@ -1,9 +1,10 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cva, type VariantProps } from "class-variance-authority";
-import { BoneIcon as Bone } from "phosphor-react-native";
+import { PawPrintIcon } from "phosphor-react-native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-const BoneIcon = withIconClassName(Bone);
+
+const PawPrint = withIconClassName(PawPrintIcon);
 
 const dayVariants = cva(
   // Base styles
@@ -12,7 +13,7 @@ const dayVariants = cva(
     variants: {
       // Day state variants
       state: {
-        today: "bg-orange-400",
+        today: "bg-orange-300",
         selected: "bg-orange-600",
         disabled: "",
         inactive: "bg-green-100",
@@ -113,7 +114,7 @@ export const DayItem: React.FC<DayProps> = ({
       </View>
 
       {marking?.marked && (
-        <BoneIcon size={10} weight="fill" className="text-orange-500" />
+        <PawPrint size={12} weight="fill" className="text-orange-500" />
       )}
     </TouchableOpacity>
   );
