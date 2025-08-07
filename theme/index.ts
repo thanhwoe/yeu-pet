@@ -1,30 +1,19 @@
-import { DarkTheme, DefaultTheme } from "@react-navigation/native";
+import { vars } from "nativewind";
+import { lightColorTheme } from "./colors";
+import { getColors } from "./utils";
+export * from "./colors";
 
-import { COLORS } from "./colors";
+export const themes = {
+  light: vars(getColors(lightColorTheme)),
+  dark: vars(
+    getColors({
+      "--background-default": "#151515",
 
-const NAV_THEME = {
-  light: {
-    ...DefaultTheme,
-    colors: {
-      background: COLORS.light.background,
-      border: COLORS.light.grey5,
-      card: COLORS.light.card,
-      notification: COLORS.light.destructive,
-      primary: COLORS.light.primary,
-      text: COLORS.black,
-    },
-  },
-  dark: {
-    ...DarkTheme,
-    colors: {
-      background: COLORS.dark.background,
-      border: COLORS.dark.grey5,
-      card: COLORS.dark.grey6,
-      notification: COLORS.dark.destructive,
-      primary: COLORS.dark.primary,
-      text: COLORS.white,
-    },
-  },
+      "--text-link": "#D2C7FF",
+      "--text-primary": "#FFFFFF",
+      "--text-warning": "#FFD000",
+      "--text-positive": "#36D76F",
+      "--text-negative": "#E50000",
+    })
+  ),
 };
-
-export { NAV_THEME };

@@ -23,7 +23,7 @@ export default function TabTwoScreen() {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: REMINDER_KEY.list(),
-    queryFn: getListReminderQuery,
+    queryFn: () => getListReminderQuery(),
   });
 
   const { mutate: createReminder } = useMutation({

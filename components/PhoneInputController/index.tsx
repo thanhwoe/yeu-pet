@@ -58,7 +58,7 @@ export const PhoneInputController = <T extends FieldValues>({
   return (
     <View aria-invalid={!!error?.message} className="gap-1">
       <Text variant="caption1">{label}</Text>
-      <View className="flex-row border border-gray-200 rounded-lg px-1 py-2 gap-2 items-center">
+      <View className="flex-row border border-line-primary rounded-lg px-1 py-2 gap-2 items-center">
         <CountryCodeSelector
           value={phoneCode}
           onSelect={handleSelectCountryCode}
@@ -73,7 +73,7 @@ export const PhoneInputController = <T extends FieldValues>({
           {...props}
         />
       </View>
-      <Text className="text-red-500" variant="footnote">
+      <Text className="text-text-negative" variant="footnote">
         {error?.message}
       </Text>
     </View>

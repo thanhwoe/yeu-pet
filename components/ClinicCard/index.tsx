@@ -29,7 +29,7 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
     : "";
 
   return (
-    <View className="p-4 border border-gray-100 rounded-2xl bg-white gap-2">
+    <View className="mb-3 p-4 border border-gray-100 rounded-2xl bg-white gap-2">
       <View
         className={cn(
           "absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500",

@@ -1,23 +1,22 @@
 import { IPet } from "@/interfaces";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useEffect, useRef } from "react";
-import { FlatList } from "react-native";
-import { PetProfileCard } from "../PetProfileCard";
-import { Skeleton } from "../Skeleton";
+import { FlatList, View } from "react-native";
+import { Text } from "../ui/Text";
+import { TimelineList } from "./TimelineList";
 
 interface IProps {
   selectedPet: IPet | null;
   data: IPet[];
   isLoading: boolean;
 }
-
 const itemWidth = SCREEN_WIDTH - 24;
 
-export const PetInfoCardList = ({ selectedPet, data, isLoading }: IProps) => {
+export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
   const listRef = useRef<FlatList<IPet>>(null);
 
   const renderItem = ({ item }: { item: IPet }) => {
-    return <PetProfileCard data={item} />;
+    return <TimelineList pet={item} />;
   };
 
   useEffect(() => {
@@ -56,11 +55,13 @@ export const PetInfoCardList = ({ selectedPet, data, isLoading }: IProps) => {
   };
 
   const keyExtractor = (item: IPet) => item.pet_id;
-
   if (isLoading) {
-    return <Skeleton className="h-[355px] rounded-2xl" />;
+    return (
+      <View>
+        <Text variant="caption2">loading</Text>
+      </View>
+    );
   }
-
   return (
     <FlatList
       ref={listRef}
@@ -68,10 +69,10 @@ export const PetInfoCardList = ({ selectedPet, data, isLoading }: IProps) => {
       data={data}
       keyExtractor={keyExtractor}
       snapToAlignment="center"
-      snapToInterval={SCREEN_WIDTH - 28}
       decelerationRate="fast"
       contentContainerClassName="gap-4"
       renderItem={renderItem}
+      snapToInterval={SCREEN_WIDTH - 28}
       getItemLayout={getItemLayout}
       onScrollToIndexFailed={handleScrollToIndexFailed}
     />

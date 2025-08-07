@@ -11,7 +11,7 @@ const { width: screenWidth } = Dimensions.get("window");
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface IProps {
-  tabs: { title: string; content: () => ReactNode }[];
+  tabs: { title: string; content: () => ReactNode; priority?: boolean }[];
 }
 
 export const Tabs = ({ tabs }: IProps) => {

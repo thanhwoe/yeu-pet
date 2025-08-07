@@ -1,0 +1,93 @@
+import { ReminderIcons } from "@/components/ReminderIcons";
+import { Button } from "@/components/ui/Button";
+import { Text } from "@/components/ui/Text";
+import { REMINDER_KEY } from "@/constants/query-keys";
+import { IPet } from "@/interfaces";
+import { getListReminderQuery } from "@/services";
+import { date } from "@/utils";
+import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
+
+interface IProps {
+  pet: IPet;
+}
+
+export const TimelineList = ({ pet }: IProps) => {
+  const router = useRouter();
+  const { data, isLoading } = useQuery({
+    queryKey: REMINDER_KEY.list({ pet: pet.pet_id }),
+    queryFn: () => getListReminderQuery({ pet: pet.pet_id, limit: 2 }),
+    select: (data) =>
+      (data?.data || [])
+        .flatMap((item) => item.data)
+        .sort(
+          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+        ),
+  });
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text variant="caption2">loading</Text>
+      </View>
+    );
+  }
+
+  if (data?.length === 0) {
+    return (
+      <View
+        className="gap-4"
+        style={{
+          width: SCREEN_WIDTH - 40,
+        }}
+      >
+        <Text className="text-orange-800">{pet.name}&apos;s reminders</Text>
+
+        <View className="items-center mt-4">
+          <Button variant="secondary" onPress={() => router.push("/calendar")}>
+            Add reminder
+          </Button>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View
+      className="gap-4"
+      style={{
+        width: SCREEN_WIDTH - 40,
+      }}
+    >
+      <Text className="text-orange-800">{pet.name}&apos;s reminders</Text>
+      {data?.map((reminder) => {
+        return (
+          <View key={reminder.id} className="bg-white p-4 rounded-2xl gap-1">
+            <View className="flex-row">
+              <Text variant="caption2">
+                {date(reminder.time).format("l LT")}
+              </Text>
+            </View>
+            <Text variant="callout" className="font-bold">
+              {reminder.title}
+            </Text>
+            <Text variant="footnote" numberOfLines={2}>
+              {reminder.description}
+            </Text>
+            <Text
+              variant="caption2"
+              className="absolute top-4 right-4 text-text-secondary"
+            >
+              {date(reminder.time).fromNow()}
+            </Text>
+            <View className="absolute top-1/2 right-4 opacity-50">
+              <ReminderIcons type={reminder.type} size={60} />
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+};

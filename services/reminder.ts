@@ -1,13 +1,22 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { IReminderForm } from "@/constants/validation";
 import { IReminder } from "@/interfaces";
+import { parseQueryParams } from "@/utils";
 import { APIs } from "./api-helper";
 
 export const createReminderMutation = (params: IReminderForm) =>
   APIs.post<{ data: any }>(API_ROUTES.CREATE_REMINDER, { data: params });
 
-export const getListReminderQuery = () =>
-  APIs.get<{ data: IReminder[] }>(API_ROUTES.REMINDER);
+interface IReminderQuery {
+  pet?: string;
+  limit?: number;
+}
+
+export const getListReminderQuery = (params?: IReminderQuery) =>
+  APIs.get<{ data: IReminder[] }>(API_ROUTES.REMINDER, {
+    params,
+    paramsSerializer: parseQueryParams,
+  });
 
 export const updateReminderMutation = ({
   id,

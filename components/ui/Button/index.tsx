@@ -4,14 +4,13 @@ import { Pressable, PressableProps, ViewStyle } from "react-native";
 
 import { cn } from "@/utils";
 import { Spinner } from "../Spinner";
-import { Text, TextClassContext } from "../Text";
+import { Text } from "../Text";
 
 const buttonVariants = cva("flex-row items-center justify-center gap-2", {
   variants: {
     variant: {
-      primary: "ios:active:opacity-80 bg-primary",
-      secondary:
-        "ios:border-primary ios:active:bg-primary/5 border border-foreground/40",
+      primary: "active:opacity-50 bg-background-primary",
+      secondary: "border-line-secondary ios:active:bg-primary/5 border ",
       tonal:
         "ios:bg-primary/10 dark:ios:bg-primary/10 ios:active:bg-primary/15 bg-primary/15 dark:bg-primary/30",
       plain: "ios:active:opacity-70",
@@ -21,7 +20,7 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
       sm: "py-1 px-2.5 rounded-full",
       md: "ios:rounded-lg py-2 ios:py-1.5 ios:px-3.5 px-5 rounded-full",
       lg: "py-2.5 px-5 ios:py-2 rounded-xl gap-2",
-      CTA: "py-3 px-5 rounded-xl gap-2",
+      CTA: "py-3 px-5 rounded-full gap-2",
       icon: "ios:rounded-lg h-10 w-10 rounded-full",
     },
   },
@@ -34,9 +33,9 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
 const buttonTextVariants = cva("font-medium", {
   variants: {
     variant: {
-      primary: "text-white",
-      secondary: "ios:text-primary text-foreground",
-      tonal: "ios:text-primary text-foreground",
+      primary: "text-text-primary-inverse",
+      secondary: "text-text-primary",
+      tonal: "text-primary",
       plain: "text-foreground",
     },
     size: {
@@ -82,19 +81,17 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <TextClassContext.Provider value={buttonTextVariants({ variant, size })}>
-      <Pressable
-        className={cn(
-          props.disabled && "opacity-50",
-          buttonVariants({ variant, size, className })
-        )}
-        style={style}
-        {...props}
-      >
-        {loading && <Spinner size={20} color="white" />}
-        <Text>{children}</Text>
-      </Pressable>
-    </TextClassContext.Provider>
+    <Pressable
+      className={cn(
+        props.disabled && "opacity-50",
+        buttonVariants({ variant, size, className })
+      )}
+      style={style}
+      {...props}
+    >
+      {loading && <Spinner size={20} color="white" />}
+      <Text className={buttonTextVariants({ variant, size })}>{children}</Text>
+    </Pressable>
   );
 };
 

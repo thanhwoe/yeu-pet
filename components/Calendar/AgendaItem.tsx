@@ -2,42 +2,24 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminderInfo } from "@/interfaces";
 import { date } from "@/utils";
 import isEmpty from "lodash/isEmpty";
-import {
-  BoneIcon as Bone,
-  PencilSimpleLineIcon,
-  PillIcon as Pill,
-  ScissorsIcon as Scissors,
-  SyringeIcon as Syringe,
-  TrashIcon,
-} from "phosphor-react-native";
+import { PencilSimpleLineIcon, TrashIcon } from "phosphor-react-native";
 import React, { useCallback } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
+import { ReminderIcons } from "../ReminderIcons";
 import { Avatar } from "../ui/Avatar";
 import { Text } from "../ui/Text";
 const EditIcon = withIconClassName(PencilSimpleLineIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
-const BoneIcon = withIconClassName(Bone);
-const SyringeIcon = withIconClassName(Syringe);
-const ScissorsIcon = withIconClassName(Scissors);
-const PillIcon = withIconClassName(Pill);
 
 interface ItemProps {
   item: IReminderInfo;
   onEdit?: (item: IReminderInfo) => void;
   onDelete?: (item: IReminderInfo) => void;
 }
-const iconMapping = {
-  feed: <BoneIcon size={20} weight="fill" className="text-orange-500" />,
-  vaccination: (
-    <SyringeIcon size={20} weight="fill" className="text-green-600" />
-  ),
-  grooming: <ScissorsIcon size={20} weight="fill" className="text-cyan-600" />,
-  medication: <PillIcon size={20} weight="fill" className="text-red-500" />,
-};
 
 export const AgendaItem = ({ item, onDelete, onEdit }: ItemProps) => {
   const itemPressed = useCallback(() => {
-    Alert.alert(item.title);
+    Alert.alert(item.title, item.description);
   }, [item]);
 
   if (isEmpty(item)) {
@@ -56,8 +38,7 @@ export const AgendaItem = ({ item, onDelete, onEdit }: ItemProps) => {
       className="flex-row mb-2 items-center p-4 border border-gray-100 rounded-2xl bg-white gap-4"
     >
       <View className="justify-center items-center gap-2">
-        {iconMapping[item.type as keyof typeof iconMapping]}
-
+        <ReminderIcons type={item.type} />
         <Avatar
           source={{
             uri:

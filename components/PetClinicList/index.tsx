@@ -58,7 +58,7 @@ export const PetClinicList = () => {
       );
     }
     return (
-      <View className="gap-3">
+      <View>
         {listClinic.map((item, index) => (
           <ClinicCard key={index} data={item} />
         ))}

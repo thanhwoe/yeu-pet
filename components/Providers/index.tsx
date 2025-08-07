@@ -1,18 +1,17 @@
-import {
-  useColorScheme,
-  useInitialAndroidBarSync,
-} from "@/hooks/useColorScheme";
-import { NAV_THEME } from "@/theme";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { themes } from "@/theme";
 import { date } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { ThemeProvider as NavThemeProvider } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
     [
@@ -53,7 +52,6 @@ const InitialProvider = ({ children }: Children) => {
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
 
   useEffect(() => {
@@ -69,15 +67,40 @@ const InitialProvider = ({ children }: Children) => {
     LocaleConfig.defaultLocale = "default";
   }, []);
 
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<
+    Notifications.Notification | undefined
+  >(undefined);
+
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync()
+  //     .then((token) => setExpoPushToken(token ?? ""))
+  //     .catch((error: any) => setExpoPushToken(`${error}`));
+
+  //   const notificationListener = Notifications.addNotificationReceivedListener(
+  //     (notification) => {
+  //       setNotification(notification);
+  //     }
+  //   );
+
+  //   const responseListener =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
+
+  //   return () => {
+  //     notificationListener.remove();
+  //     responseListener.remove();
+  //   };
+  // }, []);
+
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
   }
   return (
     <>
-      <NavThemeProvider value={NAV_THEME[colorScheme]}>
-        {children}
-      </NavThemeProvider>
+      <View style={[{ flex: 1 }, themes[colorScheme]]}>{children}</View>
       <StatusBar
         key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
         style={isDarkColorScheme ? "light" : "dark"}

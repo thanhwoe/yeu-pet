@@ -22,7 +22,7 @@ export const CountryCodeSelector = ({
   const renderItem = ({ item }: { item: (typeof PHONE_CODE)[0] }) => (
     <View
       className={cn("py-3 px-4 border-b border-gray-200", {
-        "bg-orange-200": `+${item.code}` === value,
+        "bg-background-secondary": `+${item.code}` === value,
       })}
     >
       <Text
@@ -37,7 +37,7 @@ export const CountryCodeSelector = ({
   );
 
   return (
-    <View className="border-r border-gray-200 w-12 items-center">
+    <View className="border-r border-line-primary w-12 items-center">
       <Text onPress={() => setShowOptions(true)} variant="body2">
         {value}
       </Text>

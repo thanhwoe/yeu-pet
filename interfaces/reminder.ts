@@ -13,3 +13,8 @@ export interface IReminderInfo {
   petName: string;
   petAvatar: string;
 }
+
+export interface IReminderGroup {
+  petId: string;
+  data: IReminder[];
+}

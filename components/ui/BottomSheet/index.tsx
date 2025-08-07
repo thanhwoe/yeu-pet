@@ -84,7 +84,7 @@ export const BottomSheet = ({
       )}
       onDismiss={onDismiss}
       snapPoints={undefined}
-      backgroundClassName="bg-background-card rounded-tl-36 rounded-tr-36"
+      backgroundClassName="bg-background-white rounded-tl-36 rounded-tr-36"
       keyboardBlurBehavior="restore"
       keyboardBehavior={Platform.select({
         android: "fillParent",

@@ -1,16 +1,10 @@
 import { PET_KEY } from "@/constants/query-keys";
 import { IReminderForm, reminderSchema } from "@/constants/validation";
-import { withIconClassName } from "@/hocs/withIconClassName";
 import { getListPetQuery } from "@/services";
 import { date } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import {
-  BoneIcon as Bone,
-  PillIcon as Pill,
-  ScissorsIcon as Scissors,
-  SyringeIcon as Syringe,
-} from "phosphor-react-native";
+
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -18,14 +12,10 @@ import { DateTimePickerController } from "../DatetimePickerController";
 import { InputController } from "../InputController";
 import { OptionInputController } from "../OptionInputController";
 import { PetPickerController } from "../PetPickerController";
+import { ReminderIcons } from "../ReminderIcons";
 import { Skeleton } from "../Skeleton";
 import { Button } from "../ui/Button";
 import { Text } from "../ui/Text";
-
-const BoneIcon = withIconClassName(Bone);
-const SyringeIcon = withIconClassName(Syringe);
-const ScissorsIcon = withIconClassName(Scissors);
-const PillIcon = withIconClassName(Pill);
 
 interface IProps {
   onSubmit: (data: IReminderForm) => Promise<void>;
@@ -76,28 +66,22 @@ export const ReminderForm = ({ onSubmit, defaultValues }: IProps) => {
           {
             label: "Feed",
             value: "feed",
-            icon: (
-              <BoneIcon size={20} weight="fill" className="text-orange-500" />
-            ),
+            icon: <ReminderIcons type="feed" />,
           },
           {
             label: "Grooming",
             value: "grooming",
-            icon: (
-              <ScissorsIcon size={20} weight="fill" className="text-cyan-600" />
-            ),
+            icon: <ReminderIcons type="grooming" />,
           },
           {
             label: "Vaccination",
             value: "vaccination",
-            icon: (
-              <SyringeIcon size={20} weight="fill" className="text-green-600" />
-            ),
+            icon: <ReminderIcons type="vaccination" />,
           },
           {
             label: "Medication",
             value: "medication",
-            icon: <PillIcon size={20} weight="fill" className="text-red-500" />,
+            icon: <ReminderIcons type="medication" />,
           },
         ]}
       />

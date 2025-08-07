@@ -80,7 +80,7 @@ export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
         placeholder="0 kg"
         options={[
           { label: "Kilogram", value: "kg" },
-          { label: "Pound", value: "lb" },
+          { label: "Pound", value: "lbs" },
         ]}
       />
       <OptionInputController<IPetInfoForm>

@@ -181,7 +181,6 @@ export default function TabLayout() {
               />
             </AnimatedTabButton>
           ),
-          title: "Home",
         }}
       />
 
@@ -192,7 +191,7 @@ export default function TabLayout() {
             <AnimatedTabButton
               {...props}
               focused={props["aria-selected"] || false}
-              label="Calendar"
+              label="Reminder"
             >
               <CalendarHeartIcon
                 size={24}
@@ -211,7 +210,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="service"
+        name="(service)"
         options={{
           tabBarButton: (props) => (
             <AnimatedTabButton
