@@ -19,7 +19,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
   return (
     <View
       className={cn(
-        "flex-row items-center px-4 pb-2 pt-safe-offset-2 bg-orange-50"
+        "flex-row items-center px-4 pb-2 pt-safe-offset-2 bg-background-screen"
       )}
       style={options.headerStyle as ViewStyle}
     >

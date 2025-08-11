@@ -1,4 +1,5 @@
 import { ReminderIcons } from "@/components/ReminderIcons";
+import { Skeleton } from "@/components/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { Text } from "@/components/ui/Text";
 import { REMINDER_KEY } from "@/constants/query-keys";
@@ -29,8 +30,15 @@ export const TimelineList = ({ pet }: IProps) => {
 
   if (isLoading) {
     return (
-      <View>
-        <Text variant="caption2">loading</Text>
+      <View
+        style={{
+          width: SCREEN_WIDTH - 40,
+        }}
+        className="gap-4"
+      >
+        {Array.from({ length: 2 }).map((_, index) => (
+          <Skeleton className="flex-1 h-20 rounded-2xl" key={index} />
+        ))}
       </View>
     );
   }

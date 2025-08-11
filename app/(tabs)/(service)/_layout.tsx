@@ -12,6 +12,13 @@ export default function Layout() {
           title: "List Clinic",
         }}
       />
+      <Stack.Screen
+        name="list-spa"
+        options={{
+          header: BackHeader,
+          title: "List Spa",
+        }}
+      />
     </Stack>
   );
 }

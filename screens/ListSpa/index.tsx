@@ -1,12 +1,12 @@
-import { ClinicCard } from "@/components/ClinicCard";
 import { SearchInput } from "@/components/SearchInput";
+import { SpaCard } from "@/components/SpaCard";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Text } from "@/components/ui/Text";
 import { LIST_CITY } from "@/constants/cities";
 import { CLINIC_KEY } from "@/constants/query-keys";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useDebounce } from "@/hooks/useDebounce";
-import { getListClinicQuery } from "@/services";
+import { getListSpaQuery } from "@/services/spa";
 import { cn } from "@/utils";
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ import { TouchableOpacity, View } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
 
-export function ListClinicScreen() {
+export function ListSpaScreen() {
   const [searchKey, setSearchKey] = useState("");
   const [showCityFilter, setShowCityFilter] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
@@ -26,7 +26,7 @@ export function ListClinicScreen() {
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: CLINIC_KEY.list({ limit: 10, debounceSearch, selectedCity }),
     queryFn: ({ pageParam }) =>
-      getListClinicQuery({
+      getListSpaQuery({
         limit: 10,
         page: pageParam,
         query: debounceSearch,
@@ -45,7 +45,7 @@ export function ListClinicScreen() {
     <View className="flex-1 bg-background-screen px-5 pt-2">
       <SearchInput
         onChange={setSearchKey}
-        placeholder="Enter clinic name"
+        placeholder="Enter spa name"
         className="mb-4"
       />
       <TouchableOpacity
@@ -77,7 +77,7 @@ export function ListClinicScreen() {
         )}
         showsVerticalScrollIndicator={false}
         estimatedItemSize={186}
-        renderItem={({ item }) => <ClinicCard data={item} />}
+        renderItem={({ item }) => <SpaCard data={item} />}
         onEndReached={() => hasNextPage && fetchNextPage()}
       />
       <BottomSheet

@@ -31,7 +31,7 @@ export default function HomeScreen() {
       ),
     },
     {
-      title: "Timeline",
+      title: "Upcoming",
       content: () => (
         <PetTimeline
           selectedPet={selectedPet}

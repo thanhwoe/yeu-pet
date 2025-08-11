@@ -23,7 +23,7 @@ interface ClinicCardProps {
 }
 export const ClinicCard = ({ data }: ClinicCardProps) => {
   const isOpen = checkIsOpening(data);
-  const hasPhone = isValidPhoneNumber(data.phone, "VN");
+  const hasPhone = data.phone ? isValidPhoneNumber(data.phone, "VN") : false;
   const validPhone = hasPhone
     ? parsePhoneNumber(data.phone, "VN")?.formatNational()
     : "";
@@ -69,13 +69,13 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
             <View className="flex-row gap-4">
               <TouchableOpacity
                 onPress={() => sendSMS(validPhone)}
-                className="bg-orange-100 p-2 rounded-full"
+                className="bg-orange-10 p-2 rounded-full"
               >
                 <ChatIcon size={20} className="text-orange-600" />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => makePhoneCall(validPhone)}
-                className="bg-orange-100 p-2 rounded-full"
+                className="bg-orange-10 p-2 rounded-full"
               >
                 <PhoneIcon size={20} className="text-orange-600" />
               </TouchableOpacity>

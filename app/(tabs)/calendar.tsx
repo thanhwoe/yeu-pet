@@ -82,7 +82,7 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <View className="flex-1 pt-safe-or-4 bg-orange-50">
+    <View className="flex-1 pt-safe-or-4 bg-background-screen">
       <ReminderHeader onAddReminder={() => setOpenForm(true)} />
       {isLoading ? (
         <Skeleton className="h-[300px]" />

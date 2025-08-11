@@ -7,6 +7,7 @@ import {
   ChatsIcon,
   FirstAidIcon,
   HairDryerIcon,
+  ImagesIcon,
   NewspaperClippingIcon,
 } from "phosphor-react-native";
 import { View } from "react-native";
@@ -31,6 +32,7 @@ export default function Screen() {
           icon={HairDryerIcon}
           iconColor="bg-blue-10"
           decoratorColor="text-blue-10"
+          onPress={() => router.push("/list-spa")}
         />
         <ServiceCard
           title="Training"
@@ -38,6 +40,13 @@ export default function Screen() {
           icon={BarbellIcon}
           iconColor="bg-teal-20"
           decoratorColor="text-teal-20"
+        />
+        <ServiceCard
+          title="Photos"
+          subTitle="Share photos"
+          icon={ImagesIcon}
+          iconColor="bg-lilac-20"
+          decoratorColor="text-lilac-20"
         />
         <ServiceCard
           title="Event"
