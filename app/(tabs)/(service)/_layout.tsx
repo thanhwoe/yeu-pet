@@ -19,6 +19,7 @@ export default function Layout() {
           title: "List Spa",
         }}
       />
+      <Stack.Screen name="(training)" options={{ headerShown: false }} />
     </Stack>
   );
 }

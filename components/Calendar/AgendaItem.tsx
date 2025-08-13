@@ -61,13 +61,13 @@ export const AgendaItem = ({ item, onDelete, onEdit }: ItemProps) => {
       </View>
       <View className="gap-4 items-end">
         <TouchableOpacity
-          className="bg-orange-100 p-2 rounded-full"
+          className="bg-orange-10 p-2 rounded-full"
           onPress={onEdit?.bind(this, item)}
         >
           <EditIcon size={20} className="text-orange-600" />
         </TouchableOpacity>
         <TouchableOpacity
-          className="bg-orange-100 p-2 rounded-full"
+          className="bg-orange-10 p-2 rounded-full"
           onPress={onDelete?.bind(this, item)}
         >
           <DeleteIcon size={20} className="text-orange-600" />

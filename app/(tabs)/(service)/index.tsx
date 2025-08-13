@@ -40,6 +40,7 @@ export default function Screen() {
           icon={BarbellIcon}
           iconColor="bg-teal-20"
           decoratorColor="text-teal-20"
+          onPress={() => router.push("/(training)")}
         />
         <ServiceCard
           title="Photos"
