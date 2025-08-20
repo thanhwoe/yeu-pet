@@ -5,7 +5,9 @@ import { Text } from "../ui/Text";
 export const AgendaDate = (props: any) => {
   return (
     <View className="bg-background-screen">
-      <Text className="text-orange-800 mb-2">{date(props).format("LL")}</Text>
+      <Text className="text-text-upcoming-title mb-2">
+        {date(props).format("LL")}
+      </Text>
     </View>
   );
 };

@@ -51,10 +51,9 @@ export const reminderSchema = z.object({
   }),
   description: z.string().optional(),
   pet_id: z.string().optional().nullable(),
-  type: z
-    .enum(["grooming", "feed", "vaccination", "medication"])
-    .optional()
-    .nullable(),
+  type: z.enum(["grooming", "feed", "vaccination", "medication"], {
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Type"),
+  }),
   event_date: z.date({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Event date"),
   }),

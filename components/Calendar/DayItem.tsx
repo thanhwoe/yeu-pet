@@ -13,19 +13,19 @@ const dayVariants = cva(
     variants: {
       // Day state variants
       state: {
-        today: "bg-orange-300",
-        selected: "bg-orange-600",
+        today: "bg-background-secondary",
+        selected: "bg-background-primary",
         disabled: "",
-        inactive: "bg-green-100",
+        inactive: "bg-green-10",
         "": "",
       },
       // Text variants
       textVariant: {
-        "": "text-gray-900",
-        today: "text-white font-semibold",
-        selected: "text-white font-semibold",
-        disabled: "text-gray-400",
-        inactive: "text-green-800 font-medium",
+        "": "text-gray-90",
+        today: "text-text-primary-inverse font-semibold",
+        selected: "text-text-primary-inverse font-semibold",
+        disabled: "text-gray-40",
+        inactive: "text-green-80 font-medium",
       },
     },
     defaultVariants: {
@@ -42,11 +42,11 @@ const textVariants = cva(
     variants: {
       // Day state variants
       state: {
-        "": "text-gray-900",
-        today: "text-white font-semibold",
-        selected: "text-white font-semibold",
-        disabled: "text-gray-400",
-        inactive: "text-green-800 font-medium",
+        "": "text-gray-90",
+        today: "text-text-primary-inverse font-semibold",
+        selected: "text-text-primary-inverse font-semibold",
+        disabled: "text-gray-40",
+        inactive: "text-green-80 font-medium",
       },
     },
     defaultVariants: {
@@ -114,7 +114,7 @@ export const DayItem: React.FC<DayProps> = ({
       </View>
 
       {marking?.marked && (
-        <PawPrint size={12} weight="fill" className="text-orange-500" />
+        <PawPrint size={12} weight="fill" className="text-icon-primary" />
       )}
     </TouchableOpacity>
   );

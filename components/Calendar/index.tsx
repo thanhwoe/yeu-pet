@@ -59,14 +59,7 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
             theme={{
               calendarBackground: "#FFFDF6",
               textSectionTitleColor: "#000",
-              // dayTextColor: "#000",
-              // todayTextColor: "#EB5B00",
-              // selectedDayTextColor: "#fff",
-              // monthTextColor: "blue",
-              // indicatorColor: "black",
-              // selectedDayBackgroundColor: "#FF894F",
               arrowColor: "#FF894F",
-              // textDisabledColor: 'red',
             }}
             hideKnob
             initialPosition={ExpandableCalendar.positions.OPEN}
@@ -80,7 +73,7 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
           />
           {isEmpty(data) ? (
             <View className="mt-10">
-              <Text className="text-center text-gray-600" variant="body2">
+              <Text className="text-center" variant="body2">
                 No reminders added yet. {"\n"} Start by adding your first one!
               </Text>
             </View>
@@ -91,7 +84,6 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
               scrollToNextEvent
               renderSectionHeader={AgendaDate}
               removeClippedSubviews
-              // dayFormat={"yyyy-MM-d"}
             />
           )}
         </View>

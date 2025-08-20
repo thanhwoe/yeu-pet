@@ -10,7 +10,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { cn } from "@/utils";
 import {
   CalendarHeartIcon,
   GearSixIcon,
@@ -18,6 +20,12 @@ import {
   PawPrintIcon,
   ShoppingCartSimpleIcon,
 } from "phosphor-react-native";
+
+const Calendar = withIconClassName(CalendarHeartIcon);
+const Settings = withIconClassName(GearSixIcon);
+const Home = withIconClassName(HouseIcon);
+const Service = withIconClassName(PawPrintIcon);
+const Store = withIconClassName(ShoppingCartSimpleIcon);
 
 // Custom animated tab button component
 const AnimatedTabButton = ({
@@ -102,7 +110,7 @@ const AnimatedTabButton = ({
         {/* Background highlight */}
         <Animated.View
           style={[backgroundAnimatedStyle]}
-          className="absolute inset-0 bg-blue-500 rounded-2xl"
+          className="absolute inset-0 bg-background-secondary rounded-2xl"
         />
 
         <View className="flex-row items-center justify-center h-full w-full relative">
@@ -121,7 +129,7 @@ const AnimatedTabButton = ({
           >
             <Text
               className={`text-xs font-semibold whitespace-nowrap ${
-                focused ? "text-blue-500" : "text-gray-500 dark:text-gray-400"
+                focused ? "text-text-link" : "text-text-secondary"
               }`}
             >
               {label}
@@ -156,8 +164,6 @@ export default function TabLayout() {
           elevation: 5,
         },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "#3B82F6",
-        tabBarInactiveTintColor: colorScheme === "dark" ? "#9CA3AF" : "#6B7280",
       }}
     >
       <Tabs.Screen
@@ -169,15 +175,11 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Home"
             >
-              <HouseIcon
+              <Home
                 weight={props["aria-selected"] ? "fill" : "regular"}
-                color={
-                  props["aria-selected"]
-                    ? "#3B82F6"
-                    : colorScheme === "dark"
-                    ? "#9CA3AF"
-                    : "#6B7280"
-                }
+                className={cn("text-icon-secondary", {
+                  "text-icon-primary": props["aria-selected"],
+                })}
               />
             </AnimatedTabButton>
           ),
@@ -193,16 +195,12 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Reminder"
             >
-              <CalendarHeartIcon
+              <Calendar
                 size={24}
                 weight={props["aria-selected"] ? "fill" : "regular"}
-                color={
-                  props["aria-selected"]
-                    ? "#3B82F6"
-                    : colorScheme === "dark"
-                    ? "#9CA3AF"
-                    : "#6B7280"
-                }
+                className={cn("text-icon-secondary", {
+                  "text-icon-primary": props["aria-selected"],
+                })}
               />
             </AnimatedTabButton>
           ),
@@ -218,16 +216,12 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Service"
             >
-              <PawPrintIcon
+              <Service
                 size={24}
                 weight={props["aria-selected"] ? "fill" : "regular"}
-                color={
-                  props["aria-selected"]
-                    ? "#3B82F6"
-                    : colorScheme === "dark"
-                    ? "#9CA3AF"
-                    : "#6B7280"
-                }
+                className={cn("text-icon-secondary", {
+                  "text-icon-primary": props["aria-selected"],
+                })}
               />
             </AnimatedTabButton>
           ),
@@ -242,16 +236,12 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Store"
             >
-              <ShoppingCartSimpleIcon
+              <Store
                 size={24}
                 weight={props["aria-selected"] ? "fill" : "regular"}
-                color={
-                  props["aria-selected"]
-                    ? "#3B82F6"
-                    : colorScheme === "dark"
-                    ? "#9CA3AF"
-                    : "#6B7280"
-                }
+                className={cn("text-icon-secondary", {
+                  "text-icon-primary": props["aria-selected"],
+                })}
               />
             </AnimatedTabButton>
           ),
@@ -267,16 +257,12 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Settings"
             >
-              <GearSixIcon
+              <Settings
                 size={24}
                 weight={props["aria-selected"] ? "fill" : "regular"}
-                color={
-                  props["aria-selected"]
-                    ? "#3B82F6"
-                    : colorScheme === "dark"
-                    ? "#9CA3AF"
-                    : "#6B7280"
-                }
+                className={cn("text-icon-secondary", {
+                  "text-icon-primary": props["aria-selected"],
+                })}
               />
             </AnimatedTabButton>
           ),

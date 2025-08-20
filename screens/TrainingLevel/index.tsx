@@ -1,8 +1,8 @@
 import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Image } from "@/components/ui/Image";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { BarbellIcon, SealCheckIcon } from "phosphor-react-native";
 import { useState } from "react";
@@ -19,7 +19,7 @@ export const TrainingLevelScreen = () => {
   const { level } = useLocalSearchParams();
   const trainingData = mockTrainingData.find((i) => i.level === Number(level));
   return (
-    <ScreenContainer>
+    <ScreenContainer contentContainerClassName="pt-2 px-5 pb-safe-or-2">
       <View className="gap-2">
         {trainingData?.exercises.map((item) => (
           <TouchableOpacity
@@ -27,13 +27,7 @@ export const TrainingLevelScreen = () => {
             onPress={() => setSelectedItem(item)}
             className="flex-row p-2 bg-white rounded-2xl items-center gap-3"
           >
-            <Image
-              cachePolicy="disk"
-              contentFit="cover"
-              transition={300}
-              style={{ width: 50, height: 50 }}
-              source={item.image_url}
-            />
+            <Image style={{ width: 50, height: 50 }} source={item.image_url} />
             <Text>{item.title}</Text>
           </TouchableOpacity>
         ))}

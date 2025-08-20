@@ -47,14 +47,14 @@ export const ReminderForm = ({ onSubmit, defaultValues }: IProps) => {
       <InputController<IReminderForm>
         control={control}
         name="title"
-        label="title"
-        placeholder="title"
+        label="Title"
+        placeholder="Title"
       />
       <InputController<IReminderForm>
         control={control}
         name="description"
-        label="description"
-        placeholder="description"
+        label="Description"
+        placeholder="Description"
         multiline
       />
       <OptionInputController<IReminderForm>

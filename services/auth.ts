@@ -8,3 +8,6 @@ export const signUpMutation = (params: ISignUpForm) =>
 
 export const signInMutation = (params: ISignInForm) =>
   APIs.post<{ data: IUser }>(API_ROUTES.SIGN_IN, { data: params });
+
+export const signOutMutation = () =>
+  APIs.post<{ data: IUser }>(API_ROUTES.LOGOUT);

@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/SignInForm";
+import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { ISignInForm } from "@/constants/validation";
 import { signInMutation } from "@/services";
@@ -25,6 +26,14 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 justify-center p-5 bg-white">
+      <View className="absolute right-0 w-72 top-10">
+        <Image
+          contentFit="contain"
+          className="h-72"
+          source={require("@/assets/images/sneaky-cat.png")}
+        />
+      </View>
+
       <View className="mb-20">
         <Text variant="title1">Hi, Welcome back! 👋</Text>
         <Text variant="title3" className=" text-gray-500">

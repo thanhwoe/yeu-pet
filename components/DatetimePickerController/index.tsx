@@ -144,13 +144,13 @@ export const DateTimePickerController = <T extends FieldValues>({
 
         <View className="bg-white rounded-t-3xl shadow-2xl">
           {/* Header */}
-          <View className="flex-row justify-between items-center px-6 py-4 border-b border-gray-100">
+          <View className="flex-row justify-between items-center px-6 py-4 border-b border-line-secondary">
             <TouchableOpacity
               onPress={handleIOSCancel}
               className="flex-row items-center gap-1 px-3 py-2 rounded-lg"
               activeOpacity={0.7}
             >
-              <XIcon size={18} color="#6B7280" weight="bold" />
+              <XIcon size={18} weight="bold" />
             </TouchableOpacity>
 
             <Text>
@@ -192,7 +192,7 @@ export const DateTimePickerController = <T extends FieldValues>({
         <TouchableOpacity
           onPress={openPicker}
           disabled={disabled}
-          className="flex-row px-3 py-2 items-center justify-center border border-gray-200 rounded-lg gap-2"
+          className="flex-row px-3 py-2 items-center justify-center border border-line-primary rounded-lg gap-2"
           activeOpacity={0.8}
         >
           <TextInput
@@ -207,7 +207,7 @@ export const DateTimePickerController = <T extends FieldValues>({
           <CalendarIcon weight="duotone" size={20} />
         </TouchableOpacity>
 
-        <Text className="text-red-500" variant={"footnote"}>
+        <Text className="text-text-negative" variant={"footnote"}>
           {error?.message}
         </Text>
       </View>

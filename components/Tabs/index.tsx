@@ -40,7 +40,7 @@ export const Tabs = ({ tabs }: IProps) => {
       <View className="bg-white rounded-3xl p-1 mb-4 ">
         {/* Animated Background */}
         <AnimatedView
-          className="bg-orange-200"
+          className="bg-tab-selected"
           style={[
             {
               width: tabWidth,
@@ -69,7 +69,9 @@ export const Tabs = ({ tabs }: IProps) => {
             >
               <Text
                 className={`font-semibold text-base ${
-                  activeTab === index ? "text-orange-500" : "text-gray-600"
+                  activeTab === index
+                    ? "text-text-tab-selected"
+                    : "text-text-secondary"
                 }`}
               >
                 {tab.title}

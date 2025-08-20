@@ -163,12 +163,13 @@ export const withUploadImage =
           visible={isShowOptions}
           onDismiss={() => setIsShowOptions(false)}
           stackBehavior="push"
+          titleElement={<Text className="font-medium">Choose an option</Text>}
         >
           {options.map(({ label, onPress }, index) => (
             <TouchableOpacity
               key={label}
               onPress={onPress}
-              className="px-4 py-2 border-b border-gray-200"
+              className="items-center py-2 border-b border-line-secondary"
             >
               <Text>{label}</Text>
             </TouchableOpacity>

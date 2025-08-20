@@ -10,10 +10,9 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
   variants: {
     variant: {
       primary: "active:opacity-50 bg-background-primary",
-      secondary: "border-line-secondary ios:active:bg-primary/5 border ",
-      tonal:
-        "ios:bg-primary/10 dark:ios:bg-primary/10 ios:active:bg-primary/15 bg-primary/15 dark:bg-primary/30",
-      plain: "ios:active:opacity-70",
+      secondary: "border-line-inverse border",
+      tonal: "bg-background-secondary",
+      plain: "active:opacity-70",
     },
     size: {
       none: "",
@@ -34,8 +33,8 @@ const buttonTextVariants = cva("font-medium", {
   variants: {
     variant: {
       primary: "text-text-primary-inverse",
-      secondary: "text-text-primary",
-      tonal: "text-primary",
+      secondary: "text-text-link",
+      tonal: "text-text-primary-inverse",
       plain: "text-foreground",
     },
     size: {

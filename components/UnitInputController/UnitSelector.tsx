@@ -22,8 +22,8 @@ export const UnitSelector = ({
 
   const renderItem = ({ item }: { item: { label: string; value: string } }) => (
     <View
-      className={cn("py-3 px-4 border-b border-gray-200", {
-        "bg-orange-200": item.value === value,
+      className={cn("py-3 px-4 border-b border-line-secondary", {
+        "bg-option-selected": item.value === value,
       })}
     >
       <Text

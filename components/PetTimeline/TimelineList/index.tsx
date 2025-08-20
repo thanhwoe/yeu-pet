@@ -1,6 +1,7 @@
 import { ReminderIcons } from "@/components/ReminderIcons";
 import { Skeleton } from "@/components/Skeleton";
 import { Button } from "@/components/ui/Button";
+import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { REMINDER_KEY } from "@/constants/query-keys";
 import { IPet } from "@/interfaces";
@@ -51,9 +52,19 @@ export const TimelineList = ({ pet }: IProps) => {
           width: SCREEN_WIDTH - 40,
         }}
       >
-        <Text className="text-orange-800">{pet.name}&apos;s reminders</Text>
+        <Text className="text-text-upcoming-title text-center">
+          {pet.name}&apos;s reminders
+        </Text>
 
-        <View className="items-center mt-4">
+        <View className="items-center overflow-hidden gap-2 justify-center flex-1 bg-background-white rounded-2xl">
+          <View className="absolute bottom-0 right-0">
+            <Image
+              contentFit="contain"
+              className="size-56"
+              source={require("@/assets/images/funny-cat.png")}
+            />
+          </View>
+          <Text>Don&apos;t forget to add a reminder</Text>
           <Button variant="secondary" onPress={() => router.push("/calendar")}>
             Add reminder
           </Button>
@@ -69,10 +80,15 @@ export const TimelineList = ({ pet }: IProps) => {
         width: SCREEN_WIDTH - 40,
       }}
     >
-      <Text className="text-orange-800">{pet.name}&apos;s reminders</Text>
+      <Text className="text-text-upcoming-title text-center">
+        {pet.name}&apos;s reminders
+      </Text>
       {data?.map((reminder) => {
         return (
-          <View key={reminder.id} className="bg-white p-4 rounded-2xl gap-1">
+          <View
+            key={reminder.id}
+            className="bg-background-white p-4 rounded-2xl gap-1"
+          >
             <View className="flex-row">
               <Text variant="caption2">
                 {date(reminder.time).format("l LT")}

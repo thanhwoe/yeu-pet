@@ -29,7 +29,7 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
     : "";
 
   return (
-    <View className="mb-3 p-4 border border-gray-100 rounded-2xl bg-white gap-2">
+    <View className="mb-3 p-4 rounded-2xl bg-white gap-2">
       <View
         className={cn(
           "absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500",
@@ -69,15 +69,15 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
             <View className="flex-row gap-4">
               <TouchableOpacity
                 onPress={() => sendSMS(validPhone)}
-                className="bg-orange-10 p-2 rounded-full"
+                className="bg-background-screen p-2 rounded-full"
               >
-                <ChatIcon size={20} className="text-orange-600" />
+                <ChatIcon size={20} className="text-icon-primary" />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => makePhoneCall(validPhone)}
-                className="bg-orange-10 p-2 rounded-full"
+                className="bg-background-screen p-2 rounded-full"
               >
-                <PhoneIcon size={20} className="text-orange-600" />
+                <PhoneIcon size={20} className="text-icon-primary" />
               </TouchableOpacity>
             </View>
           )}
@@ -85,7 +85,9 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
       </View>
       <View className="flex-row gap-1 items-center">
         <LocationIcon size={14} className="text-foreground" />
-        <Text variant="subhead">Address: {data.address}</Text>
+        <Text variant="subhead" className="flex-shrink">
+          Address: {data.address}
+        </Text>
       </View>
     </View>
   );

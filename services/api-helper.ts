@@ -1,3 +1,4 @@
+import { API_ROUTES } from "@/constants/api-routes";
 import { ENV } from "@/constants/common";
 import { useUserInfoStore } from "@/stores/user-info";
 import axios, {
@@ -43,32 +44,33 @@ class APIHelper {
   }
 
   private checkExpiredToken(): void {
-    // this.axiosClient.interceptors.response.use(
-    //   response => {
-    //     return response
-    //   },
-    //   async error => {
-    //     if (
-    //       error.response.status === 401 &&
-    //       error.response.data.path !== API_ROUTES.REFRESH_TOKEN
-    //     ) {
-    //       // call api refresh token
-    //       useUserInfoStore.getState().clearToken()
-    //       const { data } = await this.post<{
-    //         data: { token: string; refreshToken: string }[]
-    //       }>(API_ROUTES.REFRESH_TOKEN)
-    //       useUserInfoStore.getState().refreshToken({
-    //         refreshToken: data[0].refreshToken,
-    //         token: data[0].token,
-    //       })
-    //     }
-    //     if (error.response.data.path === API_ROUTES.REFRESH_TOKEN) {
-    //       // force logout
-    //       useUserInfoStore.getState().logout()
-    //     }
-    //     throw error
-    //   },
-    // )
+    this.axiosClient.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      async (error) => {
+        if (
+          error.response.status === 401 &&
+          error.response.data.path !== API_ROUTES.REFRESH_TOKEN
+        ) {
+          // call api refresh token
+          useUserInfoStore.getState().clearToken();
+          const { data } = await this.post<{
+            data: { token: string; refreshToken: string }[];
+          }>(API_ROUTES.REFRESH_TOKEN);
+          useUserInfoStore.getState().refreshToken({
+            refreshToken: data[0].refreshToken,
+            token: data[0].token,
+          });
+        }
+        if (error.response.data.path === API_ROUTES.REFRESH_TOKEN) {
+          // force logout
+          useUserInfoStore.getState().logout();
+          this.post(API_ROUTES.LOGOUT);
+        }
+        throw error;
+      }
+    );
   }
 
   private errorHandler<T>(

@@ -1,9 +1,11 @@
 import { IPet } from "@/interfaces";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
-import { useEffect, useRef } from "react";
-import { FlatList } from "react-native";
+import { useEffect, useMemo, useRef } from "react";
+import { FlatList, View } from "react-native";
 import { PetProfileCard } from "../PetProfileCard";
 import { Skeleton } from "../Skeleton";
+import { Image } from "../ui/Image";
+import { Text } from "../ui/Text";
 
 interface IProps {
   selectedPet: IPet | null;
@@ -57,8 +59,31 @@ export const PetInfoCardList = ({ selectedPet, data, isLoading }: IProps) => {
 
   const keyExtractor = (item: IPet) => item.pet_id;
 
+  const listEmptyComponent = useMemo(
+    () => (
+      <View
+        style={{
+          width: SCREEN_WIDTH - 38,
+          height: 250,
+        }}
+      >
+        <View className="items-center overflow-hidden gap-2 justify-center flex-1 bg-background-white rounded-2xl">
+          <View className="absolute bottom-0 right-0">
+            <Image
+              contentFit="contain"
+              className="size-56"
+              source={require("@/assets/images/funny-cat.png")}
+            />
+          </View>
+          <Text>Add your pet to get started</Text>
+        </View>
+      </View>
+    ),
+    []
+  );
+
   if (isLoading) {
-    return <Skeleton className="h-[355px] rounded-2xl" />;
+    return <Skeleton className="h-[300px] rounded-2xl" />;
   }
 
   return (
@@ -70,6 +95,7 @@ export const PetInfoCardList = ({ selectedPet, data, isLoading }: IProps) => {
       snapToAlignment="center"
       snapToInterval={SCREEN_WIDTH - 28}
       decelerationRate="fast"
+      ListEmptyComponent={listEmptyComponent}
       contentContainerClassName="gap-4"
       renderItem={renderItem}
       getItemLayout={getItemLayout}

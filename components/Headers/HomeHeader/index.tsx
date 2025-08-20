@@ -13,7 +13,7 @@ export const HomeHeader = () => {
       <View className="flex-row items-center gap-4">
         <Avatar source={{ uri: "https://avatar.iran.liara.run/public/32" }} />
         <View>
-          <Text className="text-gray-500">Welcome back!</Text>
+          <Text className="text-text-secondary">Welcome back!</Text>
           <Text className="font-semibold">
             {userInfo?.firstName} {userInfo?.lastName}
           </Text>

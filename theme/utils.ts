@@ -64,3 +64,24 @@ export function getColors(data: ThemeObject): ThemeObject {
 
   return result;
 }
+
+export function generateColorKeys(colorPalette: any) {
+  const result = {};
+
+  Object.keys(colorPalette).forEach((key) => {
+    // Remove the "--" prefix and split by "-"
+    const parts = key.substring(2).split("-"); // "--red-100" -> ["red", "100"]
+    const colorName = parts[0]; // "red"
+    const variant = parts[1]; // "100"
+
+    // Initialize color object if it doesn't exist
+    if (!result[colorName]) {
+      result[colorName] = {};
+    }
+
+    // Add the variant with var() reference
+    result[colorName][variant] = `var(${key})`;
+  });
+
+  return result;
+}

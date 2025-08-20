@@ -50,16 +50,16 @@ export function ListClinicScreen() {
       />
       <TouchableOpacity
         className={cn(
-          "border rounded-3xl self-start flex-row px-2 gap-1 items-center mb-4 border-gray-400",
+          "border rounded-3xl self-start flex-row px-2 gap-1 items-center mb-4 border-line-secondary",
           {
-            "border-orange-600": !!selectedCity,
+            "border-line-selected": !!selectedCity,
           }
         )}
         onPress={() => setShowCityFilter(true)}
       >
         <Text
           className={cn("", {
-            "text-gray-500": !selectedCity,
+            "text-text-secondary": !selectedCity,
           })}
         >
           {selectedCity
@@ -83,11 +83,12 @@ export function ListClinicScreen() {
       <BottomSheet
         visible={showCityFilter}
         onDismiss={() => setShowCityFilter(false)}
+        titleElement={<Text className="font-medium">Select City</Text>}
       >
         {LIST_CITY.map((item) => (
           <TouchableOpacity
             className={cn("px-6 py-3", {
-              "bg-orange-50": item.value === selectedCity,
+              "bg-option-selected": item.value === selectedCity,
             })}
             key={item.value}
             onPress={() => {

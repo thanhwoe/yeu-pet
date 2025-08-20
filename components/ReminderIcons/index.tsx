@@ -20,10 +20,10 @@ const iconMapping = {
 };
 
 const colorMapping = {
-  feed: "text-orange-500",
-  vaccination: "text-green-600",
-  grooming: "text-cyan-600",
-  medication: "text-red-500",
+  feed: "text-orange-40",
+  vaccination: "text-green-60",
+  grooming: "text-cyan-60",
+  medication: "text-red-50",
 };
 
 interface IProps extends IconProps {

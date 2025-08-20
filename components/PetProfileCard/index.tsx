@@ -132,7 +132,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
               <Text variant="body2" className="font-semibold text-gray-400">
                 {i.label}
               </Text>
-              <Text variant="body2" className="capitalize font-semibold">
+              <Text variant="body2" className="capitalize">
                 {i.value || "N/A"}
               </Text>
             </View>
@@ -144,7 +144,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
               onPress={() => setShowNotes(true)}
               className="mb-2 self-end"
             >
-              <Text variant="subhead" className="text-blue-500">
+              <Text variant="subhead" className="text-text-link">
                 Notes
               </Text>
             </TouchableOpacity>
@@ -175,17 +175,17 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
         <View className="px-4 gap-3">
           <TouchableOpacity
             onPress={setShowForm.bind(this, true)}
-            className="px-4 py-4 items-center border border-orange-300 rounded-md"
+            className="px-4 py-4 items-center border border-line-secondary rounded-md"
           >
             <Text className="font-medium">Update Information</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleDeletePet}
             className={cn(
-              "px-4 py-4 flex-row items-center justify-center gap-2 border border-orange-300 rounded-md"
+              "px-4 py-4 flex-row items-center justify-center gap-2 border border-line-secondary rounded-md"
             )}
           >
-            <Text className="text-red-600 font-medium">Remove Pet</Text>
+            <Text className="text-text-negative font-medium">Remove Pet</Text>
           </TouchableOpacity>
         </View>
         {isDeleting && (

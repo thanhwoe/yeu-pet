@@ -14,6 +14,8 @@ type State = {
 type Action = {
   updateUserInfo: (data: IUser) => void;
   logout: () => void;
+  clearToken: () => void;
+  refreshToken: (data: { token: string; refreshToken: string }) => void;
 };
 
 const useUserInfoStoreBase = create<State & Action>()(
@@ -24,6 +26,17 @@ const useUserInfoStoreBase = create<State & Action>()(
         set(() => ({ userInfo }));
       },
       logout: () => set(() => ({ userInfo: null })),
+      clearToken: () => {
+        set((state) => ({
+          ...state,
+          userInfo: { ...(state.userInfo as IUser), token: null },
+        }));
+      },
+      refreshToken: ({ refreshToken, token }) =>
+        set((state) => ({
+          ...state,
+          userInfo: { ...(state.userInfo as IUser), refreshToken, token },
+        })),
     }),
     {
       name: PERSIST_KEYS.USER_INFO,

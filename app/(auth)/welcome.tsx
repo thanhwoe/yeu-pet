@@ -1,16 +1,9 @@
 import { Button } from "@/components/ui/Button";
+import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { cssInterop } from "nativewind";
 import { StyleSheet, View } from "react-native";
-
-const ExpoImage = cssInterop(Image, {
-  className: {
-    target: "style",
-  },
-});
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -21,11 +14,10 @@ export default function WelcomeScreen() {
         style={StyleSheet.absoluteFill}
       />
       <View className="mt-safe-offset-4">
-        <ExpoImage
-          cachePolicy="disk"
+        <Image
           contentFit="cover"
           className="h-96"
-          source={require("../../assets/images/orange-cat.png")}
+          source={require("@/assets/images/orange-cat.png")}
         />
       </View>
 

@@ -60,7 +60,7 @@ export const PetPickerController = <T extends FieldValues>({
                   item.avatar_url || "https://avatar.iran.liara.run/public/32",
               }}
               className={cn({
-                "border-orange-400": value === item.pet_id,
+                "border-line-selected": value === item.pet_id,
               })}
               variant="line"
               size="medium"

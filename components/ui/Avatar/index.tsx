@@ -1,14 +1,8 @@
 import { cn } from "@/utils";
-import { Image as ExpoImage, ImageProps } from "expo-image";
-import { cssInterop } from "nativewind";
+import { ImageProps } from "expo-image";
 import { TouchableOpacity } from "react-native";
+import { Image } from "../Image";
 import { avatarStyles, AvatarVariants, imageStyles } from "./styles";
-
-const ImageStyleable = cssInterop(ExpoImage, {
-  className: {
-    target: "style",
-  },
-});
 
 interface AvatarProps extends ImageProps, AvatarVariants {
   onPress?: () => void;
@@ -27,11 +21,8 @@ export const Avatar = ({
       onPress={onPress}
       disabled={!onPress}
     >
-      <ImageStyleable
+      <Image
         className={cn(imageStyles({ size, variant }))}
-        cachePolicy="disk"
-        contentFit="cover"
-        transition={300}
         source={source}
         {...props}
       />

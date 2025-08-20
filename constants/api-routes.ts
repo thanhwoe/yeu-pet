@@ -3,6 +3,8 @@ export const API_ROUTES = {
   SIGN_UP: "/sign-up",
   OTP_CONFIRM: "/otp-confirm",
   UPDATE_PASSWORD: "/update-password",
+  REFRESH_TOKEN: "/refresh-token",
+  LOGOUT: "/logout",
 
   COMPLETE_ONBOARDING: "/complete-onboarding",
 

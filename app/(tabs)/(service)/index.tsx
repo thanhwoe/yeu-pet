@@ -5,6 +5,7 @@ import {
   BarbellIcon,
   BellRingingIcon,
   ChatsIcon,
+  CoinsIcon,
   FirstAidIcon,
   HairDryerIcon,
   ImagesIcon,
@@ -35,26 +36,34 @@ export default function Screen() {
           onPress={() => router.push("/list-spa")}
         />
         <ServiceCard
-          title="Training"
-          subTitle="35+"
-          icon={BarbellIcon}
-          iconColor="bg-teal-20"
-          decoratorColor="text-teal-20"
-          onPress={() => router.push("/(training)")}
+          title="Budget"
+          // Quản lý chi tiêu 
+          subTitle="Budget statistics"
+          icon={CoinsIcon}
+          iconColor="bg-yellow-10"
+          decoratorColor="text-yellow-10"
         />
         <ServiceCard
           title="Photos"
           subTitle="Share photos"
           icon={ImagesIcon}
-          iconColor="bg-lilac-20"
-          decoratorColor="text-lilac-20"
+          iconColor="bg-pink-20"
+          decoratorColor="text-pink-20"
+        />
+        <ServiceCard
+          title="Training"
+          subTitle="35+"
+          icon={BarbellIcon}
+          iconColor="bg-teal-10"
+          decoratorColor="text-teal-10"
+          onPress={() => router.push("/(training)")}
         />
         <ServiceCard
           title="Event"
           subTitle="35+"
           icon={NewspaperClippingIcon}
-          iconColor="bg-yellow-10"
-          decoratorColor="text-yellow-10"
+          iconColor="bg-cyan-10"
+          decoratorColor="text-cyan-10"
         />
         <ServiceCard
           title="SOS"

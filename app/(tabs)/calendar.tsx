@@ -3,12 +3,13 @@ import { ReminderHeader } from "@/components/Headers/ReminderHeader";
 import { ReminderForm } from "@/components/ReminderForm";
 import { Skeleton } from "@/components/Skeleton";
 import { BottomSheet } from "@/components/ui/BottomSheet";
-import { REMINDER_KEY } from "@/constants/query-keys";
+import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
 import { IReminderInfo } from "@/interfaces";
 import {
   createReminderMutation,
   deleteReminderMutation,
+  getListPetQuery,
   getListReminderQuery,
   updateReminderMutation,
 } from "@/services";
@@ -16,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert, View } from "react-native";
 
-export default function TabTwoScreen() {
+export default function Screen() {
   const [openForm, setOpenForm] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IReminderInfo | null>(null);
 
@@ -24,6 +25,11 @@ export default function TabTwoScreen() {
   const { data, isLoading } = useQuery({
     queryKey: REMINDER_KEY.list(),
     queryFn: () => getListReminderQuery(),
+  });
+
+  const { data: petData } = useQuery({
+    queryKey: PET_KEY.list(),
+    queryFn: getListPetQuery,
   });
 
   const { mutate: createReminder } = useMutation({
@@ -81,9 +87,22 @@ export default function TabTwoScreen() {
     );
   };
 
+  const handlePressAddButton = () => {
+    if (petData?.data.length) {
+      setOpenForm(true);
+    } else {
+      // TODO: show toast
+    }
+  };
+
+  const handleCloseForm = () => {
+    setOpenForm(false);
+    setSelectedItem(null);
+  };
+
   return (
     <View className="flex-1 pt-safe-or-4 bg-background-screen">
-      <ReminderHeader onAddReminder={() => setOpenForm(true)} />
+      <ReminderHeader onAddReminder={handlePressAddButton} />
       {isLoading ? (
         <Skeleton className="h-[300px]" />
       ) : (
@@ -96,7 +115,7 @@ export default function TabTwoScreen() {
           data={data?.data ?? []}
         />
       )}
-      <BottomSheet visible={openForm} onDismiss={() => setOpenForm(false)}>
+      <BottomSheet visible={openForm} onDismiss={handleCloseForm}>
         <ReminderForm
           onSubmit={handleCreateReminder}
           {...(selectedItem && {

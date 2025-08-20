@@ -8,8 +8,8 @@ module.exports = {
   presets: [require("nativewind/preset")],
   darkMode: "class",
   theme: {
+    colors,
     extend: {
-      colors,
       borderWidth: {
         hairline: hairlineWidth(),
       },

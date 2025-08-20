@@ -46,22 +46,22 @@ export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
       <InputController<IPetInfoForm>
         control={control}
         name="name"
-        label="name"
-        placeholder="name"
+        label="Name"
+        placeholder="Your pet name"
       />
       <View className="flex-row gap-10 pr-4">
         <View className="flex-1">
           <InputController<IPetInfoForm>
             control={control}
             name="breed"
-            label="breed"
+            label="Breed"
             placeholder="Husky"
           />
 
           <InputController<IPetInfoForm>
             control={control}
             name="color"
-            label="color"
+            label="Color"
             placeholder="Orange"
           />
         </View>
@@ -86,8 +86,8 @@ export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
       <OptionInputController<IPetInfoForm>
         control={control}
         name="gender"
-        label="gender"
-        placeholder="gender"
+        label="Gender"
+        placeholder="Gender"
         options={[
           { label: "Male", value: "male" },
           { label: "Female", value: "female" },
@@ -97,8 +97,8 @@ export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
       <OptionInputController<IPetInfoForm>
         control={control}
         name="species"
-        label="species"
-        placeholder="species"
+        label="Species"
+        placeholder="Species"
         options={[
           { label: "Dog", value: "dog" },
           { label: "Cat", value: "cat" },

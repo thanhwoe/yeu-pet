@@ -15,18 +15,17 @@ import { Text } from "../ui/Text";
 const PlusIcon = withIconClassName(Plus);
 
 const colors = [
-  "border-red-200",
-  "border-green-200",
-  "border-blue-200",
-  "border-pink-200",
-  "border-gray-200",
-
-  // TODO: replace new colors
-  "border-red-200",
-  "border-green-200",
-  "border-blue-200",
-  "border-pink-200",
-  "border-gray-200",
+  "border-red-30",
+  "border-green-20",
+  "border-blue-20",
+  "border-pink-20",
+  "border-gray-20",
+  "border-cyan-20",
+  "border-orange-20",
+  "border-yellow-20",
+  "border-teal-20",
+  "border-pink-20",
+  "border-purple-20",
 ];
 
 interface IProps {
@@ -94,11 +93,11 @@ export const PetAvatarList = ({ onSelectPet }: IProps) => {
         ))}
         <View className="items-center gap-2">
           <TouchableOpacity
-            className="rounded-full overflow-hidden  p-1 border-2 border-orange-400"
+            className="rounded-full overflow-hidden  p-1 border-2 border-line-inverse"
             onPress={() => setShowForm(true)}
           >
-            <View className="size-14 rounded-full bg-orange-200 items-center justify-center">
-              <PlusIcon weight="bold" className="text-orange-400" />
+            <View className="size-14 rounded-full bg-option-selected items-center justify-center">
+              <PlusIcon weight="bold" className="text-text-link" />
             </View>
           </TouchableOpacity>
           <Text variant="footnote">Add</Text>
@@ -108,6 +107,7 @@ export const PetAvatarList = ({ onSelectPet }: IProps) => {
         stackBehavior="push"
         visible={showForm}
         onDismiss={() => setShowForm(false)}
+        titleElement={<Text className="font-medium">Add your pet</Text>}
       >
         <PetInfoForm onSubmit={handleSubmit} />
       </BottomSheet>

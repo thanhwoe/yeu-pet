@@ -1,7 +1,10 @@
 import { IPet } from "@/interfaces";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
-import { useEffect, useRef } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useMemo, useRef } from "react";
 import { FlatList, View } from "react-native";
+import { Button } from "../ui/Button";
+import { Image } from "../ui/Image";
 import { Text } from "../ui/Text";
 import { TimelineList } from "./TimelineList";
 
@@ -14,6 +17,7 @@ const itemWidth = SCREEN_WIDTH - 24;
 
 export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
   const listRef = useRef<FlatList<IPet>>(null);
+  const router = useRouter();
 
   const renderItem = ({ item }: { item: IPet }) => {
     return <TimelineList pet={item} />;
@@ -54,6 +58,32 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
     });
   };
 
+  const listEmptyComponent = useMemo(
+    () => (
+      <View
+        style={{
+          width: SCREEN_WIDTH - 38,
+          height: 250,
+        }}
+      >
+        <View className="items-center overflow-hidden gap-2 justify-center flex-1 bg-background-white rounded-2xl">
+          <View className="absolute bottom-0 right-0">
+            <Image
+              contentFit="contain"
+              className="size-56"
+              source={require("@/assets/images/funny-cat.png")}
+            />
+          </View>
+          <Text>Don&apos;t forget to add a reminder</Text>
+          <Button variant="secondary" onPress={() => router.push("/calendar")}>
+            Add reminder
+          </Button>
+        </View>
+      </View>
+    ),
+    []
+  );
+
   const keyExtractor = (item: IPet) => item.pet_id;
   if (isLoading) {
     return (
@@ -71,6 +101,7 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
       snapToAlignment="center"
       decelerationRate="fast"
       contentContainerClassName="gap-4"
+      ListEmptyComponent={listEmptyComponent}
       renderItem={renderItem}
       snapToInterval={SCREEN_WIDTH - 28}
       getItemLayout={getItemLayout}

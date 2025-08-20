@@ -53,9 +53,9 @@ export const OptionInputController = <T extends FieldValues>({
   }) => (
     <TouchableOpacity
       className={cn(
-        "flex-row gap-3 items-center py-3 px-5 border-b border-gray-200",
+        "flex-row gap-3 items-center py-3 px-5 border-b border-line-secondary",
         {
-          "bg-orange-200": item.value === defaultValue,
+          "bg-option-selected": item.value === defaultValue,
         }
       )}
       onPress={() => {
@@ -73,7 +73,7 @@ export const OptionInputController = <T extends FieldValues>({
   return (
     <View aria-invalid={!!error?.message} className="gap-1">
       <Text variant="caption1">{label}</Text>
-      <View className="pl-3 flex-row border border-gray-200 rounded-lg px-1 py-2 gap-2 items-center">
+      <View className="pl-3 flex-row border border-line-primary rounded-lg px-1 py-2 gap-2 items-center">
         <TextInput
           defaultValue={defaultValue}
           value={value}
@@ -87,13 +87,14 @@ export const OptionInputController = <T extends FieldValues>({
           {...props}
         />
       </View>
-      <Text className="text-red-500" variant="footnote">
+      <Text className="text-text-negative" variant="footnote">
         {error?.message}
       </Text>
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
         snapPoints={undefined}
+        titleElement={<Text className="font-medium">Select {label}</Text>}
         useScrollView
         stackBehavior="push"
       >

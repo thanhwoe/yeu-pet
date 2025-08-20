@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { ArrayElement } from "@/interfaces";
@@ -7,7 +8,6 @@ import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useMutation } from "@tanstack/react-query";
-import { Image } from "expo-image";
 import { ArrowRightIcon } from "phosphor-react-native";
 import React, { useRef, useState } from "react";
 import {
@@ -128,9 +128,7 @@ export default function WelcomeScreen() {
           <View className="bg-transparent" />
           <Image
             source={item.image}
-            cachePolicy="disk"
             contentFit="cover"
-            transition={300}
             style={{
               width: IMAGE_WIDTH,
               height: IMAGE_HEIGHT,

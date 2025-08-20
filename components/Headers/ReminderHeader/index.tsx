@@ -11,7 +11,7 @@ interface IProps {
 export const ReminderHeader = ({ onAddReminder }: IProps) => {
   return (
     <View className="flex-row items-center justify-between p-4">
-      <Text className="text-2xl font-bold">Reminders</Text>
+      <Text className="text-2xl font-bold">My Reminders</Text>
       <TouchableOpacity
         className="bg-white p-2 rounded-full"
         onPress={onAddReminder}

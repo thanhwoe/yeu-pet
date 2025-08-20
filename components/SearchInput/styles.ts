@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const searchStyles = cva(
-  "flex-row rounded-2xl justify-center items-center border border-gray-400",
+  "flex-row rounded-2xl justify-center items-center border border-line-secondary",
   {
     variants: {
       size: {
@@ -10,11 +10,11 @@ export const searchStyles = cva(
         lg: "px-2 py-1",
       },
       focus: {
-        true: "border-gray-500",
+        true: "border-line-primary",
         false: null,
       },
       typing: {
-        true: "border-gray-500",
+        true: "border-line-typing",
         false: null,
       },
       disabled: {

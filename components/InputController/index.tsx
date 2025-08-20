@@ -48,7 +48,7 @@ export const InputController = <T extends FieldValues>({
     <View aria-invalid={!!error?.message} className="gap-1">
       {label && <Text variant="caption1">{label}</Text>}
       <View
-        className={`flex-row px-3 justify-center border border-gray-200 rounded-lg gap-2 ${
+        className={`flex-row px-3 justify-center border border-line-primary rounded-lg gap-2 ${
           isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
         }`}
       >
@@ -81,7 +81,7 @@ export const InputController = <T extends FieldValues>({
           </TouchableOpacity>
         )}
       </View>
-      <Text className="text-red-500" variant="footnote">
+      <Text className="text-text-negative" variant="footnote">
         {error?.message}
       </Text>
     </View>
