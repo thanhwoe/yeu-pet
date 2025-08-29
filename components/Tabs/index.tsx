@@ -1,3 +1,4 @@
+import { cn } from "@/utils";
 import React, { ReactNode, useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -12,9 +13,10 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 
 interface IProps {
   tabs: { title: string; content: () => ReactNode; priority?: boolean }[];
+  className?: string;
 }
 
-export const Tabs = ({ tabs }: IProps) => {
+export const Tabs = ({ tabs, className }: IProps) => {
   const [activeTab, setActiveTab] = useState(0);
   const translateX = useSharedValue(0);
 
@@ -35,7 +37,7 @@ export const Tabs = ({ tabs }: IProps) => {
   });
 
   return (
-    <View className="flex-1 py-8">
+    <View className={cn("flex-1", className)}>
       {/* Tab Container */}
       <View className="bg-white rounded-3xl p-1 mb-4 ">
         {/* Animated Background */}

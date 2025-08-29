@@ -24,3 +24,12 @@ export const REMINDER_KEY = {
   details: () => [...REMINDER_KEY.all, "detail"] as const,
   detail: (id?: number) => [...REMINDER_KEY.details(), id] as const,
 };
+
+export const BUDGET_TRANSACTION_KEY = {
+  all: [{ scope: "budget-transaction" }] as const,
+  lists: () => [...BUDGET_TRANSACTION_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...BUDGET_TRANSACTION_KEY.lists(), { params }] as const,
+  details: () => [...BUDGET_TRANSACTION_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...BUDGET_TRANSACTION_KEY.details(), id] as const,
+};

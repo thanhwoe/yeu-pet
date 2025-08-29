@@ -24,4 +24,9 @@ export const API_ROUTES = {
   DELETE_REMINDER: (id: string) => `/reminder/${id}/delete`,
 
   UPLOAD_FILE: "/upload-file",
+
+  CREATE_BUDGET_TRANSACTION: "/budget/transaction/create",
+  UPDATE_BUDGET_TRANSACTION: "/budget/transaction/:id/update",
+  DELETE_BUDGET_TRANSACTION: "/budget/transaction/:id/delete",
+  LIST_BUDGET_TRANSACTION: "/budget/transaction",
 };

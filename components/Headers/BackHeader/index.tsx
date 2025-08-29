@@ -45,7 +45,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
           <HeaderTitle>{options.title ?? ""}</HeaderTitle>
         </View>
       ) : (
-        <Text className="flex-1 text-center" numberOfLines={1}>
+        <Text className="flex-1 text-center font-medium" numberOfLines={1}>
           {options.title ?? ""}
         </Text>
       )}
@@ -55,9 +55,8 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
             const { width } = event.nativeEvent.layout;
             setRightButtonWidth(width);
           }}
-          className="h-[27px]"
         >
-          <HeaderRight canGoBack={navigation.canGoBack()} />
+          <HeaderRight />
         </View>
       ) : (
         <View className="w-[27px]" />

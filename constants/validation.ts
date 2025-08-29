@@ -91,7 +91,24 @@ export const petInfoSchema = z.object({
     .nullable(),
 });
 
+export const budgetTransactionSchema = z.object({
+  content: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+  }),
+  amount: z.coerce.number<number>({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Amount"),
+  }),
+  type: z.enum(["grooming", "feed", "vaccination", "medication"], {
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Type"),
+  }),
+  date: z.date({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Date"),
+  }),
+});
+
 export type IPetInfoForm = z.infer<typeof petInfoSchema>;
+
+export type IBudgetTransactionForm = z.infer<typeof budgetTransactionSchema>;
 
 export type IReminderForm = z.infer<typeof reminderSchema>;
 

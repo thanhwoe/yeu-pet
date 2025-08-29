@@ -19,6 +19,13 @@ export default function Layout() {
           title: "List Spa",
         }}
       />
+      <Stack.Screen
+        name="budget"
+        options={{
+          header: BackHeader,
+          title: "Budget statistics",
+        }}
+      />
       <Stack.Screen name="(training)" options={{ headerShown: false }} />
     </Stack>
   );

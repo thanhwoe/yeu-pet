@@ -51,7 +51,7 @@ class APIHelper {
       async (error) => {
         if (
           error.response.status === 401 &&
-          error.response.data.path !== API_ROUTES.REFRESH_TOKEN
+          !error.response.data.path.includes(API_ROUTES.REFRESH_TOKEN)
         ) {
           // call api refresh token
           useUserInfoStore.getState().clearToken();
@@ -63,10 +63,9 @@ class APIHelper {
             token: data[0].token,
           });
         }
-        if (error.response.data.path === API_ROUTES.REFRESH_TOKEN) {
+        if (error.response.data.path.includes(API_ROUTES.REFRESH_TOKEN)) {
           // force logout
           useUserInfoStore.getState().logout();
-          this.post(API_ROUTES.LOGOUT);
         }
         throw error;
       }

@@ -46,7 +46,7 @@ export default function HomeScreen() {
     <ScreenContainer>
       <HomeHeader />
       <PetAvatarList onSelectPet={setSelectedPet} />
-      <Tabs tabs={tabs} />
+      <Tabs tabs={tabs} className="py-8" />
       <PetClinicList />
     </ScreenContainer>
   );

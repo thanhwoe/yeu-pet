@@ -37,11 +37,12 @@ export default function Screen() {
         />
         <ServiceCard
           title="Budget"
-          // Quản lý chi tiêu 
+          // Quản lý chi tiêu
           subTitle="Budget statistics"
           icon={CoinsIcon}
           iconColor="bg-yellow-10"
           decoratorColor="text-yellow-10"
+          onPress={() => router.push("/budget")}
         />
         <ServiceCard
           title="Photos"
