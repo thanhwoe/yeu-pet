@@ -26,7 +26,7 @@ export const API_ROUTES = {
   UPLOAD_FILE: "/upload-file",
 
   CREATE_BUDGET_TRANSACTION: "/budget/transaction/create",
-  UPDATE_BUDGET_TRANSACTION: "/budget/transaction/:id/update",
-  DELETE_BUDGET_TRANSACTION: "/budget/transaction/:id/delete",
+  UPDATE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/update`,
+  DELETE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/delete`,
   LIST_BUDGET_TRANSACTION: "/budget/transaction",
 };

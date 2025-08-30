@@ -200,6 +200,42 @@ export const colorPalette = {
   "--cyan-0": "#F6FEFF",
 };
 
+export const darkColorTheme = {
+  "--background-primary": "--orange-40",
+  "--background-secondary": "--orange-20",
+  "--background-screen": "--orange-5",
+  "--background-card": "--amber-40",
+  "--background-card-info": "--orange-0",
+  "--background-white": "--grey-0",
+  "--option-selected": "--orange-10",
+  "--tab-selected": "--orange-30",
+  "--background-positive": "--green-50",
+  "--background-negative": "--red-50",
+
+  "--text-link": "--amber-40",
+  "--text-primary-inverse": "--grey-0",
+  "--text-primary": "--grey-100",
+  "--text-secondary": "--grey-60",
+  "--text-warning": "--yellow-40",
+  "--text-positive": "--green-50",
+  "--text-negative": "--red-50",
+  "--text-tab-selected": "--orange-5",
+  "--text-upcoming-title": "--amber-50",
+  "--text-highlight": "--amber-50",
+  "--text-highlight-swarthy": "--amber-70",
+
+  "--line-primary": "--grey-50",
+  "--line-secondary": "--grey-30",
+  "--line-tertiary": "--amber-10",
+  "--line-inverse": "--amber-20",
+  "--line-selected": "--orange-40",
+  "--line-disabled": "--grey-40",
+  "--line-typing": "--amber-40",
+
+  "--icon-primary": "--orange-40",
+  "--icon-secondary": "--grey-50",
+};
+
 export const lightColorTheme = {
   "--background-primary": "--orange-40",
   "--background-secondary": "--orange-20",

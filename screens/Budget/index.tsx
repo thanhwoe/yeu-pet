@@ -11,7 +11,9 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IBudgetTransaction } from "@/interfaces";
 import {
   createBudgetTransactionMutation,
+  deleteBudgetTransactionMutation,
   getListBudgetTransactionQuery,
+  updateBudgetTransactionMutation,
 } from "@/services/budget-transaction";
 import { FlashList } from "@shopify/flash-list";
 import {
@@ -120,6 +122,26 @@ export function BudgetScreen() {
     },
   });
 
+    const { mutate: updateTransaction } = useMutation({
+    mutationFn: updateBudgetTransactionMutation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: BUDGET_TRANSACTION_KEY.lists(),
+      });
+      setOpenTransactionForm(false);
+      setSelectedTransaction(undefined);
+    },
+  });
+
+    const { mutate: deleteTransaction } = useMutation({
+    mutationFn: deleteBudgetTransactionMutation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: BUDGET_TRANSACTION_KEY.lists(),
+      });
+    },
+  });
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -149,7 +171,11 @@ export function BudgetScreen() {
   };
 
   const handleCreateTransaction = async (data: IBudgetTransactionForm) => {
-    // createTransaction(data);
+    if(selectedTransaction) {
+      updateTransaction({...data, id: selectedTransaction.id});
+    } else {
+      createTransaction(data);
+    }
   };
 
   const handleEditTransaction = (data: IBudgetTransaction) => {
@@ -166,7 +192,7 @@ export function BudgetScreen() {
         {
           text: "Remove",
           onPress: () => {
-            // deleteReminder(id);
+            deleteTransaction(data.id);
           },
           style: "destructive",
         },

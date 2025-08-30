@@ -29,3 +29,12 @@ export const getListBudgetTransactionQuery = ({
       paramsSerializer: parseQueryParams,
     }
   );
+
+export const updateBudgetTransactionMutation = ({
+  id,
+  ...params
+}: IBudgetTransactionForm & { id: string }) =>
+  APIs.patch<{ data: IBudgetTransaction }>(API_ROUTES.UPDATE_BUDGET_TRANSACTION(id), { data: params });
+
+export const deleteBudgetTransactionMutation = (id: string) =>
+  APIs.delete<{ data: IBudgetTransaction }>(API_ROUTES.DELETE_BUDGET_TRANSACTION(id));
