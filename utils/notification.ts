@@ -1,3 +1,4 @@
+import { IReminderResponse } from "@/interfaces";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -24,6 +25,7 @@ export async function registerForPushNotificationsAsync() {
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#FF231F7C",
+      sound: 'notification.wav'
     });
   }
 
@@ -63,16 +65,94 @@ export async function registerForPushNotificationsAsync() {
   }
 }
 
-export const schedulePushNotification = async () => {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here" },
-    },
-    trigger: {
-      seconds: 2,
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-    },
-  });
+export const schedulePushNotification = async (payload: IReminderResponse
+
+) => {
+
+  if (!Device.isDevice) {
+    return
+  };
+
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: payload.title,
+        body: payload.description,
+        sound: 'notification.wav',
+        subtitle: getReminderEmoji(payload.type)
+      },
+      trigger: {
+        date: new Date(payload.event_date),
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+      identifier: payload.id,
+    });
+
+  } catch (error) {
+    // TODO: show toast error
+  }
+
+};
+
+export const updateSchedulePushNotification = async (payload: IReminderResponse
+
+) => {
+
+  if (!Device.isDevice) {
+    return
+  };
+
+  try {
+    await Notifications.cancelScheduledNotificationAsync(payload.id);
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: payload.title,
+        body: payload.description,
+        sound: 'notification.wav',
+        subtitle: getReminderEmoji(payload.type),
+      },
+      trigger: {
+        date: new Date(payload.event_date),
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+      identifier: payload.id,
+    });
+
+  } catch (error) {
+    // TODO: show toast error 
+  }
+};
+
+
+export const cancelSchedulePushNotification = async (payload: IReminderResponse
+
+) => {
+
+  if (!Device.isDevice) {
+    return
+  };
+
+  try {
+    await Notifications.cancelScheduledNotificationAsync(payload.id);
+
+  } catch (error) {
+    // TODO: show toast error 
+  }
+};
+
+
+const getReminderEmoji = (category: string) => {
+  switch (category) {
+    case "medication":
+      return "💊";
+    case "vaccination":
+      return "💉";
+    case "feed":
+      return "🦴";
+    case "grooming":
+      return "✂️";
+    default:
+      return "🔔";
+  }
 };

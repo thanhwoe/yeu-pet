@@ -3,12 +3,11 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "start": "APP_VARIANT=development expo start",
     "lint": "expo lint",
-    "eas": "npx eas-cli@latest"
+    "eas": "npx eas-cli@latest",
+    "build:dev:android": "eas build --platform android --profile development",
+    "build:dev:ios": "eas build --platform ios --profile ios-simulator"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -47,6 +46,7 @@
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.10",
+    "expo-updates": "~0.28.17",
     "expo-web-browser": "~14.2.0",
     "immer": "^10.1.1",
     "libphonenumber-js": "^1.12.10",

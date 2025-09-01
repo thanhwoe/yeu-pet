@@ -3,6 +3,7 @@ import { ReminderHeader } from "@/components/Headers/ReminderHeader";
 import { ReminderForm } from "@/components/ReminderForm";
 import { Skeleton } from "@/components/Skeleton";
 import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Text } from "@/components/ui/Text";
 import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
 import { IReminderInfo } from "@/interfaces";
@@ -13,6 +14,7 @@ import {
   getListReminderQuery,
   updateReminderMutation,
 } from "@/services";
+import { cancelSchedulePushNotification, schedulePushNotification, updateSchedulePushNotification } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert, View } from "react-native";
@@ -34,30 +36,35 @@ export default function Screen() {
 
   const { mutate: createReminder } = useMutation({
     mutationFn: createReminderMutation,
-    onSuccess: () => {
+    onSuccess: (response) => {
+      schedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
       setOpenForm(false);
     },
-    onError: () => {},
+    onError: () => { },
   });
 
   const { mutate: updateReminder } = useMutation({
     mutationFn: updateReminderMutation,
-    onSuccess: () => {
+    onSuccess: (response) => {
+      updateSchedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
       setOpenForm(false);
       setSelectedItem(null);
     },
-    onError: () => {},
+    onError: () => { },
   });
 
   const { mutate: deleteReminder } = useMutation({
     mutationFn: deleteReminderMutation,
-    onSuccess: () => {
+    onSuccess: (response) => {
+      cancelSchedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
     },
-    onError: () => {},
+    onError: () => { },
   });
+
+
 
   const handleCreateReminder = async (data: IReminderForm) => {
     if (selectedItem) {
@@ -115,7 +122,12 @@ export default function Screen() {
           data={data?.data ?? []}
         />
       )}
-      <BottomSheet visible={openForm} onDismiss={handleCloseForm}>
+      <BottomSheet visible={openForm} onDismiss={handleCloseForm}
+        titleElement={<Text className="font-medium">
+          {selectedItem ? "Edit Reminder" : "Create Reminder"}
+        </Text>}
+
+      >
         <ReminderForm
           onSubmit={handleCreateReminder}
           {...(selectedItem && {

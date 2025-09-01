@@ -24,23 +24,23 @@ export const useLocation = () => {
     }
   };
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        if (!address) {
-          getCurrentCity();
-        }
-      }
-      appState.current = nextAppState;
-    });
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener("change", (nextAppState) => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === "active"
+  //     ) {
+  //       if (!address) {
+  //         getCurrentCity();
+  //       }
+  //     }
+  //     appState.current = nextAppState;
+  //   });
 
-    return () => {
-      subscription?.remove();
-    };
-  }, []);
+  //   return () => {
+  //     subscription?.remove();
+  //   };
+  // }, []);
 
   const getCurrentCity = async () => {
     setLoading(true);

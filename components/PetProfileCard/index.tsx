@@ -53,7 +53,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: updatePet } = useMutation({
     mutationFn: updatePetMutation,
-    onError: () => {},
+    onError: () => { },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
@@ -63,7 +63,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
-    onError: () => {},
+    onError: () => { },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
@@ -161,6 +161,9 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
       </View>
       <BottomSheet
         stackBehavior="push"
+        titleElement={<Text className="font-medium">
+          Update Pet Information
+        </Text>}
         visible={showForm}
         onDismiss={() => setShowForm(false)}
       >

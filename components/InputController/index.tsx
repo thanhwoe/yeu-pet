@@ -1,3 +1,4 @@
+import { cn } from "@/utils";
 import { EyeClosedIcon, EyeIcon } from "phosphor-react-native";
 import { useState } from "react";
 import {
@@ -48,18 +49,17 @@ export const InputController = <T extends FieldValues>({
     <View aria-invalid={!!error?.message} className="gap-1">
       {label && <Text variant="caption1">{label}</Text>}
       <View
-        className={`flex-row px-3 justify-center border border-line-primary rounded-lg gap-2 ${
-          isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
-        }`}
+        className={`flex-row px-3 justify-center border border-line-primary rounded-lg gap-2 ${isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
+          }`}
       >
         <TextInput
           value={value}
           onChangeText={format ? (t) => onChange(format(t)) : onChange}
           onEndEditing={() => onChange(value?.trim())}
           autoCapitalize="none"
-          className={`flex-1 ${
-            isTextArea ? "py-0 text-top min-h-[80px]" : "py-1"
-          }`}
+          className={cn('flex-1 placeholder:text-text-secondary selection:text-text-link py-1', {
+            "py-0 text-top min-h-[80px]": isTextArea
+          })}
           autoCorrect={false}
           onBlur={onBlur}
           secureTextEntry={isHide}

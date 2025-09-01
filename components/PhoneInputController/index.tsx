@@ -66,7 +66,7 @@ export const PhoneInputController = <T extends FieldValues>({
         <TextInput
           defaultValue={value}
           value={phoneNumber}
-          className="py-1 flex-1"
+          className="py-1 flex-1 placeholder:text-text-secondary selection:text-text-link"
           onChangeText={handleFormatPhoneNumber}
           inputMode="tel"
           onBlur={onBlur}

@@ -1,6 +1,6 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { themes } from "@/theme";
-import { date } from "@/utils";
+import { date, registerForPushNotificationsAsync } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -72,27 +72,27 @@ const InitialProvider = ({ children }: Children) => {
     Notifications.Notification | undefined
   >(undefined);
 
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync()
-  //     .then((token) => setExpoPushToken(token ?? ""))
-  //     .catch((error: any) => setExpoPushToken(`${error}`));
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then((token) => setExpoPushToken(token ?? ""))
+      .catch((error: any) => setExpoPushToken(`${error}`));
 
-  //   const notificationListener = Notifications.addNotificationReceivedListener(
-  //     (notification) => {
-  //       setNotification(notification);
-  //     }
-  //   );
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
 
-  //   const responseListener =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
-  //   return () => {
-  //     notificationListener.remove();
-  //     responseListener.remove();
-  //   };
-  // }, []);
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
+  }, []);
 
   if (!loaded) {
     // Async font loading only occurs in development.

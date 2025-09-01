@@ -1,11 +1,11 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { IReminderForm } from "@/constants/validation";
-import { IReminder } from "@/interfaces";
+import { IReminder, IReminderResponse } from "@/interfaces";
 import { parseQueryParams } from "@/utils";
 import { APIs } from "./api-helper";
 
 export const createReminderMutation = (params: IReminderForm) =>
-  APIs.post<{ data: any }>(API_ROUTES.CREATE_REMINDER, { data: params });
+  APIs.post<{ data: IReminderResponse }>(API_ROUTES.CREATE_REMINDER, { data: params });
 
 interface IReminderQuery {
   pet?: string;
@@ -22,7 +22,7 @@ export const updateReminderMutation = ({
   id,
   ...params
 }: IReminderForm & { id: string }) =>
-  APIs.patch<{ data: any }>(API_ROUTES.UPDATE_REMINDER(id), { data: params });
+  APIs.patch<{ data: IReminderResponse }>(API_ROUTES.UPDATE_REMINDER(id), { data: params });
 
 export const deleteReminderMutation = (id: string) =>
-  APIs.delete<{ data: any }>(API_ROUTES.DELETE_REMINDER(id));
+  APIs.delete<{ data: IReminderResponse }>(API_ROUTES.DELETE_REMINDER(id));
