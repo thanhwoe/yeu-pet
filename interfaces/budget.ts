@@ -8,3 +8,13 @@ export interface IBudgetTransaction {
   created_at: string;
   updated_at: string;
 }
+
+export interface IBudget {
+  id: string;
+  account_id: string;
+  monthly_budget: number;
+  spent_balance: number;
+  remaining_balance: number;
+  created_at: string;
+  updated_at: string;
+}

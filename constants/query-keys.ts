@@ -33,3 +33,19 @@ export const BUDGET_TRANSACTION_KEY = {
   details: () => [...BUDGET_TRANSACTION_KEY.all, "detail"] as const,
   detail: (id?: number) => [...BUDGET_TRANSACTION_KEY.details(), id] as const,
 };
+
+export const BUDGET_KEY = {
+  all: [{ scope: "budget" }] as const,
+  lists: () => [...BUDGET_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...BUDGET_KEY.lists(), { params }] as const,
+  details: () => [...BUDGET_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...BUDGET_KEY.details(), id] as const,
+};
+
+export const CHART_KEY = {
+  all: [{ scope: "chart" }] as const,
+  lists: () => [...CHART_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...CHART_KEY.lists(), { params }] as const,
+  details: () => [...CHART_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...CHART_KEY.details(), id] as const,
+};

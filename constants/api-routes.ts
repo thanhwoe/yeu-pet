@@ -29,4 +29,10 @@ export const API_ROUTES = {
   UPDATE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/update`,
   DELETE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/delete`,
   LIST_BUDGET_TRANSACTION: "/budget/transaction",
+
+  BUDGET: "/budget",
+  UPDATE_BUDGET: "/budget/update",
+
+  DAILY_SPENT_CHART: "/budget/daily-spent-chart",
+  MONTHLY_SPENT_CHART: "/budget/monthly-spent-chart",
 };

@@ -1,3 +1,4 @@
+import { IChartPoints } from "@/interfaces";
 import {
   DashPathEffect,
   LinearGradient,
@@ -5,9 +6,9 @@ import {
   vec,
 } from "@shopify/react-native-skia";
 import * as React from "react";
-import { useState } from "react";
 import { View } from "react-native";
 import { Area, CartesianChart, Line, useChartPressState } from "victory-native";
+import { Skeleton } from "../Skeleton";
 import { ActiveIndicator } from "./ActiveIndicator";
 import { Tooltip } from "./Tooltip";
 
@@ -19,18 +20,26 @@ const DATA = (numberPoints = 31) =>
     value: randomNumber(),
   }));
 
-export const LineChart = () => {
+interface LineChartProps {
+  data: IChartPoints;
+  isLoading?: boolean;
+}
+
+export const LineChart = ({ data, isLoading }: LineChartProps) => {
   const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
-  const [data] = useState(DATA());
   const { state, isActive } = useChartPressState({
-    x: 0,
+    x: "",
     y: { value: 0 },
   });
+
+  if (isLoading && !data) {
+    return <Skeleton className="h-[300px] w-full" />;
+  }
 
   return (
     <View style={{ height: 300 }}>
       <CartesianChart
-        xKey="day"
+        xKey="date"
         yKeys={["value"]}
         chartPressState={state}
         axisOptions={{
@@ -57,7 +66,7 @@ export const LineChart = () => {
           <>
             <Line
               points={points.value}
-              curveType="basis"
+              curveType="monotoneX"
               color={"#FF8000"}
               strokeWidth={1}
               animate={{ type: "timing", duration: 300 }}
@@ -66,7 +75,7 @@ export const LineChart = () => {
               points={points.value}
               y0={chartBounds.bottom}
               animate={{ type: "timing", duration: 300 }}
-              curveType="basis"
+              curveType="monotoneX"
             >
               <LinearGradient
                 start={vec(0, 0)}

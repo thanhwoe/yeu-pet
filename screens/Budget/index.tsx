@@ -5,36 +5,38 @@ import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
-import { BUDGET_TRANSACTION_KEY } from "@/constants/query-keys";
+import {
+  BUDGET_KEY,
+  BUDGET_TRANSACTION_KEY,
+  CHART_KEY,
+} from "@/constants/query-keys";
 import { IBudgetTransactionForm } from "@/constants/validation";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IBudgetTransaction } from "@/interfaces";
+import { getDailySpentChartQuery, getMonthlySpentChartQuery } from "@/services";
 import {
   createBudgetTransactionMutation,
   deleteBudgetTransactionMutation,
   getListBudgetTransactionQuery,
   updateBudgetTransactionMutation,
 } from "@/services/budget-transaction";
+import { date } from "@/utils";
 import { FlashList } from "@shopify/flash-list";
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useNavigation } from "expo-router";
 import { reduce } from "lodash";
-import {
-  ClipboardTextIcon,
-  PencilSimpleIcon,
-  PlusCircleIcon,
-} from "phosphor-react-native";
+import { PlusCircleIcon } from "phosphor-react-native";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native";
+import { BudgetSection } from "./BudgetSection";
 import { TransactionItem } from "./TransactionItem";
 
 const PlusIcon = withIconClassName(PlusCircleIcon);
-const EditIcon = withIconClassName(PencilSimpleIcon);
-const ClipboardIcon = withIconClassName(ClipboardTextIcon);
 
 const LIMIT = 5;
 
@@ -61,6 +63,18 @@ export function BudgetScreen() {
         return lastPage.metadata.nextPage;
       },
       select: (data) => data?.pages.flatMap((item) => item.data) || [],
+    });
+
+  const { data: dailySpentChartData, isLoading: isLoadingDailySpentChart } =
+    useQuery({
+      queryKey: CHART_KEY.list({ key: "dailySpent" }),
+      queryFn: getDailySpentChartQuery,
+    });
+
+  const { data: monthlySpentChartData, isLoading: isLoadingMonthlySpentChart } =
+    useQuery({
+      queryKey: CHART_KEY.list({ key: "monthlySpent" }),
+      queryFn: getMonthlySpentChartQuery,
     });
 
   const renderFooter = () => {
@@ -90,12 +104,12 @@ export function BudgetScreen() {
       reduce(
         data ?? [],
         (acc, txn) => {
-          const date = txn?.date.split("T")[0];
+          const currentDate = date(txn?.date).format("DD MMMM YYYY");
 
-          if (date !== acc.currentSectionDate) {
-            acc.sections.push(date);
+          if (currentDate !== acc.currentSectionDate) {
+            acc.sections.push(currentDate);
             acc.sectionIndices.push(acc.sections.length);
-            acc.currentSectionDate = date;
+            acc.currentSectionDate = currentDate;
           }
           if (txn) {
             acc.sections.push(txn);
@@ -118,27 +132,34 @@ export function BudgetScreen() {
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
+      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
       setOpenTransactionForm(false);
     },
   });
 
-    const { mutate: updateTransaction } = useMutation({
+  const { mutate: updateTransaction } = useMutation({
     mutationFn: updateBudgetTransactionMutation,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
+      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
+
       setOpenTransactionForm(false);
       setSelectedTransaction(undefined);
     },
   });
 
-    const { mutate: deleteTransaction } = useMutation({
+  const { mutate: deleteTransaction } = useMutation({
     mutationFn: deleteBudgetTransactionMutation,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
+      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
     },
   });
 
@@ -158,11 +179,21 @@ export function BudgetScreen() {
   const tabs = [
     {
       title: "Month",
-      content: () => <LineChart />,
+      content: () => (
+        <LineChart
+          data={dailySpentChartData?.data || []}
+          isLoading={isLoadingDailySpentChart}
+        />
+      ),
     },
     {
       title: "Year",
-      content: () => <BarChart />,
+      content: () => (
+        <BarChart
+          data={monthlySpentChartData?.data || []}
+          isLoading={isLoadingMonthlySpentChart}
+        />
+      ),
     },
   ];
 
@@ -171,8 +202,8 @@ export function BudgetScreen() {
   };
 
   const handleCreateTransaction = async (data: IBudgetTransactionForm) => {
-    if(selectedTransaction) {
-      updateTransaction({...data, id: selectedTransaction.id});
+    if (selectedTransaction) {
+      updateTransaction({ ...data, id: selectedTransaction.id });
     } else {
       createTransaction(data);
     }
@@ -203,33 +234,8 @@ export function BudgetScreen() {
   return (
     <ScreenContainer contentContainerClassName="pt-2 pb-safe-or-2">
       <View className="px-5">
-        <View className="bg-background-card-info p-4 rounded-2xl gap-4">
-          <View className="flex-row items-center gap-2">
-            <ClipboardIcon size={18} weight="bold" />
-            <Text className="font-bold">This month</Text>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="font-medium">Spent balance</Text>
-            <Text className="font-bold text-text-highlight-swarthy">$124</Text>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="font-medium">Remaining balance</Text>
-            <Text className="font-bold text-text-highlight-swarthy">$124</Text>
-          </View>
-          <View
-            className="h-[1px] bg-background-primary w-full"
-            style={{
-              height: 1,
-            }}
-          />
-          <View className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
-              <Text className="font-medium">Monthly budget</Text>
-              <EditIcon size={18} weight="bold" />
-            </View>
-            <Text className="font-bold text-text-highlight">$124</Text>
-          </View>
-        </View>
+        <BudgetSection />
+
         <Tabs tabs={tabs} className="mt-4" />
       </View>
       <FlashList

@@ -14,7 +14,7 @@ const AnimatedText = Animated.createAnimatedComponent(TextInput);
 
 interface IProps {
   pressState: ChartPressState<{
-    x: number;
+    x: string;
     y: {
       value: number;
     };
@@ -34,10 +34,10 @@ export const Tooltip = ({ isPressActive, pressState }: IProps) => {
     (matchedIndex, prevIndex) => {
       if (matchedIndex !== prevIndex) {
         setNativeProps(dateValueRef, {
-          text: `${pressState.x.value.value} December, 2025`,
+          text: `${new Date(pressState.x.value.value).toLocaleDateString()}`,
         });
         setNativeProps(valueRef, {
-          text: `120.000đ`,
+          text: `${pressState.y.value.value.value.toLocaleString()}`,
         });
       }
     }

@@ -1,4 +1,5 @@
 export * from "./budget";
+export * from "./chart";
 export * from "./clinic";
 export * from "./common";
 export * from "./file";

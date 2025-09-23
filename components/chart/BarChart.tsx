@@ -1,40 +1,43 @@
+import { IChartPoints } from "@/interfaces";
 import {
   DashPathEffect,
   LinearGradient,
   useFont,
   vec,
 } from "@shopify/react-native-skia";
-import React, { useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import { Bar, CartesianChart } from "victory-native";
+import { Skeleton } from "../Skeleton";
 
-const DATA = (length: number = 10) =>
-  Array.from({ length }, (_, index) => ({
-    month: index + 1,
-    listenCount: Math.floor(Math.random() * (100 - 50 + 1)) + 50,
-  }));
+interface BarChartProps {
+  data: IChartPoints;
+  isLoading?: boolean;
+}
 
-export const BarChart = () => {
+export const BarChart = ({ data, isLoading }: BarChartProps) => {
   const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
-  const [data] = useState(DATA(12));
+
+  if (isLoading && !data) {
+    return <Skeleton className="h-[300px] w-full" />;
+  }
 
   return (
     <View style={{ height: 300 }}>
       <CartesianChart
-        xKey="month"
-        yKeys={["listenCount"]}
+        xKey="date"
+        yKeys={["value"]}
         padding={{
           bottom: 10,
         }}
         domainPadding={{ left: 20, right: 20, top: 30 }}
-        domain={{ y: [0, 100] }}
         xAxis={{
           font,
           tickCount: 12,
           labelColor: "#71717a",
           lineWidth: 0,
           formatXLabel: (value) => {
-            const date = new Date(2023, value - 1);
+            const date = new Date(2023, Number(value) - 1);
             return date.toLocaleString("default", { month: "short" });
           },
         }}
@@ -52,7 +55,7 @@ export const BarChart = () => {
         {({ points, chartBounds }) => {
           return (
             <Bar
-              points={points.listenCount}
+              points={points.value}
               chartBounds={chartBounds}
               animate={{ type: "timing", duration: 300 }}
               innerPadding={0.33}
