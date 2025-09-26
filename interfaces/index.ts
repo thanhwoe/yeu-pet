@@ -5,5 +5,6 @@ export * from "./common";
 export * from "./file";
 export * from "./pagination";
 export * from "./pet";
+export * from "./photos";
 export * from "./reminder";
 export * from "./user";

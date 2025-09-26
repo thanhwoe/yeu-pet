@@ -1,6 +1,6 @@
 import * as Haptics from "expo-haptics";
 import { Tabs } from "expo-router";
-import React from "react";
+import { useEffect } from "react";
 import { GestureResponderEvent, Pressable, Text, View } from "react-native";
 import Animated, {
   runOnJS,
@@ -46,7 +46,7 @@ const AnimatedTabButton = ({
   const iconTranslateX = useSharedValue(focused ? -10 : 0);
   const backgroundOpacity = useSharedValue(focused ? 1 : 0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     scale.value = withSpring(focused ? 0 : 1, {
       damping: 20,
       stiffness: 200,
@@ -74,7 +74,15 @@ const AnimatedTabButton = ({
     backgroundOpacity.value = withTiming(focused ? 1 : 0, {
       duration: 200,
     });
-  }, [focused]);
+  }, [
+    backgroundOpacity,
+    containerWidth,
+    focused,
+    iconTranslateX,
+    labelOpacity,
+    labelWidth,
+    scale,
+  ]);
 
   const iconAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

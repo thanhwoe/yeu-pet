@@ -3,7 +3,7 @@ import { IPetInfoForm } from "@/constants/validation";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPet } from "@/interfaces";
 import { deletePetMutation, updatePetMutation } from "@/services";
-import { cn, date } from "@/utils";
+import { date } from "@/utils";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DotsThreeOutlineIcon } from "phosphor-react-native";
@@ -12,7 +12,7 @@ import { Alert, TouchableOpacity, View } from "react-native";
 import { PetInfoForm } from "../PetInfoForm";
 import { Avatar } from "../ui/Avatar";
 import { BottomSheet } from "../ui/BottomSheet";
-import { Spinner } from "../ui/Spinner";
+import { Button } from "../ui/Button";
 import { Text } from "../ui/Text";
 
 const DotsThree = withIconClassName(DotsThreeOutlineIcon);
@@ -53,7 +53,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: updatePet } = useMutation({
     mutationFn: updatePetMutation,
-    onError: () => { },
+    onError: () => {},
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
@@ -63,7 +63,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
-    onError: () => { },
+    onError: () => {},
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
@@ -161,9 +161,9 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
       </View>
       <BottomSheet
         stackBehavior="push"
-        titleElement={<Text className="font-medium">
-          Update Pet Information
-        </Text>}
+        titleElement={
+          <Text className="font-medium">Update Pet Information</Text>
+        }
         visible={showForm}
         onDismiss={() => setShowForm(false)}
       >
@@ -176,26 +176,22 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
         stackBehavior="push"
       >
         <View className="px-4 gap-3">
-          <TouchableOpacity
+          <Button
+            size="lg"
+            disabled={isDeleting}
             onPress={setShowForm.bind(this, true)}
-            className="px-4 py-4 items-center border border-line-secondary rounded-md"
           >
-            <Text className="font-medium">Update Information</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            Update Information
+          </Button>
+          <Button
+            size="lg"
+            variant="danger"
             onPress={handleDeletePet}
-            className={cn(
-              "px-4 py-4 flex-row items-center justify-center gap-2 border border-line-secondary rounded-md"
-            )}
+            loading={isDeleting}
           >
-            <Text className="text-text-negative font-medium">Remove Pet</Text>
-          </TouchableOpacity>
+            Remove Pet
+          </Button>
         </View>
-        {isDeleting && (
-          <View className="absolute inset-0 items-center justify-center bg-white opacity-50">
-            <Spinner />
-          </View>
-        )}
       </BottomSheet>
     </>
   );

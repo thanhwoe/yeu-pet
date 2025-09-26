@@ -49,3 +49,11 @@ export const CHART_KEY = {
   details: () => [...CHART_KEY.all, "detail"] as const,
   detail: (id?: number) => [...CHART_KEY.details(), id] as const,
 };
+
+export const PHOTOS_KEY = {
+  all: [{ scope: "photos" }] as const,
+  lists: () => [...PHOTOS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...PHOTOS_KEY.lists(), { params }] as const,
+  details: () => [...PHOTOS_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...PHOTOS_KEY.details(), id] as const,
+};

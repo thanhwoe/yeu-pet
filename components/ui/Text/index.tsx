@@ -25,6 +25,10 @@ const textVariants = cva("text-foreground", {
       tertiary: "text-muted-foreground/90",
       quarternary: "text-muted-foreground/50",
     },
+    disabled: {
+      true: "opacity-50",
+      false: "",
+    },
   },
   defaultVariants: {
     variant: "body",
@@ -36,12 +40,13 @@ function Text({
   className,
   variant,
   color,
+  disabled,
   ...props
 }: React.ComponentPropsWithoutRef<typeof RNText> &
   VariantProps<typeof textVariants>) {
   return (
     <RNText
-      className={cn(textVariants({ variant, color }), className)}
+      className={cn(textVariants({ variant, color, disabled }), className)}
       {...props}
     />
   );

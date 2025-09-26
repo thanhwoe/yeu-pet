@@ -35,4 +35,7 @@ export const API_ROUTES = {
 
   DAILY_SPENT_CHART: "/budget/daily-spent-chart",
   MONTHLY_SPENT_CHART: "/budget/monthly-spent-chart",
+
+  UPLOAD_PHOTO: "/photos/upload",
+  PHOTOS: "/photos",
 };

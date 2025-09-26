@@ -49,6 +49,7 @@ export default function Screen() {
           subTitle="Share photos"
           icon={ImagesIcon}
           iconColor="bg-pink-20"
+          onPress={() => router.push("/photos")}
           decoratorColor="text-pink-20"
         />
         <ServiceCard

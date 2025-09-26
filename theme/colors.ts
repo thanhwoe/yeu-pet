@@ -252,6 +252,7 @@ export const lightColorTheme = {
   "--text-primary-inverse": "--grey-0",
   "--text-primary": "--grey-100",
   "--text-secondary": "--grey-60",
+  "--text-secondary-inverse": "--grey-20",
   "--text-warning": "--yellow-40",
   "--text-positive": "--green-50",
   "--text-negative": "--red-50",
@@ -270,6 +271,7 @@ export const lightColorTheme = {
 
   "--icon-primary": "--orange-40",
   "--icon-secondary": "--grey-50",
+  "--icon-foreground": "--grey-0",
 };
 
 export const colors = {

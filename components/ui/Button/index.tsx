@@ -13,6 +13,7 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
       secondary: "border-line-inverse border",
       tonal: "bg-background-secondary",
       plain: "active:opacity-70",
+      danger: "border-line-inverse border",
     },
     size: {
       none: "",
@@ -21,6 +22,14 @@ const buttonVariants = cva("flex-row items-center justify-center gap-2", {
       lg: "py-2.5 px-5 ios:py-2 rounded-xl gap-2",
       CTA: "py-3 px-5 rounded-full gap-2",
       icon: "ios:rounded-lg h-10 w-10 rounded-full",
+    },
+    loading: {
+      true: "opacity-50",
+      false: "",
+    },
+    disabled: {
+      true: "opacity-50",
+      false: "",
     },
   },
   defaultVariants: {
@@ -36,6 +45,7 @@ const buttonTextVariants = cva("font-medium", {
       secondary: "text-text-link",
       tonal: "text-text-primary-inverse",
       plain: "text-foreground",
+      danger: "text-text-negative",
     },
     size: {
       none: "",
@@ -76,19 +86,20 @@ export const Button = ({
   size,
   style = BORDER_CURVE,
   children,
+  disabled,
   loading,
   ...props
 }: ButtonProps) => {
   return (
     <Pressable
       className={cn(
-        props.disabled && "opacity-50",
-        buttonVariants({ variant, size, className })
+        buttonVariants({ variant, size, className, loading, disabled })
       )}
       style={style}
+      disabled={disabled || loading}
       {...props}
     >
-      {loading && <Spinner size={20} color="white" />}
+      {loading && <Spinner size={20} className="text-icon-foreground" />}
       <Text className={buttonTextVariants({ variant, size })}>{children}</Text>
     </Pressable>
   );

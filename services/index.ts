@@ -3,5 +3,6 @@ export * from "./auth";
 export * from "./budget";
 export * from "./clinic";
 export * from "./pet";
+export * from "./photos";
 export * from "./reminder";
 export * from "./user";

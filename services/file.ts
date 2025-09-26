@@ -12,7 +12,7 @@ export const uploadFileMutation = (
     uri: asset.uri,
     type: asset.type,
     name: asset?.fileName || asset?.name,
-    size: asset.size,
+    size: asset.fileSize || asset.size,
   };
   const formData = new FormData();
   formData.append("file", file as any);
