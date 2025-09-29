@@ -55,5 +55,5 @@ export const PHOTOS_KEY = {
   lists: () => [...PHOTOS_KEY.all, "list"] as const,
   list: (params?: IQueryParams) => [...PHOTOS_KEY.lists(), { params }] as const,
   details: () => [...PHOTOS_KEY.all, "detail"] as const,
-  detail: (id?: number) => [...PHOTOS_KEY.details(), id] as const,
+  detail: (id?: number | string) => [...PHOTOS_KEY.details(), id] as const,
 };

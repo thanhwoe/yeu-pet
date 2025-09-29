@@ -1,21 +1,21 @@
 import { PHOTOS_KEY } from "@/constants/query-keys";
-import { getListSocialPhotosQuery } from "@/services";
+import { getListUserPhotosQuery } from "@/services";
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { EmptyPhotos } from "../EmptyPhotos";
 import { PhotoItem } from "../PhotoItem";
 import { ITEM_WIDTH, LIMIT } from "../util";
 
-export const SocialPhotos = () => {
+export const UserPhotos = () => {
   const {
     data = [],
-    hasNextPage,
     isLoading,
+    hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    queryKey: PHOTOS_KEY.list({ limit: LIMIT, key: "social" }),
+    queryKey: PHOTOS_KEY.list({ limit: LIMIT, key: "user" }),
     queryFn: ({ pageParam }) =>
-      getListSocialPhotosQuery({
+      getListUserPhotosQuery({
         limit: LIMIT,
         page: pageParam,
       }),
@@ -31,11 +31,12 @@ export const SocialPhotos = () => {
   return (
     <FlashList
       data={data}
-      extraData={data}
       numColumns={3}
-      renderItem={({ item, index }) => <PhotoItem data={item} index={index} />}
-      ListEmptyComponent={<EmptyPhotos isLoading={isLoading} />}
+      renderItem={({ item, index }) => (
+        <PhotoItem data={item} index={index} deleteAble />
+      )}
       estimatedItemSize={ITEM_WIDTH}
+      ListEmptyComponent={<EmptyPhotos isLoading={isLoading} />}
       showsVerticalScrollIndicator={false}
       onEndReached={hasNextPage ? fetchNextPage : undefined}
     />

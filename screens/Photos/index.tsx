@@ -3,6 +3,7 @@ import { useTakePhoto } from "@/hooks/useTakePhoto";
 import { TouchableOpacity, View } from "react-native";
 import { SocialPhotos } from "./SocialPhotos";
 import { TakePhotoSheet } from "./TakePhotoSheet";
+import { UserPhotos } from "./UserPhotos";
 
 export const PhotosScreen = () => {
   const { handleTakePhoto, image, clearImage } = useTakePhoto();
@@ -14,7 +15,7 @@ export const PhotosScreen = () => {
     },
     {
       title: "My Photos",
-      content: () => <></>,
+      content: () => <UserPhotos />,
     },
   ];
 

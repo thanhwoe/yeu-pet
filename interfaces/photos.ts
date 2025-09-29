@@ -14,4 +14,5 @@ export interface IPhoto {
     avatar_url: string | null;
     first_name: string;
   };
+  liked?: boolean;
 }
