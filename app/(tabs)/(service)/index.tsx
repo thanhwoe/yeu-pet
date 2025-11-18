@@ -76,8 +76,9 @@ export default function Screen() {
         />
         <ServiceCard
           title="Doctor AI"
-          subTitle="(Experiment)"
+          subTitle="Tư vấn sức khỏe"
           icon={ChatsIcon}
+          onPress={() => router.push("/doctor-ai")}
           iconColor="bg-lilac-15"
           decoratorColor="text-lilac-15"
         />

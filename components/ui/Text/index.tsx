@@ -21,7 +21,7 @@ const textVariants = cva("text-foreground", {
     },
     color: {
       primary: "text-text-primary",
-      secondary: "text-secondary-foreground/90",
+      secondary: "text-text-secondary",
       tertiary: "text-muted-foreground/90",
       quarternary: "text-muted-foreground/50",
     },

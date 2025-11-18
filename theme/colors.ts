@@ -206,6 +206,7 @@ export const darkColorTheme = {
   "--background-screen": "--orange-5",
   "--background-card": "--amber-40",
   "--background-card-info": "--orange-0",
+  // TODO: background-light
   "--background-white": "--grey-0",
   "--option-selected": "--orange-10",
   "--tab-selected": "--orange-30",
@@ -247,6 +248,8 @@ export const lightColorTheme = {
   "--tab-selected": "--orange-30",
   "--background-positive": "--green-50",
   "--background-negative": "--red-50",
+  "--background-chat-right": "--orange-15",
+  "--background-chat-left": "--orange-10",
 
   "--text-link": "--amber-40",
   "--text-primary-inverse": "--grey-0",

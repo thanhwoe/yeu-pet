@@ -50,6 +50,7 @@ export const TimelineList = ({ pet }: IProps) => {
         className="gap-4"
         style={{
           width: SCREEN_WIDTH - 40,
+          height: 250,
         }}
       >
         <Text className="text-text-upcoming-title text-center">

@@ -69,6 +69,13 @@ export default function RootLayout() {
               title: "Share photos",
             }}
           />
+          <Stack.Screen
+            name="doctor-ai"
+            options={{
+              header: BackHeader,
+              title: "Doctor AI",
+            }}
+          />
           <Stack.Screen name="(training)" options={{ headerShown: false }} />
         </Stack.Protected>
 

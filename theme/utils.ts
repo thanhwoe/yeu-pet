@@ -66,7 +66,7 @@ export function getColors(data: ThemeObject): ThemeObject {
 }
 
 export function generateColorKeys(colorPalette: any) {
-  const result = {};
+  const result: Record<string, any> = {};
 
   Object.keys(colorPalette).forEach((key) => {
     // Remove the "--" prefix and split by "-"
