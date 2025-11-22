@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
@@ -12,6 +13,9 @@ export default function TabTwoScreen() {
     mutationFn: signOutMutation,
     onSuccess: () => {
       logout();
+    },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
     },
   });
   const handleLogout = () => {

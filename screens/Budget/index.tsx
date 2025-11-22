@@ -1,6 +1,7 @@
 import { BudgetTransactionForm } from "@/components/BudgetTransactionForm";
 import { BarChart, LineChart } from "@/components/chart";
 import { Tabs } from "@/components/Tabs";
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -129,6 +130,7 @@ export function BudgetScreen() {
   const { mutate: createTransaction } = useMutation({
     mutationFn: createBudgetTransactionMutation,
     onSuccess: () => {
+      Toast.success({ text: "Create transaction successfully" });
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
@@ -136,11 +138,15 @@ export function BudgetScreen() {
       queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
       setOpenTransactionForm(false);
     },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
 
   const { mutate: updateTransaction } = useMutation({
     mutationFn: updateBudgetTransactionMutation,
     onSuccess: () => {
+      Toast.success({ text: "Update transaction successfully" });
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
@@ -150,16 +156,23 @@ export function BudgetScreen() {
       setOpenTransactionForm(false);
       setSelectedTransaction(undefined);
     },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
 
   const { mutate: deleteTransaction } = useMutation({
     mutationFn: deleteBudgetTransactionMutation,
     onSuccess: () => {
+      Toast.success({ text: "Delete transaction successfully" });
       queryClient.invalidateQueries({
         queryKey: BUDGET_TRANSACTION_KEY.lists(),
       });
       queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
       queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
+    },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
     },
   });
 

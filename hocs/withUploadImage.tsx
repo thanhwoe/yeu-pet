@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Spinner } from "@/components/ui/Spinner";
 import { Text } from "@/components/ui/Text";
@@ -32,8 +33,8 @@ export const withUploadImage =
 
     const { mutateAsync, isPending } = useMutation({
       mutationFn: uploadFileMutation,
-      onError(error) {
-        console.log({ error });
+      onError(e) {
+        Toast.error({ text: e.message, title: e.name });
       },
     });
 

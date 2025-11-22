@@ -4,6 +4,7 @@ import "react-native-reanimated";
 
 import { BackHeader } from "@/components/Headers/BackHeader";
 import { Providers } from "@/components/Providers";
+import { Toast } from "@/components/Toast";
 import { useUserInfoStore } from "@/stores/user-info";
 import "../global.css";
 
@@ -16,6 +17,7 @@ export default function RootLayout() {
   return (
     <Providers>
       <RootNavigation />
+      <Toast />
     </Providers>
   );
 }

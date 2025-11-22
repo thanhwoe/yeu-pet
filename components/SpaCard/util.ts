@@ -1,8 +1,9 @@
 import { Alert, Linking } from "react-native";
+import { Toast } from "../Toast";
 
 export const makePhoneCall = (phoneNumber?: string) => {
   if (!phoneNumber) {
-    // TODO: show error
+    Toast.error({ text: "No phone number provided" });
     return;
   }
   const phoneUrl = `tel:${phoneNumber}`;
@@ -22,7 +23,7 @@ export const makePhoneCall = (phoneNumber?: string) => {
 
 export const sendSMS = (phoneNumber?: string) => {
   if (!phoneNumber) {
-    // TODO: show error
+    Toast.error({ text: "No phone number provided" });
     return;
   }
   let smsUrl = `sms:${phoneNumber}`;

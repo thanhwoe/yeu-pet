@@ -10,6 +10,7 @@ import { DotsThreeOutlineIcon } from "phosphor-react-native";
 import { useState } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import { PetInfoForm } from "../PetInfoForm";
+import { Toast } from "../Toast";
 import { Avatar } from "../ui/Avatar";
 import { BottomSheet } from "../ui/BottomSheet";
 import { Button } from "../ui/Button";
@@ -53,8 +54,11 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: updatePet } = useMutation({
     mutationFn: updatePetMutation,
-    onError: () => {},
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
     onSuccess: (res) => {
+      Toast.success({ text: "Update pet information successfully" });
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
       setShowForm(false);
@@ -63,8 +67,11 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
 
   const { mutate: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
-    onError: () => {},
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
     onSuccess: (res) => {
+      Toast.success({ text: "Delete pet successfully" });
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowMenu(false);
       setShowForm(false);

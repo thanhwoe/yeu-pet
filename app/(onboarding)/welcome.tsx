@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
@@ -54,10 +55,11 @@ export default function WelcomeScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: completeOnboardingMutation,
     onSuccess: (res) => {
+      Toast.success({ text: "Onboarding successfully" });
       updateUserInfo(res.data);
     },
     onError: (e) => {
-      console.log({ e });
+      Toast.error({ text: e.message, title: e.name });
     },
   });
 

@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Image } from "@/components/ui/Image";
 import { RadioCheckbox } from "@/components/ui/RadioCheckbox";
@@ -23,11 +24,12 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
     onSuccess(data) {
+      Toast.success({ text: "Upload photo successfully" });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss();
     },
-    onError(error) {
-      console.log({ error });
+    onError(e) {
+      Toast.error({ text: e.message, title: e.name });
     },
   });
 

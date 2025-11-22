@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Text } from "@/components/ui/Text";
 import { BUDGET_KEY } from "@/constants/query-keys";
@@ -26,10 +27,13 @@ export const BudgetSection = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateBudgetMutation,
     onSuccess: () => {
+      Toast.success({ text: "Update budget successfully" });
       queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
       setShowBottomSheet(false);
     },
-    onError: () => {},
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
 
   const { monthly_budget, remaining_balance, spent_balance } = data?.data || {};

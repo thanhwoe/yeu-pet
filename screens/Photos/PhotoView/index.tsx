@@ -1,4 +1,5 @@
 import { LikeButton } from "@/components/LikeButton";
+import { Toast } from "@/components/Toast";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { PHOTOS_KEY } from "@/constants/query-keys";
@@ -33,19 +34,20 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.detail(data.id) });
     },
-    onError(error) {
-      console.log({ error });
+    onError(e) {
+      Toast.error({ text: e.message, title: e.name });
     },
   });
 
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoMutation,
     onSuccess() {
+      Toast.success({ text: "Delete photo successfully" });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss?.();
     },
-    onError(error) {
-      console.log({ error });
+    onError(e) {
+      Toast.error({ text: e.message, title: e.name });
     },
   });
 

@@ -271,6 +271,7 @@ export const lightColorTheme = {
   "--line-selected": "--orange-40",
   "--line-disabled": "--grey-40",
   "--line-typing": "--amber-40",
+  "--line-primary-foreground": "--grey-0",
 
   "--icon-primary": "--orange-40",
   "--icon-secondary": "--grey-50",

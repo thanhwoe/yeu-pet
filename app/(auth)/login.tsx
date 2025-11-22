@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/SignInForm";
+import { Toast } from "@/components/Toast";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { ISignInForm } from "@/constants/validation";
@@ -14,10 +15,11 @@ export default function LoginScreen() {
   const { mutate } = useMutation({
     mutationFn: signInMutation,
     onSuccess: (res) => {
+      Toast.success({ text: "Sign in successfully" });
       updateUserInfo(res.data);
     },
     onError: (e) => {
-      console.log({ e });
+      Toast.error({ text: e.message, title: e.name });
     },
   });
   const handleLogin = async (data: ISignInForm) => {

@@ -2,6 +2,7 @@ import { Calendar } from "@/components/Calendar";
 import { ReminderHeader } from "@/components/Headers/ReminderHeader";
 import { ReminderForm } from "@/components/ReminderForm";
 import { Skeleton } from "@/components/Skeleton";
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Text } from "@/components/ui/Text";
 import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
@@ -14,7 +15,11 @@ import {
   getListReminderQuery,
   updateReminderMutation,
 } from "@/services";
-import { cancelSchedulePushNotification, schedulePushNotification, updateSchedulePushNotification } from "@/utils";
+import {
+  cancelSchedulePushNotification,
+  schedulePushNotification,
+  updateSchedulePushNotification,
+} from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Alert, View } from "react-native";
@@ -37,34 +42,41 @@ export default function Screen() {
   const { mutate: createReminder } = useMutation({
     mutationFn: createReminderMutation,
     onSuccess: (response) => {
+      Toast.success({ text: "Create reminder successfully" });
       schedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
       setOpenForm(false);
     },
-    onError: () => { },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
 
   const { mutate: updateReminder } = useMutation({
     mutationFn: updateReminderMutation,
     onSuccess: (response) => {
+      Toast.success({ text: "Update reminder successfully" });
       updateSchedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
       setOpenForm(false);
       setSelectedItem(null);
     },
-    onError: () => { },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
 
   const { mutate: deleteReminder } = useMutation({
     mutationFn: deleteReminderMutation,
     onSuccess: (response) => {
+      Toast.success({ text: "Delete reminder successfully" });
       cancelSchedulePushNotification(response.data);
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
     },
-    onError: () => { },
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
-
-
 
   const handleCreateReminder = async (data: IReminderForm) => {
     if (selectedItem) {
@@ -98,7 +110,7 @@ export default function Screen() {
     if (petData?.data.length) {
       setOpenForm(true);
     } else {
-      // TODO: show toast
+      Toast.warn({ text: "Please add pet first" });
     }
   };
 
@@ -122,11 +134,14 @@ export default function Screen() {
           data={data?.data ?? []}
         />
       )}
-      <BottomSheet visible={openForm} onDismiss={handleCloseForm}
-        titleElement={<Text className="font-medium">
-          {selectedItem ? "Edit Reminder" : "Create Reminder"}
-        </Text>}
-
+      <BottomSheet
+        visible={openForm}
+        onDismiss={handleCloseForm}
+        titleElement={
+          <Text className="font-medium">
+            {selectedItem ? "Edit Reminder" : "Create Reminder"}
+          </Text>
+        }
       >
         <ReminderForm
           onSubmit={handleCreateReminder}

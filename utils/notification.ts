@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { IReminderResponse } from "@/interfaces";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
@@ -85,7 +86,8 @@ export const schedulePushNotification = async (payload: IReminderResponse) => {
       identifier: payload.id,
     });
   } catch (error) {
-    // TODO: show toast error
+    // TODO: log sentry
+    Toast.error({ text: "Error scheduling notification" });
   }
 };
 
@@ -113,7 +115,8 @@ export const updateSchedulePushNotification = async (
       identifier: payload.id,
     });
   } catch (error) {
-    // TODO: show toast error
+    // TODO: log sentry
+    Toast.error({ text: "Error updating notification" });
   }
 };
 
@@ -127,7 +130,8 @@ export const cancelSchedulePushNotification = async (
   try {
     await Notifications.cancelScheduledNotificationAsync(payload.id);
   } catch (error) {
-    // TODO: show toast error
+    // TODO: log sentry
+    Toast.error({ text: "Error canceling notification" });
   }
 };
 

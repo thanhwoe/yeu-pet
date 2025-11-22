@@ -1,4 +1,5 @@
 import { SignUpForm } from "@/components/SignUpForm";
+import { Toast } from "@/components/Toast";
 import { Text } from "@/components/ui/Text";
 import { ISignUpForm } from "@/constants/validation";
 import { signUpMutation } from "@/services";
@@ -14,9 +15,12 @@ export default function RegisterScreen() {
   const { mutate } = useMutation({
     mutationFn: signUpMutation,
     onSuccess: (res) => {
+      Toast.success({ text: "Sign up successfully" });
       updateUserInfo(res.data);
     },
-    onError: () => {},
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
   });
   const handleLogin = async (data: ISignUpForm) => {
     mutate(data);

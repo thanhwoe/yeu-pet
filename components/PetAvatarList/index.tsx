@@ -9,6 +9,7 @@ import { useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { PetInfoForm } from "../PetInfoForm";
 import { Skeleton } from "../Skeleton";
+import { Toast } from "../Toast";
 import { Avatar } from "../ui/Avatar";
 import { BottomSheet } from "../ui/BottomSheet";
 import { Text } from "../ui/Text";
@@ -39,8 +40,11 @@ export const PetAvatarList = ({ onSelectPet }: IProps) => {
 
   const { mutate: createPet } = useMutation({
     mutationFn: createPetMutation,
-    onError: () => {},
+    onError: (e) => {
+      Toast.error({ text: e.message, title: e.name });
+    },
     onSuccess: (res) => {
+      Toast.success({ text: "Add pet successfully" });
       queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
       setShowForm(false);
     },

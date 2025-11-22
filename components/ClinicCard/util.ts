@@ -1,6 +1,7 @@
 import { IClinic } from "@/interfaces";
 import { date } from "@/utils";
 import { Alert, Linking } from "react-native";
+import { Toast } from "../Toast";
 
 export const checkIsOpening = (data: IClinic) => {
   if (data.is_fulltime) {
@@ -15,7 +16,7 @@ export const checkIsOpening = (data: IClinic) => {
 
 export const makePhoneCall = (phoneNumber?: string) => {
   if (!phoneNumber) {
-    // TODO: show error
+    Toast.error({ text: "No phone number provided" });
     return;
   }
   const phoneUrl = `tel:${phoneNumber}`;
@@ -35,7 +36,7 @@ export const makePhoneCall = (phoneNumber?: string) => {
 
 export const sendSMS = (phoneNumber?: string) => {
   if (!phoneNumber) {
-    // TODO: show error
+    Toast.error({ text: "No phone number provided" });
     return;
   }
   let smsUrl = `sms:${phoneNumber}`;
