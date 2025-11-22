@@ -1,9 +1,9 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
 import { date, registerForPushNotificationsAsync } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useFonts } from "expo-font";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AppLoader } from "../AppLoader";
 
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
@@ -48,10 +49,7 @@ export const combineProviders = (
   ).reduceRight((acc, Provider) => <Provider>{acc}</Provider>, <>{children}</>);
 
 const InitialProvider = ({ children }: Children) => {
-  const [loaded] = useFonts({
-    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
+  const isInitialized = useInitialize();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
 
   useEffect(() => {
@@ -94,9 +92,8 @@ const InitialProvider = ({ children }: Children) => {
     };
   }, []);
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+  if (!isInitialized) {
+    return <AppLoader />;
   }
   return (
     <>
