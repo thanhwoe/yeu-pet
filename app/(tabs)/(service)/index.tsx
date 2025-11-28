@@ -17,7 +17,7 @@ export default function Screen() {
   const router = useRouter();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer scrollEnabled>
       <View className="flex-row gap-4 pt-8 flex-wrap">
         <ServiceCard
           title="Clinic"

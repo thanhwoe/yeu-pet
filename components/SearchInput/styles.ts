@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const searchStyles = cva(
-  "flex-row rounded-2xl justify-center items-center border border-line-secondary",
+  "h-12 flex-row rounded-2xl justify-center items-center bg-white",
   {
     variants: {
       size: {
@@ -33,7 +33,7 @@ export const searchStyles = cva(
 );
 
 export const inputStyles = cva(
-  "font-normal text-[18px] flex-1 selection:text-gray-500",
+  "font-normal text-[18px] flex-1 placeholder:text-text-secondary selection:text-text-link",
   {
     variants: {
       size: {

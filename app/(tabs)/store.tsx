@@ -1,10 +1,3 @@
-import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { Text } from "@/components/ui/Text";
+import { StoreScreen } from "@/screens/Store";
 
-export default function TabTwoScreen() {
-  return (
-    <ScreenContainer>
-      <Text>Store</Text>
-    </ScreenContainer>
-  );
-}
+export default StoreScreen;

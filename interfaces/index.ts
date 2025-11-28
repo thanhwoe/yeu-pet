@@ -7,5 +7,6 @@ export * from "./file";
 export * from "./pagination";
 export * from "./pet";
 export * from "./photos";
+export * from "./products";
 export * from "./reminder";
 export * from "./user";

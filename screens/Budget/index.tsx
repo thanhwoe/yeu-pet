@@ -245,10 +245,12 @@ export function BudgetScreen() {
   };
 
   return (
-    <ScreenContainer contentContainerClassName="pt-2 pb-safe-or-2">
-      <View className="px-5">
+    <ScreenContainer
+      scrollEnabled
+      contentContainerClassName="!pt-2 pb-safe-or-2"
+    >
+      <View>
         <BudgetSection />
-
         <Tabs tabs={tabs} className="mt-4" />
       </View>
       <FlashList

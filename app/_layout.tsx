@@ -3,6 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 
 import { BackHeader } from "@/components/Headers/BackHeader";
+import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
 import { Providers } from "@/components/Providers";
 import { Toast } from "@/components/Toast";
 import { useUserInfoStore } from "@/stores/user-info";
@@ -88,6 +89,12 @@ const RootNavigation = () => {
           options={{
             header: BackHeader,
             title: "Doctor AI",
+          }}
+        />
+        <Stack.Screen
+          name="products/[productId]"
+          options={{
+            header: ProductDetailHeader,
           }}
         />
         <Stack.Screen name="(training)" options={{ headerShown: false }} />

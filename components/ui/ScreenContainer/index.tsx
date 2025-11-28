@@ -1,20 +1,36 @@
 import { cn } from "@/utils";
-import { ScrollView, ScrollViewProps } from "react-native";
+import { ScrollView, ScrollViewProps, View, ViewProps } from "react-native";
+
+interface IScreenContainerProps extends ScrollViewProps, ViewProps {}
 
 export const ScreenContainer = ({
   children,
+  contentContainerClassName,
+  className,
+  scrollEnabled,
   ...props
-}: {
-  children: React.ReactNode;
-} & ScrollViewProps) => {
+}: IScreenContainerProps) => {
+  if (scrollEnabled) {
+    return (
+      <ScrollView
+        className={cn("flex-1 bg-background-screen", className)}
+        contentContainerClassName={cn(
+          "pt-safe-or-4 px-5",
+          contentContainerClassName
+        )}
+        showsVerticalScrollIndicator={false}
+        {...props}
+      >
+        {children}
+      </ScrollView>
+    );
+  }
   return (
-    <ScrollView
-      className="flex-1 bg-background-screen"
-      contentContainerClassName={cn("pt-safe-or-4 px-5 pb-safe-or-2")}
-      showsVerticalScrollIndicator={false}
+    <View
+      className={cn("flex-1 px-5 bg-background-screen pt-safe-or-4", className)}
       {...props}
     >
       {children}
-    </ScrollView>
+    </View>
   );
 };

@@ -42,4 +42,7 @@ export const API_ROUTES = {
   TOGGLE_LIKE_PHOTO: (id: string) => `/photos/${id}/like`,
   DELETE_PHOTO: (id: string) => `/photos/${id}/delete`,
   PHOTO_STATS: (id: string) => `/photos/${id}/stats`,
+
+  LIST_PRODUCTS: "/products",
+  PRODUCT_DETAIL: (id: string) => `/products/${id}`,
 };

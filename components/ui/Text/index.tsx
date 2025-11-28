@@ -17,7 +17,7 @@ const textVariants = cva("text-foreground", {
       subhead: "text-[15px] leading-6",
       footnote: "text-[13px] leading-5",
       caption1: "text-xs",
-      caption2: "text-[11px] leading-4",
+      caption2: "text-[10px] leading-3",
     },
     color: {
       primary: "text-text-primary",

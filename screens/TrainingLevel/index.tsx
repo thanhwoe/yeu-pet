@@ -19,7 +19,7 @@ export const TrainingLevelScreen = () => {
   const { level } = useLocalSearchParams();
   const trainingData = mockTrainingData.find((i) => i.level === Number(level));
   return (
-    <ScreenContainer contentContainerClassName="pt-2 px-5 pb-safe-or-2">
+    <ScreenContainer scrollEnabled contentContainerClassName="!pt-2">
       <View className="gap-2">
         {trainingData?.exercises.map((item) => (
           <TouchableOpacity

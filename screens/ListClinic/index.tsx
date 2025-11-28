@@ -1,6 +1,7 @@
 import { ClinicCard } from "@/components/ClinicCard";
 import { SearchInput } from "@/components/SearchInput";
 import { BottomSheet } from "@/components/ui/BottomSheet";
+import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
 import { LIST_CITY } from "@/constants/cities";
 import { CLINIC_KEY } from "@/constants/query-keys";
@@ -12,7 +13,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CaretDownIcon } from "phosphor-react-native";
 import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
 
@@ -42,7 +43,7 @@ export function ListClinicScreen() {
   });
 
   return (
-    <View className="flex-1 bg-background-screen px-5 pt-2">
+    <ScreenContainer className="!pt-0">
       <SearchInput
         onChange={setSearchKey}
         placeholder="Enter clinic name"
@@ -104,6 +105,6 @@ export function ListClinicScreen() {
           </TouchableOpacity>
         ))}
       </BottomSheet>
-    </View>
+    </ScreenContainer>
   );
 }

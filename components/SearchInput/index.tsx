@@ -88,7 +88,11 @@ export const SearchInput = memo<IProps>(
         )}
       >
         <View className="p-3">
-          <MagnifyingGlass size={18} weight="bold" />
+          <MagnifyingGlass
+            size={18}
+            weight="bold"
+            className="text-icon-secondary"
+          />
         </View>
         <TextInput
           className={cn(inputStyles({ size }))}

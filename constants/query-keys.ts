@@ -57,3 +57,12 @@ export const PHOTOS_KEY = {
   details: () => [...PHOTOS_KEY.all, "detail"] as const,
   detail: (id?: number | string) => [...PHOTOS_KEY.details(), id] as const,
 };
+
+export const PRODUCTS_KEY = {
+  all: [{ scope: "products" }] as const,
+  lists: () => [...PRODUCTS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...PRODUCTS_KEY.lists(), { params }] as const,
+  details: () => [...PRODUCTS_KEY.all, "detail"] as const,
+  detail: (id?: number | string) => [...PRODUCTS_KEY.details(), id] as const,
+};

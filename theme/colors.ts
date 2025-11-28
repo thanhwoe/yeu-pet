@@ -235,6 +235,7 @@ export const darkColorTheme = {
 
   "--icon-primary": "--orange-40",
   "--icon-secondary": "--grey-50",
+  "--icon-tertiary": "--orange-60",
 };
 
 export const lightColorTheme = {
@@ -275,7 +276,9 @@ export const lightColorTheme = {
 
   "--icon-primary": "--orange-40",
   "--icon-secondary": "--grey-50",
+  "--icon-tertiary": "--grey-60",
   "--icon-foreground": "--grey-0",
+  "--icon-highlight": "--amber-50",
 };
 
 export const colors = {
