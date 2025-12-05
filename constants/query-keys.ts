@@ -66,3 +66,11 @@ export const PRODUCTS_KEY = {
   details: () => [...PRODUCTS_KEY.all, "detail"] as const,
   detail: (id?: number | string) => [...PRODUCTS_KEY.details(), id] as const,
 };
+
+export const CART_KEY = {
+  all: [{ scope: "cart" }] as const,
+  lists: () => [...CART_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...CART_KEY.lists(), { params }] as const,
+  details: () => [...CART_KEY.all, "detail"] as const,
+  detail: (id?: number | string) => [...CART_KEY.details(), id] as const,
+};

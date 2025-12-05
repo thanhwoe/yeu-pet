@@ -8,6 +8,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { getListProductsQuery } from "@/services";
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 import { CATEGORIES, Category } from "./Category";
@@ -20,6 +21,7 @@ export const StoreScreen = () => {
   const [searchKey, setSearchKey] = useState("");
   const [category, setCategory] = useState("");
   const debounceSearch = useDebounce(searchKey, 400);
+  const router = useRouter();
 
   const {
     data = [],
@@ -58,7 +60,7 @@ export const StoreScreen = () => {
           className="flex-1"
         />
 
-        <CartButton />
+        <CartButton onPress={() => router.navigate("/cart")} />
       </View>
 
       <FlashList

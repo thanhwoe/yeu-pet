@@ -35,7 +35,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.detail(data.id) });
     },
     onError(e) {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 
@@ -47,7 +47,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
       onDismiss?.();
     },
     onError(e) {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 

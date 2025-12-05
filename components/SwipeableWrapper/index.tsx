@@ -16,7 +16,8 @@ import Animated, {
 import { Text } from "../ui/Text";
 
 interface ActionButton {
-  text: string;
+  text?: string;
+  icon?: ReactNode;
   onPress: () => void;
   width?: number;
   className?: string;
@@ -210,12 +211,15 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               onPress={() => handleActionPress(leftAction)}
               activeOpacity={0.8}
             >
-              <Text
-                className="text-text-primary-inverse font-semibold"
-                variant="body2"
-              >
-                {leftAction.text}
-              </Text>
+              {leftAction.text && (
+                <Text
+                  className="text-text-primary-inverse font-semibold"
+                  variant="body2"
+                >
+                  {leftAction.text}
+                </Text>
+              )}
+              {leftAction.icon && leftAction.icon}
             </TouchableOpacity>
           </Animated.View>
         )}
@@ -249,12 +253,15 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               onPress={() => handleActionPress(rightAction)}
               activeOpacity={0.8}
             >
-              <Text
-                className="text-text-primary-inverse font-semibold"
-                variant="body2"
-              >
-                {rightAction.text}
-              </Text>
+              {rightAction.text && (
+                <Text
+                  className="text-text-primary-inverse font-semibold"
+                  variant="body2"
+                >
+                  {rightAction.text}
+                </Text>
+              )}
+              {rightAction.icon && rightAction.icon}
             </TouchableOpacity>
           </Animated.View>
         )}

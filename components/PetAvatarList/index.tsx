@@ -41,7 +41,7 @@ export const PetAvatarList = ({ onSelectPet }: IProps) => {
   const { mutate: createPet } = useMutation({
     mutationFn: createPetMutation,
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
     onSuccess: (res) => {
       Toast.success({ text: "Add pet successfully" });

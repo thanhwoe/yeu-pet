@@ -48,7 +48,7 @@ export default function Screen() {
       setOpenForm(false);
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 
@@ -62,7 +62,7 @@ export default function Screen() {
       setSelectedItem(null);
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 
@@ -74,7 +74,7 @@ export default function Screen() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 

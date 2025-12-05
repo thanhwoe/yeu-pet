@@ -55,7 +55,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
   const { mutate: updatePet } = useMutation({
     mutationFn: updatePetMutation,
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
     onSuccess: (res) => {
       Toast.success({ text: "Update pet information successfully" });
@@ -68,7 +68,7 @@ export const PetProfileCard = ({ data }: { data: IPet }) => {
   const { mutate: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
     onSuccess: (res) => {
       Toast.success({ text: "Delete pet successfully" });

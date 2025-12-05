@@ -20,3 +20,17 @@ export function abbreviateNumber(num: number, decimals: number = 1): string {
 
   return num.toString();
 }
+
+export function calculateDiscountPercentage(
+  originalPrice?: number,
+  salePrice?: number
+) {
+  if (!originalPrice) {
+    return "0%";
+  }
+
+  const difference = originalPrice - (salePrice ?? 0);
+  const percentageDiff = (difference / originalPrice) * 100;
+
+  return `-${percentageDiff.toFixed(0)}%`;
+}

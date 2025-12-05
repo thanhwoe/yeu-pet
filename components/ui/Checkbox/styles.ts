@@ -1,0 +1,89 @@
+import { cva, type VariantProps } from "class-variance-authority";
+
+export const wrapperStyles = cva("gap-2 my-1 items-center rounded-xl", {
+  variants: {
+    checked: {
+      true: "bg-background-default-highlight border-line-card-highlight",
+      false: null,
+    },
+    pressed: {
+      true: "bg-background-default-pressed",
+      false: null,
+    },
+    reverse: {
+      true: "flex-row-reverse",
+      false: "flex-row",
+    },
+  },
+  compoundVariants: [
+    {
+      reverse: true,
+      checked: true,
+      className: "border border-transparent",
+    },
+    {
+      reverse: true,
+      checked: false,
+      className: "border border-line-card",
+    },
+  ],
+  defaultVariants: {
+    reverse: false,
+  },
+});
+
+export const checkboxStyles = cva(
+  "border-line-secondary items-center justify-center",
+  {
+    variants: {
+      size: {
+        small: "w-3 h-3 rounded-xl border",
+        medium: "w-5 h-5 rounded-xl border-[1.5px]",
+      },
+      checked: {
+        true: "border-0 bg-background-primary",
+        false: null,
+      },
+      disabled: {
+        true: "border-line-secondary-disabled",
+        false: null,
+      },
+      reverse: {
+        true: null,
+        false: null,
+      },
+    },
+    compoundVariants: [
+      {
+        checked: true,
+        disabled: true,
+        className: "border-0 bg-background-primary-disabled",
+      },
+    ],
+    defaultVariants: {
+      size: "medium",
+    },
+  }
+);
+
+export const labelStyles = cva("flex-1", {
+  variants: {
+    disabled: {
+      true: "",
+      false: null,
+    },
+    checked: {
+      true: "",
+      false: null,
+    },
+  },
+  compoundVariants: [
+    {
+      checked: true,
+      disabled: true,
+      className: "",
+    },
+  ],
+});
+
+export type CheckboxVariant = VariantProps<typeof checkboxStyles>;

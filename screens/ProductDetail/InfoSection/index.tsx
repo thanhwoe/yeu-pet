@@ -2,6 +2,7 @@ import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IProductDetail } from "@/interfaces";
+import { calculateDiscountPercentage } from "@/utils";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import isEmpty from "lodash/isEmpty";
 import { StarIcon } from "phosphor-react-native";
@@ -63,8 +64,14 @@ export const InfoSection = ({ data, loading }: IProps) => {
         </Text>
         <View className="flex-row gap-2 items-center">
           <View className="p-1 items-center rounded-md justify-center bg-background-primary">
-            <Text variant="caption2" className="text-text-primary-inverse">
-              -30%
+            <Text
+              variant="caption2"
+              className="font-semibold text-text-primary-inverse"
+            >
+              {calculateDiscountPercentage(
+                data?.original_price,
+                data?.sale_price
+              )}
             </Text>
           </View>
           <Text className="font-bold text-text-link">{data?.sale_price}đ</Text>

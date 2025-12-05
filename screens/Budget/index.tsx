@@ -139,7 +139,7 @@ export function BudgetScreen() {
       setOpenTransactionForm(false);
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 
@@ -157,7 +157,7 @@ export function BudgetScreen() {
       setSelectedTransaction(undefined);
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 
@@ -172,7 +172,7 @@ export function BudgetScreen() {
       queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
     },
     onError: (e) => {
-      Toast.error({ text: e.message, title: e.name });
+      Toast.error({ text: e.errors?.[0].message });
     },
   });
 

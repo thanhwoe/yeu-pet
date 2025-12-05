@@ -45,4 +45,8 @@ export const API_ROUTES = {
 
   LIST_PRODUCTS: "/products",
   PRODUCT_DETAIL: (id: string) => `/products/${id}`,
+
+  CART: "/cart",
+  ADD_TO_CART: "/cart/add",
+  UPDATE_CART: "/cart/update",
 };

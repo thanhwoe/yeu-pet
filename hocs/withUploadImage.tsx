@@ -34,7 +34,7 @@ export const withUploadImage =
     const { mutateAsync, isPending } = useMutation({
       mutationFn: uploadFileMutation,
       onError(e) {
-        Toast.error({ text: e.message, title: e.name });
+        Toast.error({ text: e.errors?.[0].message });
       },
     });
 

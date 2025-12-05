@@ -3,6 +3,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { cssInterop } from "nativewind";
 import { ArrowLeftIcon } from "phosphor-react-native";
 import { useEffect, useMemo } from "react";
@@ -28,7 +29,7 @@ const BackIcon = withIconClassName(ArrowLeftIcon);
 
 export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
   const { colorScheme } = useColorScheme();
-
+  const router = useRouter();
   const translateX = useSharedValue(-400);
 
   useEffect(() => {
@@ -98,7 +99,11 @@ export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
           />
         </TouchableOpacity>
         <View className="flex-row">
-          <CartButton variant="circle" size={20} />
+          <CartButton
+            variant="circle"
+            size={20}
+            onPress={() => router.navigate("/cart")}
+          />
         </View>
       </View>
     </View>
