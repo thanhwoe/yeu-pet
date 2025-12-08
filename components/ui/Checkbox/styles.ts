@@ -45,7 +45,7 @@ export const checkboxStyles = cva(
         false: null,
       },
       disabled: {
-        true: "border-line-secondary-disabled",
+        true: "opacity-50",
         false: null,
       },
       reverse: {
@@ -53,13 +53,6 @@ export const checkboxStyles = cva(
         false: null,
       },
     },
-    compoundVariants: [
-      {
-        checked: true,
-        disabled: true,
-        className: "border-0 bg-background-primary-disabled",
-      },
-    ],
     defaultVariants: {
       size: "medium",
     },

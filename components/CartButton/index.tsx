@@ -7,7 +7,7 @@ import { TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 const CartIcon = withIconClassName(ShoppingCartIcon);
 
-const styles = cva("self-start bg-white items-center justify-center", {
+const styles = cva("min-w-[50px] bg-white items-center justify-center", {
   variants: {
     variant: {
       square: "rounded-xl p-3",
@@ -25,7 +25,7 @@ const badgeStyles = cva(
     variants: {
       variant: {
         square: "px-1 top-2",
-        circle: "px-[2px] top-1",
+        circle: "px-[3px] top-1",
       },
     },
     defaultVariants: {
@@ -51,13 +51,13 @@ export const CartButton = ({
   return (
     <TouchableOpacity className={cn(styles({ variant, className }))} {...props}>
       <CartIcon size={size} className="text-icon-primary-foreground" />
-      {badge && (
+      {typeof badge === "number" && badge > 0 && (
         <View className={cn(badgeStyles({ variant }))}>
           <Text
             variant="caption2"
             className="text-text-primary-inverse font-semibold"
           >
-            {badge}
+            {badge > 99 ? "99+" : badge}
           </Text>
         </View>
       )}

@@ -1,7 +1,10 @@
 import { CartButton } from "@/components/CartButton";
+import { CART_KEY } from "@/constants/query-keys";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { getCartCountQuery } from "@/services";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { cssInterop } from "nativewind";
@@ -31,6 +34,10 @@ export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
   const translateX = useSharedValue(-400);
+  const { data } = useQuery({
+    queryKey: CART_KEY.count(),
+    queryFn: getCartCountQuery,
+  });
 
   useEffect(() => {
     translateX.value = withRepeat(
@@ -98,13 +105,12 @@ export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
             className="text-icon-primary-foreground"
           />
         </TouchableOpacity>
-        <View className="flex-row">
-          <CartButton
-            variant="circle"
-            size={20}
-            onPress={() => router.navigate("/cart")}
-          />
-        </View>
+        <CartButton
+          variant="circle"
+          size={20}
+          badge={data?.data.count}
+          onPress={() => router.navigate("/cart")}
+        />
       </View>
     </View>
   );

@@ -5,14 +5,17 @@ import { Text } from "@/components/ui/Text";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { signOutMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function TabTwoScreen() {
+  const queryClient = useQueryClient();
+
   const { logout } = useUserInfoStore();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: signOutMutation,
     onSuccess: () => {
       logout();
+      queryClient.resetQueries();
     },
     onError: (e) => {
       Toast.error({ text: e.errors?.[0].message });

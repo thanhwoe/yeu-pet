@@ -1,3 +1,4 @@
+import { Toast } from "@/components/Toast";
 import { CART_KEY } from "@/constants/query-keys";
 import { updateCartMutation, UpdateCartParams } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,10 +16,9 @@ export const useUpdateCart = (delay: number = 1000) => {
   const { mutate: updateCart, isPending } = useMutation({
     mutationFn: updateCartMutation,
     onError: (e) => {
-      console.log({ e });
+      Toast.error({ text: e.errors?.[0].message });
     },
     onSuccess: (res) => {
-      console.log({ res });
       queryClient.invalidateQueries({ queryKey: CART_KEY.lists() });
 
       pendingUpdatesRef.current.clear();

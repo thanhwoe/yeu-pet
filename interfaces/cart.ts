@@ -26,3 +26,10 @@ export interface ICartResponse {
     selected_all: boolean;
   };
 }
+
+export interface ICartCountResponse {
+  data: {
+    count: number;
+  };
+  success: boolean;
+}

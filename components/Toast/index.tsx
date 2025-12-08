@@ -167,7 +167,7 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
                 <Text
                   variant={toastTitle ? "caption1" : "body2"}
                   className="text-text-primary-inverse"
-                  numberOfLines={1}
+                  numberOfLines={2}
                 >
                   {toastText}
                 </Text>

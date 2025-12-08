@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/constants/api-routes";
-import { ICartResponse } from "@/interfaces";
+import { ICartCountResponse, ICartResponse } from "@/interfaces";
 import { APIs } from "./api-helper";
 
 interface AddToCartParams {
@@ -20,3 +20,9 @@ export interface UpdateCartParams {
 
 export const updateCartMutation = (params: UpdateCartParams[]) =>
   APIs.patch(API_ROUTES.UPDATE_CART, { data: params });
+
+export const deleteCartItemMutation = (id: string) =>
+  APIs.delete(API_ROUTES.DELETE_CART_ITEM(id));
+
+export const getCartCountQuery = () =>
+  APIs.get<ICartCountResponse>(API_ROUTES.CART_COUNT);

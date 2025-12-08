@@ -14,10 +14,18 @@ const DeleteIcon = withIconClassName(TrashIcon);
 interface ICartItemProps {
   data: ICartItemResponse;
   onUpdate: (item: UpdateCartParams) => void;
+  onDelete: (id: string) => void;
+  isDeleting?: boolean;
 }
 
-export const CartItem = ({ data, onUpdate }: ICartItemProps) => {
+export const CartItem = ({
+  data,
+  onUpdate,
+  onDelete,
+  isDeleting,
+}: ICartItemProps) => {
   const handleChangeSelect = (checked: boolean) => {
+    console.log("first");
     onUpdate({
       id: data.id,
       quantity: data.quantity,
@@ -36,14 +44,17 @@ export const CartItem = ({ data, onUpdate }: ICartItemProps) => {
   return (
     <SwipeableWrapper
       rightAction={{
-        onPress: () => {},
+        onPress: () => onDelete(data.id),
         width: 50,
         icon: <DeleteIcon className="text-icon-foreground" />,
+        loading: isDeleting,
+        disabled: isDeleting,
       }}
       swipeThreshold={60}
     >
       <View className="flex-row bg-background-card-info px-3 gap-3 py-2 items-center">
         <Checkbox
+          disabled={isDeleting}
           defaultValue={data.is_select}
           key={String(data.is_select)}
           onChange={handleChangeSelect}
@@ -83,7 +94,9 @@ export const CartItem = ({ data, onUpdate }: ICartItemProps) => {
             <QuantityInput
               size="sm"
               swarthy
+              disabled={isDeleting}
               min={1}
+              max={data?.products?.stock_quantity}
               onChange={handleChangeQuantity}
               value={data?.quantity}
               key={data.quantity}

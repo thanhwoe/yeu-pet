@@ -13,6 +13,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { Spinner } from "../ui/Spinner";
 import { Text } from "../ui/Text";
 
 interface ActionButton {
@@ -21,6 +22,8 @@ interface ActionButton {
   onPress: () => void;
   width?: number;
   className?: string;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 interface SwipeableWrapperProps {
@@ -210,6 +213,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               }}
               onPress={() => handleActionPress(leftAction)}
               activeOpacity={0.8}
+              disabled={leftAction.disabled || leftAction.loading}
             >
               {leftAction.text && (
                 <Text
@@ -219,7 +223,10 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
                   {leftAction.text}
                 </Text>
               )}
-              {leftAction.icon && leftAction.icon}
+              {leftAction.icon && !leftAction.loading && leftAction.icon}
+              {leftAction.loading && (
+                <Spinner size={20} className="text-icon-foreground" />
+              )}
             </TouchableOpacity>
           </Animated.View>
         )}
@@ -252,6 +259,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               }}
               onPress={() => handleActionPress(rightAction)}
               activeOpacity={0.8}
+              disabled={rightAction.disabled || rightAction.loading}
             >
               {rightAction.text && (
                 <Text
@@ -261,7 +269,10 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
                   {rightAction.text}
                 </Text>
               )}
-              {rightAction.icon && rightAction.icon}
+              {rightAction.icon && !rightAction.loading && rightAction.icon}
+              {rightAction.loading && (
+                <Spinner size={20} className="text-icon-foreground" />
+              )}
             </TouchableOpacity>
           </Animated.View>
         )}

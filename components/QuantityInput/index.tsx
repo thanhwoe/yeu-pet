@@ -34,6 +34,7 @@ interface IProps extends InputVariant {
   className?: string;
   min?: number;
   max?: number;
+  disabled?: boolean;
 }
 export const QuantityInput = ({
   onChange,
@@ -44,6 +45,7 @@ export const QuantityInput = ({
   className,
   min = 0,
   max = 9999,
+  disabled,
 }: IProps) => {
   const [internalValue, setInternalValue] = useState(defaultValue);
 
@@ -72,9 +74,12 @@ export const QuantityInput = ({
   return (
     <View className={cn(wrapperVariants({ swarthy, size, className }))}>
       <TouchableOpacity
-        disabled={value <= min}
+        disabled={value <= min || disabled}
         onPress={() => {
           handleChange(value - 1);
+        }}
+        style={{
+          opacity: value <= min ? 0.5 : 1,
         }}
         hitSlop={10}
       >
@@ -94,6 +99,7 @@ export const QuantityInput = ({
         verticalAlign="middle"
         keyboardType="number-pad"
         value={String(value)}
+        editable={!disabled}
         onChangeText={(text) => {
           const numericValue = text.replace(/[^0-9]/g, "");
           handleChange(numericValue ? parseInt(numericValue, 10) : 0);
@@ -101,9 +107,12 @@ export const QuantityInput = ({
       />
 
       <TouchableOpacity
-        disabled={value >= max}
+        disabled={value >= max || disabled}
         onPress={() => handleChange(value + 1)}
         hitSlop={10}
+        style={{
+          opacity: value >= max ? 0.5 : 1,
+        }}
       >
         <Plus
           size={12}

@@ -1,18 +1,15 @@
-import { CartButton } from "@/components/CartButton";
 import { ListLoader } from "@/components/ListLoader";
-import { SearchInput } from "@/components/SearchInput";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
 import { PRODUCTS_KEY } from "@/constants/query-keys";
-import { useDebounce } from "@/hooks/useDebounce";
 import { getListProductsQuery } from "@/services";
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList } from "react-native";
 import { CATEGORIES, Category } from "./Category";
 import { ProductCard } from "./ProductCard";
+import { StoreHeader } from "./StoreHeader";
 import { StoreSkeleton } from "./StoreSkeleton";
 
 const LIMIT = 6;
@@ -20,8 +17,6 @@ const LIMIT = 6;
 export const StoreScreen = () => {
   const [searchKey, setSearchKey] = useState("");
   const [category, setCategory] = useState("");
-  const debounceSearch = useDebounce(searchKey, 400);
-  const router = useRouter();
 
   const {
     data = [],
@@ -30,12 +25,12 @@ export const StoreScreen = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: PRODUCTS_KEY.list({ limit: LIMIT, debounceSearch, category }),
+    queryKey: PRODUCTS_KEY.list({ limit: LIMIT, searchKey, category }),
     queryFn: ({ pageParam }) =>
       getListProductsQuery({
         limit: LIMIT,
         page: pageParam,
-        query: debounceSearch,
+        query: searchKey,
         category,
       }),
     initialPageParam: 1,
@@ -53,15 +48,7 @@ export const StoreScreen = () => {
 
   return (
     <ScreenContainer className="!px-0">
-      <View className="flex-row gap-2 px-5">
-        <SearchInput
-          onChange={setSearchKey}
-          placeholder="Enter clinic name"
-          className="flex-1"
-        />
-
-        <CartButton onPress={() => router.navigate("/cart")} />
-      </View>
+      <StoreHeader onSearchChange={setSearchKey} />
 
       <FlashList
         data={data}

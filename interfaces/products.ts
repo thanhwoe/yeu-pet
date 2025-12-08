@@ -12,7 +12,7 @@ export interface IProduct {
   updated_at: string;
 }
 
-interface IProductImage {
+export interface IProductImage {
   id: string;
   image_url: string;
   created_at: string;

@@ -3,10 +3,10 @@ import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IProductDetail } from "@/interfaces";
 import { calculateDiscountPercentage } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import isEmpty from "lodash/isEmpty";
 import { StarIcon } from "phosphor-react-native";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
+import { ImageSlider } from "../ImageSlider";
 import { SectionSkeleton } from "./SectionSkeleton";
 
 const RateIcon = withIconClassName(StarIcon);
@@ -27,34 +27,7 @@ export const InfoSection = ({ data, loading }: IProps) => {
           contentFit="cover"
         />
       ) : (
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          data={data?.product_images}
-          bounces={false}
-          className="-mx-5"
-          horizontal
-          renderItem={({ item }) => (
-            <View style={{ width: SCREEN_WIDTH }}>
-              <Image
-                source={{
-                  uri: item.image_url,
-                }}
-                className="h-96"
-                contentFit="cover"
-              />
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          pagingEnabled
-          snapToInterval={SCREEN_WIDTH}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          getItemLayout={(_, index) => ({
-            length: SCREEN_WIDTH,
-            offset: SCREEN_WIDTH * index,
-            index,
-          })}
-        />
+        <ImageSlider data={data?.product_images} />
       )}
 
       {/* Product info -------- */}

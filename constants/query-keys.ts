@@ -73,4 +73,5 @@ export const CART_KEY = {
   list: (params?: IQueryParams) => [...CART_KEY.lists(), { params }] as const,
   details: () => [...CART_KEY.all, "detail"] as const,
   detail: (id?: number | string) => [...CART_KEY.details(), id] as const,
+  count: () => [...CART_KEY.all, "count"] as const,
 };

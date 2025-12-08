@@ -50,7 +50,7 @@ export const BottomActions = ({ loading }: IProps) => {
   const { mutate: addToCart, isPending: isAdding } = useMutation({
     mutationFn: addToCartMutation,
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: CART_KEY.lists() });
+      queryClient.invalidateQueries({ queryKey: CART_KEY.all });
 
       Toast.success({ text: "Item added to cart" });
     },

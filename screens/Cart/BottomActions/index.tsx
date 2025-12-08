@@ -11,7 +11,7 @@ import Animated, {
 
 interface IProps {
   loading?: boolean;
-  cartSummary: ICartResponse["summary"];
+  cartSummary?: ICartResponse["summary"];
   onToggleSelectAll: (value: boolean) => void;
 }
 
@@ -36,22 +36,21 @@ export const BottomActions = ({
     >
       <Checkbox
         label="Select all"
-        defaultValue={cartSummary.selected_all}
-        key={String(cartSummary.selected_all)}
+        defaultValue={cartSummary?.selected_all}
+        key={String(cartSummary?.selected_all)}
         onChange={onToggleSelectAll}
+        disabled={loading}
         labelClassName="text-text-secondary"
       />
-      <View className="px-3">
+      <View className="px-2 flex-1 items-end">
         <Text className="font-bold text-text-link">
-          {cartSummary.subtotal}đ
+          {cartSummary?.subtotal}đ
         </Text>
         <Text variant="body2" className="line-through text-text-secondary">
-          {cartSummary.total}đ
+          {cartSummary?.total}đ
         </Text>
       </View>
-      <Button className="flex-1" loading={loading}>
-        Checkout
-      </Button>
+      <Button loading={loading}>Checkout</Button>
     </Animated.View>
   );
 };
