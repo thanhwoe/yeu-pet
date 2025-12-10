@@ -16,10 +16,7 @@ export const ProductDetail = () => {
 
   return (
     <View className="flex-1">
-      <ScreenContainer
-        scrollEnabled
-        contentContainerClassName="!pt-0 pb-safe-or-4"
-      >
+      <ScreenContainer scrollEnabled contentContainerClassName="!pt-0 pb-24">
         <InfoSection data={data} loading={isLoading} />
         {/* TODO: Review section */}
       </ScreenContainer>

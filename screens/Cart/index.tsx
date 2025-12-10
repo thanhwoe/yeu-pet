@@ -70,6 +70,8 @@ export const CartScreen = () => {
     handleUpdateCart(payload);
   };
 
+  const hasSelectedItems = cartItems.some((item) => item.is_select);
+
   const handleUpdateCartItem = (item: UpdateCartParams) => {
     setCartItems((prev) =>
       prev.map((i) => (i.id === item.id ? { ...i, ...item } : i))
@@ -91,6 +93,8 @@ export const CartScreen = () => {
   return (
     <ScreenContainer className="!px-0 !pt-0">
       <FlashList
+        contentContainerClassName="pb-28"
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         data={cartItems}
         extraData={isRefetching}
@@ -128,6 +132,7 @@ export const CartScreen = () => {
         <BottomActions
           cartSummary={data?.summary}
           loading={isPending}
+          hasSelectedItems={hasSelectedItems}
           onToggleSelectAll={handleToggleSelectAll}
         />
       )}

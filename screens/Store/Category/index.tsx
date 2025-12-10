@@ -69,7 +69,7 @@ export const CATEGORIES = [
       <ClothesIcon size={IconSize} weight="fill" className="text-pink-40" />
     ),
     name: "Clothes",
-    value: "clothe",
+    value: "clothes",
     color: "bg-pink-10",
   },
   {

@@ -26,18 +26,25 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
 
   const marked = getMarkedDates(data);
 
-  const renderItem = ({ item }: { item: IReminderInfo }) => {
-    return (
-      <AgendaItem item={item} onEdit={onEditAgenda} onDelete={onDeleteAgenda} />
-    );
-  };
+  const renderItem = useCallback(
+    ({ item }: { item: IReminderInfo }) => {
+      return (
+        <AgendaItem
+          item={item}
+          onEdit={onEditAgenda}
+          onDelete={onDeleteAgenda}
+        />
+      );
+    },
+    [onDeleteAgenda, onEditAgenda]
+  );
 
   const renderHeader = useCallback((vale?: any) => {
     return <Text variant="title3">{date(vale).format("MMMM YYYY")}</Text>;
   }, []);
 
   return (
-    <View className="flex-1 mb-5 mx-5 pb-[300px]">
+    <View className="flex-1 mx-5">
       <CalendarProvider
         date={new Date().toISOString().split("T")[0]}
         // date={data[1]?.title}
@@ -45,13 +52,13 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
         // onMonthChange={onMonthChange}
         // disabledOpacity={0.6}
       >
-        <View className="gap-4">
+        <View className="gap-4 flex-1">
           <ExpandableCalendar
             calendarWidth={SCREEN_WIDTH - 40}
             renderHeader={renderHeader}
             ref={calendarRef}
             contentContainerClassName="pb-4"
-            disablePan
+            // disablePan
             style={{
               borderRadius: 20,
               paddingBottom: 10,
@@ -81,9 +88,12 @@ export const Calendar = ({ onEditAgenda, onDeleteAgenda, data }: IProps) => {
             <AgendaList
               sections={data}
               renderItem={renderItem}
-              scrollToNextEvent
+              scrollToNextEvent={false}
               renderSectionHeader={AgendaDate}
               removeClippedSubviews
+              style={{
+                flex: 1,
+              }}
             />
           )}
         </View>

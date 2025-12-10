@@ -45,7 +45,7 @@ const textVariants = cva(
         "": "text-gray-90",
         today: "text-text-primary-inverse font-semibold",
         selected: "text-text-primary-inverse font-semibold",
-        disabled: "text-gray-40",
+        disabled: "text-text-secondary",
         inactive: "text-green-80 font-medium",
       },
     },

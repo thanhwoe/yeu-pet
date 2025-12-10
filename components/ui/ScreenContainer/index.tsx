@@ -1,5 +1,11 @@
 import { cn } from "@/utils";
-import { ScrollView, ScrollViewProps, View, ViewProps } from "react-native";
+import {
+  Keyboard,
+  ScrollView,
+  ScrollViewProps,
+  View,
+  ViewProps,
+} from "react-native";
 
 interface IScreenContainerProps extends ScrollViewProps, ViewProps {}
 
@@ -19,6 +25,7 @@ export const ScreenContainer = ({
           contentContainerClassName
         )}
         showsVerticalScrollIndicator={false}
+        keyboardDismissMode="on-drag"
         {...props}
       >
         {children}
@@ -27,6 +34,10 @@ export const ScreenContainer = ({
   }
   return (
     <View
+      onStartShouldSetResponder={() => {
+        Keyboard.dismiss();
+        return false;
+      }}
       className={cn("flex-1 px-5 bg-background-screen pt-safe-or-4", className)}
       {...props}
     >

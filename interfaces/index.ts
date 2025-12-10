@@ -5,6 +5,7 @@ export * from "./chart";
 export * from "./clinic";
 export * from "./common";
 export * from "./file";
+export * from "./order";
 export * from "./pagination";
 export * from "./pet";
 export * from "./photos";

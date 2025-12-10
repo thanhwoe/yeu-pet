@@ -75,3 +75,11 @@ export const CART_KEY = {
   detail: (id?: number | string) => [...CART_KEY.details(), id] as const,
   count: () => [...CART_KEY.all, "count"] as const,
 };
+
+export const ORDER_KEY = {
+  all: [{ scope: "order" }] as const,
+  lists: () => [...ORDER_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...ORDER_KEY.lists(), { params }] as const,
+  details: () => [...ORDER_KEY.all, "detail"] as const,
+  detail: (id?: number | string) => [...ORDER_KEY.details(), id] as const,
+};

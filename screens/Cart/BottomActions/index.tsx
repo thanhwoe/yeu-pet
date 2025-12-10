@@ -1,39 +1,28 @@
+import { BottomActionWrapper } from "@/components/BottomActionWrapper";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Text } from "@/components/ui/Text";
 import { ICartResponse } from "@/interfaces";
-import { Platform, UIManager, View } from "react-native";
-import Animated, {
-  FadeInDown,
-  FadeOutDown,
-  LinearTransition,
-} from "react-native-reanimated";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
 
 interface IProps {
   loading?: boolean;
   cartSummary?: ICartResponse["summary"];
+  hasSelectedItems?: boolean;
   onToggleSelectAll: (value: boolean) => void;
-}
-
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 export const BottomActions = ({
   loading,
   cartSummary,
+  hasSelectedItems,
   onToggleSelectAll,
 }: IProps) => {
+  const router = useRouter();
+
   return (
-    <Animated.View
-      layout={LinearTransition}
-      exiting={FadeOutDown}
-      entering={FadeInDown}
-      className="absolute left-0 right-0 bottom-0 bg-background-white flex-1 flex-row items-center pb-safe-offset-0 pt-3 gap-3 px-5"
-    >
+    <BottomActionWrapper className="flex-row items-center">
       <Checkbox
         label="Select all"
         defaultValue={cartSummary?.selected_all}
@@ -50,7 +39,13 @@ export const BottomActions = ({
           {cartSummary?.total}đ
         </Text>
       </View>
-      <Button loading={loading}>Checkout</Button>
-    </Animated.View>
+      <Button
+        disabled={!hasSelectedItems}
+        loading={loading}
+        onPress={() => router.push("/checkout")}
+      >
+        Checkout
+      </Button>
+    </BottomActionWrapper>
   );
 };

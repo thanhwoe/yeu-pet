@@ -25,7 +25,6 @@ export const CartItem = ({
   isDeleting,
 }: ICartItemProps) => {
   const handleChangeSelect = (checked: boolean) => {
-    console.log("first");
     onUpdate({
       id: data.id,
       quantity: data.quantity,
@@ -60,8 +59,12 @@ export const CartItem = ({
           onChange={handleChangeSelect}
         />
         <Image
-          source={require("@/assets/images/fallback-product.png")}
-          className="size-20"
+          source={
+            data?.products?.thumbnail_url
+              ? { uri: data.products.thumbnail_url }
+              : require("@/assets/images/fallback-product.png")
+          }
+          className="size-20 rounded-xl"
           contentFit="cover"
         />
         <View className="flex-1">
