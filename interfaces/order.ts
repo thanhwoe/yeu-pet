@@ -1,4 +1,5 @@
 import { IProductDetail } from "./products";
+import { IShippingAddress } from "./shipping-address";
 
 type Product = Pick<
   IProductDetail,
@@ -14,6 +15,7 @@ type Product = Pick<
 export interface IOrderSummaryResponse {
   data: {
     products: Product[];
+    shippingAddress: IShippingAddress;
     summary: {
       sale_total: number;
       original_total: number;

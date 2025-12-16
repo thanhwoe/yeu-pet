@@ -2,6 +2,7 @@ import { Skeleton } from "@/components/Skeleton";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { ORDER_KEY } from "@/constants/query-keys";
 import { getOrderSummaryQuery } from "@/services/order";
+import { useShopStore } from "@/stores/shop-store";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
@@ -13,18 +14,20 @@ import { SummarySection } from "./SummarySection";
 
 export const CheckoutScreen = () => {
   const { productId, quantity } = useLocalSearchParams();
+  const shippingAddress = useShopStore.use.shippingAddress();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ORDER_KEY.list({ productId, quantity }),
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ORDER_KEY.list({
+      productId,
+      quantity,
+      shippingAddressId: shippingAddress?.id,
+    }),
     queryFn: () =>
-      getOrderSummaryQuery(
-        productId && quantity
-          ? {
-              productId: String(productId),
-              quantity: Number(quantity),
-            }
-          : undefined
-      ),
+      getOrderSummaryQuery({
+        productId: String(productId),
+        quantity: Number(quantity),
+        shippingAddressId: String(shippingAddress?.id),
+      }),
   });
 
   if (isLoading) {
@@ -43,12 +46,12 @@ export const CheckoutScreen = () => {
         scrollEnabled
         contentContainerClassName="!pt-2 gap-2 pb-40"
       >
-        <AddressSection />
+        <AddressSection data={data?.data.shippingAddress} />
         <ListItemSection data={data?.data.products ?? []} />
         <SummarySection data={data?.data.summary} />
         <PaymentSection />
       </ScreenContainer>
-      <BottomActions data={data?.data.summary} />
+      <BottomActions data={data?.data.summary} loading={isFetching} />
     </View>
   );
 };

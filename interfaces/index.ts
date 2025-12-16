@@ -11,4 +11,5 @@ export * from "./pet";
 export * from "./photos";
 export * from "./products";
 export * from "./reminder";
+export * from "./shipping-address";
 export * from "./user";

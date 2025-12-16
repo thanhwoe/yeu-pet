@@ -273,6 +273,7 @@ export const lightColorTheme = {
   "--line-disabled": "--grey-40",
   "--line-typing": "--amber-40",
   "--line-primary-foreground": "--grey-0",
+  "--line-negative": "--red-50",
 
   "--icon-primary": "--orange-40",
   "--icon-secondary": "--grey-50",

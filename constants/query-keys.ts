@@ -83,3 +83,13 @@ export const ORDER_KEY = {
   details: () => [...ORDER_KEY.all, "detail"] as const,
   detail: (id?: number | string) => [...ORDER_KEY.details(), id] as const,
 };
+
+export const SHIPPING_ADDRESS_KEY = {
+  all: [{ scope: "shipping-address" }] as const,
+  lists: () => [...SHIPPING_ADDRESS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...SHIPPING_ADDRESS_KEY.lists(), { params }] as const,
+  details: () => [...SHIPPING_ADDRESS_KEY.all, "detail"] as const,
+  detail: (id?: number | string) =>
+    [...SHIPPING_ADDRESS_KEY.details(), id] as const,
+};

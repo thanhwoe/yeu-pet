@@ -1,21 +1,46 @@
-export const parseQueryParams = (params: any) => {
-  const keys = Object.keys(params);
-  let options = "";
+import _ from "lodash";
 
-  keys.forEach((key) => {
-    const isParamTypeObject = typeof params[key] === "object";
-    const isParamTypeArray = isParamTypeObject && params[key].length >= 0;
+const isInvalidValue = (value: any): boolean => {
+  return (
+    _.isNil(value) || // checks both null and undefined
+    (_.isNumber(value) && _.isNaN(value)) ||
+    (_.isString(value) && _.isEmpty(value)) ||
+    (_.isString(value) && (value === "undefined" || value === "null")) // Check string 'undefined' and 'null'
+  );
+};
 
-    if (!isParamTypeObject && params[key] !== undefined) {
-      options += `${key}=${params[key]}&`;
+export const parseQueryParams = (params: Record<string, any>): string => {
+  if (_.isEmpty(params) || !_.isPlainObject(params)) {
+    return "";
+  }
+
+  const queryParts: string[] = [];
+
+  Object.entries(params).forEach(([key, value]) => {
+    // Skip invalid values
+    if (isInvalidValue(value)) {
+      return;
     }
 
-    if (isParamTypeObject && isParamTypeArray) {
-      params[key].forEach((element: any) => {
-        options += `${key}=${element}&`;
+    // Handle arrays
+    if (_.isArray(value)) {
+      // Filter out invalid array elements
+      const validElements = value.filter((element) => !isInvalidValue(element));
+
+      validElements.forEach((element) => {
+        queryParts.push(
+          `${encodeURIComponent(key)}=${encodeURIComponent(element)}`
+        );
       });
     }
+    // Handle primitive values (string, number, boolean)
+    else if (!_.isPlainObject(value)) {
+      queryParts.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      );
+    }
+    // Skip objects (nested objects)
   });
 
-  return options ? options.slice(0, -1) : options;
+  return queryParts.join("&");
 };

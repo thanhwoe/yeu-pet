@@ -111,6 +111,13 @@ const RootNavigation = () => {
             title: "Checkout",
           }}
         />
+        <Stack.Screen
+          name="shipping-address"
+          options={{
+            header: BackHeader,
+            title: "Shipping Address",
+          }}
+        />
         <Stack.Screen name="(training)" options={{ headerShown: false }} />
       </Stack.Protected>
 

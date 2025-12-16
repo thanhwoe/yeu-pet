@@ -37,7 +37,7 @@ export const checkboxStyles = cva(
   {
     variants: {
       size: {
-        small: "w-3 h-3 rounded-xl border",
+        small: "w-4 h-4 rounded-xl border",
         medium: "w-5 h-5 rounded-xl border-[1.5px]",
       },
       checked: {

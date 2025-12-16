@@ -15,12 +15,20 @@ export const signUpSchema = z.object({
       message: ERROR_MESSAGE.FIELD_INVALID("Phone number"),
     }),
   email: z.email(ERROR_MESSAGE.FIELD_INVALID("Email")).optional(),
-  firstName: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("First name"),
-  }),
-  lastName: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Last name"),
-  }),
+  firstName: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("First name"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("First name"),
+    }),
+  lastName: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Last name"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Last name"),
+    }),
   password: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Password"),
@@ -60,9 +68,13 @@ export const reminderSchema = z.object({
 });
 
 export const petInfoSchema = z.object({
-  name: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
-  }),
+  name: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
+    }),
   age: z
     .string()
     .optional()
@@ -92,9 +104,13 @@ export const petInfoSchema = z.object({
 });
 
 export const budgetTransactionSchema = z.object({
-  content: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
-  }),
+  content: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+    }),
   amount: z.coerce.number<number>({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Amount"),
   }),
@@ -106,6 +122,31 @@ export const budgetTransactionSchema = z.object({
   }),
 });
 
+export const shippingAddressSchema = z.object({
+  phone: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Phone number"),
+    })
+    .refine((val) => isValidPhoneNumber(val), {
+      message: ERROR_MESSAGE.FIELD_INVALID("Phone number"),
+    }),
+  full_name: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
+    }),
+  address: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Address"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Address"),
+    }),
+  is_default: z.boolean().optional(),
+});
+
 export type IPetInfoForm = z.infer<typeof petInfoSchema>;
 
 export type IBudgetTransactionForm = z.infer<typeof budgetTransactionSchema>;
@@ -115,3 +156,5 @@ export type IReminderForm = z.infer<typeof reminderSchema>;
 export type ISignInForm = z.infer<typeof signInSchema>;
 
 export type ISignUpForm = z.infer<typeof signUpSchema>;
+
+export type IShippingAddressForm = z.infer<typeof shippingAddressSchema>;

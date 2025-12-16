@@ -23,10 +23,11 @@ export const PhoneInputController = <T extends FieldValues>({
   control,
   rules,
   label,
+  onBlur,
   ...props
 }: InputControllerProps<T>) => {
   const {
-    field: { value, onChange, onBlur },
+    field: { value, onChange, onBlur: handleBlur },
     fieldState: { error },
   } = useController({ name, control, rules });
 
@@ -69,7 +70,10 @@ export const PhoneInputController = <T extends FieldValues>({
           className="py-1 flex-1 placeholder:text-text-secondary selection:text-text-link"
           onChangeText={handleFormatPhoneNumber}
           inputMode="tel"
-          onBlur={onBlur}
+          onBlur={(e) => {
+            onBlur?.(e);
+            handleBlur();
+          }}
           {...props}
         />
       </View>

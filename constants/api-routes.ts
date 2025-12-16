@@ -53,4 +53,9 @@ export const API_ROUTES = {
   CART_COUNT: "/cart/count",
 
   ORDER_SUMMARY: "/order/summary",
+
+  LIST_SHIPPING_ADDRESS: "/shipping-address",
+  CREATE_SHIPPING_ADDRESS: "/shipping-address/create",
+  UPDATE_SHIPPING_ADDRESS: (id: string) => `/shipping-address/${id}/update`,
+  DELETE_SHIPPING_ADDRESS: (id: string) => `/shipping-address/${id}/delete`,
 };

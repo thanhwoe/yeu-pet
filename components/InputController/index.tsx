@@ -33,10 +33,11 @@ export const InputController = <T extends FieldValues>({
   secureTextEntry,
   multiline,
   numberOfLines,
+  onBlur,
   ...props
 }: InputControllerProps<T>) => {
   const {
-    field: { value, onChange, onBlur },
+    field: { value, onChange, onBlur: handleBlur },
     fieldState: { error },
   } = useController({ name, control, rules });
 
@@ -49,19 +50,26 @@ export const InputController = <T extends FieldValues>({
     <View aria-invalid={!!error?.message} className="gap-1">
       {label && <Text variant="caption1">{label}</Text>}
       <View
-        className={`flex-row px-3 justify-center border border-line-primary rounded-lg gap-2 ${isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
-          }`}
+        className={`flex-row px-3 justify-center border border-line-primary rounded-lg gap-2 ${
+          isTextArea ? "py-3 items-start min-h-[100px]" : "py-2 items-center"
+        }`}
       >
         <TextInput
           value={value}
           onChangeText={format ? (t) => onChange(format(t)) : onChange}
           onEndEditing={() => onChange(value?.trim())}
           autoCapitalize="none"
-          className={cn('flex-1 placeholder:text-text-secondary selection:text-text-link py-1', {
-            "py-0 text-top min-h-[80px]": isTextArea
-          })}
+          className={cn(
+            "flex-1 placeholder:text-text-secondary selection:text-text-link py-1",
+            {
+              "py-0 text-top min-h-[80px]": isTextArea,
+            }
+          )}
           autoCorrect={false}
-          onBlur={onBlur}
+          onBlur={(e) => {
+            onBlur?.(e);
+            handleBlur();
+          }}
           secureTextEntry={isHide}
           multiline={multiline}
           numberOfLines={numberOfLines}
