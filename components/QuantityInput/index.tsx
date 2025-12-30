@@ -94,6 +94,10 @@ export const QuantityInput = ({
         className="placeholder:text-text-secondary flex-1 text-[14px] text-center selection:text-text-link"
         autoComplete="off"
         autoCorrect={false}
+        style={{
+          paddingTop: 0,
+          paddingBottom: 0,
+        }}
         maxFontSizeMultiplier={20 / 16}
         maxLength={4}
         verticalAlign="middle"

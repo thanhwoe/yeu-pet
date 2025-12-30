@@ -7,6 +7,7 @@ import { StyleSheet, View } from "react-native";
 
 export default function WelcomeScreen() {
   const router = useRouter();
+
   return (
     <View className="flex-1 p-5 bg-white">
       <LinearGradient

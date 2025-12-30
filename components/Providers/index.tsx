@@ -11,7 +11,6 @@ import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { AppLoader } from "../AppLoader";
 
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
@@ -92,9 +91,9 @@ const InitialProvider = ({ children }: Children) => {
     };
   }, []);
 
-  if (!isInitialized) {
-    return <AppLoader />;
-  }
+  // if (!isInitialized) {
+  //   return <AppLoader />;
+  // }
   return (
     <>
       <View style={[{ flex: 1 }, themes[colorScheme]]}>{children}</View>

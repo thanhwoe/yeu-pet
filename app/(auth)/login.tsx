@@ -8,7 +8,7 @@ import { useUserInfoStore } from "@/stores/user-info";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import React from "react";
-import { View } from "react-native";
+import { Keyboard, View } from "react-native";
 
 export default function LoginScreen() {
   const { updateUserInfo } = useUserInfoStore();
@@ -27,7 +27,13 @@ export default function LoginScreen() {
   };
 
   return (
-    <View className="flex-1 justify-center p-5 bg-white">
+    <View
+      onStartShouldSetResponder={() => {
+        Keyboard.dismiss();
+        return true;
+      }}
+      className="flex-1 justify-center p-5 bg-white"
+    >
       <View className="absolute right-0 w-72 top-10">
         <Image
           contentFit="contain"

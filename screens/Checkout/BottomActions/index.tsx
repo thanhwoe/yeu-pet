@@ -8,11 +8,18 @@ import { View } from "react-native";
 interface IProps {
   data?: IOrderSummaryResponse["data"]["summary"];
   loading?: boolean;
+  disabled?: boolean;
+  onPlaceOrder?: (amount: number) => void;
 }
 
 const EnhancedText = withLoading(Text);
 
-export const BottomActions = ({ data, loading }: IProps) => {
+export const BottomActions = ({
+  data,
+  loading,
+  onPlaceOrder,
+  disabled,
+}: IProps) => {
   return (
     <BottomActionWrapper>
       <View className="flex-row justify-between">
@@ -25,7 +32,12 @@ export const BottomActions = ({ data, loading }: IProps) => {
           {data?.total}
         </EnhancedText>
       </View>
-      <Button className="flex-1" loading={loading}>
+      <Button
+        className="flex-1"
+        loading={loading}
+        disabled={disabled}
+        onPress={() => onPlaceOrder?.(data?.total || 0)}
+      >
         Place Order
       </Button>
     </BottomActionWrapper>

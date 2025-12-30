@@ -1,6 +1,7 @@
 import { Skeleton } from "@/components/Skeleton";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { ORDER_KEY } from "@/constants/query-keys";
+import { usePayment } from "@/hooks/usePayment";
 import { getOrderSummaryQuery } from "@/services/order";
 import { useShopStore } from "@/stores/shop-store";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +16,8 @@ import { SummarySection } from "./SummarySection";
 export const CheckoutScreen = () => {
   const { productId, quantity } = useLocalSearchParams();
   const shippingAddress = useShopStore.use.shippingAddress();
+
+  const { paymentMethod, setPaymentMethod, handlePayment } = usePayment();
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ORDER_KEY.list({
@@ -49,9 +52,17 @@ export const CheckoutScreen = () => {
         <AddressSection data={data?.data.shippingAddress} />
         <ListItemSection data={data?.data.products ?? []} />
         <SummarySection data={data?.data.summary} />
-        <PaymentSection />
+        <PaymentSection
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+        />
       </ScreenContainer>
-      <BottomActions data={data?.data.summary} loading={isFetching} />
+      <BottomActions
+        onPlaceOrder={handlePayment}
+        disabled={!paymentMethod}
+        data={data?.data.summary}
+        loading={isFetching}
+      />
     </View>
   );
 };

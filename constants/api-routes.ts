@@ -58,4 +58,6 @@ export const API_ROUTES = {
   CREATE_SHIPPING_ADDRESS: "/shipping-address/create",
   UPDATE_SHIPPING_ADDRESS: (id: string) => `/shipping-address/${id}/update`,
   DELETE_SHIPPING_ADDRESS: (id: string) => `/shipping-address/${id}/delete`,
+
+  PAYMENT_VNPAY: "/payment/vnpay",
 };

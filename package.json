@@ -8,7 +8,9 @@
     "eas": "npx eas-cli@latest",
     "build:dev:android": "eas build --platform android --profile development",
     "build:dev:ios": "eas build --platform ios --profile ios-simulator",
-    "install:dev:ios": "eas build:run -p ios"
+    "install:dev:ios": "eas build:run -p ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -29,6 +31,7 @@
     "dayjs": "^1.11.13",
     "expo": "~53.0.17",
     "expo-blur": "~14.1.5",
+    "expo-build-properties": "~0.14.8",
     "expo-constants": "~17.1.7",
     "expo-dev-client": "~5.2.4",
     "expo-device": "~7.1.4",
@@ -88,5 +91,10 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "typescript": "~5.8.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "autolinking": {
+      "nativeModulesDir": "./modules"
+    }
+  }
 }

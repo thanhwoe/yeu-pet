@@ -15,18 +15,6 @@ export const wrapperStyles = cva("gap-2 my-1 items-center rounded-xl", {
       false: "flex-row",
     },
   },
-  compoundVariants: [
-    {
-      reverse: true,
-      checked: true,
-      className: "border border-transparent",
-    },
-    {
-      reverse: true,
-      checked: false,
-      className: "border border-line-card",
-    },
-  ],
   defaultVariants: {
     reverse: false,
   },

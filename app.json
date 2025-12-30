@@ -83,7 +83,7 @@
           "enableBackgroundRemoteNotifications": false,
           "sounds": [
             "./assets/sounds/notification.wav",
-            "./assets/sounds/fallback-notification.wav"
+            "./assets/sounds/fallback_notification.wav"
           ]
         }
       ],
@@ -91,6 +91,23 @@
         "expo-web-browser",
         {
           "experimentalLauncherActivity": true
+        }
+      ],
+      [
+        "./modules/vnpay/plugin.js",
+        {
+          "scheme": "petcare"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "gradleProperties": {
+              "android.enableJetifier": "true",
+              "android.useAndroidX": "true"
+            }
+          }
         }
       ]
     ],
@@ -103,9 +120,7 @@
         "projectId": "ece16c3d-7c90-4b45-8744-cdcc47ef5d95"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/b66e4571-ab20-40db-ad7c-8739ef65fed8"
     },
