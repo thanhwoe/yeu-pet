@@ -10,11 +10,11 @@ const OPTIONS = [
     logo: require("@/assets/images/vnpay-logo.png"),
     value: PaymentMethod.VNPAY,
   },
-  {
-    label: "ZaloPay",
-    logo: require("@/assets/images/zalopay-logo.png"),
-    value: PaymentMethod.ZALOPAY,
-  },
+  // {
+  //   label: "ZaloPay",
+  //   logo: require("@/assets/images/zalopay-logo.png"),
+  //   value: PaymentMethod.ZALOPAY,
+  // },
 ];
 
 export type IPaymentSectionProps = {

@@ -94,22 +94,12 @@
         }
       ],
       [
-        "./modules/vnpay/plugin.js",
+        "./modules/vnpay/withAndroidManifest.js",
         {
           "scheme": "petcare"
         }
       ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "gradleProperties": {
-              "android.enableJetifier": "true",
-              "android.useAndroidX": "true"
-            }
-          }
-        }
-      ]
+      ["./modules/vnpay/withAndroidGradleProperties.js"]
     ],
     "experiments": {
       "typedRoutes": true
@@ -120,7 +110,7 @@
         "projectId": "ece16c3d-7c90-4b45-8744-cdcc47ef5d95"
       }
     },
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": "appVersion",
     "updates": {
       "url": "https://u.expo.dev/b66e4571-ab20-40db-ad7c-8739ef65fed8"
     },

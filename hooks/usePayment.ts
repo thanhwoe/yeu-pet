@@ -85,6 +85,7 @@ export const usePayment = () => {
   };
 
   const handleVNPayResponse = (data: string) => {
+    // https://sandbox.vnpayment.vn/apis/files/VNPAY%20Payment%20Gateway_Techspec%20Post%20method%202.1.0-VN.pdf
     // https://sandbox.vnpayment.vn/apis/docs/thanh-toan-token/token.html
     switch (data) {
       case "00":
