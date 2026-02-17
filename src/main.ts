@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,61 @@ async function bootstrap() {
 
   // CORS
   app.enableCors();
+
+  const environment: string =
+    configService.get<string>('NODE_ENV') ?? 'development';
+
+  const isDevelopment = environment === 'development';
+
+  app.use(
+    helmet({
+      // Content Security Policy
+      contentSecurityPolicy: isDevelopment
+        ? false
+        : {
+            directives: {
+              defaultSrc: ["'self'"],
+              styleSrc: ["'self'", "'unsafe-inline'"],
+              scriptSrc: ["'self'"],
+              imgSrc: ["'self'", 'data:', 'https:'],
+              connectSrc: ["'self'"],
+              fontSrc: ["'self'"],
+              objectSrc: ["'none'"],
+              mediaSrc: ["'self'"],
+              frameSrc: ["'none'"],
+            },
+          },
+
+      // Prevents clickjacking
+      frameguard: { action: 'deny' },
+
+      // Forces HTTPS
+      hsts: isDevelopment
+        ? false
+        : { maxAge: 31536000, includeSubDomains: true, preload: true },
+
+      // Prevents MIME type sniffing
+      noSniff: true,
+
+      // Disables X-Powered-By header
+      hidePoweredBy: true,
+
+      // Controls referrer info in headers
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+
+      // Enables XSS filter
+      xssFilter: true,
+
+      // Disables DNS prefetching
+      dnsPrefetchControl: { allow: false },
+
+      // Prevents IE from opening downloads in site context
+      ieNoOpen: true,
+
+      // Blocks site from being loaded in a cross-domain context
+      permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+    }),
+  );
 
   // Swagger
   const config = new DocumentBuilder()

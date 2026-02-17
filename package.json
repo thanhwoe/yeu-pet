@@ -21,7 +21,11 @@
     "db:pull": "prisma db pull",
     "db:migrate:reset": "prisma migrate reset",
     "db:migrate": "prisma migrate dev --name",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "docker:down": "docker compose down -v",
+    "docker:build": "docker compose build",
+    "docker:build:no-cache": "docker compose build --no-cache",
+    "docker:up": "docker compose up"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -44,6 +48,7 @@
     "cloudinary": "^2.9.0",
     "dayjs": "^1.11.19",
     "handlebars": "^4.7.8",
+    "helmet": "^8.1.0",
     "ioredis": "^5.9.2",
     "multer": "^2.0.2",
     "nodemailer": "^8.0.1",
