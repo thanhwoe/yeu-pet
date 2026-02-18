@@ -23,3 +23,33 @@ export const user_role = {
 } as const
 
 export type user_role = (typeof user_role)[keyof typeof user_role]
+
+
+export const gender_enum = {
+  male: 'male',
+  female: 'female',
+  unknown: 'unknown'
+} as const
+
+export type gender_enum = (typeof gender_enum)[keyof typeof gender_enum]
+
+
+export const record_type = {
+  vaccination: 'vaccination',
+  checkup: 'checkup',
+  surgery: 'surgery',
+  medication: 'medication'
+} as const
+
+export type record_type = (typeof record_type)[keyof typeof record_type]
+
+
+export const species_enum = {
+  dog: 'dog',
+  cat: 'cat',
+  bird: 'bird',
+  rabbit: 'rabbit',
+  other: 'other'
+} as const
+
+export type species_enum = (typeof species_enum)[keyof typeof species_enum]

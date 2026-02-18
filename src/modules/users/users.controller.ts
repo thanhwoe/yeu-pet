@@ -2,15 +2,11 @@ import {
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
   Get,
   HttpCode,
   HttpStatus,
-  MaxFileSizeValidator,
-  ParseFilePipe,
   Patch,
   Post,
-  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -27,6 +23,7 @@ import { DeleteUserDto } from './dto/delete-user.dto';
 import { minutes, Throttle } from '@nestjs/throttler';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -89,15 +86,7 @@ export class UsersController {
   async updateMyProfile(
     @CurrentUser() user: accounts,
     @Body() updateProfileDto: UpdateProfileDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
-          new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/ }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
+    @FileUploaded()
     avatar?: Express.Multer.File,
   ) {
     return this.usersService.updateProfile(user.id, updateProfileDto, avatar);

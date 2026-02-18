@@ -52,3 +52,13 @@ export type refresh_tokens = Prisma.refresh_tokensModel
  * 
  */
 export type otp_tokens = Prisma.otp_tokensModel
+/**
+ * Model medical_records
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ */
+export type medical_records = Prisma.medical_recordsModel
+/**
+ * Model pets
+ * 
+ */
+export type pets = Prisma.petsModel

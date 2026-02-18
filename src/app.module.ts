@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ThrottlerModule, minutes, seconds } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { SharedModule } from './modules/shared/shared.module';
+import { PetsModule } from './modules/pets/pets.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SharedModule } from './modules/shared/shared.module';
     UsersModule,
     PrismaModule,
     SharedModule,
+    PetsModule,
   ],
   controllers: [AppController],
   providers: [

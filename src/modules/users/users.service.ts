@@ -219,6 +219,7 @@ export class UsersService {
       await this.fileUploadService.addUploadJob({
         jobName: FILE_UPLOAD_JOBS.USER_AVATAR,
         file: avatarFile,
+        itemId: userId,
         options: {
           userId,
           folder: `users/${userId}`,

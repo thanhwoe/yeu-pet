@@ -4,11 +4,13 @@ import { FileUploadService } from './file-upload.service';
 import { IFileUploadService } from '@app/interfaces/file-upload.interface';
 import { CloudinaryService } from './cloudinary/clodinary.service';
 import { UsersRepository } from '@app/modules/users/users.repository';
+import { PetsRepository } from '@app/modules/pets/pets.repository';
 
 @Module({
   providers: [
     FileUploadService,
     UsersRepository,
+    PetsRepository,
     FileUploadProcessor,
     {
       provide: IFileUploadService,

@@ -10,6 +10,7 @@ import {
 import Stream from 'stream';
 import { UsersRepository } from '@app/modules/users/users.repository';
 import { FILE_UPLOAD_JOBS } from './file-upload.jobs';
+import { PetsRepository } from '@app/modules/pets/pets.repository';
 
 @Processor(BULLMQ_QUEUES.FILE_UPLOAD, { concurrency: 3 })
 export class FileUploadProcessor extends WorkerHost {
@@ -17,6 +18,7 @@ export class FileUploadProcessor extends WorkerHost {
     @Inject(IFileUploadService)
     private readonly fileUploadService: IFileUploadService,
     private readonly usersRepository: UsersRepository,
+    private readonly petsRepository: PetsRepository,
   ) {
     super();
   }
@@ -24,7 +26,7 @@ export class FileUploadProcessor extends WorkerHost {
   async process(
     job: Job<UploadJobData, any, keyof typeof FILE_UPLOAD_JOBS>,
   ): Promise<any> {
-    const { file, options } = job.data;
+    const { file, options, itemId } = job.data;
 
     // Convert buffer back to Multer file format
     const multerFile: Express.Multer.File = {
@@ -55,7 +57,11 @@ export class FileUploadProcessor extends WorkerHost {
     // Handle specific logic by job name
     switch (job.name) {
       case FILE_UPLOAD_JOBS.USER_AVATAR:
-        await this.updateUserAvatar(result, options?.userId);
+        await this.updateUserAvatar(result, itemId);
+        break;
+
+      case FILE_UPLOAD_JOBS.PET_AVATAR:
+        await this.updatePetAvatar(result, itemId);
         break;
 
       default:
@@ -71,11 +77,15 @@ export class FileUploadProcessor extends WorkerHost {
     };
   }
 
-  private async updateUserAvatar(data: UploadResult, userId?: string) {
-    if (!userId) {
-      return null;
-    }
+  private async updateUserAvatar(data: UploadResult, userId: string) {
     return this.usersRepository.update(userId, {
+      avatar_id: data.publicId,
+      avatar_url: data.url,
+    });
+  }
+
+  private async updatePetAvatar(data: UploadResult, petId: string) {
+    return this.petsRepository.update(petId, {
       avatar_id: data.publicId,
       avatar_url: data.url,
     });

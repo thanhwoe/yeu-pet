@@ -53,7 +53,9 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   accounts: 'accounts',
   refresh_tokens: 'refresh_tokens',
-  otp_tokens: 'otp_tokens'
+  otp_tokens: 'otp_tokens',
+  medical_records: 'medical_records',
+  pets: 'pets'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -80,16 +82,16 @@ export const AccountsScalarFieldEnum = {
   password_hash: 'password_hash',
   phone: 'phone',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   role: 'role',
   onboarding_completed: 'onboarding_completed',
   subscription: 'subscription',
   subscription_expires_at: 'subscription_expires_at',
-  is_active: 'is_active',
-  is_verified: 'is_verified',
   last_sign_in_at: 'last_sign_in_at',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  is_active: 'is_active',
+  is_verified: 'is_verified',
+  avatar_id: 'avatar_id'
 } as const
 
 export type AccountsScalarFieldEnum = (typeof AccountsScalarFieldEnum)[keyof typeof AccountsScalarFieldEnum]
@@ -119,12 +121,58 @@ export const Otp_tokensScalarFieldEnum = {
 export type Otp_tokensScalarFieldEnum = (typeof Otp_tokensScalarFieldEnum)[keyof typeof Otp_tokensScalarFieldEnum]
 
 
+export const Medical_recordsScalarFieldEnum = {
+  id: 'id',
+  pet_id: 'pet_id',
+  record_type: 'record_type',
+  title: 'title',
+  description: 'description',
+  date: 'date',
+  vet_clinic: 'vet_clinic',
+  vet_name: 'vet_name',
+  attachments: 'attachments',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Medical_recordsScalarFieldEnum = (typeof Medical_recordsScalarFieldEnum)[keyof typeof Medical_recordsScalarFieldEnum]
+
+
+export const PetsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  name: 'name',
+  age: 'age',
+  birthdate: 'birthdate',
+  breed: 'breed',
+  weight: 'weight',
+  color: 'color',
+  avatar_url: 'avatar_url',
+  avatar_id: 'avatar_id',
+  gender: 'gender',
+  species: 'species',
+  notes: 'notes',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -141,4 +189,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -386,7 +386,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   accounts: 'accounts',
   refresh_tokens: 'refresh_tokens',
-  otp_tokens: 'otp_tokens'
+  otp_tokens: 'otp_tokens',
+  medical_records: 'medical_records',
+  pets: 'pets'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +630,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    medical_records: {
+      payload: Prisma.$medical_recordsPayload<ExtArgs>
+      fields: Prisma.medical_recordsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.medical_recordsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.medical_recordsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        findFirst: {
+          args: Prisma.medical_recordsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.medical_recordsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        findMany: {
+          args: Prisma.medical_recordsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>[]
+        }
+        create: {
+          args: Prisma.medical_recordsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        createMany: {
+          args: Prisma.medical_recordsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.medical_recordsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>[]
+        }
+        delete: {
+          args: Prisma.medical_recordsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        update: {
+          args: Prisma.medical_recordsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        deleteMany: {
+          args: Prisma.medical_recordsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.medical_recordsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.medical_recordsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>[]
+        }
+        upsert: {
+          args: Prisma.medical_recordsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_recordsPayload>
+        }
+        aggregate: {
+          args: Prisma.Medical_recordsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMedical_records>
+        }
+        groupBy: {
+          args: Prisma.medical_recordsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Medical_recordsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.medical_recordsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Medical_recordsCountAggregateOutputType> | number
+        }
+      }
+    }
+    pets: {
+      payload: Prisma.$petsPayload<ExtArgs>
+      fields: Prisma.petsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.petsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.petsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        findFirst: {
+          args: Prisma.petsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.petsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        findMany: {
+          args: Prisma.petsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>[]
+        }
+        create: {
+          args: Prisma.petsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        createMany: {
+          args: Prisma.petsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.petsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>[]
+        }
+        delete: {
+          args: Prisma.petsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        update: {
+          args: Prisma.petsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        deleteMany: {
+          args: Prisma.petsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.petsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.petsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>[]
+        }
+        upsert: {
+          args: Prisma.petsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$petsPayload>
+        }
+        aggregate: {
+          args: Prisma.PetsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePets>
+        }
+        groupBy: {
+          args: Prisma.petsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PetsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.petsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PetsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -675,16 +825,16 @@ export const AccountsScalarFieldEnum = {
   password_hash: 'password_hash',
   phone: 'phone',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   role: 'role',
   onboarding_completed: 'onboarding_completed',
   subscription: 'subscription',
   subscription_expires_at: 'subscription_expires_at',
-  is_active: 'is_active',
-  is_verified: 'is_verified',
   last_sign_in_at: 'last_sign_in_at',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  is_active: 'is_active',
+  is_verified: 'is_verified',
+  avatar_id: 'avatar_id'
 } as const
 
 export type AccountsScalarFieldEnum = (typeof AccountsScalarFieldEnum)[keyof typeof AccountsScalarFieldEnum]
@@ -714,12 +864,58 @@ export const Otp_tokensScalarFieldEnum = {
 export type Otp_tokensScalarFieldEnum = (typeof Otp_tokensScalarFieldEnum)[keyof typeof Otp_tokensScalarFieldEnum]
 
 
+export const Medical_recordsScalarFieldEnum = {
+  id: 'id',
+  pet_id: 'pet_id',
+  record_type: 'record_type',
+  title: 'title',
+  description: 'description',
+  date: 'date',
+  vet_clinic: 'vet_clinic',
+  vet_name: 'vet_name',
+  attachments: 'attachments',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Medical_recordsScalarFieldEnum = (typeof Medical_recordsScalarFieldEnum)[keyof typeof Medical_recordsScalarFieldEnum]
+
+
+export const PetsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  name: 'name',
+  age: 'age',
+  birthdate: 'birthdate',
+  breed: 'breed',
+  weight: 'weight',
+  color: 'color',
+  avatar_url: 'avatar_url',
+  avatar_id: 'avatar_id',
+  gender: 'gender',
+  species: 'species',
+  notes: 'notes',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -736,6 +932,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -808,6 +1013,34 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'record_type'
+ */
+export type Enumrecord_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'record_type'>
+    
+
+
+/**
+ * Reference to a field of type 'record_type[]'
+ */
+export type ListEnumrecord_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'record_type[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -818,6 +1051,48 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'gender_enum'
+ */
+export type Enumgender_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'gender_enum'>
+    
+
+
+/**
+ * Reference to a field of type 'gender_enum[]'
+ */
+export type ListEnumgender_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'gender_enum[]'>
+    
+
+
+/**
+ * Reference to a field of type 'species_enum'
+ */
+export type Enumspecies_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'species_enum'>
+    
+
+
+/**
+ * Reference to a field of type 'species_enum[]'
+ */
+export type ListEnumspecies_enumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'species_enum[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -918,6 +1193,8 @@ export type GlobalOmitConfig = {
   accounts?: Prisma.accountsOmit
   refresh_tokens?: Prisma.refresh_tokensOmit
   otp_tokens?: Prisma.otp_tokensOmit
+  medical_records?: Prisma.medical_recordsOmit
+  pets?: Prisma.petsOmit
 }
 
 /* Types for Logging */

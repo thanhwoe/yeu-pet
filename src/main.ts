@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import helmet from 'helmet';
+import { PrismaExceptionFilter } from './filters/prisma-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -96,8 +97,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`${apiPrefix}/docs`, app, document);
 
-  // Exceptions Filter
-  app.useGlobalFilters(new AllExceptionsFilter());
+  // Exception Filters
+  app.useGlobalFilters(new AllExceptionsFilter(), new PrismaExceptionFilter());
 
   // Global Validation
   app.useGlobalPipes(

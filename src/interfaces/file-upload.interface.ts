@@ -37,11 +37,13 @@ export interface UploadJobData {
     originalname: string;
     mimetype: string;
   };
+  itemId: string;
   options?: UploadJobOptions;
 }
 
 export interface UploadJobParams {
   jobName: string;
   file: Express.Multer.File;
+  itemId: string;
   options?: UploadJobOptions;
 }

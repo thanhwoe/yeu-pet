@@ -13,13 +13,14 @@ export class FileUploadService {
     @InjectQueue(BULLMQ_QUEUES.FILE_UPLOAD) private readonly uploadQueue: Queue,
   ) {}
 
-  async addUploadJob({ file, jobName, options }: UploadJobParams) {
+  async addUploadJob({ file, jobName, options, itemId }: UploadJobParams) {
     const jobData: UploadJobData = {
       file: {
         buffer: file.buffer,
         originalname: file.originalname,
         mimetype: file.mimetype,
       },
+      itemId,
       options,
     };
 
