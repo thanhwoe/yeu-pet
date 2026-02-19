@@ -11,6 +11,7 @@ import { ThrottlerModule, minutes, seconds } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { SharedModule } from './modules/shared/shared.module';
 import { PetsModule } from './modules/pets/pets.module';
+import { CaslModule } from './modules/casl/casl.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PetsModule } from './modules/pets/pets.module';
     PrismaModule,
     SharedModule,
     PetsModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [
