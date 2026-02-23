@@ -12,6 +12,7 @@ import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { SharedModule } from './modules/shared/shared.module';
 import { PetsModule } from './modules/pets/pets.module';
 import { CaslModule } from './modules/casl/casl.module';
+import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CaslModule } from './modules/casl/casl.module';
     SharedModule,
     PetsModule,
     CaslModule,
+    MedicalRecordsModule,
   ],
   controllers: [AppController],
   providers: [

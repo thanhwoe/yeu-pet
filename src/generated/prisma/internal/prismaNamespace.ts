@@ -388,7 +388,8 @@ export const ModelName = {
   refresh_tokens: 'refresh_tokens',
   otp_tokens: 'otp_tokens',
   medical_records: 'medical_records',
-  pets: 'pets'
+  pets: 'pets',
+  medical_attachments: 'medical_attachments'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    medical_attachments: {
+      payload: Prisma.$medical_attachmentsPayload<ExtArgs>
+      fields: Prisma.medical_attachmentsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.medical_attachmentsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.medical_attachmentsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        findFirst: {
+          args: Prisma.medical_attachmentsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.medical_attachmentsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        findMany: {
+          args: Prisma.medical_attachmentsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>[]
+        }
+        create: {
+          args: Prisma.medical_attachmentsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        createMany: {
+          args: Prisma.medical_attachmentsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.medical_attachmentsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>[]
+        }
+        delete: {
+          args: Prisma.medical_attachmentsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        update: {
+          args: Prisma.medical_attachmentsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        deleteMany: {
+          args: Prisma.medical_attachmentsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.medical_attachmentsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.medical_attachmentsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>[]
+        }
+        upsert: {
+          args: Prisma.medical_attachmentsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$medical_attachmentsPayload>
+        }
+        aggregate: {
+          args: Prisma.Medical_attachmentsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMedical_attachments>
+        }
+        groupBy: {
+          args: Prisma.medical_attachmentsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Medical_attachmentsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.medical_attachmentsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Medical_attachmentsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -873,7 +948,6 @@ export const Medical_recordsScalarFieldEnum = {
   date: 'date',
   vet_clinic: 'vet_clinic',
   vet_name: 'vet_name',
-  attachments: 'attachments',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -891,15 +965,28 @@ export const PetsScalarFieldEnum = {
   weight: 'weight',
   color: 'color',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   gender: 'gender',
   species: 'species',
   notes: 'notes',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  avatar_id: 'avatar_id'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
+
+
+export const Medical_attachmentsScalarFieldEnum = {
+  id: 'id',
+  medical_id: 'medical_id',
+  deleted_at: 'deleted_at',
+  url: 'url',
+  public_id: 'public_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -908,14 +995,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const NullableJsonNullValueInput = {
-  DbNull: DbNull,
-  JsonNull: JsonNull
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -932,15 +1011,6 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: DbNull,
-  JsonNull: JsonNull,
-  AnyNull: AnyNull
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1023,20 +1093,6 @@ export type Enumrecord_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'record_type[]'
  */
 export type ListEnumrecord_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'record_type[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1195,6 +1251,7 @@ export type GlobalOmitConfig = {
   otp_tokens?: Prisma.otp_tokensOmit
   medical_records?: Prisma.medical_recordsOmit
   pets?: Prisma.petsOmit
+  medical_attachments?: Prisma.medical_attachmentsOmit
 }
 
 /* Types for Logging */

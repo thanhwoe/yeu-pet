@@ -15,6 +15,9 @@ import { BULLMQ_QUEUES } from './bullmq.queue';
       name: BULLMQ_QUEUES.FILE_UPLOAD,
     }),
     BullModule.registerQueue({
+      name: BULLMQ_QUEUES.FILE_DELETE,
+    }),
+    BullModule.registerQueue({
       name: BULLMQ_QUEUES.SEND_OTP,
     }),
   ],

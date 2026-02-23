@@ -42,3 +42,8 @@ export type medical_records = Prisma.medical_recordsModel
  * 
  */
 export type pets = Prisma.petsModel
+/**
+ * Model medical_attachments
+ * 
+ */
+export type medical_attachments = Prisma.medical_attachmentsModel

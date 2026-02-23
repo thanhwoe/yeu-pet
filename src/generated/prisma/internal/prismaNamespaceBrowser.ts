@@ -55,7 +55,8 @@ export const ModelName = {
   refresh_tokens: 'refresh_tokens',
   otp_tokens: 'otp_tokens',
   medical_records: 'medical_records',
-  pets: 'pets'
+  pets: 'pets',
+  medical_attachments: 'medical_attachments'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -130,7 +131,6 @@ export const Medical_recordsScalarFieldEnum = {
   date: 'date',
   vet_clinic: 'vet_clinic',
   vet_name: 'vet_name',
-  attachments: 'attachments',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -148,15 +148,28 @@ export const PetsScalarFieldEnum = {
   weight: 'weight',
   color: 'color',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   gender: 'gender',
   species: 'species',
   notes: 'notes',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  avatar_id: 'avatar_id'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
+
+
+export const Medical_attachmentsScalarFieldEnum = {
+  id: 'id',
+  medical_id: 'medical_id',
+  deleted_at: 'deleted_at',
+  url: 'url',
+  public_id: 'public_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -165,14 +178,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const NullableJsonNullValueInput = {
-  DbNull: DbNull,
-  JsonNull: JsonNull
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -189,13 +194,4 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: DbNull,
-  JsonNull: JsonNull,
-  AnyNull: AnyNull
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

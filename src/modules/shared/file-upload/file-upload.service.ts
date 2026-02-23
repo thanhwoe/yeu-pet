@@ -3,6 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { BULLMQ_QUEUES } from '../bullmq/bullmq.queue';
 import {
+  FileDeleteJobParams,
   UploadJobData,
   UploadJobParams,
 } from '@app/interfaces/file-upload.interface';
@@ -11,17 +12,22 @@ import {
 export class FileUploadService {
   constructor(
     @InjectQueue(BULLMQ_QUEUES.FILE_UPLOAD) private readonly uploadQueue: Queue,
+    @InjectQueue(BULLMQ_QUEUES.FILE_DELETE) private readonly deleteQueue: Queue,
   ) {}
 
-  async addUploadJob({ file, jobName, options, itemId }: UploadJobParams) {
+  async addUploadJob({ files, jobName, itemId, userId }: UploadJobParams) {
     const jobData: UploadJobData = {
-      file: {
-        buffer: file.buffer,
-        originalname: file.originalname,
-        mimetype: file.mimetype,
-      },
+      files: files.map(({ file, folder, id }) => ({
+        file: {
+          buffer: file.buffer,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+        },
+        id,
+        folder,
+      })),
       itemId,
-      options,
+      userId,
     };
 
     const job = await this.uploadQueue.add(jobName, jobData, {
@@ -34,6 +40,14 @@ export class FileUploadService {
     return {
       jobId: job.id,
       message: 'Upload queued successfully',
+    };
+  }
+
+  async addDeleteJob({ ids, jobName }: FileDeleteJobParams) {
+    const job = await this.deleteQueue.add(jobName, { ids });
+    return {
+      jobId: job.id,
+      message: 'Delete file queued successfully',
     };
   }
 

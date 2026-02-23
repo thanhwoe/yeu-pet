@@ -21,7 +21,10 @@ export class PetsRepository implements IPetsRepository {
   async update(id: string, data: Partial<pets>) {
     return this.prisma.pets.update({
       where: { id },
-      data,
+      data: {
+        updated_at: new Date(),
+        ...data,
+      },
     });
   }
 
@@ -40,6 +43,7 @@ export class PetsRepository implements IPetsRepository {
       orderBy: { created_at: 'desc' },
     });
   }
+
   async findById(id: string) {
     return this.prisma.pets.findUnique({
       where: { id },

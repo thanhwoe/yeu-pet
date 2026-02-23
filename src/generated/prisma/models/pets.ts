@@ -44,12 +44,12 @@ export type PetsMinAggregateOutputType = {
   weight: string | null
   color: string | null
   avatar_url: string | null
-  avatar_id: string | null
   gender: $Enums.gender_enum | null
   species: $Enums.species_enum | null
   notes: string | null
   created_at: Date | null
   updated_at: Date | null
+  avatar_id: string | null
 }
 
 export type PetsMaxAggregateOutputType = {
@@ -62,12 +62,12 @@ export type PetsMaxAggregateOutputType = {
   weight: string | null
   color: string | null
   avatar_url: string | null
-  avatar_id: string | null
   gender: $Enums.gender_enum | null
   species: $Enums.species_enum | null
   notes: string | null
   created_at: Date | null
   updated_at: Date | null
+  avatar_id: string | null
 }
 
 export type PetsCountAggregateOutputType = {
@@ -80,12 +80,12 @@ export type PetsCountAggregateOutputType = {
   weight: number
   color: number
   avatar_url: number
-  avatar_id: number
   gender: number
   species: number
   notes: number
   created_at: number
   updated_at: number
+  avatar_id: number
   _all: number
 }
 
@@ -108,12 +108,12 @@ export type PetsMinAggregateInputType = {
   weight?: true
   color?: true
   avatar_url?: true
-  avatar_id?: true
   gender?: true
   species?: true
   notes?: true
   created_at?: true
   updated_at?: true
+  avatar_id?: true
 }
 
 export type PetsMaxAggregateInputType = {
@@ -126,12 +126,12 @@ export type PetsMaxAggregateInputType = {
   weight?: true
   color?: true
   avatar_url?: true
-  avatar_id?: true
   gender?: true
   species?: true
   notes?: true
   created_at?: true
   updated_at?: true
+  avatar_id?: true
 }
 
 export type PetsCountAggregateInputType = {
@@ -144,12 +144,12 @@ export type PetsCountAggregateInputType = {
   weight?: true
   color?: true
   avatar_url?: true
-  avatar_id?: true
   gender?: true
   species?: true
   notes?: true
   created_at?: true
   updated_at?: true
+  avatar_id?: true
   _all?: true
 }
 
@@ -249,12 +249,12 @@ export type PetsGroupByOutputType = {
   weight: string | null
   color: string | null
   avatar_url: string | null
-  avatar_id: string | null
   gender: $Enums.gender_enum | null
   species: $Enums.species_enum | null
   notes: string | null
   created_at: Date | null
   updated_at: Date | null
+  avatar_id: string | null
   _count: PetsCountAggregateOutputType | null
   _avg: PetsAvgAggregateOutputType | null
   _sum: PetsSumAggregateOutputType | null
@@ -290,12 +290,12 @@ export type petsWhereInput = {
   weight?: Prisma.StringNullableFilter<"pets"> | string | null
   color?: Prisma.StringNullableFilter<"pets"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"pets"> | string | null
-  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   gender?: Prisma.Enumgender_enumNullableFilter<"pets"> | $Enums.gender_enum | null
   species?: Prisma.Enumspecies_enumNullableFilter<"pets"> | $Enums.species_enum | null
   notes?: Prisma.StringNullableFilter<"pets"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
+  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   medical_records?: Prisma.Medical_recordsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
 }
@@ -310,12 +310,12 @@ export type petsOrderByWithRelationInput = {
   weight?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   species?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   medical_records?: Prisma.medical_recordsOrderByRelationAggregateInput
   accounts?: Prisma.accountsOrderByWithRelationInput
 }
@@ -333,12 +333,12 @@ export type petsWhereUniqueInput = Prisma.AtLeast<{
   weight?: Prisma.StringNullableFilter<"pets"> | string | null
   color?: Prisma.StringNullableFilter<"pets"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"pets"> | string | null
-  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   gender?: Prisma.Enumgender_enumNullableFilter<"pets"> | $Enums.gender_enum | null
   species?: Prisma.Enumspecies_enumNullableFilter<"pets"> | $Enums.species_enum | null
   notes?: Prisma.StringNullableFilter<"pets"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
+  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   medical_records?: Prisma.Medical_recordsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
 }, "id">
@@ -353,12 +353,12 @@ export type petsOrderByWithAggregationInput = {
   weight?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   species?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.petsCountOrderByAggregateInput
   _avg?: Prisma.petsAvgOrderByAggregateInput
   _max?: Prisma.petsMaxOrderByAggregateInput
@@ -379,12 +379,12 @@ export type petsScalarWhereWithAggregatesInput = {
   weight?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
   avatar_url?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
-  avatar_id?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
   gender?: Prisma.Enumgender_enumNullableWithAggregatesFilter<"pets"> | $Enums.gender_enum | null
   species?: Prisma.Enumspecies_enumNullableWithAggregatesFilter<"pets"> | $Enums.species_enum | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"pets"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"pets"> | Date | string | null
+  avatar_id?: Prisma.StringNullableWithAggregatesFilter<"pets"> | string | null
 }
 
 export type petsCreateInput = {
@@ -396,12 +396,12 @@ export type petsCreateInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
   medical_records?: Prisma.medical_recordsCreateNestedManyWithoutPetsInput
   accounts: Prisma.accountsCreateNestedOneWithoutPetsInput
 }
@@ -416,12 +416,12 @@ export type petsUncheckedCreateInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
   medical_records?: Prisma.medical_recordsUncheckedCreateNestedManyWithoutPetsInput
 }
 
@@ -434,12 +434,12 @@ export type petsUpdateInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUpdateManyWithoutPetsNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPetsNestedInput
 }
@@ -454,12 +454,12 @@ export type petsUncheckedUpdateInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUncheckedUpdateManyWithoutPetsNestedInput
 }
 
@@ -473,12 +473,12 @@ export type petsCreateManyInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
 }
 
 export type petsUpdateManyMutationInput = {
@@ -490,12 +490,12 @@ export type petsUpdateManyMutationInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type petsUncheckedUpdateManyInput = {
@@ -508,12 +508,12 @@ export type petsUncheckedUpdateManyInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PetsListRelationFilter = {
@@ -541,12 +541,12 @@ export type petsCountOrderByAggregateInput = {
   weight?: Prisma.SortOrder
   color?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
-  avatar_id?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   species?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  avatar_id?: Prisma.SortOrder
 }
 
 export type petsAvgOrderByAggregateInput = {
@@ -563,12 +563,12 @@ export type petsMaxOrderByAggregateInput = {
   weight?: Prisma.SortOrder
   color?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
-  avatar_id?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   species?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  avatar_id?: Prisma.SortOrder
 }
 
 export type petsMinOrderByAggregateInput = {
@@ -581,12 +581,12 @@ export type petsMinOrderByAggregateInput = {
   weight?: Prisma.SortOrder
   color?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
-  avatar_id?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   species?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  avatar_id?: Prisma.SortOrder
 }
 
 export type petsSumOrderByAggregateInput = {
@@ -674,12 +674,12 @@ export type petsCreateWithoutAccountsInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
   medical_records?: Prisma.medical_recordsCreateNestedManyWithoutPetsInput
 }
 
@@ -692,12 +692,12 @@ export type petsUncheckedCreateWithoutAccountsInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
   medical_records?: Prisma.medical_recordsUncheckedCreateNestedManyWithoutPetsInput
 }
 
@@ -740,12 +740,12 @@ export type petsScalarWhereInput = {
   weight?: Prisma.StringNullableFilter<"pets"> | string | null
   color?: Prisma.StringNullableFilter<"pets"> | string | null
   avatar_url?: Prisma.StringNullableFilter<"pets"> | string | null
-  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   gender?: Prisma.Enumgender_enumNullableFilter<"pets"> | $Enums.gender_enum | null
   species?: Prisma.Enumspecies_enumNullableFilter<"pets"> | $Enums.species_enum | null
   notes?: Prisma.StringNullableFilter<"pets"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"pets"> | Date | string | null
+  avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
 }
 
 export type petsCreateWithoutMedical_recordsInput = {
@@ -757,12 +757,12 @@ export type petsCreateWithoutMedical_recordsInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPetsInput
 }
 
@@ -776,12 +776,12 @@ export type petsUncheckedCreateWithoutMedical_recordsInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
 }
 
 export type petsCreateOrConnectWithoutMedical_recordsInput = {
@@ -809,12 +809,12 @@ export type petsUpdateWithoutMedical_recordsInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPetsNestedInput
 }
 
@@ -828,12 +828,12 @@ export type petsUncheckedUpdateWithoutMedical_recordsInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type petsCreateManyAccountsInput = {
@@ -845,12 +845,12 @@ export type petsCreateManyAccountsInput = {
   weight?: string | null
   color?: string | null
   avatar_url?: string | null
-  avatar_id?: string | null
   gender?: $Enums.gender_enum | null
   species?: $Enums.species_enum | null
   notes?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  avatar_id?: string | null
 }
 
 export type petsUpdateWithoutAccountsInput = {
@@ -862,12 +862,12 @@ export type petsUpdateWithoutAccountsInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUpdateManyWithoutPetsNestedInput
 }
 
@@ -880,12 +880,12 @@ export type petsUncheckedUpdateWithoutAccountsInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUncheckedUpdateManyWithoutPetsNestedInput
 }
 
@@ -898,12 +898,12 @@ export type petsUncheckedUpdateManyWithoutAccountsInput = {
   weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
   species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -947,12 +947,12 @@ export type petsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   weight?: boolean
   color?: boolean
   avatar_url?: boolean
-  avatar_id?: boolean
   gender?: boolean
   species?: boolean
   notes?: boolean
   created_at?: boolean
   updated_at?: boolean
+  avatar_id?: boolean
   medical_records?: boolean | Prisma.pets$medical_recordsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.PetsCountOutputTypeDefaultArgs<ExtArgs>
@@ -968,12 +968,12 @@ export type petsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   weight?: boolean
   color?: boolean
   avatar_url?: boolean
-  avatar_id?: boolean
   gender?: boolean
   species?: boolean
   notes?: boolean
   created_at?: boolean
   updated_at?: boolean
+  avatar_id?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pets"]>
 
@@ -987,12 +987,12 @@ export type petsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   weight?: boolean
   color?: boolean
   avatar_url?: boolean
-  avatar_id?: boolean
   gender?: boolean
   species?: boolean
   notes?: boolean
   created_at?: boolean
   updated_at?: boolean
+  avatar_id?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pets"]>
 
@@ -1006,15 +1006,15 @@ export type petsSelectScalar = {
   weight?: boolean
   color?: boolean
   avatar_url?: boolean
-  avatar_id?: boolean
   gender?: boolean
   species?: boolean
   notes?: boolean
   created_at?: boolean
   updated_at?: boolean
+  avatar_id?: boolean
 }
 
-export type petsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "name" | "age" | "birthdate" | "breed" | "weight" | "color" | "avatar_url" | "avatar_id" | "gender" | "species" | "notes" | "created_at" | "updated_at", ExtArgs["result"]["pets"]>
+export type petsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "name" | "age" | "birthdate" | "breed" | "weight" | "color" | "avatar_url" | "gender" | "species" | "notes" | "created_at" | "updated_at" | "avatar_id", ExtArgs["result"]["pets"]>
 export type petsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medical_records?: boolean | Prisma.pets$medical_recordsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -1043,12 +1043,12 @@ export type $petsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     weight: string | null
     color: string | null
     avatar_url: string | null
-    avatar_id: string | null
     gender: $Enums.gender_enum | null
     species: $Enums.species_enum | null
     notes: string | null
     created_at: Date | null
     updated_at: Date | null
+    avatar_id: string | null
   }, ExtArgs["result"]["pets"]>
   composites: {}
 }
@@ -1483,12 +1483,12 @@ export interface petsFieldRefs {
   readonly weight: Prisma.FieldRef<"pets", 'String'>
   readonly color: Prisma.FieldRef<"pets", 'String'>
   readonly avatar_url: Prisma.FieldRef<"pets", 'String'>
-  readonly avatar_id: Prisma.FieldRef<"pets", 'String'>
   readonly gender: Prisma.FieldRef<"pets", 'gender_enum'>
   readonly species: Prisma.FieldRef<"pets", 'species_enum'>
   readonly notes: Prisma.FieldRef<"pets", 'String'>
   readonly created_at: Prisma.FieldRef<"pets", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"pets", 'DateTime'>
+  readonly avatar_id: Prisma.FieldRef<"pets", 'String'>
 }
     
 

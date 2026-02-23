@@ -1,0 +1,63 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UseGuards,
+} from '@nestjs/common';
+import { MedicalRecordsService } from './medical-records.service';
+import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
+import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesUploaded } from '@app/decorators/files-uploaded.decorator';
+import { PoliciesGuard } from '@app/guards/policy.guard';
+import { CheckPolicies } from '@app/decorators/policy.decorator';
+import { Action } from '../casl/casl.types';
+import { CurrentUser } from '@app/decorators/current-user.decorator';
+import type { accounts } from '@app/generated/prisma/client';
+
+@Controller('medical-records')
+@UseGuards(PoliciesGuard)
+export class MedicalRecordsController {
+  constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
+
+  @Post()
+  @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
+  @UseInterceptors(FilesInterceptor('attachments', 5))
+  create(
+    @Body() createMedicalRecordDto: CreateMedicalRecordDto,
+    @FilesUploaded() files?: Express.Multer.File[],
+  ) {
+    return this.medicalRecordsService.create(createMedicalRecordDto, files);
+  }
+
+  @Get(':id')
+  findOne(@CurrentUser() user: accounts, @Param('id') id: string) {
+    return this.medicalRecordsService.findOne(user, id);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(FilesInterceptor('attachments', 5))
+  update(
+    @CurrentUser() user: accounts,
+    @Param('id') id: string,
+    @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,
+    @FilesUploaded() files?: Express.Multer.File[],
+  ) {
+    return this.medicalRecordsService.update(
+      user,
+      id,
+      updateMedicalRecordDto,
+      files,
+    );
+  }
+
+  @Delete(':id')
+  remove(@CurrentUser() user: accounts, @Param('id') id: string) {
+    return this.medicalRecordsService.remove(user, id);
+  }
+}

@@ -25,25 +25,32 @@ export interface DestroyResult {
   result: string;
 }
 
-interface UploadJobOptions {
-  userId?: string;
-  oldFileId?: string;
-  folder?: string;
-}
-
 export interface UploadJobData {
-  file: {
-    buffer: Buffer;
-    originalname: string;
-    mimetype: string;
-  };
+  files: {
+    file: { buffer: Buffer; originalname: string; mimetype: string };
+    id?: string | null;
+    folder?: string;
+  }[];
   itemId: string;
-  options?: UploadJobOptions;
+  userId?: string;
 }
 
 export interface UploadJobParams {
   jobName: string;
-  file: Express.Multer.File;
+  files: {
+    file: Express.Multer.File;
+    id?: string | null;
+    folder?: string;
+  }[];
   itemId: string;
-  options?: UploadJobOptions;
+  userId?: string;
+}
+
+export interface FileDeleteJobData {
+  ids: string[];
+}
+
+export interface FileDeleteJobParams {
+  jobName: string;
+  ids: string[];
 }

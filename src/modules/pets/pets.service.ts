@@ -9,6 +9,7 @@ import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { accounts } from '@app/generated/prisma/client';
 import { Action } from '../casl/casl.types';
 import { assertAbility } from '../casl/casl.helper';
+import { FILE_DELETE_JOBS } from '../shared/file-upload/file-delete.jobs';
 
 @Injectable()
 export class PetsService {
@@ -40,12 +41,14 @@ export class PetsService {
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
         jobName: FILE_UPLOAD_JOBS.PET_AVATAR,
-        file: avatarFile,
+        files: [
+          {
+            file: avatarFile,
+            folder: `pets/${pet.id}`,
+          },
+        ],
         itemId: pet.id,
-        options: {
-          userId,
-          folder: `pets/${pet.id}`,
-        },
+        userId,
       });
     }
     return pet;
@@ -72,12 +75,14 @@ export class PetsService {
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
         jobName: FILE_UPLOAD_JOBS.PET_AVATAR,
-        file: avatarFile,
+        files: [
+          {
+            file: avatarFile,
+            id: pet.avatar_id,
+            folder: `pets/${pet.id}`,
+          },
+        ],
         itemId: pet.id,
-        options: {
-          folder: `pets/${pet.id}`,
-          oldFileId: pet.avatar_id || undefined,
-        },
       });
     }
 
@@ -97,7 +102,14 @@ export class PetsService {
   }
 
   async remove(user: accounts, id: string) {
-    await this.assertPetAbility(user, id, Action.Delete);
+    const pet = await this.assertPetAbility(user, id, Action.Delete);
+
+    if (pet.avatar_id) {
+      await this.fileUploadService.addDeleteJob({
+        ids: [pet.avatar_id],
+        jobName: FILE_DELETE_JOBS.PET_AVATAR,
+      });
+    }
 
     return this.petsRepository.delete(id);
   }

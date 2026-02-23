@@ -21,11 +21,15 @@ import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
+import { MedicalRecordsService } from '../medical-records/medical-records.service';
 
 @Controller('pets')
 @UseGuards(PoliciesGuard)
 export class PetsController {
-  constructor(private readonly petsService: PetsService) {}
+  constructor(
+    private readonly petsService: PetsService,
+    private readonly medicalRecordsService: MedicalRecordsService,
+  ) {}
 
   @Post()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Pets'))
@@ -50,6 +54,15 @@ export class PetsController {
   @HttpCode(HttpStatus.OK)
   findOne(@CurrentUser() user: accounts, @Param('id') id: string) {
     return this.petsService.findOne(user, id);
+  }
+
+  @Get(':id/medical-records')
+  @HttpCode(HttpStatus.OK)
+  findAllMedicalRecords(
+    @CurrentUser() user: accounts,
+    @Param('id') id: string,
+  ) {
+    return this.medicalRecordsService.findAllByPetId(user, id);
   }
 
   @Patch(':id')

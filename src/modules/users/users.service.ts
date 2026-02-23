@@ -218,13 +218,15 @@ export class UsersService {
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
         jobName: FILE_UPLOAD_JOBS.USER_AVATAR,
-        file: avatarFile,
+        files: [
+          {
+            file: avatarFile,
+            id: user.avatar_id,
+            folder: `users/${userId}`,
+          },
+        ],
         itemId: userId,
-        options: {
-          userId,
-          folder: `users/${userId}`,
-          oldFileId: user.avatar_id || undefined,
-        },
+        userId,
       });
     }
 

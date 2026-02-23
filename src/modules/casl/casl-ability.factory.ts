@@ -16,6 +16,12 @@ export class CaslAbilityFactory {
       can(Action.Read, 'Pets', { account_id: user.id });
       can(Action.Update, 'Pets', { account_id: user.id });
       can(Action.Delete, 'Pets', { account_id: user.id });
+
+      // Check user permission through action pet read
+      can(Action.Create, 'MedicalRecords');
+      can(Action.Read, 'MedicalRecords');
+      can(Action.Update, 'MedicalRecords');
+      can(Action.Delete, 'MedicalRecords');
     }
 
     return build();

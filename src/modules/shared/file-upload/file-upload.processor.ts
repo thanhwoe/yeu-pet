@@ -11,6 +11,7 @@ import Stream from 'stream';
 import { UsersRepository } from '@app/modules/users/users.repository';
 import { FILE_UPLOAD_JOBS } from './file-upload.jobs';
 import { PetsRepository } from '@app/modules/pets/pets.repository';
+import { MedicalRecordsRepository } from '@app/modules/medical-records/medical-records.repository';
 
 @Processor(BULLMQ_QUEUES.FILE_UPLOAD, { concurrency: 3 })
 export class FileUploadProcessor extends WorkerHost {
@@ -19,6 +20,7 @@ export class FileUploadProcessor extends WorkerHost {
     private readonly fileUploadService: IFileUploadService,
     private readonly usersRepository: UsersRepository,
     private readonly petsRepository: PetsRepository,
+    private readonly medicalRecordsRepository: MedicalRecordsRepository,
   ) {
     super();
   }
@@ -26,30 +28,34 @@ export class FileUploadProcessor extends WorkerHost {
   async process(
     job: Job<UploadJobData, any, keyof typeof FILE_UPLOAD_JOBS>,
   ): Promise<any> {
-    const { file, options, itemId } = job.data;
+    const { files, itemId } = job.data;
 
     // Convert buffer back to Multer file format
-    const multerFile: Express.Multer.File = {
-      buffer: Buffer.from(file.buffer),
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      fieldname: 'file',
-      encoding: '7bit',
-      size: file.buffer.length,
-      stream: null as unknown as Stream.Readable,
-      destination: '',
-      filename: '',
-      path: '',
-    };
+    const payload = files.map(({ file, folder, id }) => ({
+      file: {
+        buffer: Buffer.from(file.buffer),
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        fieldname: 'file',
+        encoding: '7bit',
+        size: file.buffer.length,
+        stream: null as unknown as Stream.Readable,
+        destination: '',
+        filename: '',
+        path: '',
+      },
+      folder,
+      id,
+    }));
 
     // Update progress
     await job.updateProgress(30);
 
     // Upload to Cloudinary
-    const result = await this.fileUploadService.updateImage(
-      multerFile,
-      options?.oldFileId,
-      options?.folder,
+    const results = await Promise.all(
+      payload.map((f) =>
+        this.fileUploadService.updateImage(f.file, f.id || undefined, f.folder),
+      ),
     );
 
     await job.updateProgress(70);
@@ -57,11 +63,15 @@ export class FileUploadProcessor extends WorkerHost {
     // Handle specific logic by job name
     switch (job.name) {
       case FILE_UPLOAD_JOBS.USER_AVATAR:
-        await this.updateUserAvatar(result, itemId);
+        await this.updateUserAvatar(results[0], itemId);
         break;
 
       case FILE_UPLOAD_JOBS.PET_AVATAR:
-        await this.updatePetAvatar(result, itemId);
+        await this.updatePetAvatar(results[0], itemId);
+        break;
+
+      case FILE_UPLOAD_JOBS.MEDICAL_RECORDS:
+        await this.addAttachments(results, itemId);
         break;
 
       default:
@@ -72,8 +82,6 @@ export class FileUploadProcessor extends WorkerHost {
 
     return {
       success: true,
-      url: result.url,
-      publicId: result.publicId,
     };
   }
 
@@ -89,5 +97,15 @@ export class FileUploadProcessor extends WorkerHost {
       avatar_id: data.publicId,
       avatar_url: data.url,
     });
+  }
+
+  private async addAttachments(data: UploadResult[], medicalId: string) {
+    const payload = data.map((i) => ({
+      medical_id: medicalId,
+      public_id: i.publicId,
+      url: i.url,
+    }));
+
+    return this.medicalRecordsRepository.createAttachments(payload);
   }
 }

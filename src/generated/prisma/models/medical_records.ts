@@ -59,7 +59,6 @@ export type Medical_recordsCountAggregateOutputType = {
   date: number
   vet_clinic: number
   vet_name: number
-  attachments: number
   created_at: number
   updated_at: number
   _all: number
@@ -101,7 +100,6 @@ export type Medical_recordsCountAggregateInputType = {
   date?: true
   vet_clinic?: true
   vet_name?: true
-  attachments?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -188,7 +186,6 @@ export type Medical_recordsGroupByOutputType = {
   date: Date | null
   vet_clinic: string | null
   vet_name: string | null
-  attachments: runtime.JsonValue | null
   created_at: Date | null
   updated_at: Date | null
   _count: Medical_recordsCountAggregateOutputType | null
@@ -223,9 +220,9 @@ export type medical_recordsWhereInput = {
   date?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   vet_clinic?: Prisma.StringNullableFilter<"medical_records"> | string | null
   vet_name?: Prisma.StringNullableFilter<"medical_records"> | string | null
-  attachments?: Prisma.JsonNullableFilter<"medical_records">
   created_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
+  medical_attachments?: Prisma.Medical_attachmentsListRelationFilter
   pets?: Prisma.XOR<Prisma.PetsScalarRelationFilter, Prisma.petsWhereInput>
 }
 
@@ -238,9 +235,9 @@ export type medical_recordsOrderByWithRelationInput = {
   date?: Prisma.SortOrderInput | Prisma.SortOrder
   vet_clinic?: Prisma.SortOrderInput | Prisma.SortOrder
   vet_name?: Prisma.SortOrderInput | Prisma.SortOrder
-  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  medical_attachments?: Prisma.medical_attachmentsOrderByRelationAggregateInput
   pets?: Prisma.petsOrderByWithRelationInput
 }
 
@@ -256,9 +253,9 @@ export type medical_recordsWhereUniqueInput = Prisma.AtLeast<{
   date?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   vet_clinic?: Prisma.StringNullableFilter<"medical_records"> | string | null
   vet_name?: Prisma.StringNullableFilter<"medical_records"> | string | null
-  attachments?: Prisma.JsonNullableFilter<"medical_records">
   created_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
+  medical_attachments?: Prisma.Medical_attachmentsListRelationFilter
   pets?: Prisma.XOR<Prisma.PetsScalarRelationFilter, Prisma.petsWhereInput>
 }, "id">
 
@@ -271,7 +268,6 @@ export type medical_recordsOrderByWithAggregationInput = {
   date?: Prisma.SortOrderInput | Prisma.SortOrder
   vet_clinic?: Prisma.SortOrderInput | Prisma.SortOrder
   vet_name?: Prisma.SortOrderInput | Prisma.SortOrder
-  attachments?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.medical_recordsCountOrderByAggregateInput
@@ -291,7 +287,6 @@ export type medical_recordsScalarWhereWithAggregatesInput = {
   date?: Prisma.DateTimeNullableWithAggregatesFilter<"medical_records"> | Date | string | null
   vet_clinic?: Prisma.StringNullableWithAggregatesFilter<"medical_records"> | string | null
   vet_name?: Prisma.StringNullableWithAggregatesFilter<"medical_records"> | string | null
-  attachments?: Prisma.JsonNullableWithAggregatesFilter<"medical_records">
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"medical_records"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"medical_records"> | Date | string | null
 }
@@ -304,9 +299,9 @@ export type medical_recordsCreateInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsCreateNestedManyWithoutMedical_recordsInput
   pets: Prisma.petsCreateNestedOneWithoutMedical_recordsInput
 }
 
@@ -319,9 +314,9 @@ export type medical_recordsUncheckedCreateInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUncheckedCreateNestedManyWithoutMedical_recordsInput
 }
 
 export type medical_recordsUpdateInput = {
@@ -332,9 +327,9 @@ export type medical_recordsUpdateInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUpdateManyWithoutMedical_recordsNestedInput
   pets?: Prisma.petsUpdateOneRequiredWithoutMedical_recordsNestedInput
 }
 
@@ -347,9 +342,9 @@ export type medical_recordsUncheckedUpdateInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUncheckedUpdateManyWithoutMedical_recordsNestedInput
 }
 
 export type medical_recordsCreateManyInput = {
@@ -361,7 +356,6 @@ export type medical_recordsCreateManyInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -374,7 +368,6 @@ export type medical_recordsUpdateManyMutationInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -388,7 +381,6 @@ export type medical_recordsUncheckedUpdateManyInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -402,7 +394,6 @@ export type medical_recordsCountOrderByAggregateInput = {
   date?: Prisma.SortOrder
   vet_clinic?: Prisma.SortOrder
   vet_name?: Prisma.SortOrder
-  attachments?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -441,6 +432,11 @@ export type Medical_recordsListRelationFilter = {
 
 export type medical_recordsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type Medical_recordsScalarRelationFilter = {
+  is?: Prisma.medical_recordsWhereInput
+  isNot?: Prisma.medical_recordsWhereInput
 }
 
 export type Enumrecord_typeFieldUpdateOperationsInput = {
@@ -489,6 +485,20 @@ export type medical_recordsUncheckedUpdateManyWithoutPetsNestedInput = {
   deleteMany?: Prisma.medical_recordsScalarWhereInput | Prisma.medical_recordsScalarWhereInput[]
 }
 
+export type medical_recordsCreateNestedOneWithoutMedical_attachmentsInput = {
+  create?: Prisma.XOR<Prisma.medical_recordsCreateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedCreateWithoutMedical_attachmentsInput>
+  connectOrCreate?: Prisma.medical_recordsCreateOrConnectWithoutMedical_attachmentsInput
+  connect?: Prisma.medical_recordsWhereUniqueInput
+}
+
+export type medical_recordsUpdateOneRequiredWithoutMedical_attachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.medical_recordsCreateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedCreateWithoutMedical_attachmentsInput>
+  connectOrCreate?: Prisma.medical_recordsCreateOrConnectWithoutMedical_attachmentsInput
+  upsert?: Prisma.medical_recordsUpsertWithoutMedical_attachmentsInput
+  connect?: Prisma.medical_recordsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.medical_recordsUpdateToOneWithWhereWithoutMedical_attachmentsInput, Prisma.medical_recordsUpdateWithoutMedical_attachmentsInput>, Prisma.medical_recordsUncheckedUpdateWithoutMedical_attachmentsInput>
+}
+
 export type medical_recordsCreateWithoutPetsInput = {
   id?: string
   record_type: $Enums.record_type
@@ -497,9 +507,9 @@ export type medical_recordsCreateWithoutPetsInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsCreateNestedManyWithoutMedical_recordsInput
 }
 
 export type medical_recordsUncheckedCreateWithoutPetsInput = {
@@ -510,9 +520,9 @@ export type medical_recordsUncheckedCreateWithoutPetsInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUncheckedCreateNestedManyWithoutMedical_recordsInput
 }
 
 export type medical_recordsCreateOrConnectWithoutPetsInput = {
@@ -553,9 +563,76 @@ export type medical_recordsScalarWhereInput = {
   date?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   vet_clinic?: Prisma.StringNullableFilter<"medical_records"> | string | null
   vet_name?: Prisma.StringNullableFilter<"medical_records"> | string | null
-  attachments?: Prisma.JsonNullableFilter<"medical_records">
   created_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"medical_records"> | Date | string | null
+}
+
+export type medical_recordsCreateWithoutMedical_attachmentsInput = {
+  id?: string
+  record_type: $Enums.record_type
+  title: string
+  description?: string | null
+  date?: Date | string | null
+  vet_clinic?: string | null
+  vet_name?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  pets: Prisma.petsCreateNestedOneWithoutMedical_recordsInput
+}
+
+export type medical_recordsUncheckedCreateWithoutMedical_attachmentsInput = {
+  id?: string
+  pet_id: string
+  record_type: $Enums.record_type
+  title: string
+  description?: string | null
+  date?: Date | string | null
+  vet_clinic?: string | null
+  vet_name?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type medical_recordsCreateOrConnectWithoutMedical_attachmentsInput = {
+  where: Prisma.medical_recordsWhereUniqueInput
+  create: Prisma.XOR<Prisma.medical_recordsCreateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedCreateWithoutMedical_attachmentsInput>
+}
+
+export type medical_recordsUpsertWithoutMedical_attachmentsInput = {
+  update: Prisma.XOR<Prisma.medical_recordsUpdateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedUpdateWithoutMedical_attachmentsInput>
+  create: Prisma.XOR<Prisma.medical_recordsCreateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedCreateWithoutMedical_attachmentsInput>
+  where?: Prisma.medical_recordsWhereInput
+}
+
+export type medical_recordsUpdateToOneWithWhereWithoutMedical_attachmentsInput = {
+  where?: Prisma.medical_recordsWhereInput
+  data: Prisma.XOR<Prisma.medical_recordsUpdateWithoutMedical_attachmentsInput, Prisma.medical_recordsUncheckedUpdateWithoutMedical_attachmentsInput>
+}
+
+export type medical_recordsUpdateWithoutMedical_attachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  record_type?: Prisma.Enumrecord_typeFieldUpdateOperationsInput | $Enums.record_type
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pets?: Prisma.petsUpdateOneRequiredWithoutMedical_recordsNestedInput
+}
+
+export type medical_recordsUncheckedUpdateWithoutMedical_attachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  record_type?: Prisma.Enumrecord_typeFieldUpdateOperationsInput | $Enums.record_type
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type medical_recordsCreateManyPetsInput = {
@@ -566,7 +643,6 @@ export type medical_recordsCreateManyPetsInput = {
   date?: Date | string | null
   vet_clinic?: string | null
   vet_name?: string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -579,9 +655,9 @@ export type medical_recordsUpdateWithoutPetsInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUpdateManyWithoutMedical_recordsNestedInput
 }
 
 export type medical_recordsUncheckedUpdateWithoutPetsInput = {
@@ -592,9 +668,9 @@ export type medical_recordsUncheckedUpdateWithoutPetsInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  medical_attachments?: Prisma.medical_attachmentsUncheckedUpdateManyWithoutMedical_recordsNestedInput
 }
 
 export type medical_recordsUncheckedUpdateManyWithoutPetsInput = {
@@ -605,11 +681,39 @@ export type medical_recordsUncheckedUpdateManyWithoutPetsInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vet_clinic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vet_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  attachments?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+
+/**
+ * Count Type Medical_recordsCountOutputType
+ */
+
+export type Medical_recordsCountOutputType = {
+  medical_attachments: number
+}
+
+export type Medical_recordsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  medical_attachments?: boolean | Medical_recordsCountOutputTypeCountMedical_attachmentsArgs
+}
+
+/**
+ * Medical_recordsCountOutputType without action
+ */
+export type Medical_recordsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Medical_recordsCountOutputType
+   */
+  select?: Prisma.Medical_recordsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Medical_recordsCountOutputType without action
+ */
+export type Medical_recordsCountOutputTypeCountMedical_attachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.medical_attachmentsWhereInput
+}
 
 
 export type medical_recordsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -621,10 +725,11 @@ export type medical_recordsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   date?: boolean
   vet_clinic?: boolean
   vet_name?: boolean
-  attachments?: boolean
   created_at?: boolean
   updated_at?: boolean
+  medical_attachments?: boolean | Prisma.medical_records$medical_attachmentsArgs<ExtArgs>
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.Medical_recordsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medical_records"]>
 
 export type medical_recordsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -636,7 +741,6 @@ export type medical_recordsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   date?: boolean
   vet_clinic?: boolean
   vet_name?: boolean
-  attachments?: boolean
   created_at?: boolean
   updated_at?: boolean
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
@@ -651,7 +755,6 @@ export type medical_recordsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   date?: boolean
   vet_clinic?: boolean
   vet_name?: boolean
-  attachments?: boolean
   created_at?: boolean
   updated_at?: boolean
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
@@ -666,14 +769,15 @@ export type medical_recordsSelectScalar = {
   date?: boolean
   vet_clinic?: boolean
   vet_name?: boolean
-  attachments?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type medical_recordsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "pet_id" | "record_type" | "title" | "description" | "date" | "vet_clinic" | "vet_name" | "attachments" | "created_at" | "updated_at", ExtArgs["result"]["medical_records"]>
+export type medical_recordsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "pet_id" | "record_type" | "title" | "description" | "date" | "vet_clinic" | "vet_name" | "created_at" | "updated_at", ExtArgs["result"]["medical_records"]>
 export type medical_recordsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  medical_attachments?: boolean | Prisma.medical_records$medical_attachmentsArgs<ExtArgs>
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.Medical_recordsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type medical_recordsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
@@ -685,6 +789,7 @@ export type medical_recordsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type $medical_recordsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "medical_records"
   objects: {
+    medical_attachments: Prisma.$medical_attachmentsPayload<ExtArgs>[]
     pets: Prisma.$petsPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -696,7 +801,6 @@ export type $medical_recordsPayload<ExtArgs extends runtime.Types.Extensions.Int
     date: Date | null
     vet_clinic: string | null
     vet_name: string | null
-    attachments: runtime.JsonValue | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["medical_records"]>
@@ -1093,6 +1197,7 @@ readonly fields: medical_recordsFieldRefs;
  */
 export interface Prisma__medical_recordsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  medical_attachments<T extends Prisma.medical_records$medical_attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.medical_records$medical_attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$medical_attachmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pets<T extends Prisma.petsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.petsDefaultArgs<ExtArgs>>): Prisma.Prisma__petsClient<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1131,7 +1236,6 @@ export interface medical_recordsFieldRefs {
   readonly date: Prisma.FieldRef<"medical_records", 'DateTime'>
   readonly vet_clinic: Prisma.FieldRef<"medical_records", 'String'>
   readonly vet_name: Prisma.FieldRef<"medical_records", 'String'>
-  readonly attachments: Prisma.FieldRef<"medical_records", 'Json'>
   readonly created_at: Prisma.FieldRef<"medical_records", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"medical_records", 'DateTime'>
 }
@@ -1527,6 +1631,30 @@ export type medical_recordsDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many medical_records to delete.
    */
   limit?: number
+}
+
+/**
+ * medical_records.medical_attachments
+ */
+export type medical_records$medical_attachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the medical_attachments
+   */
+  select?: Prisma.medical_attachmentsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the medical_attachments
+   */
+  omit?: Prisma.medical_attachmentsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.medical_attachmentsInclude<ExtArgs> | null
+  where?: Prisma.medical_attachmentsWhereInput
+  orderBy?: Prisma.medical_attachmentsOrderByWithRelationInput | Prisma.medical_attachmentsOrderByWithRelationInput[]
+  cursor?: Prisma.medical_attachmentsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Medical_attachmentsScalarFieldEnum | Prisma.Medical_attachmentsScalarFieldEnum[]
 }
 
 /**

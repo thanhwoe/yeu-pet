@@ -60,18 +60,18 @@ model otp_tokens {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model medical_records {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  pet_id      String      @db.Uuid
-  record_type record_type
-  title       String      @db.VarChar(200)
-  description String?
-  date        DateTime?   @db.Timestamptz(6)
-  vet_clinic  String?     @db.VarChar(200)
-  vet_name    String?     @db.VarChar(100)
-  attachments Json?
-  created_at  DateTime?   @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime?   @default(now()) @db.Timestamptz(6)
-  pets        pets        @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_records_pet_id")
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  pet_id              String                @db.Uuid
+  record_type         record_type
+  title               String                @db.VarChar(200)
+  description         String?
+  date                DateTime?             @db.Timestamptz(6)
+  vet_clinic          String?               @db.VarChar(200)
+  vet_name            String?               @db.VarChar(100)
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  medical_attachments medical_attachments[]
+  pets                pets                  @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_records_pet_id")
 
   @@index([id], map: "idx_medical_records")
   @@index([pet_id], map: "idx_medical_records_pet_id")
@@ -87,17 +87,31 @@ model pets {
   weight          String?           @db.VarChar(100)
   color           String?           @db.VarChar(100)
   avatar_url      String?
-  avatar_id       String?
   gender          gender_enum?      @default(unknown)
   species         species_enum?     @default(other)
   notes           String?
   created_at      DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  avatar_id       String?
   medical_records medical_records[]
   accounts        accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pets_account_id")
 
   @@index([id], map: "idx_pets")
   @@index([account_id], map: "idx_pets_account_id")
+}
+
+model medical_attachments {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  medical_id      String          @db.Uuid
+  deleted_at      DateTime?       @db.Timestamptz(6)
+  url             String
+  public_id       String?
+  created_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  medical_records medical_records @relation(fields: [medical_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_attachments_medical_id")
+
+  @@index([id], map: "idx_medical_attachments")
+  @@index([medical_id], map: "idx_medical_attachments_medical_id")
 }
 
 enum subscription_tier {
