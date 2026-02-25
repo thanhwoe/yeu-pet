@@ -79,7 +79,7 @@ export class PetsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @Param('id') id: string) {
     return this.petsService.remove(user, id);
   }

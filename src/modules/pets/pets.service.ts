@@ -111,7 +111,7 @@ export class PetsService {
       });
     }
 
-    return this.petsRepository.delete(id);
+    await this.petsRepository.delete(id);
   }
 
   private async assertPetAbility(

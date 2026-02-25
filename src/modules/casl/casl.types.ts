@@ -3,6 +3,7 @@ import type {
   accounts,
   medical_records,
   pets,
+  reminders,
 } from '@app/generated/prisma/client';
 import { PureAbility } from '@casl/ability';
 import { PrismaQuery, Subjects } from '@casl/prisma';
@@ -26,4 +27,5 @@ export type SubjectMap = {
   Accounts: accounts;
   MedicalRecords: medical_records;
   UserDevices: account_devices;
+  Reminders: reminders;
 };

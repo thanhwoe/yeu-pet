@@ -14,6 +14,7 @@ import { PetsModule } from './modules/pets/pets.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
 import { UserDevicesModule } from './modules/user-devices/user-devices.module';
+import { RemindersModule } from './modules/reminders/reminders.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { UserDevicesModule } from './modules/user-devices/user-devices.module';
     CaslModule,
     MedicalRecordsModule,
     UserDevicesModule,
+    RemindersModule,
   ],
   controllers: [AppController],
   providers: [

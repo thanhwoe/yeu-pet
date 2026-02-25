@@ -72,7 +72,7 @@ export class UsersController {
   }
 
   @Delete('me')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deactivateAccount(
     @CurrentUser() user: accounts,
     @Body() deleteUserDto: DeleteUserDto,

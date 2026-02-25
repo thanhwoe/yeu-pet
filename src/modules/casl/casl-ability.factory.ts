@@ -26,6 +26,11 @@ export class CaslAbilityFactory {
       can(Action.Create, 'UserDevices');
       can(Action.Read, 'UserDevices', { account_id: user.id });
       can(Action.Delete, 'UserDevices', { account_id: user.id });
+
+      can(Action.Create, 'Reminders');
+      can(Action.Read, 'Reminders', { account_id: user.id });
+      can(Action.Update, 'Reminders', { account_id: user.id });
+      can(Action.Delete, 'Reminders', { account_id: user.id });
     }
 
     return build();

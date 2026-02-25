@@ -182,7 +182,7 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    return this.usersRepository.delete(userId);
+    await this.usersRepository.delete(userId);
   }
 
   async completeOnboarding(id: string) {

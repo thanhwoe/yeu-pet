@@ -100,7 +100,7 @@ async function bootstrap() {
   // Exception Filters
   app.useGlobalFilters(new AllExceptionsFilter(), new PrismaExceptionFilter());
 
-  // Global Validation
+  // Global Validation DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
