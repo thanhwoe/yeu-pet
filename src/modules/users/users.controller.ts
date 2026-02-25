@@ -40,7 +40,7 @@ export class UsersController {
 
   @Post('resend-otp')
   @Throttle({ burst: { limit: 3, ttl: minutes(1) } })
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.ACCEPTED)
   async resendOtp(@CurrentUser() user: accounts) {
     return this.usersService.resendVerificationCode(user.id);
   }
@@ -57,7 +57,7 @@ export class UsersController {
   @Post('password/request')
   @Public()
   @Throttle({ burst: { limit: 3, ttl: minutes(1) } })
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.ACCEPTED)
   async requestPasswordReset(
     @Body() requestResetPasswordDto: RequestResetPasswordDto,
   ) {

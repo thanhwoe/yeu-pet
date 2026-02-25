@@ -67,3 +67,23 @@ export type pets = Prisma.petsModel
  * 
  */
 export type medical_attachments = Prisma.medical_attachmentsModel
+/**
+ * Model account_devices
+ * 
+ */
+export type account_devices = Prisma.account_devicesModel
+/**
+ * Model account_settings
+ * 
+ */
+export type account_settings = Prisma.account_settingsModel
+/**
+ * Model notifications
+ * 
+ */
+export type notifications = Prisma.notificationsModel
+/**
+ * Model reminders
+ * 
+ */
+export type reminders = Prisma.remindersModel

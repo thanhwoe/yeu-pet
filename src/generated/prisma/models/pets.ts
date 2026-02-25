@@ -298,6 +298,7 @@ export type petsWhereInput = {
   avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   medical_records?: Prisma.Medical_recordsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  reminders?: Prisma.RemindersListRelationFilter
 }
 
 export type petsOrderByWithRelationInput = {
@@ -318,6 +319,7 @@ export type petsOrderByWithRelationInput = {
   avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   medical_records?: Prisma.medical_recordsOrderByRelationAggregateInput
   accounts?: Prisma.accountsOrderByWithRelationInput
+  reminders?: Prisma.remindersOrderByRelationAggregateInput
 }
 
 export type petsWhereUniqueInput = Prisma.AtLeast<{
@@ -341,6 +343,7 @@ export type petsWhereUniqueInput = Prisma.AtLeast<{
   avatar_id?: Prisma.StringNullableFilter<"pets"> | string | null
   medical_records?: Prisma.Medical_recordsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  reminders?: Prisma.RemindersListRelationFilter
 }, "id">
 
 export type petsOrderByWithAggregationInput = {
@@ -404,6 +407,7 @@ export type petsCreateInput = {
   avatar_id?: string | null
   medical_records?: Prisma.medical_recordsCreateNestedManyWithoutPetsInput
   accounts: Prisma.accountsCreateNestedOneWithoutPetsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutPetsInput
 }
 
 export type petsUncheckedCreateInput = {
@@ -423,6 +427,7 @@ export type petsUncheckedCreateInput = {
   updated_at?: Date | string | null
   avatar_id?: string | null
   medical_records?: Prisma.medical_recordsUncheckedCreateNestedManyWithoutPetsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutPetsInput
 }
 
 export type petsUpdateInput = {
@@ -442,6 +447,7 @@ export type petsUpdateInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUpdateManyWithoutPetsNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPetsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutPetsNestedInput
 }
 
 export type petsUncheckedUpdateInput = {
@@ -461,6 +467,7 @@ export type petsUncheckedUpdateInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUncheckedUpdateManyWithoutPetsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutPetsNestedInput
 }
 
 export type petsCreateManyInput = {
@@ -593,6 +600,11 @@ export type petsSumOrderByAggregateInput = {
   age?: Prisma.SortOrder
 }
 
+export type PetsNullableScalarRelationFilter = {
+  is?: Prisma.petsWhereInput | null
+  isNot?: Prisma.petsWhereInput | null
+}
+
 export type petsCreateNestedManyWithoutAccountsInput = {
   create?: Prisma.XOR<Prisma.petsCreateWithoutAccountsInput, Prisma.petsUncheckedCreateWithoutAccountsInput> | Prisma.petsCreateWithoutAccountsInput[] | Prisma.petsUncheckedCreateWithoutAccountsInput[]
   connectOrCreate?: Prisma.petsCreateOrConnectWithoutAccountsInput | Prisma.petsCreateOrConnectWithoutAccountsInput[]
@@ -665,6 +677,22 @@ export type NullableEnumspecies_enumFieldUpdateOperationsInput = {
   set?: $Enums.species_enum | null
 }
 
+export type petsCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<Prisma.petsCreateWithoutRemindersInput, Prisma.petsUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.petsCreateOrConnectWithoutRemindersInput
+  connect?: Prisma.petsWhereUniqueInput
+}
+
+export type petsUpdateOneWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<Prisma.petsCreateWithoutRemindersInput, Prisma.petsUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.petsCreateOrConnectWithoutRemindersInput
+  upsert?: Prisma.petsUpsertWithoutRemindersInput
+  disconnect?: Prisma.petsWhereInput | boolean
+  delete?: Prisma.petsWhereInput | boolean
+  connect?: Prisma.petsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.petsUpdateToOneWithWhereWithoutRemindersInput, Prisma.petsUpdateWithoutRemindersInput>, Prisma.petsUncheckedUpdateWithoutRemindersInput>
+}
+
 export type petsCreateWithoutAccountsInput = {
   id?: string
   name: string
@@ -681,6 +709,7 @@ export type petsCreateWithoutAccountsInput = {
   updated_at?: Date | string | null
   avatar_id?: string | null
   medical_records?: Prisma.medical_recordsCreateNestedManyWithoutPetsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutPetsInput
 }
 
 export type petsUncheckedCreateWithoutAccountsInput = {
@@ -699,6 +728,7 @@ export type petsUncheckedCreateWithoutAccountsInput = {
   updated_at?: Date | string | null
   avatar_id?: string | null
   medical_records?: Prisma.medical_recordsUncheckedCreateNestedManyWithoutPetsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutPetsInput
 }
 
 export type petsCreateOrConnectWithoutAccountsInput = {
@@ -764,6 +794,7 @@ export type petsCreateWithoutMedical_recordsInput = {
   updated_at?: Date | string | null
   avatar_id?: string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPetsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutPetsInput
 }
 
 export type petsUncheckedCreateWithoutMedical_recordsInput = {
@@ -782,6 +813,7 @@ export type petsUncheckedCreateWithoutMedical_recordsInput = {
   created_at?: Date | string | null
   updated_at?: Date | string | null
   avatar_id?: string | null
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutPetsInput
 }
 
 export type petsCreateOrConnectWithoutMedical_recordsInput = {
@@ -816,6 +848,7 @@ export type petsUpdateWithoutMedical_recordsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPetsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutPetsNestedInput
 }
 
 export type petsUncheckedUpdateWithoutMedical_recordsInput = {
@@ -834,6 +867,99 @@ export type petsUncheckedUpdateWithoutMedical_recordsInput = {
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutPetsNestedInput
+}
+
+export type petsCreateWithoutRemindersInput = {
+  id?: string
+  name: string
+  age?: number | null
+  birthdate?: Date | string | null
+  breed?: string | null
+  weight?: string | null
+  color?: string | null
+  avatar_url?: string | null
+  gender?: $Enums.gender_enum | null
+  species?: $Enums.species_enum | null
+  notes?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  avatar_id?: string | null
+  medical_records?: Prisma.medical_recordsCreateNestedManyWithoutPetsInput
+  accounts: Prisma.accountsCreateNestedOneWithoutPetsInput
+}
+
+export type petsUncheckedCreateWithoutRemindersInput = {
+  id?: string
+  account_id: string
+  name: string
+  age?: number | null
+  birthdate?: Date | string | null
+  breed?: string | null
+  weight?: string | null
+  color?: string | null
+  avatar_url?: string | null
+  gender?: $Enums.gender_enum | null
+  species?: $Enums.species_enum | null
+  notes?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  avatar_id?: string | null
+  medical_records?: Prisma.medical_recordsUncheckedCreateNestedManyWithoutPetsInput
+}
+
+export type petsCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.petsWhereUniqueInput
+  create: Prisma.XOR<Prisma.petsCreateWithoutRemindersInput, Prisma.petsUncheckedCreateWithoutRemindersInput>
+}
+
+export type petsUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<Prisma.petsUpdateWithoutRemindersInput, Prisma.petsUncheckedUpdateWithoutRemindersInput>
+  create: Prisma.XOR<Prisma.petsCreateWithoutRemindersInput, Prisma.petsUncheckedCreateWithoutRemindersInput>
+  where?: Prisma.petsWhereInput
+}
+
+export type petsUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.petsWhereInput
+  data: Prisma.XOR<Prisma.petsUpdateWithoutRemindersInput, Prisma.petsUncheckedUpdateWithoutRemindersInput>
+}
+
+export type petsUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  birthdate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
+  species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  medical_records?: Prisma.medical_recordsUpdateManyWithoutPetsNestedInput
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutPetsNestedInput
+}
+
+export type petsUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  birthdate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breed?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableEnumgender_enumFieldUpdateOperationsInput | $Enums.gender_enum | null
+  species?: Prisma.NullableEnumspecies_enumFieldUpdateOperationsInput | $Enums.species_enum | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  medical_records?: Prisma.medical_recordsUncheckedUpdateManyWithoutPetsNestedInput
 }
 
 export type petsCreateManyAccountsInput = {
@@ -869,6 +995,7 @@ export type petsUpdateWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUpdateManyWithoutPetsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutPetsNestedInput
 }
 
 export type petsUncheckedUpdateWithoutAccountsInput = {
@@ -887,6 +1014,7 @@ export type petsUncheckedUpdateWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   medical_records?: Prisma.medical_recordsUncheckedUpdateManyWithoutPetsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutPetsNestedInput
 }
 
 export type petsUncheckedUpdateManyWithoutAccountsInput = {
@@ -913,10 +1041,12 @@ export type petsUncheckedUpdateManyWithoutAccountsInput = {
 
 export type PetsCountOutputType = {
   medical_records: number
+  reminders: number
 }
 
 export type PetsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medical_records?: boolean | PetsCountOutputTypeCountMedical_recordsArgs
+  reminders?: boolean | PetsCountOutputTypeCountRemindersArgs
 }
 
 /**
@@ -934,6 +1064,13 @@ export type PetsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type PetsCountOutputTypeCountMedical_recordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.medical_recordsWhereInput
+}
+
+/**
+ * PetsCountOutputType without action
+ */
+export type PetsCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.remindersWhereInput
 }
 
 
@@ -955,6 +1092,7 @@ export type petsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   avatar_id?: boolean
   medical_records?: boolean | Prisma.pets$medical_recordsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  reminders?: boolean | Prisma.pets$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.PetsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["pets"]>
 
@@ -1018,6 +1156,7 @@ export type petsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type petsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medical_records?: boolean | Prisma.pets$medical_recordsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  reminders?: boolean | Prisma.pets$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.PetsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type petsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1032,6 +1171,7 @@ export type $petsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     medical_records: Prisma.$medical_recordsPayload<ExtArgs>[]
     accounts: Prisma.$accountsPayload<ExtArgs>
+    reminders: Prisma.$remindersPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1445,6 +1585,7 @@ export interface Prisma__petsClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   medical_records<T extends Prisma.pets$medical_recordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.pets$medical_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$medical_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reminders<T extends Prisma.pets$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.pets$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$remindersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1906,6 +2047,30 @@ export type pets$medical_recordsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.Medical_recordsScalarFieldEnum | Prisma.Medical_recordsScalarFieldEnum[]
+}
+
+/**
+ * pets.reminders
+ */
+export type pets$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the reminders
+   */
+  select?: Prisma.remindersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the reminders
+   */
+  omit?: Prisma.remindersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.remindersInclude<ExtArgs> | null
+  where?: Prisma.remindersWhereInput
+  orderBy?: Prisma.remindersOrderByWithRelationInput | Prisma.remindersOrderByWithRelationInput[]
+  cursor?: Prisma.remindersWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RemindersScalarFieldEnum | Prisma.RemindersScalarFieldEnum[]
 }
 
 /**

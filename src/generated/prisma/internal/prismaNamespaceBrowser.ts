@@ -56,7 +56,11 @@ export const ModelName = {
   otp_tokens: 'otp_tokens',
   medical_records: 'medical_records',
   pets: 'pets',
-  medical_attachments: 'medical_attachments'
+  medical_attachments: 'medical_attachments',
+  account_devices: 'account_devices',
+  account_settings: 'account_settings',
+  notifications: 'notifications',
+  reminders: 'reminders'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -172,12 +176,83 @@ export const Medical_attachmentsScalarFieldEnum = {
 export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
 
 
+export const Account_devicesScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  push_token: 'push_token',
+  device_name: 'device_name',
+  os_version: 'os_version',
+  platform: 'platform',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Account_devicesScalarFieldEnum = (typeof Account_devicesScalarFieldEnum)[keyof typeof Account_devicesScalarFieldEnum]
+
+
+export const Account_settingsScalarFieldEnum = {
+  account_id: 'account_id',
+  notification_enable: 'notification_enable',
+  language: 'language',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Account_settingsScalarFieldEnum = (typeof Account_settingsScalarFieldEnum)[keyof typeof Account_settingsScalarFieldEnum]
+
+
+export const NotificationsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  title: 'title',
+  body: 'body',
+  image_url: 'image_url',
+  image_id: 'image_id',
+  deep_link: 'deep_link',
+  data: 'data',
+  is_read: 'is_read',
+  read_at: 'read_at',
+  status: 'status',
+  sent_at: 'sent_at',
+  error: 'error',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type NotificationsScalarFieldEnum = (typeof NotificationsScalarFieldEnum)[keyof typeof NotificationsScalarFieldEnum]
+
+
+export const RemindersScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  pet_id: 'pet_id',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  status: 'status',
+  scheduled_at: 'scheduled_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RemindersScalarFieldEnum = (typeof RemindersScalarFieldEnum)[keyof typeof RemindersScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -194,4 +269,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

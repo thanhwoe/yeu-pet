@@ -22,6 +22,10 @@ export class CaslAbilityFactory {
       can(Action.Read, 'MedicalRecords');
       can(Action.Update, 'MedicalRecords');
       can(Action.Delete, 'MedicalRecords');
+
+      can(Action.Create, 'UserDevices');
+      can(Action.Read, 'UserDevices', { account_id: user.id });
+      can(Action.Delete, 'UserDevices', { account_id: user.id });
     }
 
     return build();

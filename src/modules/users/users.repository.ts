@@ -38,8 +38,15 @@ export class UsersRepository implements IUsersRepository {
       'phone' | 'password_hash' | 'first_name' | 'last_name' | 'email'
     >,
   ): Promise<accounts> {
-    return this.prisma.accounts.create({
-      data,
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.accounts.create({ data });
+
+      await tx.account_settings.create({
+        data: {
+          account_id: user.id,
+        },
+      });
+      return user;
     });
   }
 

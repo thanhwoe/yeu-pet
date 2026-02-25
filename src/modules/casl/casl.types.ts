@@ -1,4 +1,5 @@
 import type {
+  account_devices,
   accounts,
   medical_records,
   pets,
@@ -24,4 +25,5 @@ export type SubjectMap = {
   Pets: pets;
   Accounts: accounts;
   MedicalRecords: medical_records;
+  UserDevices: account_devices;
 };

@@ -1,7 +1,7 @@
 import { gender_enum, species_enum } from '@app/generated/prisma/enums';
 import {
   IsDateString,
-  IsIn,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -35,12 +35,12 @@ export class CreatePetDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(Object.values(gender_enum))
+  @IsEnum(gender_enum)
   gender: gender_enum;
 
   @IsOptional()
   @IsString()
-  @IsIn(Object.values(species_enum))
+  @IsEnum(species_enum)
   species: species_enum;
 
   @IsOptional()

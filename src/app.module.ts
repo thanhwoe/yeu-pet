@@ -13,6 +13,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { PetsModule } from './modules/pets/pets.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
+import { UserDevicesModule } from './modules/user-devices/user-devices.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MedicalRecordsModule } from './modules/medical-records/medical-records.
     PetsModule,
     CaslModule,
     MedicalRecordsModule,
+    UserDevicesModule,
   ],
   controllers: [AppController],
   providers: [

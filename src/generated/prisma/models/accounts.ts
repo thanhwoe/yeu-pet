@@ -278,9 +278,13 @@ export type accountsWhereInput = {
   is_active?: Prisma.BoolNullableFilter<"accounts"> | boolean | null
   is_verified?: Prisma.BoolNullableFilter<"accounts"> | boolean | null
   avatar_id?: Prisma.StringNullableFilter<"accounts"> | string | null
+  account_devices?: Prisma.Account_devicesListRelationFilter
+  account_settings?: Prisma.XOR<Prisma.Account_settingsNullableScalarRelationFilter, Prisma.account_settingsWhereInput> | null
+  notifications?: Prisma.NotificationsListRelationFilter
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
   refresh_tokens?: Prisma.Refresh_tokensListRelationFilter
+  reminders?: Prisma.RemindersListRelationFilter
 }
 
 export type accountsOrderByWithRelationInput = {
@@ -301,9 +305,13 @@ export type accountsOrderByWithRelationInput = {
   is_active?: Prisma.SortOrderInput | Prisma.SortOrder
   is_verified?: Prisma.SortOrderInput | Prisma.SortOrder
   avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  account_devices?: Prisma.account_devicesOrderByRelationAggregateInput
+  account_settings?: Prisma.account_settingsOrderByWithRelationInput
+  notifications?: Prisma.notificationsOrderByRelationAggregateInput
   otp_tokens?: Prisma.otp_tokensOrderByWithRelationInput
   pets?: Prisma.petsOrderByRelationAggregateInput
   refresh_tokens?: Prisma.refresh_tokensOrderByRelationAggregateInput
+  reminders?: Prisma.remindersOrderByRelationAggregateInput
 }
 
 export type accountsWhereUniqueInput = Prisma.AtLeast<{
@@ -327,9 +335,13 @@ export type accountsWhereUniqueInput = Prisma.AtLeast<{
   is_active?: Prisma.BoolNullableFilter<"accounts"> | boolean | null
   is_verified?: Prisma.BoolNullableFilter<"accounts"> | boolean | null
   avatar_id?: Prisma.StringNullableFilter<"accounts"> | string | null
+  account_devices?: Prisma.Account_devicesListRelationFilter
+  account_settings?: Prisma.XOR<Prisma.Account_settingsNullableScalarRelationFilter, Prisma.account_settingsWhereInput> | null
+  notifications?: Prisma.NotificationsListRelationFilter
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
   refresh_tokens?: Prisma.Refresh_tokensListRelationFilter
+  reminders?: Prisma.RemindersListRelationFilter
 }, "id" | "email" | "phone">
 
 export type accountsOrderByWithAggregationInput = {
@@ -396,9 +408,13 @@ export type accountsCreateInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsUncheckedCreateInput = {
@@ -419,9 +435,13 @@ export type accountsUncheckedCreateInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsUpdateInput = {
@@ -442,9 +462,13 @@ export type accountsUpdateInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsUncheckedUpdateInput = {
@@ -465,9 +489,13 @@ export type accountsUncheckedUpdateInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsCreateManyInput = {
@@ -665,6 +693,62 @@ export type accountsUpdateOneRequiredWithoutPetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutPetsInput, Prisma.accountsUpdateWithoutPetsInput>, Prisma.accountsUncheckedUpdateWithoutPetsInput>
 }
 
+export type accountsCreateNestedOneWithoutAccount_devicesInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutAccount_devicesInput, Prisma.accountsUncheckedCreateWithoutAccount_devicesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutAccount_devicesInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutAccount_devicesNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutAccount_devicesInput, Prisma.accountsUncheckedCreateWithoutAccount_devicesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutAccount_devicesInput
+  upsert?: Prisma.accountsUpsertWithoutAccount_devicesInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutAccount_devicesInput, Prisma.accountsUpdateWithoutAccount_devicesInput>, Prisma.accountsUncheckedUpdateWithoutAccount_devicesInput>
+}
+
+export type accountsCreateNestedOneWithoutAccount_settingsInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutAccount_settingsInput, Prisma.accountsUncheckedCreateWithoutAccount_settingsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutAccount_settingsInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutAccount_settingsNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutAccount_settingsInput, Prisma.accountsUncheckedCreateWithoutAccount_settingsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutAccount_settingsInput
+  upsert?: Prisma.accountsUpsertWithoutAccount_settingsInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutAccount_settingsInput, Prisma.accountsUpdateWithoutAccount_settingsInput>, Prisma.accountsUncheckedUpdateWithoutAccount_settingsInput>
+}
+
+export type accountsCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutNotificationsInput, Prisma.accountsUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutNotificationsInput, Prisma.accountsUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.accountsUpsertWithoutNotificationsInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutNotificationsInput, Prisma.accountsUpdateWithoutNotificationsInput>, Prisma.accountsUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type accountsCreateNestedOneWithoutRemindersInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutRemindersInput, Prisma.accountsUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutRemindersInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutRemindersNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutRemindersInput, Prisma.accountsUncheckedCreateWithoutRemindersInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutRemindersInput
+  upsert?: Prisma.accountsUpsertWithoutRemindersInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutRemindersInput, Prisma.accountsUpdateWithoutRemindersInput>, Prisma.accountsUncheckedUpdateWithoutRemindersInput>
+}
+
 export type accountsCreateWithoutRefresh_tokensInput = {
   id?: string
   email?: string | null
@@ -683,8 +767,12 @@ export type accountsCreateWithoutRefresh_tokensInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsUncheckedCreateWithoutRefresh_tokensInput = {
@@ -705,8 +793,12 @@ export type accountsUncheckedCreateWithoutRefresh_tokensInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsCreateOrConnectWithoutRefresh_tokensInput = {
@@ -743,8 +835,12 @@ export type accountsUpdateWithoutRefresh_tokensInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -765,8 +861,12 @@ export type accountsUncheckedUpdateWithoutRefresh_tokensInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsCreateWithoutOtp_tokensInput = {
@@ -787,8 +887,12 @@ export type accountsCreateWithoutOtp_tokensInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsUncheckedCreateWithoutOtp_tokensInput = {
@@ -809,8 +913,12 @@ export type accountsUncheckedCreateWithoutOtp_tokensInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsCreateOrConnectWithoutOtp_tokensInput = {
@@ -847,8 +955,12 @@ export type accountsUpdateWithoutOtp_tokensInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsUncheckedUpdateWithoutOtp_tokensInput = {
@@ -869,8 +981,12 @@ export type accountsUncheckedUpdateWithoutOtp_tokensInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsCreateWithoutPetsInput = {
@@ -891,8 +1007,12 @@ export type accountsCreateWithoutPetsInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsUncheckedCreateWithoutPetsInput = {
@@ -913,8 +1033,12 @@ export type accountsUncheckedCreateWithoutPetsInput = {
   is_active?: boolean | null
   is_verified?: boolean | null
   avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
 
 export type accountsCreateOrConnectWithoutPetsInput = {
@@ -951,8 +1075,12 @@ export type accountsUpdateWithoutPetsInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
 
 export type accountsUncheckedUpdateWithoutPetsInput = {
@@ -973,7 +1101,491 @@ export type accountsUncheckedUpdateWithoutPetsInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutAccount_devicesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutAccount_devicesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutAccount_devicesInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutAccount_devicesInput, Prisma.accountsUncheckedCreateWithoutAccount_devicesInput>
+}
+
+export type accountsUpsertWithoutAccount_devicesInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutAccount_devicesInput, Prisma.accountsUncheckedUpdateWithoutAccount_devicesInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutAccount_devicesInput, Prisma.accountsUncheckedCreateWithoutAccount_devicesInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutAccount_devicesInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutAccount_devicesInput, Prisma.accountsUncheckedUpdateWithoutAccount_devicesInput>
+}
+
+export type accountsUpdateWithoutAccount_devicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutAccount_devicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutAccount_settingsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutAccount_settingsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutAccount_settingsInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutAccount_settingsInput, Prisma.accountsUncheckedCreateWithoutAccount_settingsInput>
+}
+
+export type accountsUpsertWithoutAccount_settingsInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutAccount_settingsInput, Prisma.accountsUncheckedUpdateWithoutAccount_settingsInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutAccount_settingsInput, Prisma.accountsUncheckedCreateWithoutAccount_settingsInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutAccount_settingsInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutAccount_settingsInput, Prisma.accountsUncheckedUpdateWithoutAccount_settingsInput>
+}
+
+export type accountsUpdateWithoutAccount_settingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutAccount_settingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutNotificationsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutNotificationsInput, Prisma.accountsUncheckedCreateWithoutNotificationsInput>
+}
+
+export type accountsUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutNotificationsInput, Prisma.accountsUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutNotificationsInput, Prisma.accountsUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutNotificationsInput, Prisma.accountsUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type accountsUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutRemindersInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutRemindersInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutRemindersInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutRemindersInput, Prisma.accountsUncheckedCreateWithoutRemindersInput>
+}
+
+export type accountsUpsertWithoutRemindersInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutRemindersInput, Prisma.accountsUncheckedUpdateWithoutRemindersInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutRemindersInput, Prisma.accountsUncheckedCreateWithoutRemindersInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutRemindersInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutRemindersInput, Prisma.accountsUncheckedUpdateWithoutRemindersInput>
+}
+
+export type accountsUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutRemindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
@@ -983,13 +1595,19 @@ export type accountsUncheckedUpdateWithoutPetsInput = {
  */
 
 export type AccountsCountOutputType = {
+  account_devices: number
+  notifications: number
   pets: number
   refresh_tokens: number
+  reminders: number
 }
 
 export type AccountsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  account_devices?: boolean | AccountsCountOutputTypeCountAccount_devicesArgs
+  notifications?: boolean | AccountsCountOutputTypeCountNotificationsArgs
   pets?: boolean | AccountsCountOutputTypeCountPetsArgs
   refresh_tokens?: boolean | AccountsCountOutputTypeCountRefresh_tokensArgs
+  reminders?: boolean | AccountsCountOutputTypeCountRemindersArgs
 }
 
 /**
@@ -1005,6 +1623,20 @@ export type AccountsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
 /**
  * AccountsCountOutputType without action
  */
+export type AccountsCountOutputTypeCountAccount_devicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.account_devicesWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.notificationsWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
 export type AccountsCountOutputTypeCountPetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.petsWhereInput
 }
@@ -1014,6 +1646,13 @@ export type AccountsCountOutputTypeCountPetsArgs<ExtArgs extends runtime.Types.E
  */
 export type AccountsCountOutputTypeCountRefresh_tokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.refresh_tokensWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.remindersWhereInput
 }
 
 
@@ -1035,9 +1674,13 @@ export type accountsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   is_active?: boolean
   is_verified?: boolean
   avatar_id?: boolean
+  account_devices?: boolean | Prisma.accounts$account_devicesArgs<ExtArgs>
+  account_settings?: boolean | Prisma.accounts$account_settingsArgs<ExtArgs>
+  notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.accounts$refresh_tokensArgs<ExtArgs>
+  reminders?: boolean | Prisma.accounts$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.AccountsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["accounts"]>
 
@@ -1103,9 +1746,13 @@ export type accountsSelectScalar = {
 
 export type accountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "first_name" | "last_name" | "password_hash" | "phone" | "avatar_url" | "role" | "onboarding_completed" | "subscription" | "subscription_expires_at" | "last_sign_in_at" | "created_at" | "updated_at" | "is_active" | "is_verified" | "avatar_id", ExtArgs["result"]["accounts"]>
 export type accountsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  account_devices?: boolean | Prisma.accounts$account_devicesArgs<ExtArgs>
+  account_settings?: boolean | Prisma.accounts$account_settingsArgs<ExtArgs>
+  notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.accounts$refresh_tokensArgs<ExtArgs>
+  reminders?: boolean | Prisma.accounts$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.AccountsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type accountsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1114,9 +1761,13 @@ export type accountsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $accountsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "accounts"
   objects: {
+    account_devices: Prisma.$account_devicesPayload<ExtArgs>[]
+    account_settings: Prisma.$account_settingsPayload<ExtArgs> | null
+    notifications: Prisma.$notificationsPayload<ExtArgs>[]
     otp_tokens: Prisma.$otp_tokensPayload<ExtArgs> | null
     pets: Prisma.$petsPayload<ExtArgs>[]
     refresh_tokens: Prisma.$refresh_tokensPayload<ExtArgs>[]
+    reminders: Prisma.$remindersPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1530,9 +2181,13 @@ readonly fields: accountsFieldRefs;
  */
 export interface Prisma__accountsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  account_devices<T extends Prisma.accounts$account_devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$account_devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$account_devicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  account_settings<T extends Prisma.accounts$account_settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$account_settingsArgs<ExtArgs>>): Prisma.Prisma__account_settingsClient<runtime.Types.Result.GetResult<Prisma.$account_settingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notifications<T extends Prisma.accounts$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$notificationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   otp_tokens<T extends Prisma.accounts$otp_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$otp_tokensArgs<ExtArgs>>): Prisma.Prisma__otp_tokensClient<runtime.Types.Result.GetResult<Prisma.$otp_tokensPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pets<T extends Prisma.accounts$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$petsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refresh_tokens<T extends Prisma.accounts$refresh_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$refresh_tokensPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminders<T extends Prisma.accounts$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$remindersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1967,6 +2622,73 @@ export type accountsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * accounts.account_devices
+ */
+export type accounts$account_devicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the account_devices
+   */
+  select?: Prisma.account_devicesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the account_devices
+   */
+  omit?: Prisma.account_devicesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.account_devicesInclude<ExtArgs> | null
+  where?: Prisma.account_devicesWhereInput
+  orderBy?: Prisma.account_devicesOrderByWithRelationInput | Prisma.account_devicesOrderByWithRelationInput[]
+  cursor?: Prisma.account_devicesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Account_devicesScalarFieldEnum | Prisma.Account_devicesScalarFieldEnum[]
+}
+
+/**
+ * accounts.account_settings
+ */
+export type accounts$account_settingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the account_settings
+   */
+  select?: Prisma.account_settingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the account_settings
+   */
+  omit?: Prisma.account_settingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.account_settingsInclude<ExtArgs> | null
+  where?: Prisma.account_settingsWhereInput
+}
+
+/**
+ * accounts.notifications
+ */
+export type accounts$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the notifications
+   */
+  select?: Prisma.notificationsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the notifications
+   */
+  omit?: Prisma.notificationsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.notificationsInclude<ExtArgs> | null
+  where?: Prisma.notificationsWhereInput
+  orderBy?: Prisma.notificationsOrderByWithRelationInput | Prisma.notificationsOrderByWithRelationInput[]
+  cursor?: Prisma.notificationsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationsScalarFieldEnum | Prisma.NotificationsScalarFieldEnum[]
+}
+
+/**
  * accounts.otp_tokens
  */
 export type accounts$otp_tokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2031,6 +2753,30 @@ export type accounts$refresh_tokensArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.Refresh_tokensScalarFieldEnum | Prisma.Refresh_tokensScalarFieldEnum[]
+}
+
+/**
+ * accounts.reminders
+ */
+export type accounts$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the reminders
+   */
+  select?: Prisma.remindersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the reminders
+   */
+  omit?: Prisma.remindersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.remindersInclude<ExtArgs> | null
+  where?: Prisma.remindersWhereInput
+  orderBy?: Prisma.remindersOrderByWithRelationInput | Prisma.remindersOrderByWithRelationInput[]
+  cursor?: Prisma.remindersWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RemindersScalarFieldEnum | Prisma.RemindersScalarFieldEnum[]
 }
 
 /**

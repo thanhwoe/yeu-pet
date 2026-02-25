@@ -34,7 +34,7 @@ export class PetsController {
   @Post()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Pets'))
   @UseInterceptors(FileInterceptor('avatar'))
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   create(
     @CurrentUser() user: accounts,
     @Body() createPetDto: CreatePetDto,

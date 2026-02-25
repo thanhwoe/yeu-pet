@@ -53,3 +53,40 @@ export const species_enum = {
 } as const
 
 export type species_enum = (typeof species_enum)[keyof typeof species_enum]
+
+
+export const device_platform = {
+  android: 'android',
+  ios: 'ios',
+  unknown: 'unknown'
+} as const
+
+export type device_platform = (typeof device_platform)[keyof typeof device_platform]
+
+
+export const notifications_status = {
+  pending: 'pending',
+  sent: 'sent',
+  failed: 'failed'
+} as const
+
+export type notifications_status = (typeof notifications_status)[keyof typeof notifications_status]
+
+
+export const reminder_status = {
+  pending: 'pending',
+  sent: 'sent',
+  cancelled: 'cancelled'
+} as const
+
+export type reminder_status = (typeof reminder_status)[keyof typeof reminder_status]
+
+
+export const reminder_type = {
+  grooming: 'grooming',
+  feeding: 'feeding',
+  vaccination: 'vaccination',
+  medication: 'medication'
+} as const
+
+export type reminder_type = (typeof reminder_type)[keyof typeof reminder_type]
