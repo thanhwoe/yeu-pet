@@ -2,6 +2,7 @@ import type {
   account_devices,
   accounts,
   medical_records,
+  notifications,
   pets,
   reminders,
 } from '@app/generated/prisma/client';
@@ -28,4 +29,5 @@ export type SubjectMap = {
   MedicalRecords: medical_records;
   UserDevices: account_devices;
   Reminders: reminders;
+  Notifications: notifications;
 };

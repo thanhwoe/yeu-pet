@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   UseInterceptors,
   UseGuards,
@@ -19,6 +18,7 @@ import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
+import { IdParam } from '@app/decorators/id-param.decorator';
 
 @Controller('medical-records')
 @UseGuards(PoliciesGuard)
@@ -36,7 +36,7 @@ export class MedicalRecordsController {
   }
 
   @Get(':id')
-  findOne(@CurrentUser() user: accounts, @Param('id') id: string) {
+  findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.medicalRecordsService.findOne(user, id);
   }
 
@@ -44,7 +44,7 @@ export class MedicalRecordsController {
   @UseInterceptors(FilesInterceptor('attachments', 5))
   update(
     @CurrentUser() user: accounts,
-    @Param('id') id: string,
+    @IdParam() id: string,
     @Body() updateMedicalRecordDto: UpdateMedicalRecordDto,
     @FilesUploaded() files?: Express.Multer.File[],
   ) {
@@ -57,7 +57,7 @@ export class MedicalRecordsController {
   }
 
   @Delete(':id')
-  remove(@CurrentUser() user: accounts, @Param('id') id: string) {
+  remove(@CurrentUser() user: accounts, @IdParam('id') id: string) {
     return this.medicalRecordsService.remove(user, id);
   }
 }

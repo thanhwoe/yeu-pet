@@ -67,3 +67,8 @@ export type notifications = Prisma.notificationsModel
  * 
  */
 export type reminders = Prisma.remindersModel
+/**
+ * Model notification_deliveries
+ * 
+ */
+export type notification_deliveries = Prisma.notification_deliveriesModel

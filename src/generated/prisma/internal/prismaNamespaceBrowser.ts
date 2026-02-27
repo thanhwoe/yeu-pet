@@ -60,7 +60,8 @@ export const ModelName = {
   account_devices: 'account_devices',
   account_settings: 'account_settings',
   notifications: 'notifications',
-  reminders: 'reminders'
+  reminders: 'reminders',
+  notification_deliveries: 'notification_deliveries'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -213,9 +214,6 @@ export const NotificationsScalarFieldEnum = {
   data: 'data',
   is_read: 'is_read',
   read_at: 'read_at',
-  status: 'status',
-  sent_at: 'sent_at',
-  error: 'error',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -237,6 +235,21 @@ export const RemindersScalarFieldEnum = {
 } as const
 
 export type RemindersScalarFieldEnum = (typeof RemindersScalarFieldEnum)[keyof typeof RemindersScalarFieldEnum]
+
+
+export const Notification_deliveriesScalarFieldEnum = {
+  id: 'id',
+  notification_id: 'notification_id',
+  device_id: 'device_id',
+  push_token: 'push_token',
+  status: 'status',
+  sent_at: 'sent_at',
+  error: 'error',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Notification_deliveriesScalarFieldEnum = (typeof Notification_deliveriesScalarFieldEnum)[keyof typeof Notification_deliveriesScalarFieldEnum]
 
 
 export const SortOrder = {

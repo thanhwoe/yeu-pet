@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   UseInterceptors,
   HttpCode,
@@ -22,6 +21,7 @@ import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
 import { MedicalRecordsService } from '../medical-records/medical-records.service';
+import { IdParam } from '@app/decorators/id-param.decorator';
 
 @Controller('pets')
 @UseGuards(PoliciesGuard)
@@ -52,16 +52,13 @@ export class PetsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@CurrentUser() user: accounts, @Param('id') id: string) {
+  findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petsService.findOne(user, id);
   }
 
   @Get(':id/medical-records')
   @HttpCode(HttpStatus.OK)
-  findAllMedicalRecords(
-    @CurrentUser() user: accounts,
-    @Param('id') id: string,
-  ) {
+  findAllMedicalRecords(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.medicalRecordsService.findAllByPetId(user, id);
   }
 
@@ -70,7 +67,7 @@ export class PetsController {
   @UseInterceptors(FileInterceptor('avatar'))
   update(
     @CurrentUser() user: accounts,
-    @Param('id') id: string,
+    @IdParam() id: string,
     @Body() updatePetDto: UpdatePetDto,
     @FileUploaded()
     avatar?: Express.Multer.File,
@@ -80,7 +77,7 @@ export class PetsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser() user: accounts, @Param('id') id: string) {
+  remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petsService.remove(user, id);
   }
 }

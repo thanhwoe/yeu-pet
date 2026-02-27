@@ -1,4 +1,7 @@
 import { reminders } from '@app/generated/prisma/client';
 import { IBaseRepository } from './repository.interface';
+import { remindersWhereInput } from '@app/generated/prisma/models';
 
-export type IRemindersRepository = IBaseRepository<reminders>;
+export interface IRemindersRepository extends IBaseRepository<reminders> {
+  findMany(params: { where: remindersWhereInput }): Promise<reminders[]>;
+}

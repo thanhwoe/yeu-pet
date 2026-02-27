@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Param,
   Delete,
   UseGuards,
   HttpCode,
@@ -15,6 +14,7 @@ import type { accounts } from '@app/generated/prisma/client';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
+import { IdParam } from '@app/decorators/id-param.decorator';
 
 @Controller('devices')
 @UseGuards(PoliciesGuard)
@@ -33,7 +33,7 @@ export class UserDevicesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser() user: accounts, @Param('id') id: string) {
+  remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.userDevicesService.remove(user, id);
   }
 }

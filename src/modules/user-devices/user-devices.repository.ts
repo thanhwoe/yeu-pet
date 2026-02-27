@@ -55,4 +55,25 @@ export class UserDevicesRepository implements IUserDevicesRepository {
       where: { id },
     });
   }
+
+  async findAll(params?: { skip?: number; take?: number; account_id: string }) {
+    return this.prisma.account_devices.findMany({
+      where: { account_id: params?.account_id },
+      skip: params?.skip,
+      take: params?.take,
+      orderBy: { created_at: 'desc' },
+    });
+  }
+
+  async update(id: string, data: Partial<account_devices>) {
+    return this.prisma.account_devices.update({
+      where: {
+        id,
+      },
+      data: {
+        updated_at: new Date(),
+        ...data,
+      },
+    });
+  }
 }

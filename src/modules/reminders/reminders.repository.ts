@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
-import { reminders } from '@app/generated/prisma/client';
+import { reminder_status, reminders } from '@app/generated/prisma/client';
+import { remindersWhereInput } from '@app/generated/prisma/models';
 import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -29,15 +30,25 @@ export class RemindersRepository implements IRemindersRepository {
     });
   }
 
-  async findAll(params?: { skip?: number; take?: number; account_id: string }) {
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    account_id: string;
+    status?: reminder_status;
+  }) {
     return this.prisma.reminders.findMany({
       where: {
         account_id: params?.account_id,
+        status: params?.status,
       },
       skip: params?.skip,
       take: params?.take,
-      orderBy: { created_at: 'desc' },
+      orderBy: { scheduled_at: 'desc' },
     });
+  }
+
+  async findMany(params: { where: remindersWhereInput }) {
+    return this.prisma.reminders.findMany(params);
   }
 
   async delete(id: string) {

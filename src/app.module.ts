@@ -15,6 +15,9 @@ import { CaslModule } from './modules/casl/casl.module';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
 import { UserDevicesModule } from './modules/user-devices/user-devices.module';
 import { RemindersModule } from './modules/reminders/reminders.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 
 @Module({
   imports: [
@@ -37,6 +40,7 @@ import { RemindersModule } from './modules/reminders/reminders.module';
         },
       ],
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     PrismaModule,
@@ -46,6 +50,8 @@ import { RemindersModule } from './modules/reminders/reminders.module';
     MedicalRecordsModule,
     UserDevicesModule,
     RemindersModule,
+    NotificationsModule,
+    UserSettingsModule,
   ],
   controllers: [AppController],
   providers: [

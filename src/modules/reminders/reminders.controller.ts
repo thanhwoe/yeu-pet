@@ -4,20 +4,21 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
-import type { accounts } from '@app/generated/prisma/client';
+import type { accounts, reminder_status } from '@app/generated/prisma/client';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
+import { IdParam } from '@app/decorators/id-param.decorator';
 
 @Controller('reminders')
 @UseGuards(PoliciesGuard)
@@ -36,13 +37,16 @@ export class RemindersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@CurrentUser() user: accounts) {
-    return this.remindersService.findAll(user.id);
+  findAll(
+    @CurrentUser() user: accounts,
+    @Query('status') status?: reminder_status,
+  ) {
+    return this.remindersService.findAll(user.id, status);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@CurrentUser() user: accounts, @Param('id') id: string) {
+  findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.remindersService.findOne(user, id);
   }
 
@@ -50,7 +54,7 @@ export class RemindersController {
   @HttpCode(HttpStatus.OK)
   update(
     @CurrentUser() user: accounts,
-    @Param('id') id: string,
+    @IdParam() id: string,
     @Body() updateReminderDto: UpdateReminderDto,
   ) {
     return this.remindersService.update(user, id, updateReminderDto);
@@ -58,7 +62,7 @@ export class RemindersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@CurrentUser() user: accounts, @Param('id') id: string) {
+  remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.remindersService.remove(user, id);
   }
 }

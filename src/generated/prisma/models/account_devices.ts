@@ -215,6 +215,7 @@ export type account_devicesWhereInput = {
   created_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  notification_deliveries?: Prisma.Notification_deliveriesListRelationFilter
 }
 
 export type account_devicesOrderByWithRelationInput = {
@@ -228,6 +229,7 @@ export type account_devicesOrderByWithRelationInput = {
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
+  notification_deliveries?: Prisma.notification_deliveriesOrderByRelationAggregateInput
 }
 
 export type account_devicesWhereUniqueInput = Prisma.AtLeast<{
@@ -244,6 +246,7 @@ export type account_devicesWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  notification_deliveries?: Prisma.Notification_deliveriesListRelationFilter
 }, "id" | "push_token">
 
 export type account_devicesOrderByWithAggregationInput = {
@@ -286,6 +289,7 @@ export type account_devicesCreateInput = {
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutAccount_devicesInput
+  notification_deliveries?: Prisma.notification_deliveriesCreateNestedManyWithoutAccount_devicesInput
 }
 
 export type account_devicesUncheckedCreateInput = {
@@ -298,6 +302,7 @@ export type account_devicesUncheckedCreateInput = {
   is_active?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesUncheckedCreateNestedManyWithoutAccount_devicesInput
 }
 
 export type account_devicesUpdateInput = {
@@ -310,6 +315,7 @@ export type account_devicesUpdateInput = {
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutAccount_devicesNestedInput
+  notification_deliveries?: Prisma.notification_deliveriesUpdateManyWithoutAccount_devicesNestedInput
 }
 
 export type account_devicesUncheckedUpdateInput = {
@@ -322,6 +328,7 @@ export type account_devicesUncheckedUpdateInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesNestedInput
 }
 
 export type account_devicesCreateManyInput = {
@@ -405,6 +412,11 @@ export type account_devicesMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type Account_devicesScalarRelationFilter = {
+  is?: Prisma.account_devicesWhereInput
+  isNot?: Prisma.account_devicesWhereInput
+}
+
 export type account_devicesCreateNestedManyWithoutAccountsInput = {
   create?: Prisma.XOR<Prisma.account_devicesCreateWithoutAccountsInput, Prisma.account_devicesUncheckedCreateWithoutAccountsInput> | Prisma.account_devicesCreateWithoutAccountsInput[] | Prisma.account_devicesUncheckedCreateWithoutAccountsInput[]
   connectOrCreate?: Prisma.account_devicesCreateOrConnectWithoutAccountsInput | Prisma.account_devicesCreateOrConnectWithoutAccountsInput[]
@@ -451,6 +463,20 @@ export type NullableEnumdevice_platformFieldUpdateOperationsInput = {
   set?: $Enums.device_platform | null
 }
 
+export type account_devicesCreateNestedOneWithoutNotification_deliveriesInput = {
+  create?: Prisma.XOR<Prisma.account_devicesCreateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedCreateWithoutNotification_deliveriesInput>
+  connectOrCreate?: Prisma.account_devicesCreateOrConnectWithoutNotification_deliveriesInput
+  connect?: Prisma.account_devicesWhereUniqueInput
+}
+
+export type account_devicesUpdateOneRequiredWithoutNotification_deliveriesNestedInput = {
+  create?: Prisma.XOR<Prisma.account_devicesCreateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedCreateWithoutNotification_deliveriesInput>
+  connectOrCreate?: Prisma.account_devicesCreateOrConnectWithoutNotification_deliveriesInput
+  upsert?: Prisma.account_devicesUpsertWithoutNotification_deliveriesInput
+  connect?: Prisma.account_devicesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.account_devicesUpdateToOneWithWhereWithoutNotification_deliveriesInput, Prisma.account_devicesUpdateWithoutNotification_deliveriesInput>, Prisma.account_devicesUncheckedUpdateWithoutNotification_deliveriesInput>
+}
+
 export type account_devicesCreateWithoutAccountsInput = {
   id?: string
   push_token: string
@@ -460,6 +486,7 @@ export type account_devicesCreateWithoutAccountsInput = {
   is_active?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesCreateNestedManyWithoutAccount_devicesInput
 }
 
 export type account_devicesUncheckedCreateWithoutAccountsInput = {
@@ -471,6 +498,7 @@ export type account_devicesUncheckedCreateWithoutAccountsInput = {
   is_active?: boolean | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesUncheckedCreateNestedManyWithoutAccount_devicesInput
 }
 
 export type account_devicesCreateOrConnectWithoutAccountsInput = {
@@ -514,6 +542,70 @@ export type account_devicesScalarWhereInput = {
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
 }
 
+export type account_devicesCreateWithoutNotification_deliveriesInput = {
+  id?: string
+  push_token: string
+  device_name?: string | null
+  os_version?: string | null
+  platform?: $Enums.device_platform | null
+  is_active?: boolean | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutAccount_devicesInput
+}
+
+export type account_devicesUncheckedCreateWithoutNotification_deliveriesInput = {
+  id?: string
+  account_id: string
+  push_token: string
+  device_name?: string | null
+  os_version?: string | null
+  platform?: $Enums.device_platform | null
+  is_active?: boolean | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type account_devicesCreateOrConnectWithoutNotification_deliveriesInput = {
+  where: Prisma.account_devicesWhereUniqueInput
+  create: Prisma.XOR<Prisma.account_devicesCreateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedCreateWithoutNotification_deliveriesInput>
+}
+
+export type account_devicesUpsertWithoutNotification_deliveriesInput = {
+  update: Prisma.XOR<Prisma.account_devicesUpdateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedUpdateWithoutNotification_deliveriesInput>
+  create: Prisma.XOR<Prisma.account_devicesCreateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedCreateWithoutNotification_deliveriesInput>
+  where?: Prisma.account_devicesWhereInput
+}
+
+export type account_devicesUpdateToOneWithWhereWithoutNotification_deliveriesInput = {
+  where?: Prisma.account_devicesWhereInput
+  data: Prisma.XOR<Prisma.account_devicesUpdateWithoutNotification_deliveriesInput, Prisma.account_devicesUncheckedUpdateWithoutNotification_deliveriesInput>
+}
+
+export type account_devicesUpdateWithoutNotification_deliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutAccount_devicesNestedInput
+}
+
+export type account_devicesUncheckedUpdateWithoutNotification_deliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 export type account_devicesCreateManyAccountsInput = {
   id?: string
   push_token: string
@@ -534,6 +626,7 @@ export type account_devicesUpdateWithoutAccountsInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesUpdateManyWithoutAccount_devicesNestedInput
 }
 
 export type account_devicesUncheckedUpdateWithoutAccountsInput = {
@@ -545,6 +638,7 @@ export type account_devicesUncheckedUpdateWithoutAccountsInput = {
   is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_deliveries?: Prisma.notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesNestedInput
 }
 
 export type account_devicesUncheckedUpdateManyWithoutAccountsInput = {
@@ -559,6 +653,35 @@ export type account_devicesUncheckedUpdateManyWithoutAccountsInput = {
 }
 
 
+/**
+ * Count Type Account_devicesCountOutputType
+ */
+
+export type Account_devicesCountOutputType = {
+  notification_deliveries: number
+}
+
+export type Account_devicesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  notification_deliveries?: boolean | Account_devicesCountOutputTypeCountNotification_deliveriesArgs
+}
+
+/**
+ * Account_devicesCountOutputType without action
+ */
+export type Account_devicesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Account_devicesCountOutputType
+   */
+  select?: Prisma.Account_devicesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Account_devicesCountOutputType without action
+ */
+export type Account_devicesCountOutputTypeCountNotification_deliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.notification_deliveriesWhereInput
+}
+
 
 export type account_devicesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -571,6 +694,8 @@ export type account_devicesSelect<ExtArgs extends runtime.Types.Extensions.Inter
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  notification_deliveries?: boolean | Prisma.account_devices$notification_deliveriesArgs<ExtArgs>
+  _count?: boolean | Prisma.Account_devicesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account_devices"]>
 
 export type account_devicesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -614,6 +739,8 @@ export type account_devicesSelectScalar = {
 export type account_devicesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "push_token" | "device_name" | "os_version" | "platform" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["account_devices"]>
 export type account_devicesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  notification_deliveries?: boolean | Prisma.account_devices$notification_deliveriesArgs<ExtArgs>
+  _count?: boolean | Prisma.Account_devicesCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type account_devicesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -626,6 +753,7 @@ export type $account_devicesPayload<ExtArgs extends runtime.Types.Extensions.Int
   name: "account_devices"
   objects: {
     accounts: Prisma.$accountsPayload<ExtArgs>
+    notification_deliveries: Prisma.$notification_deliveriesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1032,6 +1160,7 @@ readonly fields: account_devicesFieldRefs;
 export interface Prisma__account_devicesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  notification_deliveries<T extends Prisma.account_devices$notification_deliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.account_devices$notification_deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$notification_deliveriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1463,6 +1592,30 @@ export type account_devicesDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many account_devices to delete.
    */
   limit?: number
+}
+
+/**
+ * account_devices.notification_deliveries
+ */
+export type account_devices$notification_deliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the notification_deliveries
+   */
+  select?: Prisma.notification_deliveriesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the notification_deliveries
+   */
+  omit?: Prisma.notification_deliveriesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.notification_deliveriesInclude<ExtArgs> | null
+  where?: Prisma.notification_deliveriesWhereInput
+  orderBy?: Prisma.notification_deliveriesOrderByWithRelationInput | Prisma.notification_deliveriesOrderByWithRelationInput[]
+  cursor?: Prisma.notification_deliveriesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Notification_deliveriesScalarFieldEnum | Prisma.Notification_deliveriesScalarFieldEnum[]
 }
 
 /**

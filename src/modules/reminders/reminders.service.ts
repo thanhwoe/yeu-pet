@@ -3,16 +3,20 @@ import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { RemindersRepository } from './reminders.repository';
 import dayjs from 'dayjs';
-import { accounts } from '@app/generated/prisma/client';
+import { accounts, reminder_status } from '@app/generated/prisma/client';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { Action } from '../casl/casl.types';
 import { assertAbility } from '../casl/casl.helper';
+import { NotificationsService } from '../notifications/notifications.service';
+import { UserSettingsRepository } from '../user-settings/user-settings.repository';
 
 @Injectable()
 export class RemindersService {
   constructor(
     private readonly remindersRepository: RemindersRepository,
     private readonly caslAbilityFactory: CaslAbilityFactory,
+    private readonly notificationsService: NotificationsService,
+    private readonly userSettingsRepository: UserSettingsRepository,
   ) {}
   async create(userId: string, createReminderDto: CreateReminderDto) {
     return this.remindersRepository.create({
@@ -26,8 +30,8 @@ export class RemindersService {
     });
   }
 
-  async findAll(userId: string) {
-    return this.remindersRepository.findAll({ account_id: userId });
+  async findAll(userId: string, status?: reminder_status) {
+    return this.remindersRepository.findAll({ account_id: userId, status });
   }
 
   async findOne(user: accounts, id: string) {
@@ -71,5 +75,42 @@ export class RemindersService {
     assertAbility(ability, action, 'Reminders', record);
 
     return record;
+  }
+
+  async processReminders() {
+    const now = dayjs();
+    const start = now.toDate();
+    const end = now.add(1, 'minute').toDate();
+
+    // Regular reminders due right now (window of 1 min)
+    const dueReminders = await this.remindersRepository.findMany({
+      where: {
+        status: reminder_status.pending,
+        scheduled_at: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });
+
+    for (const reminder of dueReminders) {
+      const settings = await this.userSettingsRepository.findById(
+        reminder.account_id,
+      );
+
+      // Cancel reminder if notification disable
+      if (!settings?.notification_enable) {
+        await this.remindersRepository.update(reminder.id, {
+          status: reminder_status.cancelled,
+        });
+        return;
+      }
+
+      await this.notificationsService.sendNotification(reminder);
+
+      await this.remindersRepository.update(reminder.id, {
+        status: reminder_status.sent,
+      });
+    }
   }
 }

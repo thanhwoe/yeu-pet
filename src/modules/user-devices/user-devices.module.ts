@@ -8,5 +8,6 @@ import { CaslModule } from '../casl/casl.module';
   imports: [CaslModule],
   controllers: [UserDevicesController],
   providers: [UserDevicesService, UserDevicesRepository],
+  exports: [UserDevicesRepository],
 })
 export class UserDevicesModule {}
