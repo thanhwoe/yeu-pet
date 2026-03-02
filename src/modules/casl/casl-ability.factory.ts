@@ -34,6 +34,11 @@ export class CaslAbilityFactory {
 
       can(Action.Update, 'Notifications', { account_id: user.id });
       can(Action.Delete, 'Notifications', { account_id: user.id });
+
+      can(Action.Create, 'BudgetTransactions');
+      can(Action.Read, 'BudgetTransactions', { account_id: user.id });
+      can(Action.Update, 'BudgetTransactions', { account_id: user.id });
+      can(Action.Delete, 'BudgetTransactions', { account_id: user.id });
     }
 
     return build();

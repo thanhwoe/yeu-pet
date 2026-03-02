@@ -1,6 +1,7 @@
 import type {
   account_devices,
   accounts,
+  budget_transactions,
   medical_records,
   notifications,
   pets,
@@ -30,4 +31,5 @@ export type SubjectMap = {
   UserDevices: account_devices;
   Reminders: reminders;
   Notifications: notifications;
+  BudgetTransactions: budget_transactions;
 };

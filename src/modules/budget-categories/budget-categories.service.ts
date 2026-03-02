@@ -45,8 +45,9 @@ export class BudgetCategoriesService {
   async findOne(id: string) {
     const category = await this.budgetCategoriesRepository.findById(id);
 
-    if (!category)
+    if (!category) {
       throw new NotFoundException(`Budget category with ID ${id} not found`);
+    }
     return category;
   }
 

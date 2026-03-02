@@ -61,7 +61,7 @@ export class BudgetCategoriesController {
   @Delete(':id')
   @AdminOnly()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@IdParam('id') id: string) {
+  remove(@IdParam() id: string) {
     return this.budgetCategoriesService.remove(id);
   }
 }
