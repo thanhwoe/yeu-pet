@@ -15,6 +15,6 @@ import { PetsModule } from '../pets/pets.module';
     MedicalRecordsRepository,
     CleanupAttachmentsTask,
   ],
-  exports: [MedicalRecordsService],
+  exports: [MedicalRecordsService, MedicalRecordsRepository],
 })
 export class MedicalRecordsModule {}

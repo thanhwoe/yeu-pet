@@ -61,7 +61,10 @@ export const ModelName = {
   account_settings: 'account_settings',
   notifications: 'notifications',
   reminders: 'reminders',
-  notification_deliveries: 'notification_deliveries'
+  notification_deliveries: 'notification_deliveries',
+  budget_categories: 'budget_categories',
+  budget_transactions: 'budget_transactions',
+  budgets: 'budgets'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -250,6 +253,46 @@ export const Notification_deliveriesScalarFieldEnum = {
 } as const
 
 export type Notification_deliveriesScalarFieldEnum = (typeof Notification_deliveriesScalarFieldEnum)[keyof typeof Notification_deliveriesScalarFieldEnum]
+
+
+export const Budget_categoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  image_url: 'image_url',
+  image_id: 'image_id',
+  color: 'color',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Budget_categoriesScalarFieldEnum = (typeof Budget_categoriesScalarFieldEnum)[keyof typeof Budget_categoriesScalarFieldEnum]
+
+
+export const Budget_transactionsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  category_id: 'category_id',
+  amount: 'amount',
+  description: 'description',
+  date: 'date',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Budget_transactionsScalarFieldEnum = (typeof Budget_transactionsScalarFieldEnum)[keyof typeof Budget_transactionsScalarFieldEnum]
+
+
+export const BudgetsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  amount: 'amount',
+  month: 'month',
+  year: 'year',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BudgetsScalarFieldEnum = (typeof BudgetsScalarFieldEnum)[keyof typeof BudgetsScalarFieldEnum]
 
 
 export const SortOrder = {

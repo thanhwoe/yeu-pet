@@ -7,14 +7,16 @@ import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
 import { MedicalRecordsRepository } from './medical-records.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { FILE_UPLOAD_JOBS } from '../shared/file-upload/file-upload.jobs';
 import dayjs from 'dayjs';
-import { FILE_DELETE_JOBS } from '../shared/file-upload/file-delete.jobs';
 import { Action } from '../casl/casl.types';
 import { accounts } from '@app/generated/prisma/client';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { PetsRepository } from '../pets/pets.repository';
 import { assertAbility } from '../casl/casl.helper';
+import {
+  FILE_DELETE_JOBS,
+  FILE_UPLOAD_JOBS,
+} from '../file-workers/file-workers.job';
 
 @Injectable()
 export class MedicalRecordsService {

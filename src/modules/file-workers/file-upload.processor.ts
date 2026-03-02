@@ -1,7 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject } from '@nestjs/common';
-import { BULLMQ_QUEUES } from '../bullmq/bullmq.queue';
 import {
   IFileUploadService,
   UploadJobData,
@@ -9,11 +8,13 @@ import {
 } from '@app/interfaces/file-upload.interface';
 import Stream from 'stream';
 import { UsersRepository } from '@app/modules/users/users.repository';
-import { FILE_UPLOAD_JOBS } from './file-upload.jobs';
 import { PetsRepository } from '@app/modules/pets/pets.repository';
 import { MedicalRecordsRepository } from '@app/modules/medical-records/medical-records.repository';
+import { BudgetCategoriesRepository } from '@app/modules/budget-categories/budget-categories.repository';
+import { BULLMQ_QUEUES } from '../shared/bullmq/bullmq.queue';
+import { FILE_UPLOAD_JOBS } from './file-workers.job';
 
-@Processor(BULLMQ_QUEUES.FILE_UPLOAD, { concurrency: 3 })
+@Processor(BULLMQ_QUEUES.FILE_UPLOAD, { concurrency: 4 })
 export class FileUploadProcessor extends WorkerHost {
   constructor(
     @Inject(IFileUploadService)
@@ -21,6 +22,7 @@ export class FileUploadProcessor extends WorkerHost {
     private readonly usersRepository: UsersRepository,
     private readonly petsRepository: PetsRepository,
     private readonly medicalRecordsRepository: MedicalRecordsRepository,
+    private readonly budgetCategoriesRepository: BudgetCategoriesRepository,
   ) {
     super();
   }
@@ -74,6 +76,10 @@ export class FileUploadProcessor extends WorkerHost {
         await this.addAttachments(results, itemId);
         break;
 
+      case FILE_UPLOAD_JOBS.BUDGET_CATEGORIES:
+        await this.updateBudgetCategoryImage(results[0], itemId);
+        break;
+
       default:
         break;
     }
@@ -96,6 +102,12 @@ export class FileUploadProcessor extends WorkerHost {
     return this.petsRepository.update(petId, {
       avatar_id: data.publicId,
       avatar_url: data.url,
+    });
+  }
+  private async updateBudgetCategoryImage(data: UploadResult, id: string) {
+    return this.budgetCategoriesRepository.update(id, {
+      image_id: data.publicId,
+      image_url: data.url,
     });
   }
 

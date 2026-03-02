@@ -1,13 +1,13 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Inject } from '@nestjs/common';
-import { BULLMQ_QUEUES } from '../bullmq/bullmq.queue';
 import {
   FileDeleteJobData,
   IFileUploadService,
 } from '@app/interfaces/file-upload.interface';
 import { MedicalRecordsRepository } from '@app/modules/medical-records/medical-records.repository';
-import { FILE_DELETE_JOBS } from './file-delete.jobs';
+import { BULLMQ_QUEUES } from '../shared/bullmq/bullmq.queue';
+import { FILE_DELETE_JOBS } from './file-workers.job';
 
 @Processor(BULLMQ_QUEUES.FILE_DELETE, { concurrency: 3 })
 export class FileDeleteProcessor extends WorkerHost {

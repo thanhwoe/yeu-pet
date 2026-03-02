@@ -3,13 +3,15 @@ import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { PetsRepository } from './pets.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { FILE_UPLOAD_JOBS } from '../shared/file-upload/file-upload.jobs';
 import dayjs from 'dayjs';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { accounts } from '@app/generated/prisma/client';
 import { Action } from '../casl/casl.types';
 import { assertAbility } from '../casl/casl.helper';
-import { FILE_DELETE_JOBS } from '../shared/file-upload/file-delete.jobs';
+import {
+  FILE_DELETE_JOBS,
+  FILE_UPLOAD_JOBS,
+} from '../file-workers/file-workers.job';
 
 @Injectable()
 export class PetsService {

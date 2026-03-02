@@ -18,8 +18,8 @@ import {
 } from './dto/reset-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { FILE_UPLOAD_JOBS } from '../shared/file-upload/file-upload.jobs';
 import { OtpService } from '../shared/otp/otp.service';
+import { FILE_UPLOAD_JOBS } from '../file-workers/file-workers.job';
 
 @Injectable()
 export class UsersService {

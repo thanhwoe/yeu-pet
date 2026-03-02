@@ -72,3 +72,18 @@ export type reminders = Prisma.remindersModel
  * 
  */
 export type notification_deliveries = Prisma.notification_deliveriesModel
+/**
+ * Model budget_categories
+ * 
+ */
+export type budget_categories = Prisma.budget_categoriesModel
+/**
+ * Model budget_transactions
+ * 
+ */
+export type budget_transactions = Prisma.budget_transactionsModel
+/**
+ * Model budgets
+ * 
+ */
+export type budgets = Prisma.budgetsModel

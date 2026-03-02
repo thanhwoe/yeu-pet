@@ -18,6 +18,8 @@ import { RemindersModule } from './modules/reminders/reminders.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
+import { BudgetCategoriesModule } from './modules/budget-categories/budget-categories.module';
+import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
     UsersModule,
     PrismaModule,
     SharedModule,
+    FiledWorkersModule,
     PetsModule,
     CaslModule,
     MedicalRecordsModule,
@@ -52,6 +55,7 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
     RemindersModule,
     NotificationsModule,
     UserSettingsModule,
+    BudgetCategoriesModule,
   ],
   controllers: [AppController],
   providers: [
