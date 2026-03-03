@@ -8,44 +8,48 @@ import { createSelectors } from "./createSelector";
 import { SecureStorage } from "./secure-store";
 
 type State = {
-  userInfo: IUser | null;
+  user: IUser | null;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  } | null;
 };
 
 type Action = {
-  updateUserInfo: (data: IUser) => void;
+  updateUser: (data: IUser) => void;
+  updateTokens: (data: State["tokens"]) => void;
   logout: () => void;
   clearToken: () => void;
-  refreshToken: (data: { token: string; refreshToken: string }) => void;
 };
 
 const useUserInfoStoreBase = create<State & Action>()(
   persist(
     (set) => ({
-      userInfo: null,
-      updateUserInfo: (userInfo) => {
-        set(() => ({ userInfo }));
+      user: null,
+      tokens: null,
+      updateUser: (user) => {
+        set(() => ({ user }));
       },
-      logout: () => set(() => ({ userInfo: null })),
+      logout: () => set(() => ({ user: null, tokens: null })),
       clearToken: () => {
-        set((state) => ({
-          ...state,
-          userInfo: { ...(state.userInfo as IUser), token: null },
+        set(() => ({
+          tokens: null,
         }));
       },
-      refreshToken: ({ refreshToken, token }) =>
-        set((state) => ({
-          ...state,
-          userInfo: { ...(state.userInfo as IUser), refreshToken, token },
+      updateTokens: (tokens) =>
+        set(() => ({
+          tokens,
         })),
     }),
     {
       name: PERSIST_KEYS.USER_INFO,
       storage: createJSONStorage(() => SecureStorage),
       partialize: (state) => ({
-        userInfo: state.userInfo,
+        user: state.user,
+        tokens: state.tokens,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export const useUserInfoStore = createSelectors(useUserInfoStoreBase);

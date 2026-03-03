@@ -24,9 +24,9 @@ export default function RootLayout() {
 }
 
 const RootNavigation = () => {
-  const { userInfo } = useUserInfoStore();
-  const isAuthenticated = !!userInfo;
-  const isOnboardingComplete = !!userInfo?.onboardingCompleted;
+  const { user } = useUserInfoStore();
+  const isAuthenticated = !!user;
+  const isOnboardingComplete = !!user?.onboardingCompleted;
 
   return (
     <Stack>

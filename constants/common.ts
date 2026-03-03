@@ -11,7 +11,8 @@ import { Platform } from "react-native";
 export const ENV = {
   API_URL: __DEV__
     ? Platform.select({
-        ios: "https://pet-land-api.thanhwoe.workers.dev/api",
+        // ios: "https://pet-land-api.thanhwoe.workers.dev/api",
+        ios: "http://localhost:3000/api/v1",
         android: "http://10.0.2.2:8787/api",
         default: "http://localhost:8787/api",
       })

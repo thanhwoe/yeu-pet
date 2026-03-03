@@ -1,12 +1,12 @@
 export const API_ROUTES = {
-  SIGN_IN: "/sign-in",
-  SIGN_UP: "/sign-up",
+  SIGN_IN: "/auth/login",
+  SIGN_UP: "/auth/register",
   OTP_CONFIRM: "/otp-confirm",
   UPDATE_PASSWORD: "/update-password",
-  REFRESH_TOKEN: "/refresh-token",
-  LOGOUT: "/logout",
+  REFRESH_TOKEN: "/auth/refresh-token",
+  LOGOUT: "/auth/logout",
 
-  COMPLETE_ONBOARDING: "/complete-onboarding",
+  COMPLETE_ONBOARDING: "/users/complete-onboarding",
 
   CREATE_PET: "/create-pet",
   LIST_PET: "/pet",

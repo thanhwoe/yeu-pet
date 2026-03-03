@@ -1,12 +1,14 @@
 import "@tanstack/react-query";
 
 interface ErrorResponse {
-  errors: {
-    message: string;
-    dev: string;
-  }[];
+  statusCode: number;
   timestamp: string;
   path: string;
+  message: {
+    message: string;
+    error: string;
+    statusCode: number;
+  };
 }
 
 declare module "@tanstack/react-query" {

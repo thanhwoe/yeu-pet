@@ -1,13 +1,13 @@
 export interface IUser {
-  accountId: string;
-  email: string;
+  id: string;
+  email: string | null;
   firstName: string;
   lastName: string;
   phone: string;
-  lastSignInAt: string;
-  createdAt: string;
-  updatedAt: string;
-  accessToken: string;
-  refreshToken: string;
-  onboardingCompleted: false;
+  onboardingCompleted: boolean;
+  avatarUrl: string | null;
+  role: string;
+  subscription: string;
+  subscriptionExpiresAt: string | null;
+  isVerified: boolean;
 }

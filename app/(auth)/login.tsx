@@ -11,15 +11,19 @@ import React from "react";
 import { Keyboard, View } from "react-native";
 
 export default function LoginScreen() {
-  const { updateUserInfo } = useUserInfoStore();
+  const { updateUser, updateTokens } = useUserInfoStore();
   const { mutate } = useMutation({
     mutationFn: signInMutation,
     onSuccess: (res) => {
       Toast.success({ text: "Sign in successfully" });
-      updateUserInfo(res.data);
+      updateUser(res.user);
+      updateTokens({
+        refreshToken: res.refreshToken,
+        accessToken: res.accessToken,
+      });
     },
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.message.message });
     },
   });
   const handleLogin = async (data: ISignInForm) => {

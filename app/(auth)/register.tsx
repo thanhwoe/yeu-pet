@@ -10,16 +10,20 @@ import React from "react";
 import { Keyboard, View } from "react-native";
 
 export default function RegisterScreen() {
-  const { updateUserInfo } = useUserInfoStore();
+  const { updateUser, updateTokens } = useUserInfoStore();
 
   const { mutate } = useMutation({
     mutationFn: signUpMutation,
     onSuccess: (res) => {
       Toast.success({ text: "Sign up successfully" });
-      updateUserInfo(res.data);
+      updateUser(res.user);
+      updateTokens({
+        accessToken: res.accessToken,
+        refreshToken: res.refreshToken,
+      });
     },
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.message.message });
     },
   });
   const handleLogin = async (data: ISignUpForm) => {

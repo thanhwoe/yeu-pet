@@ -7,6 +7,7 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
+import camelcaseKeys from "camelcase-keys";
 
 class APIHelper {
   private axiosClient: AxiosInstance;
@@ -21,17 +22,16 @@ class APIHelper {
 
     this.checkToken();
     this.checkExpiredToken();
+    this.transformResponse();
   }
 
   public checkToken(): void {
     this.axiosClient.interceptors.request.use(
       (config) => {
-        const { userInfo } = useUserInfoStore.getState() || {};
-        const { accessToken = "", refreshToken = "" } = userInfo || {};
-        if (userInfo) {
-          config.headers["Authorization"] = accessToken
-            ? `Bearer ${accessToken}`
-            : `Bearer ${refreshToken}`;
+        const { tokens } = useUserInfoStore.getState() || {};
+        const { accessToken } = tokens || {};
+        if (accessToken) {
+          config.headers["Authorization"] = `Bearer ${accessToken}`;
         } else {
           config.headers["Authorization"] = undefined;
         }
@@ -39,8 +39,17 @@ class APIHelper {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
+  }
+
+  private transformResponse(): void {
+    this.axiosClient.interceptors.response.use((response) => {
+      if (response.data) {
+        response.data = camelcaseKeys(response.data, { deep: true });
+      }
+      return response;
+    });
   }
 
   private checkExpiredToken(): void {
@@ -49,31 +58,26 @@ class APIHelper {
         return response;
       },
       async (error) => {
-        if (
-          error.response.status === 401 &&
-          !error.response.data.path.includes(API_ROUTES.REFRESH_TOKEN)
-        ) {
+        const { tokens, updateTokens } = useUserInfoStore.getState() || {};
+
+        if (error.response.status === 401 && tokens?.accessToken) {
           // call api refresh token
-          useUserInfoStore.getState().clearToken();
           const { data } = await this.post<{
-            data: { token: string; refreshToken: string }[];
+            data: { accessToken: string; refreshToken: string };
           }>(API_ROUTES.REFRESH_TOKEN);
-          useUserInfoStore.getState().refreshToken({
-            refreshToken: data[0].refreshToken,
-            token: data[0].token,
-          });
+          updateTokens(data);
         }
         if (error.response.data.path.includes(API_ROUTES.REFRESH_TOKEN)) {
           // force logout
           useUserInfoStore.getState().logout();
         }
         throw error;
-      }
+      },
     );
   }
 
   private errorHandler<T>(
-    callback: () => Promise<AxiosResponse<T>>
+    callback: () => Promise<AxiosResponse<T>>,
   ): Promise<T> {
     return callback()
       .then((res) => res.data)
@@ -89,10 +93,10 @@ class APIHelper {
   private request<T>(
     method: string,
     url: string,
-    options: AxiosRequestConfig = {}
+    options: AxiosRequestConfig = {},
   ): Promise<T> {
     return this.errorHandler<T>(() =>
-      this.axiosClient.request<T>({ method, url, ...options })
+      this.axiosClient.request<T>({ method, url, ...options }),
     );
   }
 

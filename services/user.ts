@@ -3,4 +3,4 @@ import { IUser } from "@/interfaces";
 import { APIs } from "./api-helper";
 
 export const completeOnboardingMutation = () =>
-  APIs.post<{ data: IUser }>(API_ROUTES.COMPLETE_ONBOARDING);
+  APIs.post<IUser>(API_ROUTES.COMPLETE_ONBOARDING);

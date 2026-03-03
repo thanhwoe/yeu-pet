@@ -50,16 +50,17 @@ export default function WelcomeScreen() {
   const DATA = useRef(getData()).current;
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const { updateUserInfo } = useUserInfoStore();
+  const { updateUser, logout } = useUserInfoStore();
 
   const { mutate, isPending } = useMutation({
     mutationFn: completeOnboardingMutation,
     onSuccess: (res) => {
       Toast.success({ text: "Onboarding successfully" });
-      updateUserInfo(res.data);
+      updateUser(res);
     },
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.message.message });
+      logout();
     },
   });
 
@@ -163,7 +164,7 @@ export default function WelcomeScreen() {
             }}
             className={cn(
               "flex-1 h-1 bg-orange-200 rounded-xl",
-              index <= currentIndex && "bg-orange-400"
+              index <= currentIndex && "bg-orange-400",
             )}
             onPress={() => scrollToIndex(index)}
           />

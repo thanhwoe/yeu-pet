@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export default function TabTwoScreen() {
   const queryClient = useQueryClient();
 
-  const { logout } = useUserInfoStore();
+  const { logout, tokens } = useUserInfoStore();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: signOutMutation,
     onSuccess: () => {
@@ -18,11 +18,11 @@ export default function TabTwoScreen() {
       queryClient.resetQueries();
     },
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.message.message });
     },
   });
   const handleLogout = () => {
-    mutateAsync();
+    mutateAsync({ refreshToken: tokens?.refreshToken });
   };
   return (
     <ScreenContainer>
