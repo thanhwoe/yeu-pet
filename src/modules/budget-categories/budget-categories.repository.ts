@@ -33,4 +33,11 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
   async findById(id: string) {
     return this.prisma.budget_categories.findUnique({ where: { id } });
   }
+  findManyByIds(ids: string[]) {
+    return this.prisma.budget_categories.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+  }
 }

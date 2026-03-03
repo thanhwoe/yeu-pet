@@ -1,4 +1,6 @@
 import { budget_categories } from '@app/generated/prisma/client';
 import { IBaseRepository } from './repository.interface';
 
-export type IBudgetCategoriesRepository = IBaseRepository<budget_categories>;
+export interface IBudgetCategoriesRepository extends IBaseRepository<budget_categories> {
+  findManyByIds(ids: string[]): Promise<budget_categories[]>;
+}

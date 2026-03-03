@@ -21,6 +21,7 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
 import { BudgetCategoriesModule } from './modules/budget-categories/budget-categories.module';
 import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 import { BudgetTransactionsModule } from './modules/budget-transactions/budget-transactions.module';
+import { BudgetsModule } from './modules/budgets/budgets.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { BudgetTransactionsModule } from './modules/budget-transactions/budget-t
     UserSettingsModule,
     BudgetCategoriesModule,
     BudgetTransactionsModule,
+    BudgetsModule,
   ],
   controllers: [AppController],
   providers: [

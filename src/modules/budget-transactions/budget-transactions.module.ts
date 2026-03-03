@@ -8,5 +8,6 @@ import { CaslModule } from '../casl/casl.module';
   imports: [CaslModule],
   controllers: [BudgetTransactionsController],
   providers: [BudgetTransactionsService, BudgetTransactionsRepository],
+  exports: [BudgetTransactionsRepository],
 })
 export class BudgetTransactionsModule {}

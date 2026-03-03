@@ -1,15 +1,8 @@
 import { Decimal } from '@prisma/client/runtime/client';
+import { IsInstance, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
-import {
-  IsDateString,
-  IsInstance,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUUID,
-} from 'class-validator';
 
-export class CreateBudgetTransactionDto {
+export class CreateBudgetDto {
   @Transform(({ value }: { value: unknown }) => {
     if (value instanceof Decimal) return value;
     if (value === null || value === undefined) return value;
@@ -22,15 +15,13 @@ export class CreateBudgetTransactionDto {
   })
   amount: Decimal;
 
-  @IsUUID()
-  @IsNotEmpty()
-  categoryId: string;
+  @IsNumber()
+  @Min(1, { message: 'month must be between 1 and 12' })
+  @Max(12, { message: 'month must be between 1 and 12' })
+  month: number;
 
-  @IsString()
-  @IsOptional()
-  description: string;
-
-  @IsDateString()
-  @IsNotEmpty()
-  date: string;
+  @IsNumber()
+  @Min(1900, { message: 'year must be a valid year' })
+  @Max(3000, { message: 'year must be a valid year' })
+  year: number;
 }

@@ -41,4 +41,63 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
   async findById(id: string) {
     return this.prisma.budget_transactions.findUnique({ where: { id } });
   }
+
+  async sum(params: { account_id: string; start_date: Date; end_date: Date }) {
+    const result = await this.prisma.budget_transactions.aggregate({
+      where: {
+        account_id: params.account_id,
+        date: {
+          gte: params.start_date,
+          lte: params.end_date,
+        },
+      },
+      _sum: { amount: true },
+      _count: true,
+    });
+
+    return {
+      amount: result._sum.amount,
+      count: result._count,
+    };
+  }
+  async sumGroupByCategory(params: {
+    account_id: string;
+    start_date: Date;
+    end_date: Date;
+  }) {
+    return this.prisma.budget_transactions.groupBy({
+      by: ['category_id'],
+      where: {
+        account_id: params.account_id,
+        date: {
+          gte: params.start_date,
+          lte: params.end_date,
+        },
+      },
+      _sum: {
+        amount: true,
+      },
+      _count: true,
+    });
+  }
+  findAllByDate(params: {
+    account_id: string;
+    start_date: Date;
+    end_date: Date;
+  }) {
+    return this.prisma.budget_transactions.findMany({
+      where: {
+        account_id: params.account_id,
+        date: {
+          gte: params.start_date,
+          lte: params.end_date,
+        },
+      },
+      select: {
+        date: true,
+        amount: true,
+      },
+      orderBy: { date: 'asc' },
+    });
+  }
 }
