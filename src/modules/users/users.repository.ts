@@ -50,9 +50,22 @@ export class UsersRepository implements IUsersRepository {
     });
   }
 
-  async update(id: string, data: Partial<accounts>): Promise<accounts> {
+  async update(id: string, data: Partial<accounts>) {
     return this.prisma.accounts.update({
       where: { id },
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        phone: true,
+        onboarding_completed: true,
+        avatar_url: true,
+        role: true,
+        subscription: true,
+        subscription_expires_at: true,
+        is_verified: true,
+      },
       data,
     });
   }

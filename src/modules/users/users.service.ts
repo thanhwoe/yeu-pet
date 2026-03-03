@@ -50,6 +50,13 @@ export class UsersService {
       throw new ConflictException('Phone number already exists');
     }
 
+    if (data.email) {
+      const emailExists = await this.usersRepository.existsByEmail(data.email);
+      if (emailExists) {
+        throw new ConflictException('Email already exists');
+      }
+    }
+
     const hashedPassword = await this.hashPassword(data.password);
 
     const user = await this.usersRepository.create({

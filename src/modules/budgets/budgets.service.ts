@@ -74,8 +74,8 @@ export class BudgetsService {
       amount: limit,
       spent,
       remaining: limit - spent,
-      usagePercent: limit > 0 ? Math.round((spent / limit) * 100) : 0,
-      isOverBudget: spent > limit,
+      usage_percent: limit > 0 ? Math.round((spent / limit) * 100) : 0,
+      is_over_budget: spent > limit,
     };
   }
 
@@ -141,11 +141,11 @@ export class BudgetsService {
     return {
       period: { month, year },
       summary: {
-        totalSpent,
-        transactionCount: count,
+        total_spent: totalSpent,
+        transaction_count: count,
       },
-      spendingByCategory,
-      dailyTrend,
+      spending_by_category: spendingByCategory,
+      daily_trend: dailyTrend,
     };
   }
 
@@ -191,11 +191,11 @@ export class BudgetsService {
     return {
       period: { year },
       summary: {
-        totalSpent,
-        transactionCount: count,
+        total_spent: totalSpent,
+        transaction_count: count,
       },
-      monthlyTrend,
-      spendingByCategory,
+      monthly_trend: monthlyTrend,
+      spending_by_category: spendingByCategory,
     };
   }
 

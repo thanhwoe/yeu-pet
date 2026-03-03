@@ -61,8 +61,14 @@ export class AuthService {
         id: user.id,
         email: user.email,
         phone: user.phone,
-        firstName: user.first_name,
-        lastName: user.last_name,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        onboarding_completed: user.onboarding_completed,
+        avatar_url: user.avatar_url,
+        role: user.role,
+        subscription: user.subscription,
+        subscription_expires_at: user.subscription_expires_at,
+        is_verified: user.is_verified,
       },
     };
   }
@@ -74,7 +80,7 @@ export class AuthService {
     return this.login(user);
   }
 
-  async logout(userId: string, refreshToken?: string): Promise<void> {
+  async logout(userId: string, refreshToken?: string) {
     if (refreshToken) {
       const tokenHash = this.hashToken(refreshToken);
       await this.refreshTokensRepository.revokeByTokenHash(tokenHash);
@@ -83,8 +89,23 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(userId: string, refreshToken: string) {
+  async refreshTokens(refreshToken: string) {
     const tokenHash = this.hashToken(refreshToken);
+    let userId: string;
+
+    // Verify JWT payload
+    try {
+      const payload = this.jwtService.verify<IJwtPayload>(refreshToken, {
+        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      });
+      userId = payload.sub;
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    if (!userId) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
 
     const storedToken = await this.refreshTokensRepository.findByTokenHash(
       userId,
@@ -108,15 +129,6 @@ export class AuthService {
     // Check token expired
     if (storedToken.expires_at < new Date()) {
       throw new UnauthorizedException('Refresh token has expired');
-    }
-
-    // Verify JWT payload
-    try {
-      this.jwtService.verify(refreshToken, {
-        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
-      });
-    } catch {
-      throw new UnauthorizedException('Invalid refresh token');
     }
 
     // Check existed user
@@ -177,8 +189,8 @@ export class AuthService {
     });
 
     return {
-      accessToken,
-      refreshToken,
+      access_token: accessToken,
+      refresh_token: refreshToken,
     };
   }
 

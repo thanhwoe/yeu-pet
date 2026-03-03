@@ -40,24 +40,16 @@ export class AuthController {
   }
 
   @Post('logout')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@CurrentUser() user: accounts, @Body() logoutDto: LogoutDto) {
-    await this.authService.logout(user.id, logoutDto.refreshToken);
-
-    return { message: 'Logged out successfully' };
+    return this.authService.logout(user.id, logoutDto.refreshToken);
   }
 
   @Post('refresh-token')
   @Public()
   @HttpCode(HttpStatus.OK)
-  async refreshTokens(
-    @CurrentUser() user: accounts,
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ) {
-    return this.authService.refreshTokens(
-      user.id,
-      refreshTokenDto.refreshToken,
-    );
+  async refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 
   @Get('health')

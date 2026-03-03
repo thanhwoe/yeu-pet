@@ -1,13 +1,32 @@
 import { accounts } from '@app/generated/prisma/client';
-import { IBaseRepository } from './repository.interface';
 
-export interface IUsersRepository extends IBaseRepository<
-  Omit<accounts, 'password_hash'>
-> {
-  findByEmail(email: string): Promise<accounts | null>;
-  findByPhone(phone: string): Promise<accounts | null>;
-  findByEmailOrPhone(identifier: string): Promise<accounts | null>;
+type AccountPrivate = Omit<accounts, 'password_hash'>;
+
+type AccountPublic = Pick<
+  accounts,
+  | 'id'
+  | 'email'
+  | 'first_name'
+  | 'last_name'
+  | 'is_verified'
+  | 'avatar_url'
+  | 'onboarding_completed'
+  | 'phone'
+  | 'role'
+  | 'subscription'
+  | 'subscription_expires_at'
+>;
+
+export interface IUsersRepository {
+  findByEmail(email: string): Promise<AccountPrivate | null>;
+  findByPhone(phone: string): Promise<AccountPrivate | null>;
+  findByEmailOrPhone(identifier: string): Promise<AccountPrivate | null>;
   existsByEmail(email: string): Promise<boolean>;
   existsByPhone(phone: string): Promise<boolean>;
   findAccount(id: string): Promise<accounts | null>;
+  findById(id: string): Promise<AccountPrivate | null>;
+  findAll?(params?: any): Promise<AccountPrivate[]>;
+  create(data: any): Promise<AccountPrivate>;
+  update?(id: string, data: Partial<accounts>): Promise<AccountPublic>;
+  delete(id: string): Promise<AccountPrivate>;
 }
