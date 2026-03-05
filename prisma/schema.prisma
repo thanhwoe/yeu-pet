@@ -271,6 +271,7 @@ model photo_comments {
   accounts             accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_comments_account_id")
   photo_comments       photo_comments?  @relation("photo_commentsTophoto_comments", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_comments_parent_id")
   other_photo_comments photo_comments[] @relation("photo_commentsTophoto_comments")
+  photos               photos           @relation(fields: [photo_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_comments_photo_id")
 
   @@index([account_id], map: "idx_photo_comments_account_id")
   @@index([parent_id], map: "idx_photo_comments_parent_id")
@@ -305,20 +306,21 @@ model photo_views {
 }
 
 model photos {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  account_id    String        @db.Uuid
-  url           String?
-  file_id       String?
-  thumbnail_url String?
-  caption       String?       @db.VarChar(200)
-  is_private    Boolean       @default(false)
-  status        photos_status @default(pending)
-  view_count    Int           @default(0)
-  like_count    Int           @default(0)
-  comment_count Int           @default(0)
-  created_at    DateTime?     @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime?     @default(now()) @db.Timestamptz(6)
-  accounts      accounts      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photos_account_id")
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id     String           @db.Uuid
+  url            String?
+  file_id        String?
+  thumbnail_url  String?
+  caption        String?          @db.VarChar(200)
+  is_private     Boolean          @default(false)
+  status         photos_status    @default(pending)
+  view_count     Int              @default(0)
+  like_count     Int              @default(0)
+  comment_count  Int              @default(0)
+  created_at     DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?        @default(now()) @db.Timestamptz(6)
+  photo_comments photo_comments[]
+  accounts       accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photos_account_id")
 
   @@index([account_id], map: "idx_photos_account_id")
   @@index([created_at], map: "idx_photos_created_at")

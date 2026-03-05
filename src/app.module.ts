@@ -23,6 +23,7 @@ import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 import { BudgetTransactionsModule } from './modules/budget-transactions/budget-transactions.module';
 import { BudgetsModule } from './modules/budgets/budgets.module';
 import { PhotosModule } from './modules/photos/photos.module';
+import { PhotoCommentsModule } from './modules/photo-comments/photo-comments.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { PhotosModule } from './modules/photos/photos.module';
     BudgetTransactionsModule,
     BudgetsModule,
     PhotosModule,
+    PhotoCommentsModule,
   ],
   controllers: [AppController],
   providers: [

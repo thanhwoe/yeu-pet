@@ -251,6 +251,7 @@ export type photo_commentsWhereInput = {
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   photo_comments?: Prisma.XOR<Prisma.Photo_commentsNullableScalarRelationFilter, Prisma.photo_commentsWhereInput> | null
   other_photo_comments?: Prisma.Photo_commentsListRelationFilter
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }
 
 export type photo_commentsOrderByWithRelationInput = {
@@ -266,6 +267,7 @@ export type photo_commentsOrderByWithRelationInput = {
   accounts?: Prisma.accountsOrderByWithRelationInput
   photo_comments?: Prisma.photo_commentsOrderByWithRelationInput
   other_photo_comments?: Prisma.photo_commentsOrderByRelationAggregateInput
+  photos?: Prisma.photosOrderByWithRelationInput
 }
 
 export type photo_commentsWhereUniqueInput = Prisma.AtLeast<{
@@ -284,6 +286,7 @@ export type photo_commentsWhereUniqueInput = Prisma.AtLeast<{
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   photo_comments?: Prisma.XOR<Prisma.Photo_commentsNullableScalarRelationFilter, Prisma.photo_commentsWhereInput> | null
   other_photo_comments?: Prisma.Photo_commentsListRelationFilter
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }, "id">
 
 export type photo_commentsOrderByWithAggregationInput = {
@@ -320,7 +323,6 @@ export type photo_commentsScalarWhereWithAggregatesInput = {
 
 export type photo_commentsCreateInput = {
   id?: string
-  photo_id: string
   content: string
   deleted_at?: Date | string | null
   reply_count?: number
@@ -329,6 +331,7 @@ export type photo_commentsCreateInput = {
   accounts: Prisma.accountsCreateNestedOneWithoutPhoto_commentsInput
   photo_comments?: Prisma.photo_commentsCreateNestedOneWithoutOther_photo_commentsInput
   other_photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhoto_commentsInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_commentsInput
 }
 
 export type photo_commentsUncheckedCreateInput = {
@@ -346,7 +349,6 @@ export type photo_commentsUncheckedCreateInput = {
 
 export type photo_commentsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -355,6 +357,7 @@ export type photo_commentsUpdateInput = {
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_commentsNestedInput
   photo_comments?: Prisma.photo_commentsUpdateOneWithoutOther_photo_commentsNestedInput
   other_photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhoto_commentsNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_commentsNestedInput
 }
 
 export type photo_commentsUncheckedUpdateInput = {
@@ -384,7 +387,6 @@ export type photo_commentsCreateManyInput = {
 
 export type photo_commentsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -563,9 +565,50 @@ export type photo_commentsUncheckedUpdateManyWithoutPhoto_commentsNestedInput = 
   deleteMany?: Prisma.photo_commentsScalarWhereInput | Prisma.photo_commentsScalarWhereInput[]
 }
 
+export type photo_commentsCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput> | Prisma.photo_commentsCreateWithoutPhotosInput[] | Prisma.photo_commentsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_commentsCreateOrConnectWithoutPhotosInput | Prisma.photo_commentsCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_commentsCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+}
+
+export type photo_commentsUncheckedCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput> | Prisma.photo_commentsCreateWithoutPhotosInput[] | Prisma.photo_commentsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_commentsCreateOrConnectWithoutPhotosInput | Prisma.photo_commentsCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_commentsCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+}
+
+export type photo_commentsUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput> | Prisma.photo_commentsCreateWithoutPhotosInput[] | Prisma.photo_commentsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_commentsCreateOrConnectWithoutPhotosInput | Prisma.photo_commentsCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_commentsUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_commentsUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_commentsCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  disconnect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  delete?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  connect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  update?: Prisma.photo_commentsUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_commentsUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_commentsUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_commentsUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_commentsScalarWhereInput | Prisma.photo_commentsScalarWhereInput[]
+}
+
+export type photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput> | Prisma.photo_commentsCreateWithoutPhotosInput[] | Prisma.photo_commentsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_commentsCreateOrConnectWithoutPhotosInput | Prisma.photo_commentsCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_commentsUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_commentsUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_commentsCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  disconnect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  delete?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  connect?: Prisma.photo_commentsWhereUniqueInput | Prisma.photo_commentsWhereUniqueInput[]
+  update?: Prisma.photo_commentsUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_commentsUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_commentsUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_commentsUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_commentsScalarWhereInput | Prisma.photo_commentsScalarWhereInput[]
+}
+
 export type photo_commentsCreateWithoutAccountsInput = {
   id?: string
-  photo_id: string
   content: string
   deleted_at?: Date | string | null
   reply_count?: number
@@ -573,6 +616,7 @@ export type photo_commentsCreateWithoutAccountsInput = {
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsCreateNestedOneWithoutOther_photo_commentsInput
   other_photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhoto_commentsInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_commentsInput
 }
 
 export type photo_commentsUncheckedCreateWithoutAccountsInput = {
@@ -630,7 +674,6 @@ export type photo_commentsScalarWhereInput = {
 
 export type photo_commentsCreateWithoutOther_photo_commentsInput = {
   id?: string
-  photo_id: string
   content: string
   deleted_at?: Date | string | null
   reply_count?: number
@@ -638,6 +681,7 @@ export type photo_commentsCreateWithoutOther_photo_commentsInput = {
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPhoto_commentsInput
   photo_comments?: Prisma.photo_commentsCreateNestedOneWithoutOther_photo_commentsInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_commentsInput
 }
 
 export type photo_commentsUncheckedCreateWithoutOther_photo_commentsInput = {
@@ -659,7 +703,6 @@ export type photo_commentsCreateOrConnectWithoutOther_photo_commentsInput = {
 
 export type photo_commentsCreateWithoutPhoto_commentsInput = {
   id?: string
-  photo_id: string
   content: string
   deleted_at?: Date | string | null
   reply_count?: number
@@ -667,6 +710,7 @@ export type photo_commentsCreateWithoutPhoto_commentsInput = {
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPhoto_commentsInput
   other_photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhoto_commentsInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_commentsInput
 }
 
 export type photo_commentsUncheckedCreateWithoutPhoto_commentsInput = {
@@ -704,7 +748,6 @@ export type photo_commentsUpdateToOneWithWhereWithoutOther_photo_commentsInput =
 
 export type photo_commentsUpdateWithoutOther_photo_commentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -712,6 +755,7 @@ export type photo_commentsUpdateWithoutOther_photo_commentsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_commentsNestedInput
   photo_comments?: Prisma.photo_commentsUpdateOneWithoutOther_photo_commentsNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_commentsNestedInput
 }
 
 export type photo_commentsUncheckedUpdateWithoutOther_photo_commentsInput = {
@@ -742,6 +786,56 @@ export type photo_commentsUpdateManyWithWhereWithoutPhoto_commentsInput = {
   data: Prisma.XOR<Prisma.photo_commentsUpdateManyMutationInput, Prisma.photo_commentsUncheckedUpdateManyWithoutPhoto_commentsInput>
 }
 
+export type photo_commentsCreateWithoutPhotosInput = {
+  id?: string
+  content: string
+  deleted_at?: Date | string | null
+  reply_count?: number
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutPhoto_commentsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedOneWithoutOther_photo_commentsInput
+  other_photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhoto_commentsInput
+}
+
+export type photo_commentsUncheckedCreateWithoutPhotosInput = {
+  id?: string
+  account_id: string
+  parent_id?: string | null
+  content: string
+  deleted_at?: Date | string | null
+  reply_count?: number
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  other_photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhoto_commentsInput
+}
+
+export type photo_commentsCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.photo_commentsWhereUniqueInput
+  create: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_commentsCreateManyPhotosInputEnvelope = {
+  data: Prisma.photo_commentsCreateManyPhotosInput | Prisma.photo_commentsCreateManyPhotosInput[]
+  skipDuplicates?: boolean
+}
+
+export type photo_commentsUpsertWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_commentsWhereUniqueInput
+  update: Prisma.XOR<Prisma.photo_commentsUpdateWithoutPhotosInput, Prisma.photo_commentsUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.photo_commentsCreateWithoutPhotosInput, Prisma.photo_commentsUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_commentsUpdateWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_commentsWhereUniqueInput
+  data: Prisma.XOR<Prisma.photo_commentsUpdateWithoutPhotosInput, Prisma.photo_commentsUncheckedUpdateWithoutPhotosInput>
+}
+
+export type photo_commentsUpdateManyWithWhereWithoutPhotosInput = {
+  where: Prisma.photo_commentsScalarWhereInput
+  data: Prisma.XOR<Prisma.photo_commentsUpdateManyMutationInput, Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosInput>
+}
+
 export type photo_commentsCreateManyAccountsInput = {
   id?: string
   photo_id: string
@@ -755,7 +849,6 @@ export type photo_commentsCreateManyAccountsInput = {
 
 export type photo_commentsUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -763,6 +856,7 @@ export type photo_commentsUpdateWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUpdateOneWithoutOther_photo_commentsNestedInput
   other_photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhoto_commentsNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_commentsNestedInput
 }
 
 export type photo_commentsUncheckedUpdateWithoutAccountsInput = {
@@ -801,7 +895,6 @@ export type photo_commentsCreateManyPhoto_commentsInput = {
 
 export type photo_commentsUpdateWithoutPhoto_commentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -809,6 +902,7 @@ export type photo_commentsUpdateWithoutPhoto_commentsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_commentsNestedInput
   other_photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhoto_commentsNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_commentsNestedInput
 }
 
 export type photo_commentsUncheckedUpdateWithoutPhoto_commentsInput = {
@@ -827,6 +921,52 @@ export type photo_commentsUncheckedUpdateManyWithoutPhoto_commentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   photo_id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reply_count?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type photo_commentsCreateManyPhotosInput = {
+  id?: string
+  account_id: string
+  parent_id?: string | null
+  content: string
+  deleted_at?: Date | string | null
+  reply_count?: number
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photo_commentsUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reply_count?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_commentsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateOneWithoutOther_photo_commentsNestedInput
+  other_photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhoto_commentsNestedInput
+}
+
+export type photo_commentsUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  parent_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reply_count?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  other_photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhoto_commentsNestedInput
+}
+
+export type photo_commentsUncheckedUpdateManyWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  parent_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply_count?: Prisma.IntFieldUpdateOperationsInput | number
@@ -878,6 +1018,7 @@ export type photo_commentsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
   other_photo_comments?: boolean | Prisma.photo_comments$other_photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.Photo_commentsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_comments"]>
 
@@ -893,6 +1034,7 @@ export type photo_commentsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_comments"]>
 
 export type photo_commentsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -907,6 +1049,7 @@ export type photo_commentsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_comments"]>
 
 export type photo_commentsSelectScalar = {
@@ -926,15 +1069,18 @@ export type photo_commentsInclude<ExtArgs extends runtime.Types.Extensions.Inter
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
   other_photo_comments?: boolean | Prisma.photo_comments$other_photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.Photo_commentsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type photo_commentsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 export type photo_commentsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   photo_comments?: boolean | Prisma.photo_comments$photo_commentsArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 
 export type $photo_commentsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -943,6 +1089,7 @@ export type $photo_commentsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     accounts: Prisma.$accountsPayload<ExtArgs>
     photo_comments: Prisma.$photo_commentsPayload<ExtArgs> | null
     other_photo_comments: Prisma.$photo_commentsPayload<ExtArgs>[]
+    photos: Prisma.$photosPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1351,6 +1498,7 @@ export interface Prisma__photo_commentsClient<T, Null = never, ExtArgs extends r
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   photo_comments<T extends Prisma.photo_comments$photo_commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photo_comments$photo_commentsArgs<ExtArgs>>): Prisma.Prisma__photo_commentsClient<runtime.Types.Result.GetResult<Prisma.$photo_commentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   other_photo_comments<T extends Prisma.photo_comments$other_photo_commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photo_comments$other_photo_commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_commentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photos<T extends Prisma.photosDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photosDefaultArgs<ExtArgs>>): Prisma.Prisma__photosClient<runtime.Types.Result.GetResult<Prisma.$photosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
