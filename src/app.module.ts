@@ -22,6 +22,7 @@ import { BudgetCategoriesModule } from './modules/budget-categories/budget-categ
 import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 import { BudgetTransactionsModule } from './modules/budget-transactions/budget-transactions.module';
 import { BudgetsModule } from './modules/budgets/budgets.module';
+import { PhotosModule } from './modules/photos/photos.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { BudgetsModule } from './modules/budgets/budgets.module';
     BudgetCategoriesModule,
     BudgetTransactionsModule,
     BudgetsModule,
+    PhotosModule,
   ],
   controllers: [AppController],
   providers: [

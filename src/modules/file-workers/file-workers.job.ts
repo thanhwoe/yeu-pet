@@ -3,6 +3,7 @@ export const FILE_DELETE_JOBS = {
   PET_AVATAR: 'pet-avatar',
   MEDICAL_RECORDS: 'medical-records',
   BUDGET_CATEGORIES: 'budget-categories',
+  PHOTOS: 'photos',
 };
 
 export const FILE_UPLOAD_JOBS = {

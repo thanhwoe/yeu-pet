@@ -5,6 +5,7 @@ import type {
   medical_records,
   notifications,
   pets,
+  photos,
   reminders,
 } from '@app/generated/prisma/client';
 import { PureAbility } from '@casl/ability';
@@ -32,4 +33,5 @@ export type SubjectMap = {
   Reminders: reminders;
   Notifications: notifications;
   BudgetTransactions: budget_transactions;
+  Photos: photos;
 };

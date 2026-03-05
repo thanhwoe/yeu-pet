@@ -33,7 +33,7 @@ export class FileUploadProcessor extends WorkerHost {
     const { files, itemId } = job.data;
 
     // Convert buffer back to Multer file format
-    const payload = files.map(({ file, folder, id }) => ({
+    const payload = files.map(({ file, folder, id, quality }) => ({
       file: {
         buffer: Buffer.from(file.buffer),
         originalname: file.originalname,
@@ -48,6 +48,7 @@ export class FileUploadProcessor extends WorkerHost {
       },
       folder,
       id,
+      quality,
     }));
 
     // Update progress
@@ -56,7 +57,12 @@ export class FileUploadProcessor extends WorkerHost {
     // Upload to Cloudinary
     const results = await Promise.all(
       payload.map((f) =>
-        this.fileUploadService.updateImage(f.file, f.id || undefined, f.folder),
+        this.fileUploadService.updateImage({
+          file: f.file,
+          folder: f.folder,
+          oldPublicId: f.id || undefined,
+          quality: f.quality,
+        }),
       ),
     );
 

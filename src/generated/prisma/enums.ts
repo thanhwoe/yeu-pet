@@ -90,3 +90,13 @@ export const reminder_type = {
 } as const
 
 export type reminder_type = (typeof reminder_type)[keyof typeof reminder_type]
+
+
+export const photos_status = {
+  pending: 'pending',
+  processing: 'processing',
+  ready: 'ready',
+  failed: 'failed'
+} as const
+
+export type photos_status = (typeof photos_status)[keyof typeof photos_status]

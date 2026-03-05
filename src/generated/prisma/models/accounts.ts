@@ -285,6 +285,10 @@ export type accountsWhereInput = {
   notifications?: Prisma.NotificationsListRelationFilter
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
+  photo_comments?: Prisma.Photo_commentsListRelationFilter
+  photo_likes?: Prisma.Photo_likesListRelationFilter
+  photo_views?: Prisma.Photo_viewsListRelationFilter
+  photos?: Prisma.PhotosListRelationFilter
   refresh_tokens?: Prisma.Refresh_tokensListRelationFilter
   reminders?: Prisma.RemindersListRelationFilter
 }
@@ -314,6 +318,10 @@ export type accountsOrderByWithRelationInput = {
   notifications?: Prisma.notificationsOrderByRelationAggregateInput
   otp_tokens?: Prisma.otp_tokensOrderByWithRelationInput
   pets?: Prisma.petsOrderByRelationAggregateInput
+  photo_comments?: Prisma.photo_commentsOrderByRelationAggregateInput
+  photo_likes?: Prisma.photo_likesOrderByRelationAggregateInput
+  photo_views?: Prisma.photo_viewsOrderByRelationAggregateInput
+  photos?: Prisma.photosOrderByRelationAggregateInput
   refresh_tokens?: Prisma.refresh_tokensOrderByRelationAggregateInput
   reminders?: Prisma.remindersOrderByRelationAggregateInput
 }
@@ -346,6 +354,10 @@ export type accountsWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationsListRelationFilter
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
+  photo_comments?: Prisma.Photo_commentsListRelationFilter
+  photo_likes?: Prisma.Photo_likesListRelationFilter
+  photo_views?: Prisma.Photo_viewsListRelationFilter
+  photos?: Prisma.PhotosListRelationFilter
   refresh_tokens?: Prisma.Refresh_tokensListRelationFilter
   reminders?: Prisma.RemindersListRelationFilter
 }, "id" | "email" | "phone">
@@ -421,6 +433,10 @@ export type accountsCreateInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -450,6 +466,10 @@ export type accountsUncheckedCreateInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -479,6 +499,10 @@ export type accountsUpdateInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -508,6 +532,10 @@ export type accountsUncheckedUpdateInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -791,6 +819,62 @@ export type accountsUpdateOneRequiredWithoutBudgetsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutBudgetsInput, Prisma.accountsUpdateWithoutBudgetsInput>, Prisma.accountsUncheckedUpdateWithoutBudgetsInput>
 }
 
+export type accountsCreateNestedOneWithoutPhoto_commentsInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_commentsInput, Prisma.accountsUncheckedCreateWithoutPhoto_commentsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_commentsInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutPhoto_commentsNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_commentsInput, Prisma.accountsUncheckedCreateWithoutPhoto_commentsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_commentsInput
+  upsert?: Prisma.accountsUpsertWithoutPhoto_commentsInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutPhoto_commentsInput, Prisma.accountsUpdateWithoutPhoto_commentsInput>, Prisma.accountsUncheckedUpdateWithoutPhoto_commentsInput>
+}
+
+export type accountsCreateNestedOneWithoutPhoto_likesInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_likesInput, Prisma.accountsUncheckedCreateWithoutPhoto_likesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_likesInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutPhoto_likesNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_likesInput, Prisma.accountsUncheckedCreateWithoutPhoto_likesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_likesInput
+  upsert?: Prisma.accountsUpsertWithoutPhoto_likesInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutPhoto_likesInput, Prisma.accountsUpdateWithoutPhoto_likesInput>, Prisma.accountsUncheckedUpdateWithoutPhoto_likesInput>
+}
+
+export type accountsCreateNestedOneWithoutPhoto_viewsInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_viewsInput, Prisma.accountsUncheckedCreateWithoutPhoto_viewsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_viewsInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutPhoto_viewsNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_viewsInput, Prisma.accountsUncheckedCreateWithoutPhoto_viewsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhoto_viewsInput
+  upsert?: Prisma.accountsUpsertWithoutPhoto_viewsInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutPhoto_viewsInput, Prisma.accountsUpdateWithoutPhoto_viewsInput>, Prisma.accountsUncheckedUpdateWithoutPhoto_viewsInput>
+}
+
+export type accountsCreateNestedOneWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhotosInput, Prisma.accountsUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhotosInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutPhotosInput, Prisma.accountsUncheckedCreateWithoutPhotosInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutPhotosInput
+  upsert?: Prisma.accountsUpsertWithoutPhotosInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutPhotosInput, Prisma.accountsUpdateWithoutPhotosInput>, Prisma.accountsUncheckedUpdateWithoutPhotosInput>
+}
+
 export type accountsCreateWithoutRefresh_tokensInput = {
   id?: string
   email?: string | null
@@ -816,6 +900,10 @@ export type accountsCreateWithoutRefresh_tokensInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
 
@@ -844,6 +932,10 @@ export type accountsUncheckedCreateWithoutRefresh_tokensInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
 
@@ -888,6 +980,10 @@ export type accountsUpdateWithoutRefresh_tokensInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
 
@@ -916,6 +1012,10 @@ export type accountsUncheckedUpdateWithoutRefresh_tokensInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
@@ -943,6 +1043,10 @@ export type accountsCreateWithoutOtp_tokensInput = {
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -971,6 +1075,10 @@ export type accountsUncheckedCreateWithoutOtp_tokensInput = {
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1015,6 +1123,10 @@ export type accountsUpdateWithoutOtp_tokensInput = {
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1043,6 +1155,10 @@ export type accountsUncheckedUpdateWithoutOtp_tokensInput = {
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1071,6 +1187,10 @@ export type accountsCreateWithoutPetsInput = {
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1099,6 +1219,10 @@ export type accountsUncheckedCreateWithoutPetsInput = {
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1143,6 +1267,10 @@ export type accountsUpdateWithoutPetsInput = {
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1171,6 +1299,10 @@ export type accountsUncheckedUpdateWithoutPetsInput = {
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1199,6 +1331,10 @@ export type accountsCreateWithoutAccount_devicesInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1227,6 +1363,10 @@ export type accountsUncheckedCreateWithoutAccount_devicesInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1271,6 +1411,10 @@ export type accountsUpdateWithoutAccount_devicesInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1299,6 +1443,10 @@ export type accountsUncheckedUpdateWithoutAccount_devicesInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1327,6 +1475,10 @@ export type accountsCreateWithoutAccount_settingsInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1355,6 +1507,10 @@ export type accountsUncheckedCreateWithoutAccount_settingsInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1399,6 +1555,10 @@ export type accountsUpdateWithoutAccount_settingsInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1427,6 +1587,10 @@ export type accountsUncheckedUpdateWithoutAccount_settingsInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1455,6 +1619,10 @@ export type accountsCreateWithoutNotificationsInput = {
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1483,6 +1651,10 @@ export type accountsUncheckedCreateWithoutNotificationsInput = {
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1527,6 +1699,10 @@ export type accountsUpdateWithoutNotificationsInput = {
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1555,6 +1731,10 @@ export type accountsUncheckedUpdateWithoutNotificationsInput = {
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1584,6 +1764,10 @@ export type accountsCreateWithoutRemindersInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
 }
 
@@ -1612,6 +1796,10 @@ export type accountsUncheckedCreateWithoutRemindersInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
 }
 
@@ -1656,6 +1844,10 @@ export type accountsUpdateWithoutRemindersInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
 }
 
@@ -1684,6 +1876,10 @@ export type accountsUncheckedUpdateWithoutRemindersInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
@@ -1711,6 +1907,10 @@ export type accountsCreateWithoutBudget_transactionsInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1739,6 +1939,10 @@ export type accountsUncheckedCreateWithoutBudget_transactionsInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1783,6 +1987,10 @@ export type accountsUpdateWithoutBudget_transactionsInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1811,6 +2019,10 @@ export type accountsUncheckedUpdateWithoutBudget_transactionsInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1839,6 +2051,10 @@ export type accountsCreateWithoutBudgetsInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
 }
@@ -1867,6 +2083,10 @@ export type accountsUncheckedCreateWithoutBudgetsInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
   reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
 }
@@ -1911,6 +2131,10 @@ export type accountsUpdateWithoutBudgetsInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
 }
@@ -1939,6 +2163,586 @@ export type accountsUncheckedUpdateWithoutBudgetsInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutPhoto_commentsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutPhoto_commentsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutPhoto_commentsInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_commentsInput, Prisma.accountsUncheckedCreateWithoutPhoto_commentsInput>
+}
+
+export type accountsUpsertWithoutPhoto_commentsInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_commentsInput, Prisma.accountsUncheckedUpdateWithoutPhoto_commentsInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_commentsInput, Prisma.accountsUncheckedCreateWithoutPhoto_commentsInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutPhoto_commentsInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_commentsInput, Prisma.accountsUncheckedUpdateWithoutPhoto_commentsInput>
+}
+
+export type accountsUpdateWithoutPhoto_commentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutPhoto_commentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutPhoto_likesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutPhoto_likesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutPhoto_likesInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_likesInput, Prisma.accountsUncheckedCreateWithoutPhoto_likesInput>
+}
+
+export type accountsUpsertWithoutPhoto_likesInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_likesInput, Prisma.accountsUncheckedUpdateWithoutPhoto_likesInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_likesInput, Prisma.accountsUncheckedCreateWithoutPhoto_likesInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutPhoto_likesInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_likesInput, Prisma.accountsUncheckedUpdateWithoutPhoto_likesInput>
+}
+
+export type accountsUpdateWithoutPhoto_likesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutPhoto_likesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutPhoto_viewsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutPhoto_viewsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutPhoto_viewsInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_viewsInput, Prisma.accountsUncheckedCreateWithoutPhoto_viewsInput>
+}
+
+export type accountsUpsertWithoutPhoto_viewsInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_viewsInput, Prisma.accountsUncheckedUpdateWithoutPhoto_viewsInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhoto_viewsInput, Prisma.accountsUncheckedCreateWithoutPhoto_viewsInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutPhoto_viewsInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutPhoto_viewsInput, Prisma.accountsUncheckedUpdateWithoutPhoto_viewsInput>
+}
+
+export type accountsUpdateWithoutPhoto_viewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutPhoto_viewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutPhotosInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutPhotosInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhotosInput, Prisma.accountsUncheckedCreateWithoutPhotosInput>
+}
+
+export type accountsUpsertWithoutPhotosInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutPhotosInput, Prisma.accountsUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutPhotosInput, Prisma.accountsUncheckedCreateWithoutPhotosInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutPhotosInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutPhotosInput, Prisma.accountsUncheckedUpdateWithoutPhotosInput>
+}
+
+export type accountsUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -1954,6 +2758,10 @@ export type AccountsCountOutputType = {
   budgets: number
   notifications: number
   pets: number
+  photo_comments: number
+  photo_likes: number
+  photo_views: number
+  photos: number
   refresh_tokens: number
   reminders: number
 }
@@ -1964,6 +2772,10 @@ export type AccountsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   budgets?: boolean | AccountsCountOutputTypeCountBudgetsArgs
   notifications?: boolean | AccountsCountOutputTypeCountNotificationsArgs
   pets?: boolean | AccountsCountOutputTypeCountPetsArgs
+  photo_comments?: boolean | AccountsCountOutputTypeCountPhoto_commentsArgs
+  photo_likes?: boolean | AccountsCountOutputTypeCountPhoto_likesArgs
+  photo_views?: boolean | AccountsCountOutputTypeCountPhoto_viewsArgs
+  photos?: boolean | AccountsCountOutputTypeCountPhotosArgs
   refresh_tokens?: boolean | AccountsCountOutputTypeCountRefresh_tokensArgs
   reminders?: boolean | AccountsCountOutputTypeCountRemindersArgs
 }
@@ -2016,6 +2828,34 @@ export type AccountsCountOutputTypeCountPetsArgs<ExtArgs extends runtime.Types.E
 /**
  * AccountsCountOutputType without action
  */
+export type AccountsCountOutputTypeCountPhoto_commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.photo_commentsWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountPhoto_likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.photo_likesWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountPhoto_viewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.photo_viewsWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountPhotosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.photosWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
 export type AccountsCountOutputTypeCountRefresh_tokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.refresh_tokensWhereInput
 }
@@ -2053,6 +2893,10 @@ export type accountsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
+  photo_comments?: boolean | Prisma.accounts$photo_commentsArgs<ExtArgs>
+  photo_likes?: boolean | Prisma.accounts$photo_likesArgs<ExtArgs>
+  photo_views?: boolean | Prisma.accounts$photo_viewsArgs<ExtArgs>
+  photos?: boolean | Prisma.accounts$photosArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.accounts$refresh_tokensArgs<ExtArgs>
   reminders?: boolean | Prisma.accounts$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.AccountsCountOutputTypeDefaultArgs<ExtArgs>
@@ -2127,6 +2971,10 @@ export type accountsInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
+  photo_comments?: boolean | Prisma.accounts$photo_commentsArgs<ExtArgs>
+  photo_likes?: boolean | Prisma.accounts$photo_likesArgs<ExtArgs>
+  photo_views?: boolean | Prisma.accounts$photo_viewsArgs<ExtArgs>
+  photos?: boolean | Prisma.accounts$photosArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.accounts$refresh_tokensArgs<ExtArgs>
   reminders?: boolean | Prisma.accounts$remindersArgs<ExtArgs>
   _count?: boolean | Prisma.AccountsCountOutputTypeDefaultArgs<ExtArgs>
@@ -2144,6 +2992,10 @@ export type $accountsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     notifications: Prisma.$notificationsPayload<ExtArgs>[]
     otp_tokens: Prisma.$otp_tokensPayload<ExtArgs> | null
     pets: Prisma.$petsPayload<ExtArgs>[]
+    photo_comments: Prisma.$photo_commentsPayload<ExtArgs>[]
+    photo_likes: Prisma.$photo_likesPayload<ExtArgs>[]
+    photo_views: Prisma.$photo_viewsPayload<ExtArgs>[]
+    photos: Prisma.$photosPayload<ExtArgs>[]
     refresh_tokens: Prisma.$refresh_tokensPayload<ExtArgs>[]
     reminders: Prisma.$remindersPayload<ExtArgs>[]
   }
@@ -2566,6 +3418,10 @@ export interface Prisma__accountsClient<T, Null = never, ExtArgs extends runtime
   notifications<T extends Prisma.accounts$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$notificationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   otp_tokens<T extends Prisma.accounts$otp_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$otp_tokensArgs<ExtArgs>>): Prisma.Prisma__otp_tokensClient<runtime.Types.Result.GetResult<Prisma.$otp_tokensPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pets<T extends Prisma.accounts$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$petsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photo_comments<T extends Prisma.accounts$photo_commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_commentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photo_likes<T extends Prisma.accounts$photo_likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_likesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photo_views<T extends Prisma.accounts$photo_viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_viewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  photos<T extends Prisma.accounts$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refresh_tokens<T extends Prisma.accounts$refresh_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$refresh_tokensPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reminders<T extends Prisma.accounts$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$remindersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3157,6 +4013,102 @@ export type accounts$petsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.PetsScalarFieldEnum | Prisma.PetsScalarFieldEnum[]
+}
+
+/**
+ * accounts.photo_comments
+ */
+export type accounts$photo_commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the photo_comments
+   */
+  select?: Prisma.photo_commentsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the photo_comments
+   */
+  omit?: Prisma.photo_commentsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.photo_commentsInclude<ExtArgs> | null
+  where?: Prisma.photo_commentsWhereInput
+  orderBy?: Prisma.photo_commentsOrderByWithRelationInput | Prisma.photo_commentsOrderByWithRelationInput[]
+  cursor?: Prisma.photo_commentsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Photo_commentsScalarFieldEnum | Prisma.Photo_commentsScalarFieldEnum[]
+}
+
+/**
+ * accounts.photo_likes
+ */
+export type accounts$photo_likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the photo_likes
+   */
+  select?: Prisma.photo_likesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the photo_likes
+   */
+  omit?: Prisma.photo_likesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.photo_likesInclude<ExtArgs> | null
+  where?: Prisma.photo_likesWhereInput
+  orderBy?: Prisma.photo_likesOrderByWithRelationInput | Prisma.photo_likesOrderByWithRelationInput[]
+  cursor?: Prisma.photo_likesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Photo_likesScalarFieldEnum | Prisma.Photo_likesScalarFieldEnum[]
+}
+
+/**
+ * accounts.photo_views
+ */
+export type accounts$photo_viewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the photo_views
+   */
+  select?: Prisma.photo_viewsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the photo_views
+   */
+  omit?: Prisma.photo_viewsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.photo_viewsInclude<ExtArgs> | null
+  where?: Prisma.photo_viewsWhereInput
+  orderBy?: Prisma.photo_viewsOrderByWithRelationInput | Prisma.photo_viewsOrderByWithRelationInput[]
+  cursor?: Prisma.photo_viewsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Photo_viewsScalarFieldEnum | Prisma.Photo_viewsScalarFieldEnum[]
+}
+
+/**
+ * accounts.photos
+ */
+export type accounts$photosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the photos
+   */
+  select?: Prisma.photosSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the photos
+   */
+  omit?: Prisma.photosOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.photosInclude<ExtArgs> | null
+  where?: Prisma.photosWhereInput
+  orderBy?: Prisma.photosOrderByWithRelationInput | Prisma.photosOrderByWithRelationInput[]
+  cursor?: Prisma.photosWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PhotosScalarFieldEnum | Prisma.PhotosScalarFieldEnum[]
 }
 
 /**

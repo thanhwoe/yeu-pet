@@ -46,6 +46,7 @@ export class MedicalRecordsService {
         files: files.map((f) => ({
           file: f,
           folder: `pets/${medical.pet_id}/medical/${medical.id}`,
+          quality: 'original',
         })),
         itemId: medical.id,
       });
@@ -120,6 +121,7 @@ export class MedicalRecordsService {
         files: files.map((f) => ({
           file: f,
           folder: `pets/${medical.pet_id}/medical/${medical.id}`,
+          quality: 'original',
         })),
         itemId: medical.id,
       });

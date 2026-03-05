@@ -39,6 +39,12 @@ export class CaslAbilityFactory {
       can(Action.Read, 'BudgetTransactions', { account_id: user.id });
       can(Action.Update, 'BudgetTransactions', { account_id: user.id });
       can(Action.Delete, 'BudgetTransactions', { account_id: user.id });
+
+      can(Action.Create, 'Photos');
+      can(Action.Read, 'Photos', { is_private: false });
+      can(Action.Read, 'Photos', { account_id: user.id });
+      can(Action.Update, 'Photos', { account_id: user.id });
+      can(Action.Delete, 'Photos', { account_id: user.id });
     }
 
     return build();

@@ -1,15 +1,24 @@
 import type {
   DestroyResult,
+  FileUploadQuality,
   IFileUploadService,
   UploadResult,
 } from '@app/interfaces/file-upload.interface';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import {
+  v2 as cloudinary,
+  UploadApiOptions,
+  UploadApiResponse,
+} from 'cloudinary';
 
 @Injectable()
 export class CloudinaryService implements IFileUploadService {
   private readonly folder: string;
+  private readonly maxFileSize: number;
+  private readonly optionMapping: {
+    [key: string]: UploadApiOptions;
+  };
 
   constructor(private configService: ConfigService) {
     cloudinary.config({
@@ -23,11 +32,40 @@ export class CloudinaryService implements IFileUploadService {
     this.folder = this.configService.getOrThrow<string>(
       'CLOUDINARY_UPLOAD_FOLDER',
     );
+
+    this.maxFileSize = parseInt(
+      this.configService.get<string>('MAX_FILE_SIZE') || '5242880',
+    );
+
+    this.optionMapping = {
+      original: {
+        transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+        eager: [{ width: 400, height: 400, crop: 'fill', gravity: 'auto' }],
+        eager_async: false,
+        // eager: [
+        //   {
+        //     width: 500,
+        //     height: 500,
+        //     crop: 'limit',
+        //     quality: 'auto:best',
+        //     fetch_format: 'auto',
+        //   },
+        // ],
+      },
+      downscale: {
+        transformation: [
+          { width: 500, height: 500, crop: 'limit' },
+          { quality: 'auto' },
+          { fetch_format: 'auto' },
+        ],
+      },
+    };
   }
 
   async uploadImage(
     file: Express.Multer.File,
     folder?: string,
+    quality = 'downscale',
   ): Promise<UploadResult> {
     try {
       // Validate file type
@@ -39,11 +77,7 @@ export class CloudinaryService implements IFileUploadService {
             {
               folder: folder || this.folder,
               resource_type: 'image',
-              transformation: [
-                { width: 500, height: 500, crop: 'limit' },
-                { quality: 'auto' },
-                { fetch_format: 'auto' },
-              ],
+              ...this.optionMapping[quality],
             },
             (error, result) => {
               if (error) return reject(error as Error);
@@ -65,6 +99,9 @@ export class CloudinaryService implements IFileUploadService {
         width: result.width,
         height: result.height,
         format: result.format,
+        thumbnailUrl:
+          (result.eager as UploadApiResponse[])?.[0]?.secure_url ??
+          result.secure_url,
       };
     } catch {
       throw new BadRequestException('Failed to upload image');
@@ -87,12 +124,15 @@ export class CloudinaryService implements IFileUploadService {
     }
   }
 
-  async updateImage(
-    file: Express.Multer.File,
-    oldPublicId?: string,
-    folder?: string,
-  ): Promise<UploadResult> {
-    const uploadResult = await this.uploadImage(file, folder);
+  async updateImage(payload: {
+    file: Express.Multer.File;
+    oldPublicId?: string;
+    folder?: string;
+    quality?: FileUploadQuality;
+  }): Promise<UploadResult> {
+    const { file, folder, oldPublicId, quality } = payload || {};
+
+    const uploadResult = await this.uploadImage(file, folder, quality);
 
     if (oldPublicId) {
       await this.deleteImage(oldPublicId);
@@ -108,9 +148,6 @@ export class CloudinaryService implements IFileUploadService {
       'image/jpg',
       'image/webp',
     ];
-    const maxSize = parseInt(
-      this.configService.get<string>('MAX_FILE_SIZE') || '5242880',
-    );
 
     if (!allowedMimeTypes.includes(file.mimetype)) {
       throw new BadRequestException(
@@ -118,9 +155,9 @@ export class CloudinaryService implements IFileUploadService {
       );
     }
 
-    if (file.size > maxSize) {
+    if (file.size > this.maxFileSize) {
       throw new BadRequestException(
-        `File size exceeds ${maxSize / 1024 / 1024}MB limit`,
+        `File size exceeds ${this.maxFileSize / 1024 / 1024}MB limit`,
       );
     }
   }

@@ -107,3 +107,23 @@ export type budget_transactions = Prisma.budget_transactionsModel
  * 
  */
 export type budgets = Prisma.budgetsModel
+/**
+ * Model photo_comments
+ * 
+ */
+export type photo_comments = Prisma.photo_commentsModel
+/**
+ * Model photo_likes
+ * 
+ */
+export type photo_likes = Prisma.photo_likesModel
+/**
+ * Model photo_views
+ * 
+ */
+export type photo_views = Prisma.photo_viewsModel
+/**
+ * Model photos
+ * 
+ */
+export type photos = Prisma.photosModel

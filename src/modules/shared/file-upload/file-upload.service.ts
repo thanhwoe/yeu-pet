@@ -13,11 +13,12 @@ export class FileUploadService {
   constructor(
     @InjectQueue(BULLMQ_QUEUES.FILE_UPLOAD) private readonly uploadQueue: Queue,
     @InjectQueue(BULLMQ_QUEUES.FILE_DELETE) private readonly deleteQueue: Queue,
+    @InjectQueue(BULLMQ_QUEUES.PHOTO_UPLOAD) private readonly photoQueue: Queue,
   ) {}
 
   async addUploadJob({ files, jobName, itemId, userId }: UploadJobParams) {
     const jobData: UploadJobData = {
-      files: files.map(({ file, folder, id }) => ({
+      files: files.map(({ file, folder, id, quality }) => ({
         file: {
           buffer: file.buffer,
           originalname: file.originalname,
@@ -25,6 +26,7 @@ export class FileUploadService {
         },
         id,
         folder,
+        quality,
       })),
       itemId,
       userId,
@@ -40,6 +42,33 @@ export class FileUploadService {
     return {
       jobId: job.id,
       message: 'Upload queued successfully',
+    };
+  }
+
+  async addPhotoJob({ files, jobName, itemId }: UploadJobParams) {
+    const jobData: UploadJobData = {
+      files: files.map(({ file, folder, id }) => ({
+        file: {
+          buffer: file.buffer,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+        },
+        id,
+        folder,
+      })),
+      itemId,
+    };
+
+    const job = await this.photoQueue.add(jobName, jobData, {
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
+    });
+
+    return {
+      jobId: job.id,
+      message: 'Photo queued successfully',
     };
   }
 

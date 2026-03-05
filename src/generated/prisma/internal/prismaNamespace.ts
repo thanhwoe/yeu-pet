@@ -397,7 +397,11 @@ export const ModelName = {
   notification_deliveries: 'notification_deliveries',
   budget_categories: 'budget_categories',
   budget_transactions: 'budget_transactions',
-  budgets: 'budgets'
+  budgets: 'budgets',
+  photo_comments: 'photo_comments',
+  photo_likes: 'photo_likes',
+  photo_views: 'photo_views',
+  photos: 'photos'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1453,6 +1457,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    photo_comments: {
+      payload: Prisma.$photo_commentsPayload<ExtArgs>
+      fields: Prisma.photo_commentsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.photo_commentsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.photo_commentsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        findFirst: {
+          args: Prisma.photo_commentsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.photo_commentsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        findMany: {
+          args: Prisma.photo_commentsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>[]
+        }
+        create: {
+          args: Prisma.photo_commentsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        createMany: {
+          args: Prisma.photo_commentsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.photo_commentsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>[]
+        }
+        delete: {
+          args: Prisma.photo_commentsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        update: {
+          args: Prisma.photo_commentsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        deleteMany: {
+          args: Prisma.photo_commentsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.photo_commentsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.photo_commentsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>[]
+        }
+        upsert: {
+          args: Prisma.photo_commentsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_commentsPayload>
+        }
+        aggregate: {
+          args: Prisma.Photo_commentsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePhoto_comments>
+        }
+        groupBy: {
+          args: Prisma.photo_commentsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_commentsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.photo_commentsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_commentsCountAggregateOutputType> | number
+        }
+      }
+    }
+    photo_likes: {
+      payload: Prisma.$photo_likesPayload<ExtArgs>
+      fields: Prisma.photo_likesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.photo_likesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.photo_likesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        findFirst: {
+          args: Prisma.photo_likesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.photo_likesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        findMany: {
+          args: Prisma.photo_likesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>[]
+        }
+        create: {
+          args: Prisma.photo_likesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        createMany: {
+          args: Prisma.photo_likesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.photo_likesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>[]
+        }
+        delete: {
+          args: Prisma.photo_likesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        update: {
+          args: Prisma.photo_likesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        deleteMany: {
+          args: Prisma.photo_likesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.photo_likesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.photo_likesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>[]
+        }
+        upsert: {
+          args: Prisma.photo_likesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_likesPayload>
+        }
+        aggregate: {
+          args: Prisma.Photo_likesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePhoto_likes>
+        }
+        groupBy: {
+          args: Prisma.photo_likesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_likesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.photo_likesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_likesCountAggregateOutputType> | number
+        }
+      }
+    }
+    photo_views: {
+      payload: Prisma.$photo_viewsPayload<ExtArgs>
+      fields: Prisma.photo_viewsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.photo_viewsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.photo_viewsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        findFirst: {
+          args: Prisma.photo_viewsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.photo_viewsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        findMany: {
+          args: Prisma.photo_viewsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>[]
+        }
+        create: {
+          args: Prisma.photo_viewsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        createMany: {
+          args: Prisma.photo_viewsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.photo_viewsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>[]
+        }
+        delete: {
+          args: Prisma.photo_viewsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        update: {
+          args: Prisma.photo_viewsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        deleteMany: {
+          args: Prisma.photo_viewsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.photo_viewsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.photo_viewsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>[]
+        }
+        upsert: {
+          args: Prisma.photo_viewsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photo_viewsPayload>
+        }
+        aggregate: {
+          args: Prisma.Photo_viewsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePhoto_views>
+        }
+        groupBy: {
+          args: Prisma.photo_viewsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_viewsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.photo_viewsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Photo_viewsCountAggregateOutputType> | number
+        }
+      }
+    }
+    photos: {
+      payload: Prisma.$photosPayload<ExtArgs>
+      fields: Prisma.photosFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.photosFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.photosFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        findFirst: {
+          args: Prisma.photosFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.photosFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        findMany: {
+          args: Prisma.photosFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>[]
+        }
+        create: {
+          args: Prisma.photosCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        createMany: {
+          args: Prisma.photosCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.photosCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>[]
+        }
+        delete: {
+          args: Prisma.photosDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        update: {
+          args: Prisma.photosUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        deleteMany: {
+          args: Prisma.photosDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.photosUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.photosUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>[]
+        }
+        upsert: {
+          args: Prisma.photosUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$photosPayload>
+        }
+        aggregate: {
+          args: Prisma.PhotosAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePhotos>
+        }
+        groupBy: {
+          args: Prisma.photosGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PhotosGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.photosCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PhotosCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1702,6 +2002,63 @@ export const BudgetsScalarFieldEnum = {
 } as const
 
 export type BudgetsScalarFieldEnum = (typeof BudgetsScalarFieldEnum)[keyof typeof BudgetsScalarFieldEnum]
+
+
+export const Photo_commentsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  parent_id: 'parent_id',
+  content: 'content',
+  deleted_at: 'deleted_at',
+  reply_count: 'reply_count',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_commentsScalarFieldEnum = (typeof Photo_commentsScalarFieldEnum)[keyof typeof Photo_commentsScalarFieldEnum]
+
+
+export const Photo_likesScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_likesScalarFieldEnum = (typeof Photo_likesScalarFieldEnum)[keyof typeof Photo_likesScalarFieldEnum]
+
+
+export const Photo_viewsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  view_at: 'view_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_viewsScalarFieldEnum = (typeof Photo_viewsScalarFieldEnum)[keyof typeof Photo_viewsScalarFieldEnum]
+
+
+export const PhotosScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  url: 'url',
+  file_id: 'file_id',
+  thumbnail_url: 'thumbnail_url',
+  caption: 'caption',
+  is_private: 'is_private',
+  status: 'status',
+  view_count: 'view_count',
+  like_count: 'like_count',
+  comment_count: 'comment_count',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PhotosScalarFieldEnum = (typeof PhotosScalarFieldEnum)[keyof typeof PhotosScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1955,6 +2312,20 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
+ * Reference to a field of type 'photos_status'
+ */
+export type Enumphotos_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'photos_status'>
+    
+
+
+/**
+ * Reference to a field of type 'photos_status[]'
+ */
+export type ListEnumphotos_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'photos_status[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2076,6 +2447,10 @@ export type GlobalOmitConfig = {
   budget_categories?: Prisma.budget_categoriesOmit
   budget_transactions?: Prisma.budget_transactionsOmit
   budgets?: Prisma.budgetsOmit
+  photo_comments?: Prisma.photo_commentsOmit
+  photo_likes?: Prisma.photo_likesOmit
+  photo_views?: Prisma.photo_viewsOmit
+  photos?: Prisma.photosOmit
 }
 
 /* Types for Logging */

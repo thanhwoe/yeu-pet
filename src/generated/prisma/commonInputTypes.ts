@@ -500,6 +500,23 @@ export type IntWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
+export type Enumphotos_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.photos_status | Prisma.Enumphotos_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel> | $Enums.photos_status
+}
+
+export type Enumphotos_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.photos_status | Prisma.Enumphotos_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumphotos_statusWithAggregatesFilter<$PrismaModel> | $Enums.photos_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -966,6 +983,23 @@ export type NestedFloatFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type NestedEnumphotos_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.photos_status | Prisma.Enumphotos_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel> | $Enums.photos_status
+}
+
+export type NestedEnumphotos_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.photos_status | Prisma.Enumphotos_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.photos_status[] | Prisma.ListEnumphotos_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumphotos_statusWithAggregatesFilter<$PrismaModel> | $Enums.photos_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumphotos_statusFilter<$PrismaModel>
 }
 
 

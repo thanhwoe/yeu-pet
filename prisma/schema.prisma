@@ -33,6 +33,10 @@ model accounts {
   notifications           notifications[]
   otp_tokens              otp_tokens?
   pets                    pets[]
+  photo_comments          photo_comments[]
+  photo_likes             photo_likes[]
+  photo_views             photo_views[]
+  photos                  photos[]
   refresh_tokens          refresh_tokens[]
   reminders               reminders[]
 
@@ -254,6 +258,74 @@ model budgets {
   @@index([account_id], map: "idx_budgets_account_id")
 }
 
+model photo_comments {
+  id                   String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id           String           @db.Uuid
+  photo_id             String           @db.Uuid
+  parent_id            String?          @db.Uuid
+  content              String
+  deleted_at           DateTime?        @db.Timestamptz(6)
+  reply_count          Int              @default(0)
+  created_at           DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?        @default(now()) @db.Timestamptz(6)
+  accounts             accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_comments_account_id")
+  photo_comments       photo_comments?  @relation("photo_commentsTophoto_comments", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_comments_parent_id")
+  other_photo_comments photo_comments[] @relation("photo_commentsTophoto_comments")
+
+  @@index([account_id], map: "idx_photo_comments_account_id")
+  @@index([parent_id], map: "idx_photo_comments_parent_id")
+  @@index([photo_id], map: "idx_photo_comments_photo_id")
+}
+
+model photo_likes {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id String    @db.Uuid
+  photo_id   String    @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  accounts   accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_likes_account_id")
+
+  @@unique([photo_id, account_id])
+  @@index([account_id], map: "idx_photo_likes_account_id")
+  @@index([photo_id], map: "idx_photo_likes_photo_id")
+}
+
+model photo_views {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id String    @db.Uuid
+  photo_id   String    @db.Uuid
+  view_at    DateTime? @default(now()) @db.Timestamptz(6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  accounts   accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photo_views_account_id")
+
+  @@unique([photo_id, account_id])
+  @@index([account_id], map: "idx_photo_views_account_id")
+  @@index([photo_id], map: "idx_photo_views_photo_id")
+}
+
+model photos {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id    String        @db.Uuid
+  url           String?
+  file_id       String?
+  thumbnail_url String?
+  caption       String?       @db.VarChar(200)
+  is_private    Boolean       @default(false)
+  status        photos_status @default(pending)
+  view_count    Int           @default(0)
+  like_count    Int           @default(0)
+  comment_count Int           @default(0)
+  created_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?     @default(now()) @db.Timestamptz(6)
+  accounts      accounts      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photos_account_id")
+
+  @@index([account_id], map: "idx_photos_account_id")
+  @@index([created_at], map: "idx_photos_created_at")
+  @@index([is_private], map: "idx_photos_is_private")
+  @@index([status], map: "idx_photos_status")
+}
+
 enum subscription_tier {
   free
   premium
@@ -308,4 +380,11 @@ enum reminder_type {
   feeding
   vaccination
   medication
+}
+
+enum photos_status {
+  pending
+  processing
+  ready
+  failed
 }

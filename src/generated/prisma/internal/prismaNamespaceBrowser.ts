@@ -64,7 +64,11 @@ export const ModelName = {
   notification_deliveries: 'notification_deliveries',
   budget_categories: 'budget_categories',
   budget_transactions: 'budget_transactions',
-  budgets: 'budgets'
+  budgets: 'budgets',
+  photo_comments: 'photo_comments',
+  photo_likes: 'photo_likes',
+  photo_views: 'photo_views',
+  photos: 'photos'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -293,6 +297,63 @@ export const BudgetsScalarFieldEnum = {
 } as const
 
 export type BudgetsScalarFieldEnum = (typeof BudgetsScalarFieldEnum)[keyof typeof BudgetsScalarFieldEnum]
+
+
+export const Photo_commentsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  parent_id: 'parent_id',
+  content: 'content',
+  deleted_at: 'deleted_at',
+  reply_count: 'reply_count',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_commentsScalarFieldEnum = (typeof Photo_commentsScalarFieldEnum)[keyof typeof Photo_commentsScalarFieldEnum]
+
+
+export const Photo_likesScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_likesScalarFieldEnum = (typeof Photo_likesScalarFieldEnum)[keyof typeof Photo_likesScalarFieldEnum]
+
+
+export const Photo_viewsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  photo_id: 'photo_id',
+  view_at: 'view_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Photo_viewsScalarFieldEnum = (typeof Photo_viewsScalarFieldEnum)[keyof typeof Photo_viewsScalarFieldEnum]
+
+
+export const PhotosScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  url: 'url',
+  file_id: 'file_id',
+  thumbnail_url: 'thumbnail_url',
+  caption: 'caption',
+  is_private: 'is_private',
+  status: 'status',
+  view_count: 'view_count',
+  like_count: 'like_count',
+  comment_count: 'comment_count',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PhotosScalarFieldEnum = (typeof PhotosScalarFieldEnum)[keyof typeof PhotosScalarFieldEnum]
 
 
 export const SortOrder = {
