@@ -49,6 +49,7 @@ export const species_enum = {
   cat: 'cat',
   bird: 'bird',
   rabbit: 'rabbit',
+  hamster: 'hamster',
   other: 'other'
 } as const
 
@@ -100,3 +101,12 @@ export const photos_status = {
 } as const
 
 export type photos_status = (typeof photos_status)[keyof typeof photos_status]
+
+
+export const attachment_status = {
+  processing: 'processing',
+  ready: 'ready',
+  failed: 'failed'
+} as const
+
+export type attachment_status = (typeof attachment_status)[keyof typeof attachment_status]

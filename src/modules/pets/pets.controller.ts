@@ -22,6 +22,8 @@ import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
 import { MedicalRecordsService } from '../medical-records/medical-records.service';
 import { IdParam } from '@app/decorators/id-param.decorator';
+import { PaginationQuery } from '@app/decorators/pagination.decorator';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Controller('pets')
 @UseGuards(PoliciesGuard)
@@ -58,8 +60,12 @@ export class PetsController {
 
   @Get(':id/medical-records')
   @HttpCode(HttpStatus.OK)
-  findAllMedicalRecords(@CurrentUser() user: accounts, @IdParam() id: string) {
-    return this.medicalRecordsService.findAllByPetId(user, id);
+  findAllMedicalRecords(
+    @CurrentUser() user: accounts,
+    @IdParam() id: string,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.medicalRecordsService.findAllByPetId(user, id, pagination);
   }
 
   @Patch(':id')

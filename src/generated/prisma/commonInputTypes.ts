@@ -229,6 +229,13 @@ export type Enumrecord_typeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel> | $Enums.record_type
 }
 
+export type Enumattachment_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.attachment_status | Prisma.Enumattachment_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel> | $Enums.attachment_status
+}
+
 export type Enumrecord_typeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.record_type | Prisma.Enumrecord_typeFieldRefInput<$PrismaModel>
   in?: $Enums.record_type[] | Prisma.ListEnumrecord_typeFieldRefInput<$PrismaModel>
@@ -237,6 +244,16 @@ export type Enumrecord_typeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel>
+}
+
+export type Enumattachment_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.attachment_status | Prisma.Enumattachment_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumattachment_statusWithAggregatesFilter<$PrismaModel> | $Enums.attachment_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel>
 }
 
 export type IntNullableFilter<$PrismaModel = never> = {
@@ -743,6 +760,13 @@ export type NestedEnumrecord_typeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel> | $Enums.record_type
 }
 
+export type NestedEnumattachment_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.attachment_status | Prisma.Enumattachment_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel> | $Enums.attachment_status
+}
+
 export type NestedEnumrecord_typeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.record_type | Prisma.Enumrecord_typeFieldRefInput<$PrismaModel>
   in?: $Enums.record_type[] | Prisma.ListEnumrecord_typeFieldRefInput<$PrismaModel>
@@ -751,6 +775,16 @@ export type NestedEnumrecord_typeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumrecord_typeFilter<$PrismaModel>
+}
+
+export type NestedEnumattachment_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.attachment_status | Prisma.Enumattachment_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.attachment_status[] | Prisma.ListEnumattachment_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumattachment_statusWithAggregatesFilter<$PrismaModel> | $Enums.attachment_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumattachment_statusFilter<$PrismaModel>
 }
 
 export type NestedEnumgender_enumNullableFilter<$PrismaModel = never> = {

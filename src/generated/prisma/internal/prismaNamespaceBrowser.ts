@@ -143,6 +143,7 @@ export const Medical_recordsScalarFieldEnum = {
   date: 'date',
   vet_clinic: 'vet_clinic',
   vet_name: 'vet_name',
+  attachment_status: 'attachment_status',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -160,12 +161,12 @@ export const PetsScalarFieldEnum = {
   weight: 'weight',
   color: 'color',
   avatar_url: 'avatar_url',
+  avatar_id: 'avatar_id',
   gender: 'gender',
   species: 'species',
   notes: 'notes',
   created_at: 'created_at',
-  updated_at: 'updated_at',
-  avatar_id: 'avatar_id'
+  updated_at: 'updated_at'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
@@ -176,7 +177,8 @@ export const Medical_attachmentsScalarFieldEnum = {
   medical_id: 'medical_id',
   deleted_at: 'deleted_at',
   url: 'url',
-  public_id: 'public_id',
+  file_id: 'file_id',
+  thumbnail_url: 'thumbnail_url',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

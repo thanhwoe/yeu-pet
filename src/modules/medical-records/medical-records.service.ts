@@ -9,7 +9,7 @@ import { MedicalRecordsRepository } from './medical-records.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import dayjs from 'dayjs';
 import { Action } from '../casl/casl.types';
-import { accounts } from '@app/generated/prisma/client';
+import { accounts, attachment_status } from '@app/generated/prisma/client';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { PetsRepository } from '../pets/pets.repository';
 import { assertAbility } from '../casl/casl.helper';
@@ -17,6 +17,8 @@ import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { paginate } from '@app/utils/pagination';
 
 @Injectable()
 export class MedicalRecordsService {
@@ -38,6 +40,7 @@ export class MedicalRecordsService {
       title: createMedicalRecordDto.title,
       vet_clinic: createMedicalRecordDto.vetClinic,
       vet_name: createMedicalRecordDto.vetName,
+      attachment_status: attachment_status.processing,
     });
 
     if (files && files.length > 0) {
@@ -55,7 +58,11 @@ export class MedicalRecordsService {
     return medical;
   }
 
-  async findAllByPetId(user: accounts, pet_id: string) {
+  async findAllByPetId(
+    user: accounts,
+    pet_id: string,
+    pagination: PaginationDto,
+  ) {
     const pet = await this.petsRepository.findById(pet_id);
 
     if (!pet) {
@@ -66,7 +73,16 @@ export class MedicalRecordsService {
 
     assertAbility(ability, Action.Read, 'Pets', pet);
 
-    return this.medicalRecordsRepository.findAll({ pet_id });
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.medicalRecordsRepository.findAll({
+      skip,
+      take: limit,
+      pet_id,
+    });
+
+    return paginate(data, total, page, limit);
   }
 
   async findOne(user: accounts, id: string) {
@@ -148,7 +164,7 @@ export class MedicalRecordsService {
 
     if (medical.medical_attachments.length > 0) {
       const fileIds = medical.medical_attachments
-        .map((f) => f.public_id)
+        .map((f) => f.file_id)
         .filter((id): id is string => !!id);
 
       await this.fileUploadService.addDeleteJob({
@@ -166,7 +182,7 @@ export class MedicalRecordsService {
 
     if (attachments.length > 0) {
       const fileIds = attachments
-        .map((f) => f.public_id)
+        .map((f) => f.file_id)
         .filter((id): id is string => !!id);
 
       await this.fileUploadService.addDeleteJob({
