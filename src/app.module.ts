@@ -24,6 +24,7 @@ import { BudgetTransactionsModule } from './modules/budget-transactions/budget-t
 import { BudgetsModule } from './modules/budgets/budgets.module';
 import { PhotosModule } from './modules/photos/photos.module';
 import { PhotoCommentsModule } from './modules/photo-comments/photo-comments.module';
+import { PetSittersModule } from './modules/pet-sitters/pet-sitters.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { PhotoCommentsModule } from './modules/photo-comments/photo-comments.mod
     BudgetsModule,
     PhotosModule,
     PhotoCommentsModule,
+    PetSittersModule,
   ],
   controllers: [AppController],
   providers: [

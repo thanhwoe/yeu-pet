@@ -127,3 +127,18 @@ export type photo_views = Prisma.photo_viewsModel
  * 
  */
 export type photos = Prisma.photosModel
+/**
+ * Model pet_sitters
+ * 
+ */
+export type pet_sitters = Prisma.pet_sittersModel
+/**
+ * Model sitter_bookings
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ */
+export type sitter_bookings = Prisma.sitter_bookingsModel
+/**
+ * Model sitter_reviews
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ */
+export type sitter_reviews = Prisma.sitter_reviewsModel

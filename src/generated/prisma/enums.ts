@@ -49,8 +49,8 @@ export const species_enum = {
   cat: 'cat',
   bird: 'bird',
   rabbit: 'rabbit',
-  hamster: 'hamster',
-  other: 'other'
+  other: 'other',
+  hamster: 'hamster'
 } as const
 
 export type species_enum = (typeof species_enum)[keyof typeof species_enum]
@@ -110,3 +110,23 @@ export const attachment_status = {
 } as const
 
 export type attachment_status = (typeof attachment_status)[keyof typeof attachment_status]
+
+
+export const sitter_bookings_status = {
+  pending: 'pending',
+  confirmed: 'confirmed',
+  active: 'active',
+  completed: 'completed',
+  cancelled: 'cancelled',
+  rejected: 'rejected'
+} as const
+
+export type sitter_bookings_status = (typeof sitter_bookings_status)[keyof typeof sitter_bookings_status]
+
+
+export const sitter_bookings_type = {
+  hourly: 'hourly',
+  daily: 'daily'
+} as const
+
+export type sitter_bookings_type = (typeof sitter_bookings_type)[keyof typeof sitter_bookings_type]

@@ -45,6 +45,10 @@ export class CaslAbilityFactory {
       can(Action.Read, 'Photos', { account_id: user.id });
       can(Action.Update, 'Photos', { account_id: user.id });
       can(Action.Delete, 'Photos', { account_id: user.id });
+
+      can(Action.Create, 'PetSitters');
+      can(Action.Read, 'PetSitters');
+      can(Action.Update, 'PetSitters', { account_id: user.id });
     }
 
     return build();

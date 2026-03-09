@@ -4,6 +4,7 @@ import type {
   budget_transactions,
   medical_records,
   notifications,
+  pet_sitters,
   pets,
   photos,
   reminders,
@@ -34,4 +35,5 @@ export type SubjectMap = {
   Notifications: notifications;
   BudgetTransactions: budget_transactions;
   Photos: photos;
+  PetSitters: pet_sitters;
 };

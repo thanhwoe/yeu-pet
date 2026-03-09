@@ -68,7 +68,10 @@ export const ModelName = {
   photo_comments: 'photo_comments',
   photo_likes: 'photo_likes',
   photo_views: 'photo_views',
-  photos: 'photos'
+  photos: 'photos',
+  pet_sitters: 'pet_sitters',
+  sitter_bookings: 'sitter_bookings',
+  sitter_reviews: 'sitter_reviews'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,9 +146,9 @@ export const Medical_recordsScalarFieldEnum = {
   date: 'date',
   vet_clinic: 'vet_clinic',
   vet_name: 'vet_name',
-  attachment_status: 'attachment_status',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  attachment_status: 'attachment_status'
 } as const
 
 export type Medical_recordsScalarFieldEnum = (typeof Medical_recordsScalarFieldEnum)[keyof typeof Medical_recordsScalarFieldEnum]
@@ -161,12 +164,12 @@ export const PetsScalarFieldEnum = {
   weight: 'weight',
   color: 'color',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   gender: 'gender',
   species: 'species',
   notes: 'notes',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  avatar_id: 'avatar_id'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
@@ -177,10 +180,10 @@ export const Medical_attachmentsScalarFieldEnum = {
   medical_id: 'medical_id',
   deleted_at: 'deleted_at',
   url: 'url',
-  file_id: 'file_id',
-  thumbnail_url: 'thumbnail_url',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  file_id: 'file_id',
+  thumbnail_url: 'thumbnail_url'
 } as const
 
 export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
@@ -356,6 +359,60 @@ export const PhotosScalarFieldEnum = {
 } as const
 
 export type PhotosScalarFieldEnum = (typeof PhotosScalarFieldEnum)[keyof typeof PhotosScalarFieldEnum]
+
+
+export const Pet_sittersScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  bio: 'bio',
+  address: 'address',
+  hourly_rate: 'hourly_rate',
+  daily_rate: 'daily_rate',
+  max_concurrent_bookings: 'max_concurrent_bookings',
+  active_bookings_count: 'active_bookings_count',
+  completed_bookings_count: 'completed_bookings_count',
+  avg_rating: 'avg_rating',
+  total_reviews: 'total_reviews',
+  is_available: 'is_available',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Pet_sittersScalarFieldEnum = (typeof Pet_sittersScalarFieldEnum)[keyof typeof Pet_sittersScalarFieldEnum]
+
+
+export const Sitter_bookingsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  sitter_id: 'sitter_id',
+  pet_id: 'pet_id',
+  type: 'type',
+  status: 'status',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  total_price: 'total_price',
+  cancelled_by: 'cancelled_by',
+  cancelled_at: 'cancelled_at',
+  cancel_reason: 'cancel_reason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sitter_bookingsScalarFieldEnum = (typeof Sitter_bookingsScalarFieldEnum)[keyof typeof Sitter_bookingsScalarFieldEnum]
+
+
+export const Sitter_reviewsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  booking_id: 'booking_id',
+  sitter_id: 'sitter_id',
+  rating: 'rating',
+  comment: 'comment',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sitter_reviewsScalarFieldEnum = (typeof Sitter_reviewsScalarFieldEnum)[keyof typeof Sitter_reviewsScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -401,7 +401,10 @@ export const ModelName = {
   photo_comments: 'photo_comments',
   photo_likes: 'photo_likes',
   photo_views: 'photo_views',
-  photos: 'photos'
+  photos: 'photos',
+  pet_sitters: 'pet_sitters',
+  sitter_bookings: 'sitter_bookings',
+  sitter_reviews: 'sitter_reviews'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos" | "pet_sitters" | "sitter_bookings" | "sitter_reviews"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1753,6 +1756,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    pet_sitters: {
+      payload: Prisma.$pet_sittersPayload<ExtArgs>
+      fields: Prisma.pet_sittersFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.pet_sittersFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.pet_sittersFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        findFirst: {
+          args: Prisma.pet_sittersFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.pet_sittersFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        findMany: {
+          args: Prisma.pet_sittersFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>[]
+        }
+        create: {
+          args: Prisma.pet_sittersCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        createMany: {
+          args: Prisma.pet_sittersCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.pet_sittersCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>[]
+        }
+        delete: {
+          args: Prisma.pet_sittersDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        update: {
+          args: Prisma.pet_sittersUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        deleteMany: {
+          args: Prisma.pet_sittersDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.pet_sittersUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.pet_sittersUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>[]
+        }
+        upsert: {
+          args: Prisma.pet_sittersUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$pet_sittersPayload>
+        }
+        aggregate: {
+          args: Prisma.Pet_sittersAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePet_sitters>
+        }
+        groupBy: {
+          args: Prisma.pet_sittersGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Pet_sittersGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.pet_sittersCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Pet_sittersCountAggregateOutputType> | number
+        }
+      }
+    }
+    sitter_bookings: {
+      payload: Prisma.$sitter_bookingsPayload<ExtArgs>
+      fields: Prisma.sitter_bookingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.sitter_bookingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.sitter_bookingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        findFirst: {
+          args: Prisma.sitter_bookingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.sitter_bookingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        findMany: {
+          args: Prisma.sitter_bookingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>[]
+        }
+        create: {
+          args: Prisma.sitter_bookingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        createMany: {
+          args: Prisma.sitter_bookingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.sitter_bookingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>[]
+        }
+        delete: {
+          args: Prisma.sitter_bookingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        update: {
+          args: Prisma.sitter_bookingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.sitter_bookingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.sitter_bookingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.sitter_bookingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.sitter_bookingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_bookingsPayload>
+        }
+        aggregate: {
+          args: Prisma.Sitter_bookingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSitter_bookings>
+        }
+        groupBy: {
+          args: Prisma.sitter_bookingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sitter_bookingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.sitter_bookingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sitter_bookingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    sitter_reviews: {
+      payload: Prisma.$sitter_reviewsPayload<ExtArgs>
+      fields: Prisma.sitter_reviewsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.sitter_reviewsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.sitter_reviewsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        findFirst: {
+          args: Prisma.sitter_reviewsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.sitter_reviewsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        findMany: {
+          args: Prisma.sitter_reviewsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>[]
+        }
+        create: {
+          args: Prisma.sitter_reviewsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        createMany: {
+          args: Prisma.sitter_reviewsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.sitter_reviewsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>[]
+        }
+        delete: {
+          args: Prisma.sitter_reviewsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        update: {
+          args: Prisma.sitter_reviewsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        deleteMany: {
+          args: Prisma.sitter_reviewsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.sitter_reviewsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.sitter_reviewsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>[]
+        }
+        upsert: {
+          args: Prisma.sitter_reviewsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sitter_reviewsPayload>
+        }
+        aggregate: {
+          args: Prisma.Sitter_reviewsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSitter_reviews>
+        }
+        groupBy: {
+          args: Prisma.sitter_reviewsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sitter_reviewsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.sitter_reviewsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sitter_reviewsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1848,9 +2073,9 @@ export const Medical_recordsScalarFieldEnum = {
   date: 'date',
   vet_clinic: 'vet_clinic',
   vet_name: 'vet_name',
-  attachment_status: 'attachment_status',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  attachment_status: 'attachment_status'
 } as const
 
 export type Medical_recordsScalarFieldEnum = (typeof Medical_recordsScalarFieldEnum)[keyof typeof Medical_recordsScalarFieldEnum]
@@ -1866,12 +2091,12 @@ export const PetsScalarFieldEnum = {
   weight: 'weight',
   color: 'color',
   avatar_url: 'avatar_url',
-  avatar_id: 'avatar_id',
   gender: 'gender',
   species: 'species',
   notes: 'notes',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  avatar_id: 'avatar_id'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
@@ -1882,10 +2107,10 @@ export const Medical_attachmentsScalarFieldEnum = {
   medical_id: 'medical_id',
   deleted_at: 'deleted_at',
   url: 'url',
-  file_id: 'file_id',
-  thumbnail_url: 'thumbnail_url',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  file_id: 'file_id',
+  thumbnail_url: 'thumbnail_url'
 } as const
 
 export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
@@ -2061,6 +2286,60 @@ export const PhotosScalarFieldEnum = {
 } as const
 
 export type PhotosScalarFieldEnum = (typeof PhotosScalarFieldEnum)[keyof typeof PhotosScalarFieldEnum]
+
+
+export const Pet_sittersScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  bio: 'bio',
+  address: 'address',
+  hourly_rate: 'hourly_rate',
+  daily_rate: 'daily_rate',
+  max_concurrent_bookings: 'max_concurrent_bookings',
+  active_bookings_count: 'active_bookings_count',
+  completed_bookings_count: 'completed_bookings_count',
+  avg_rating: 'avg_rating',
+  total_reviews: 'total_reviews',
+  is_available: 'is_available',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Pet_sittersScalarFieldEnum = (typeof Pet_sittersScalarFieldEnum)[keyof typeof Pet_sittersScalarFieldEnum]
+
+
+export const Sitter_bookingsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  sitter_id: 'sitter_id',
+  pet_id: 'pet_id',
+  type: 'type',
+  status: 'status',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  total_price: 'total_price',
+  cancelled_by: 'cancelled_by',
+  cancelled_at: 'cancelled_at',
+  cancel_reason: 'cancel_reason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sitter_bookingsScalarFieldEnum = (typeof Sitter_bookingsScalarFieldEnum)[keyof typeof Sitter_bookingsScalarFieldEnum]
+
+
+export const Sitter_reviewsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  booking_id: 'booking_id',
+  sitter_id: 'sitter_id',
+  rating: 'rating',
+  comment: 'comment',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sitter_reviewsScalarFieldEnum = (typeof Sitter_reviewsScalarFieldEnum)[keyof typeof Sitter_reviewsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2342,6 +2621,34 @@ export type ListEnumphotos_statusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'sitter_bookings_type'
+ */
+export type Enumsitter_bookings_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'sitter_bookings_type'>
+    
+
+
+/**
+ * Reference to a field of type 'sitter_bookings_type[]'
+ */
+export type ListEnumsitter_bookings_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'sitter_bookings_type[]'>
+    
+
+
+/**
+ * Reference to a field of type 'sitter_bookings_status'
+ */
+export type Enumsitter_bookings_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'sitter_bookings_status'>
+    
+
+
+/**
+ * Reference to a field of type 'sitter_bookings_status[]'
+ */
+export type ListEnumsitter_bookings_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'sitter_bookings_status[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2467,6 +2774,9 @@ export type GlobalOmitConfig = {
   photo_likes?: Prisma.photo_likesOmit
   photo_views?: Prisma.photo_viewsOmit
   photos?: Prisma.photosOmit
+  pet_sitters?: Prisma.pet_sittersOmit
+  sitter_bookings?: Prisma.sitter_bookingsOmit
+  sitter_reviews?: Prisma.sitter_reviewsOmit
 }
 
 /* Types for Logging */

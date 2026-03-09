@@ -32,6 +32,7 @@ model accounts {
   budgets                 budgets[]
   notifications           notifications[]
   otp_tokens              otp_tokens?
+  pet_sitters             pet_sitters?
   pets                    pets[]
   photo_comments          photo_comments[]
   photo_likes             photo_likes[]
@@ -39,6 +40,8 @@ model accounts {
   photos                  photos[]
   refresh_tokens          refresh_tokens[]
   reminders               reminders[]
+  sitter_bookings         sitter_bookings[]
+  sitter_reviews          sitter_reviews[]
 
   @@index([email], map: "idx_accounts_email")
   @@index([phone], map: "idx_accounts_phone")
@@ -78,9 +81,9 @@ model medical_records {
   date                DateTime?             @db.Timestamptz(6)
   vet_clinic          String?               @db.VarChar(200)
   vet_name            String?               @db.VarChar(100)
-  attachment_status   attachment_status     @default(processing)
   created_at          DateTime?             @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  attachment_status   attachment_status     @default(processing)
   medical_attachments medical_attachments[]
   pets                pets                  @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_records_pet_id")
 
@@ -98,15 +101,16 @@ model pets {
   weight          String?           @db.VarChar(100)
   color           String?           @db.VarChar(100)
   avatar_url      String?
-  avatar_id       String?
   gender          gender_enum?      @default(unknown)
   species         species_enum?     @default(other)
   notes           String?
   created_at      DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  avatar_id       String?
   medical_records medical_records[]
   accounts        accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pets_account_id")
   reminders       reminders[]
+  sitter_bookings sitter_bookings[]
 
   @@index([id], map: "idx_pets")
   @@index([account_id], map: "idx_pets_account_id")
@@ -117,10 +121,10 @@ model medical_attachments {
   medical_id      String          @db.Uuid
   deleted_at      DateTime?       @db.Timestamptz(6)
   url             String
-  file_id         String?
-  thumbnail_url   String?
   created_at      DateTime?       @default(now()) @db.Timestamptz(6)
   updated_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  file_id         String?
+  thumbnail_url   String?
   medical_records medical_records @relation(fields: [medical_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_attachments_medical_id")
 
   @@index([id], map: "idx_medical_attachments")
@@ -330,6 +334,74 @@ model photos {
   @@index([status], map: "idx_photos_status")
 }
 
+model pet_sitters {
+  id                       String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id               String            @unique @db.Uuid
+  bio                      String?           @db.VarChar(200)
+  address                  String            @db.VarChar(200)
+  hourly_rate              Decimal           @db.Decimal(12, 2)
+  daily_rate               Decimal           @db.Decimal(12, 2)
+  max_concurrent_bookings  Int               @default(3)
+  active_bookings_count    Int               @default(0)
+  completed_bookings_count Int               @default(0)
+  avg_rating               Decimal           @default(0) @db.Decimal(3, 2)
+  total_reviews            Int               @default(0)
+  is_available             Boolean           @default(true)
+  created_at               DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?         @default(now()) @db.Timestamptz(6)
+  accounts                 accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pet_sitters_account_id")
+  sitter_bookings          sitter_bookings[]
+  sitter_reviews           sitter_reviews[]
+
+  @@index([id], map: "idx_pet_sitters")
+  @@index([account_id], map: "idx_pet_sitters_account_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sitter_bookings {
+  id             String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id     String                 @db.Uuid
+  sitter_id      String                 @db.Uuid
+  pet_id         String                 @db.Uuid
+  type           sitter_bookings_type
+  status         sitter_bookings_status @default(pending)
+  start_time     DateTime               @db.Timestamptz(6)
+  end_time       DateTime               @db.Timestamptz(6)
+  total_price    Decimal?               @db.Decimal(10, 2)
+  cancelled_by   String?                @db.Uuid
+  cancelled_at   DateTime?              @db.Timestamptz(6)
+  cancel_reason  String?
+  created_at     DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?              @default(now()) @db.Timestamptz(6)
+  accounts       accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_account_id")
+  pets           pets                   @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_pet_id")
+  pet_sitters    pet_sitters            @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_sitter_id")
+  sitter_reviews sitter_reviews[]
+
+  @@index([account_id], map: "idx_sitter_bookings_account_id")
+  @@index([sitter_id], map: "idx_sitter_bookings_sitter_id")
+  @@index([start_time], map: "idx_sitter_bookings_start_time")
+  @@index([sitter_id, status], map: "idx_sitter_bookings_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model sitter_reviews {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id      String          @db.Uuid
+  booking_id      String          @db.Uuid
+  sitter_id       String          @db.Uuid
+  rating          Int             @db.SmallInt
+  comment         String?
+  created_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?       @default(now()) @db.Timestamptz(6)
+  accounts        accounts        @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_reviews_account_id")
+  sitter_bookings sitter_bookings @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_reviews_booking_id")
+  pet_sitters     pet_sitters     @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_reviews_sitter_id")
+
+  @@index([account_id], map: "idx_sitter_reviews_account_id")
+  @@index([sitter_id], map: "idx_sitter_reviews_sitter_id")
+}
+
 enum subscription_tier {
   free
   premium
@@ -358,8 +430,8 @@ enum species_enum {
   cat
   bird
   rabbit
-  hamster
   other
+  hamster
 }
 
 enum device_platform {
@@ -398,4 +470,18 @@ enum attachment_status {
   processing
   ready
   failed
+}
+
+enum sitter_bookings_status {
+  pending
+  confirmed
+  active
+  completed
+  cancelled
+  rejected
+}
+
+enum sitter_bookings_type {
+  hourly
+  daily
 }

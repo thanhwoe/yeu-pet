@@ -1,18 +1,10 @@
 import { Decimal } from '@prisma/client/runtime/client';
-import { IsInstance, IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
+import { IsDecimal } from '@app/decorators/is-decimal.decorator';
 
 export class CreateBudgetDto {
-  @Transform(({ value }: { value: unknown }) => {
-    if (value instanceof Decimal) return value;
-    if (value === null || value === undefined) return value;
-    if (typeof value === 'number') return new Decimal(value);
-    return value;
-  })
   @IsNotEmpty()
-  @IsInstance(Decimal, {
-    message: 'amount must be a decimal or number',
-  })
+  @IsDecimal()
   amount: Decimal;
 
   @IsNumber()
