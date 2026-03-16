@@ -26,6 +26,7 @@ import { PhotosModule } from './modules/photos/photos.module';
 import { PhotoCommentsModule } from './modules/photo-comments/photo-comments.module';
 import { PetSittersModule } from './modules/pet-sitters/pet-sitters.module';
 import { SitterBookingsModule } from './modules/sitter-bookings/sitter-bookings.module';
+import { SitterReviewsModule } from './modules/sitter-reviews/sitter-reviews.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { SitterBookingsModule } from './modules/sitter-bookings/sitter-bookings.
     PhotoCommentsModule,
     PetSittersModule,
     SitterBookingsModule,
+    SitterReviewsModule,
   ],
   controllers: [AppController],
   providers: [

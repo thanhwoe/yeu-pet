@@ -14,5 +14,6 @@ import { ActiveBookingsTask } from './tasks/active-bookings.task';
     SitterBookingsRepository,
     ActiveBookingsTask,
   ],
+  exports: [SitterBookingsRepository],
 })
 export class SitterBookingsModule {}

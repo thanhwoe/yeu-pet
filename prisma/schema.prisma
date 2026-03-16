@@ -376,19 +376,20 @@ model sitter_bookings {
   accounts       accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_account_id")
   pets           pets                   @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_pet_id")
   pet_sitters    pet_sitters            @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_sitter_id")
-  sitter_reviews sitter_reviews[]
+  sitter_reviews sitter_reviews?
 
   @@index([account_id], map: "idx_sitter_bookings_account_id")
   @@index([sitter_id], map: "idx_sitter_bookings_sitter_id")
   @@index([start_time], map: "idx_sitter_bookings_start_time")
   @@index([sitter_id, status], map: "idx_sitter_bookings_status")
+  @@index([id], map: "idx_sitter_bookings")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model sitter_reviews {
   id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id      String          @db.Uuid
-  booking_id      String          @db.Uuid
+  booking_id      String          @unique @db.Uuid
   sitter_id       String          @db.Uuid
   rating          Int             @db.SmallInt
   comment         String?

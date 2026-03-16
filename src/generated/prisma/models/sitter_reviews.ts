@@ -261,11 +261,11 @@ export type sitter_reviewsOrderByWithRelationInput = {
 
 export type sitter_reviewsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  booking_id?: string
   AND?: Prisma.sitter_reviewsWhereInput | Prisma.sitter_reviewsWhereInput[]
   OR?: Prisma.sitter_reviewsWhereInput[]
   NOT?: Prisma.sitter_reviewsWhereInput | Prisma.sitter_reviewsWhereInput[]
   account_id?: Prisma.UuidFilter<"sitter_reviews"> | string
-  booking_id?: Prisma.UuidFilter<"sitter_reviews"> | string
   sitter_id?: Prisma.UuidFilter<"sitter_reviews"> | string
   rating?: Prisma.IntFilter<"sitter_reviews"> | number
   comment?: Prisma.StringNullableFilter<"sitter_reviews"> | string | null
@@ -274,7 +274,7 @@ export type sitter_reviewsWhereUniqueInput = Prisma.AtLeast<{
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   sitter_bookings?: Prisma.XOR<Prisma.Sitter_bookingsScalarRelationFilter, Prisma.sitter_bookingsWhereInput>
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersScalarRelationFilter, Prisma.pet_sittersWhereInput>
-}, "id">
+}, "id" | "booking_id">
 
 export type sitter_reviewsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -388,6 +388,11 @@ export type Sitter_reviewsListRelationFilter = {
 
 export type sitter_reviewsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type Sitter_reviewsNullableScalarRelationFilter = {
+  is?: Prisma.sitter_reviewsWhereInput | null
+  isNot?: Prisma.sitter_reviewsWhereInput | null
 }
 
 export type sitter_reviewsCountOrderByAggregateInput = {
@@ -515,46 +520,36 @@ export type sitter_reviewsUncheckedUpdateManyWithoutPet_sittersNestedInput = {
   deleteMany?: Prisma.sitter_reviewsScalarWhereInput | Prisma.sitter_reviewsScalarWhereInput[]
 }
 
-export type sitter_reviewsCreateNestedManyWithoutSitter_bookingsInput = {
-  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput> | Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput[] | Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput[]
-  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput | Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput[]
-  createMany?: Prisma.sitter_reviewsCreateManySitter_bookingsInputEnvelope
-  connect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
+export type sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput = {
+  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
+  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput
+  connect?: Prisma.sitter_reviewsWhereUniqueInput
 }
 
-export type sitter_reviewsUncheckedCreateNestedManyWithoutSitter_bookingsInput = {
-  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput> | Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput[] | Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput[]
-  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput | Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput[]
-  createMany?: Prisma.sitter_reviewsCreateManySitter_bookingsInputEnvelope
-  connect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
+export type sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput = {
+  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
+  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput
+  connect?: Prisma.sitter_reviewsWhereUniqueInput
 }
 
-export type sitter_reviewsUpdateManyWithoutSitter_bookingsNestedInput = {
-  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput> | Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput[] | Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput[]
-  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput | Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput[]
-  upsert?: Prisma.sitter_reviewsUpsertWithWhereUniqueWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpsertWithWhereUniqueWithoutSitter_bookingsInput[]
-  createMany?: Prisma.sitter_reviewsCreateManySitter_bookingsInputEnvelope
-  set?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  disconnect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  delete?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  connect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  update?: Prisma.sitter_reviewsUpdateWithWhereUniqueWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpdateWithWhereUniqueWithoutSitter_bookingsInput[]
-  updateMany?: Prisma.sitter_reviewsUpdateManyWithWhereWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpdateManyWithWhereWithoutSitter_bookingsInput[]
-  deleteMany?: Prisma.sitter_reviewsScalarWhereInput | Prisma.sitter_reviewsScalarWhereInput[]
+export type sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
+  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput
+  upsert?: Prisma.sitter_reviewsUpsertWithoutSitter_bookingsInput
+  disconnect?: Prisma.sitter_reviewsWhereInput | boolean
+  delete?: Prisma.sitter_reviewsWhereInput | boolean
+  connect?: Prisma.sitter_reviewsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.sitter_reviewsUpdateToOneWithWhereWithoutSitter_bookingsInput, Prisma.sitter_reviewsUpdateWithoutSitter_bookingsInput>, Prisma.sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput>
 }
 
-export type sitter_reviewsUncheckedUpdateManyWithoutSitter_bookingsNestedInput = {
-  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput> | Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput[] | Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput[]
-  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput | Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput[]
-  upsert?: Prisma.sitter_reviewsUpsertWithWhereUniqueWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpsertWithWhereUniqueWithoutSitter_bookingsInput[]
-  createMany?: Prisma.sitter_reviewsCreateManySitter_bookingsInputEnvelope
-  set?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  disconnect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  delete?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  connect?: Prisma.sitter_reviewsWhereUniqueInput | Prisma.sitter_reviewsWhereUniqueInput[]
-  update?: Prisma.sitter_reviewsUpdateWithWhereUniqueWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpdateWithWhereUniqueWithoutSitter_bookingsInput[]
-  updateMany?: Prisma.sitter_reviewsUpdateManyWithWhereWithoutSitter_bookingsInput | Prisma.sitter_reviewsUpdateManyWithWhereWithoutSitter_bookingsInput[]
-  deleteMany?: Prisma.sitter_reviewsScalarWhereInput | Prisma.sitter_reviewsScalarWhereInput[]
+export type sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
+  connectOrCreate?: Prisma.sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput
+  upsert?: Prisma.sitter_reviewsUpsertWithoutSitter_bookingsInput
+  disconnect?: Prisma.sitter_reviewsWhereInput | boolean
+  delete?: Prisma.sitter_reviewsWhereInput | boolean
+  connect?: Prisma.sitter_reviewsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.sitter_reviewsUpdateToOneWithWhereWithoutSitter_bookingsInput, Prisma.sitter_reviewsUpdateWithoutSitter_bookingsInput>, Prisma.sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput>
 }
 
 export type sitter_reviewsCreateWithoutAccountsInput = {
@@ -688,25 +683,35 @@ export type sitter_reviewsCreateOrConnectWithoutSitter_bookingsInput = {
   create: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
 }
 
-export type sitter_reviewsCreateManySitter_bookingsInputEnvelope = {
-  data: Prisma.sitter_reviewsCreateManySitter_bookingsInput | Prisma.sitter_reviewsCreateManySitter_bookingsInput[]
-  skipDuplicates?: boolean
-}
-
-export type sitter_reviewsUpsertWithWhereUniqueWithoutSitter_bookingsInput = {
-  where: Prisma.sitter_reviewsWhereUniqueInput
+export type sitter_reviewsUpsertWithoutSitter_bookingsInput = {
   update: Prisma.XOR<Prisma.sitter_reviewsUpdateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput>
   create: Prisma.XOR<Prisma.sitter_reviewsCreateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedCreateWithoutSitter_bookingsInput>
+  where?: Prisma.sitter_reviewsWhereInput
 }
 
-export type sitter_reviewsUpdateWithWhereUniqueWithoutSitter_bookingsInput = {
-  where: Prisma.sitter_reviewsWhereUniqueInput
+export type sitter_reviewsUpdateToOneWithWhereWithoutSitter_bookingsInput = {
+  where?: Prisma.sitter_reviewsWhereInput
   data: Prisma.XOR<Prisma.sitter_reviewsUpdateWithoutSitter_bookingsInput, Prisma.sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput>
 }
 
-export type sitter_reviewsUpdateManyWithWhereWithoutSitter_bookingsInput = {
-  where: Prisma.sitter_reviewsScalarWhereInput
-  data: Prisma.XOR<Prisma.sitter_reviewsUpdateManyMutationInput, Prisma.sitter_reviewsUncheckedUpdateManyWithoutSitter_bookingsInput>
+export type sitter_reviewsUpdateWithoutSitter_bookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_reviewsNestedInput
+  pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_reviewsNestedInput
+}
+
+export type sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
+  rating?: Prisma.IntFieldUpdateOperationsInput | number
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_reviewsCreateManyAccountsInput = {
@@ -783,46 +788,6 @@ export type sitter_reviewsUncheckedUpdateManyWithoutPet_sittersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   booking_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type sitter_reviewsCreateManySitter_bookingsInput = {
-  id?: string
-  account_id: string
-  sitter_id: string
-  rating: number
-  comment?: string | null
-  created_at?: Date | string | null
-  updated_at?: Date | string | null
-}
-
-export type sitter_reviewsUpdateWithoutSitter_bookingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_reviewsNestedInput
-  pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_reviewsNestedInput
-}
-
-export type sitter_reviewsUncheckedUpdateWithoutSitter_bookingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  account_id?: Prisma.StringFieldUpdateOperationsInput | string
-  sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type sitter_reviewsUncheckedUpdateManyWithoutSitter_bookingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  account_id?: Prisma.StringFieldUpdateOperationsInput | string
-  sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
