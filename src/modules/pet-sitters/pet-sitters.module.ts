@@ -8,5 +8,6 @@ import { CaslModule } from '../casl/casl.module';
   imports: [CaslModule],
   controllers: [PetSittersController],
   providers: [PetSittersService, PetSittersRepository],
+  exports: [PetSittersRepository],
 })
 export class PetSittersModule {}

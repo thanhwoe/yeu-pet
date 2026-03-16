@@ -1,4 +1,9 @@
-import { accounts, pet_sitters } from '@app/generated/prisma/client';
+import {
+  accounts,
+  pet_sitters,
+  PrismaClient,
+} from '@app/generated/prisma/client';
+import { ITXClientDenyList } from '@prisma/client/runtime/client';
 
 export type PetSittersCreate = Pick<
   pet_sitters,
@@ -19,4 +24,11 @@ export interface IPetSittersRepository {
     take?: number;
     address?: string;
   }): Promise<[PetSitterClient[], number]>;
+  lock(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    sitter_id: string,
+  ): Promise<Pick<
+    pet_sitters,
+    'id' | 'active_bookings_count' | 'max_concurrent_bookings'
+  > | null>;
 }

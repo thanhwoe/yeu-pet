@@ -49,4 +49,12 @@ export class PetsRepository implements IPetsRepository {
       where: { id },
     });
   }
+  findByUser(account_id: string, id: string) {
+    return this.prisma.pets.findUnique({
+      where: {
+        account_id,
+        id,
+      },
+    });
+  }
 }

@@ -1,11 +1,12 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
-import { pet_sitters } from '@app/generated/prisma/client';
+import { pet_sitters, PrismaClient } from '@app/generated/prisma/client';
 import { pet_sittersWhereInput } from '@app/generated/prisma/models';
 import {
   IPetSittersRepository,
   PetSittersCreate,
 } from '@app/interfaces/pet-sitters-repository.interface';
 import { Injectable } from '@nestjs/common';
+import { ITXClientDenyList } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class PetSittersRepository implements IPetSittersRepository {
@@ -57,5 +58,23 @@ export class PetSittersRepository implements IPetSittersRepository {
   }
   findByUser(account_id: string) {
     return this.prisma.pet_sitters.findUnique({ where: { account_id } });
+  }
+
+  async lock(tx: Omit<PrismaClient, ITXClientDenyList>, sitter_id: string) {
+    const rows = await tx.$queryRaw<
+      Pick<
+        pet_sitters,
+        'id' | 'active_bookings_count' | 'max_concurrent_bookings'
+      >[]
+    >`
+      SELECT  id,
+              active_bookings_count,
+              max_concurrent_bookings
+      FROM   pet_sitters
+      WHERE  id = ${sitter_id}::uuid
+      FOR UPDATE`;
+
+    if (!rows?.length) return null;
+    return rows[0];
   }
 }

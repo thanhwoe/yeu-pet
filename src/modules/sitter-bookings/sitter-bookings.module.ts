@@ -1,0 +1,18 @@
+import { forwardRef, Module } from '@nestjs/common';
+import { SitterBookingsService } from './sitter-bookings.service';
+import { SitterBookingsController } from './sitter-bookings.controller';
+import { SitterBookingsRepository } from './sitter-bookings.repository';
+import { PetSittersModule } from '../pet-sitters/pet-sitters.module';
+import { PetsModule } from '../pets/pets.module';
+import { ActiveBookingsTask } from './tasks/active-bookings.task';
+
+@Module({
+  imports: [forwardRef(() => PetSittersModule), forwardRef(() => PetsModule)],
+  controllers: [SitterBookingsController],
+  providers: [
+    SitterBookingsService,
+    SitterBookingsRepository,
+    ActiveBookingsTask,
+  ],
+})
+export class SitterBookingsModule {}

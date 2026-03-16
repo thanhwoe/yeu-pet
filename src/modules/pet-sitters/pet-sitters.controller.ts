@@ -39,16 +39,16 @@ export class PetSittersController {
     return this.petSittersService.findAll(pagination, address);
   }
 
+  @Get('/me')
+  @HttpCode(HttpStatus.OK)
+  findMe(@CurrentUser() user: accounts) {
+    return this.petSittersService.findMe(user);
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petSittersService.findOne(user, id);
-  }
-
-  @Get('/profile/me')
-  @HttpCode(HttpStatus.OK)
-  findMe(@CurrentUser() user: accounts) {
-    return this.petSittersService.findMe(user);
   }
 
   @Patch(':id')
