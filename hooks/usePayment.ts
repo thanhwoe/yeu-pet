@@ -1,5 +1,5 @@
 import { Toast } from "@/components/Toast";
-import VnpayModule from "@/modules/vnpay";
+// import VnpayModule from "@/modules/vnpay";
 import { createVNPayUrlMutation } from "@/services/payments";
 import { useMutation } from "@tanstack/react-query";
 import * as Linking from "expo-linking";
@@ -12,7 +12,7 @@ export enum PaymentMethod {
 
 export const usePayment = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -47,18 +47,18 @@ export const usePayment = () => {
       console.log({ error });
     },
     onSuccess: (data) => {
-      VnpayModule.show({
-        isSandbox: data.isSandbox,
-        scheme: "petcare",
-        title: "Thanh toán VNPAY",
-        titleColor: "#333333",
-        beginColor: "#ffffff",
-        endColor: "#ffffff",
-        iconBackName: "ic_back",
-        tmnCode: data.tmnCode,
-        backAlert: "Quay lai",
-        paymentUrl: data.paymentUrl,
-      });
+      // VnpayModule.show({
+      //   isSandbox: data.isSandbox,
+      //   scheme: "petcare",
+      //   title: "Thanh toán VNPAY",
+      //   titleColor: "#333333",
+      //   beginColor: "#ffffff",
+      //   endColor: "#ffffff",
+      //   iconBackName: "ic_back",
+      //   tmnCode: data.tmnCode,
+      //   backAlert: "Quay lai",
+      //   paymentUrl: data.paymentUrl,
+      // });
     },
   });
 

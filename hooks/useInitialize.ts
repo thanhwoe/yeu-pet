@@ -1,13 +1,9 @@
 import { useUserInfoStore } from "@/stores";
-import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 
 export const useInitialize = () => {
-  const [fontsLoaded] = useFonts({
-    SpaceMono: require("@/assets/fonts/SpaceMono-Regular.ttf"),
-  });
   const [hydratedUserStore, setHydratedUserStore] = useState(
-    useUserInfoStore.persist.hasHydrated()
+    useUserInfoStore.persist.hasHydrated(),
   );
 
   useEffect(() => {
@@ -21,5 +17,5 @@ export const useInitialize = () => {
     };
   }, []);
 
-  return fontsLoaded && hydratedUserStore;
+  return hydratedUserStore;
 };

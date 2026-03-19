@@ -1,13 +1,12 @@
 import { PHONE_CODE, PHONE_CODE_PREFIX } from "@/constants/phoneCodes";
 import { cn } from "@/utils";
 import { useState } from "react";
-import { TextInputProps, View } from "react-native";
+import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomSheet } from "../ui/BottomSheet";
-import { Text } from "../ui/Text";
+import { Body } from "../ui/Typography";
 
-interface CountryCodeSelectorProps
-  extends Pick<TextInputProps, "onFocus" | "onBlur"> {
+interface CountryCodeSelectorProps {
   onSelect: (code: string) => void;
   value?: string;
 }
@@ -15,40 +14,41 @@ interface CountryCodeSelectorProps
 export const CountryCodeSelector = ({
   onSelect,
   value,
-  ...props
 }: CountryCodeSelectorProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const renderItem = ({ item }: { item: (typeof PHONE_CODE)[0] }) => (
     <View
-      className={cn("py-3 px-4 rounded-md", {
-        "bg-option-selected": `+${item.code}` === value,
+      className={cn("py-12 px-16 rounded-12", {
+        "bg-background-secondary": `+${item.code}` === value,
       })}
     >
-      <Text
+      <Body
         onPress={() => {
           onSelect(PHONE_CODE_PREFIX + item.code);
           setShowOptions(false);
         }}
       >
         {item.countryName} (+{item.code})
-      </Text>
+      </Body>
     </View>
   );
 
   return (
-    <View className="border-r border-line-primary w-12 items-center">
-      <Text onPress={() => setShowOptions(true)} variant="body2">
+    <View className="border border-line-secondary-inverse items-center justify-center px-12 bg-background-tertiary rounded-8">
+      <Body
+        onPress={() => setShowOptions(true)}
+        variant="body2"
+        className="text-text-tertiary-inverse"
+      >
         {value}
-      </Text>
+      </Body>
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
         snapPoints={undefined}
         useScrollView
-        titleElement={
-          <Text className="font-semibold">Select country code</Text>
-        }
+        titleElement={<Body weight="semiBold">Select country code</Body>}
       >
         <FlatList
           scrollEnabled={false}

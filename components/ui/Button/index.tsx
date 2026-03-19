@@ -1,83 +1,26 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { Pressable, PressableProps, ViewStyle } from "react-native";
+import { Pressable, PressableProps, View, ViewStyle } from "react-native";
 
 import { cn } from "@/utils";
 import { Spinner } from "../Spinner";
 import { Text } from "../Text";
-
-const buttonVariants = cva("flex-row items-center justify-center gap-2", {
-  variants: {
-    variant: {
-      primary: "active:opacity-50 bg-background-primary",
-      secondary: "border-line-inverse border",
-      tonal: "bg-background-secondary",
-      plain: "active:opacity-70",
-      danger: "border-line-inverse border",
-    },
-    size: {
-      none: "",
-      sm: "py-1 px-2.5 rounded-full",
-      md: "ios:rounded-lg py-2 ios:py-1.5 ios:px-3.5 px-5 rounded-full",
-      lg: "py-2.5 px-5 ios:py-2 rounded-xl gap-2",
-      CTA: "py-3 px-5 rounded-full gap-2",
-      icon: "ios:rounded-lg h-10 w-10 rounded-full",
-    },
-    loading: {
-      true: "opacity-50",
-      false: "",
-    },
-    disabled: {
-      true: "opacity-50",
-      false: "",
-    },
-  },
-  defaultVariants: {
-    variant: "primary",
-    size: "md",
-  },
-});
-
-const buttonTextVariants = cva("font-medium", {
-  variants: {
-    variant: {
-      primary: "text-text-primary-inverse",
-      secondary: "text-text-link",
-      tonal: "text-text-primary-inverse",
-      plain: "text-foreground",
-      danger: "text-text-negative",
-    },
-    size: {
-      none: "",
-      icon: "",
-      sm: "text-[15px] leading-5",
-      md: "text-[17px] leading-7",
-      lg: "text-[17px] leading-7",
-      CTA: "text-[17px] leading-7",
-    },
-  },
-  defaultVariants: {
-    variant: "primary",
-    size: "md",
-  },
-});
+import {
+  buttonStyles,
+  ButtonVariants,
+  spinnerStyles,
+  textStyles,
+} from "./styles";
 
 // Add as class when possible: https://github.com/marklawlor/nativewind/issues/522
 const BORDER_CURVE: ViewStyle = {
   borderCurve: "continuous",
 };
 
-type ButtonVariantProps = Omit<
-  VariantProps<typeof buttonVariants>,
-  "variant"
-> & {
-  variant?: Exclude<VariantProps<typeof buttonVariants>["variant"], null>;
-};
-
 type ButtonProps = Omit<PressableProps, "children"> &
-  ButtonVariantProps &
+  ButtonVariants &
   React.PropsWithChildren & {
     loading?: boolean;
+    wrapperClassName?: string;
   };
 
 export const Button = ({
@@ -88,19 +31,35 @@ export const Button = ({
   children,
   disabled,
   loading,
+  wrapperClassName,
   ...props
 }: ButtonProps) => {
   return (
     <Pressable
-      className={cn(
-        buttonVariants({ variant, size, className, loading, disabled })
-      )}
       style={style}
       disabled={disabled || loading}
+      className={wrapperClassName}
       {...props}
     >
-      {loading && <Spinner size={20} className="text-icon-foreground" />}
-      <Text className={buttonTextVariants({ variant, size })}>{children}</Text>
+      {({ pressed }) => (
+        <View
+          className={cn(
+            buttonStyles({
+              variant,
+              size,
+              className,
+              loading,
+              disabled,
+              pressed,
+            }),
+          )}
+        >
+          {loading && (
+            <Spinner size={20} className={spinnerStyles({ variant })} />
+          )}
+          <Text className={textStyles({ variant, size })}>{children}</Text>
+        </View>
+      )}
     </Pressable>
   );
 };

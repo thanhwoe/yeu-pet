@@ -1,18 +1,19 @@
 import { SignUpForm } from "@/components/SignUpForm";
 import { Toast } from "@/components/Toast";
-import { Text } from "@/components/ui/Text";
+import { Body, Heading } from "@/components/ui/Typography";
 import { ISignUpForm } from "@/constants/validation";
 import { signUpMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useMutation } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { Link } from "expo-router";
 import React from "react";
 import { Keyboard, View } from "react-native";
 
 export default function RegisterScreen() {
-  const { updateUser, updateTokens } = useUserInfoStore();
+  const { updateUser, updateTokens, updateOtpExpire } = useUserInfoStore();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: signUpMutation,
     onSuccess: (res) => {
       Toast.success({ text: "Sign up successfully" });
@@ -21,9 +22,12 @@ export default function RegisterScreen() {
         accessToken: res.accessToken,
         refreshToken: res.refreshToken,
       });
+
+      const otpExpire = dayjs().add(10, "minute").toDate();
+      updateOtpExpire(otpExpire);
     },
     onError: (e) => {
-      Toast.error({ text: e.message.message });
+      Toast.error({ text: e.message });
     },
   });
   const handleLogin = async (data: ISignUpForm) => {
@@ -36,21 +40,19 @@ export default function RegisterScreen() {
         Keyboard.dismiss();
         return true;
       }}
-      className="flex-1 justify-center p-5 bg-white"
+      className="flex-1 px-16 justify-center p-5 bg-white"
     >
-      <View className="mb-20">
-        <Text variant="title1">Create an account</Text>
-        <Text variant="title3" className=" text-gray-500">
-          Welcome to smatter pet care
-        </Text>
+      <View className="gap-16 mb-20">
+        <Heading variant="h2">Create an account</Heading>
+        <Heading variant="h5">Manage, care, and love your pets</Heading>
       </View>
 
-      <SignUpForm onSubmit={handleLogin} />
+      <SignUpForm onSubmit={handleLogin} isSubmitting={isPending} />
 
       <View className="flex-row mt-10 justify-center items-center">
-        <Text>Already have an account? </Text>
+        <Body>Already have an account? </Body>
         <Link href="/login">
-          <Text className="text-text-link">Sign In</Text>
+          <Body className="text-text-link">Sign In</Body>
         </Link>
       </View>
     </View>

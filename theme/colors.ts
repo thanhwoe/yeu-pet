@@ -201,85 +201,138 @@ export const colorPalette = {
 };
 
 export const darkColorTheme = {
-  "--background-primary": "--orange-40",
-  "--background-secondary": "--orange-20",
-  "--background-screen": "--orange-5",
-  "--background-card": "--amber-40",
-  "--background-card-info": "--orange-0",
-  // TODO: background-light
-  "--background-white": "--grey-0",
-  "--option-selected": "--orange-10",
-  "--tab-selected": "--orange-30",
-  "--background-positive": "--green-50",
-  "--background-negative": "--red-50",
+  // TEXT
+  "--text-primary": "--grey-5",
+  "--text-primary-inverse": "--grey-100",
+  "--text-primary-inverse-disabled": "--grey-60",
+  "--text-primary-disabled": "--grey-50",
 
-  "--text-link": "--amber-40",
-  "--text-primary-inverse": "--grey-0",
-  "--text-primary": "--grey-100",
-  "--text-secondary": "--grey-60",
+  "--text-link": "--blue-40",
+  "--text-link-disabled": "--blue-20",
+
+  "--text-secondary": "--grey-30",
+  "--text-secondary-inverse": "--grey-80",
+  "--text-secondary-inverse-disabled": "--grey-50",
+  "--text-secondary-disabled": "--grey-60",
+
+  "--text-tertiary": "--grey-80",
+  "--text-tertiary-inverse": "--grey-30",
+
   "--text-warning": "--yellow-40",
-  "--text-positive": "--green-50",
-  "--text-negative": "--red-50",
-  "--text-tab-selected": "--orange-5",
-  "--text-upcoming-title": "--amber-50",
-  "--text-highlight": "--amber-50",
-  "--text-highlight-swarthy": "--amber-70",
+  "--text-positive": "--green-40",
+  "--text-negative": "--red-40",
 
-  "--line-primary": "--grey-50",
-  "--line-secondary": "--grey-30",
-  "--line-tertiary": "--amber-10",
-  "--line-inverse": "--amber-20",
-  "--line-selected": "--orange-40",
-  "--line-disabled": "--grey-40",
-  "--line-typing": "--amber-40",
+  "--text-emphasis": "--blue-40",
+  "--text-emphasis-inverse": "--blue-10",
+  "--text-emphasis-disabled": "--blue-20",
 
-  "--icon-primary": "--orange-40",
-  "--icon-secondary": "--grey-50",
-  "--icon-tertiary": "--orange-60",
+  // BACKGROUND
+  "--background": "--blue-100",
+  "--background-primary": "--blue-60",
+  "--background-primary-pressed": "--blue-50",
+  "--background-secondary": "--blue-90",
+  "--background-secondary-pressed": "--blue-80",
+  "--background-tertiary": "--blue-80",
+  "--background-tertiary-highlight": "--grey-60",
+
+  "--background-foreground": "--grey-100",
+
+  "--background-card": "--blue-90",
+  "--background-card-highlight": "--blue-80",
+
+  "--background-positive": "--green-100",
+  "--background-negative": "--red-100",
+  "--background-negative-foreground": "--red-5",
+  "--background-negative-pressed": "--red-90",
+
+  // LINE
+  "--line-primary": "--blue-80",
+  "--line-primary-inverse": "--grey-20",
+  "--line-secondary": "--blue-90",
+  "--line-secondary-inverse": "--grey-80",
+  "--line-secondary-pressed": "--blue-80",
+  "--line-tertiary": "--blue-100",
+  "--line-inverse": "--grey-10",
+
+  "--line-negative": "--red-70",
+  "--line-positive": "--green-70",
+  "--line-highlight": "--blue-50",
+
+  // ICON
+  "--icon-primary": "--grey-10",
+  "--icon-primary-inverse": "--grey-90",
+  "--icon-secondary": "--grey-40",
+
+  "--icon-warning": "--yellow-40",
+  "--icon-positive": "--green-40",
+  "--icon-negative": "--red-40",
 };
 
 export const lightColorTheme = {
-  "--background-primary": "--orange-40",
-  "--background-secondary": "--orange-20",
-  "--background-screen": "--orange-5",
-  "--background-card": "--amber-40",
-  "--background-card-info": "--orange-0",
-  "--background-white": "--grey-0",
-  "--option-selected": "--orange-10",
-  "--tab-selected": "--orange-30",
+  // TEXT
+  "--text-primary": "--orange-100",
+  "--text-primary-inverse": "--orange-0",
+  "--text-primary-inverse-disabled": "--orange-20",
+  "--text-primary-disabled": "--orange-40",
+
+  "--text-link": "--amber-60",
+  "--text-link-disabled": "--amber-30",
+
+  "--text-secondary": "--orange-50",
+  "--text-secondary-inverse": "--orange-10",
+  "--text-secondary-inverse-disabled": "--orange-30",
+  "--text-secondary-disabled": "--orange-40",
+
+  "--text-tertiary": "--grey-30",
+  "--text-tertiary-inverse": "--grey-80",
+
+  "--text-warning": "--yellow-60",
+  "--text-positive": "--green-60",
+  "--text-negative": "--red-60",
+
+  "--text-emphasis": "--amber-70",
+  "--text-emphasis-inverse": "--amber-10",
+  "--text-emphasis-disabled": "--amber-30",
+
+  // BACKGROUND
+  "--background": "--orange-5",
+  "--background-primary": "--amber-40",
+  "--background-primary-pressed": "--amber-30",
+  "--background-secondary": "--orange-10",
+  "--background-secondary-pressed": "--orange-15",
+  "--background-tertiary": "--grey-5",
+  "--background-tertiary-highlight": "--grey-15",
+  "--background-foreground": "--grey-0",
+
+  "--background-card": "--orange-0",
+  "--background-card-highlight": "--amber-5",
+
   "--background-positive": "--green-50",
   "--background-negative": "--red-50",
-  "--background-chat-right": "--orange-15",
-  "--background-chat-left": "--orange-10",
+  "--background-negative-foreground": "--red-5",
+  "--background-negative-pressed": "--red-60",
 
-  "--text-link": "--amber-40",
-  "--text-primary-inverse": "--grey-0",
-  "--text-primary": "--grey-100",
-  "--text-secondary": "--grey-60",
-  "--text-secondary-inverse": "--grey-20",
-  "--text-warning": "--yellow-40",
-  "--text-positive": "--green-50",
-  "--text-negative": "--red-50",
-  "--text-tab-selected": "--orange-5",
-  "--text-upcoming-title": "--amber-50",
-  "--text-highlight": "--amber-50",
-  "--text-highlight-swarthy": "--amber-70",
+  // LINE
+  "--line-primary": "--orange-20",
+  "--line-primary-inverse": "--grey-60",
+  "--line-secondary": "--amber-20",
+  "--line-secondary-inverse": "--grey-15",
+  "--line-secondary-pressed": "--orange-5",
+  "--line-tertiary": "--orange-5",
+  "--line-inverse": "--grey-70",
 
-  "--line-primary": "--grey-50",
-  "--line-secondary": "--grey-30",
-  "--line-tertiary": "--amber-10",
-  "--line-inverse": "--amber-20",
-  "--line-selected": "--orange-40",
-  "--line-disabled": "--grey-40",
-  "--line-typing": "--amber-40",
-  "--line-primary-foreground": "--grey-0",
-  "--line-negative": "--red-50",
+  "--line-negative": "--red-30",
+  "--line-positive": "--green-30",
+  "--line-highlight": "--amber-30",
 
-  "--icon-primary": "--orange-40",
-  "--icon-secondary": "--grey-50",
-  "--icon-tertiary": "--grey-60",
-  "--icon-foreground": "--grey-0",
-  "--icon-highlight": "--amber-50",
+  // ICON
+  "--icon-primary": "--grey-80",
+  "--icon-primary-inverse": "--grey-0",
+  "--icon-secondary": "--grey-60",
+
+  "--icon-warning": "--yellow-60",
+  "--icon-positive": "--green-60",
+  "--icon-negative": "--red-60",
 };
 
 export const colors = {

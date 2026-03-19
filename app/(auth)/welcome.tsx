@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
-import { Text } from "@/components/ui/Text";
+import { Heading } from "@/components/ui/Typography";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -9,38 +9,35 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
-    <View className="flex-1 p-5 bg-white">
+    <View className="flex-1 bg-white justify-end">
       <LinearGradient
         colors={["#FF7D29", "#FFF"]}
         style={StyleSheet.absoluteFill}
-      />
-      <View className="mt-safe-offset-4">
-        <Image
-          contentFit="cover"
-          className="h-96"
-          source={require("@/assets/images/orange-cat.png")}
-        />
-      </View>
-
-      <View className="flex-1 justify-between">
-        <View className="gap-3">
-          <Text variant="largeTitle" className="font-bold text-center">
-            Welcome to pet care easy app
-          </Text>
-          <Text className="text-center">
-            Simplify pet care with everything your furry friend needs in one
-            easy app.
-          </Text>
+      >
+        <View className="mt-safe-offset-8">
+          <Image
+            contentFit="cover"
+            style={[
+              {
+                height: "80%",
+              },
+            ]}
+            source={require("@/assets/images/orange-cat.png")}
+          />
         </View>
-        <View className="gap-3 pb-5">
-          <Button size="CTA" onPress={() => router.push("/login")}>
-            Sign In
-          </Button>
-          <Button
-            size="CTA"
-            variant="secondary"
-            onPress={() => router.push("/register")}
-          >
+      </LinearGradient>
+      <View className="gap-56 px-18">
+        <View className="gap-12">
+          <Heading variant="h3" weight="bold" center>
+            Welcome to Yeu Pet
+          </Heading>
+          <Heading variant="h6" center>
+            Smart care for your beloved pets. Everything your pet needs.
+          </Heading>
+        </View>
+        <View className="gap-12 mb-safe-offset-4">
+          <Button onPress={() => router.push("/login")}>Sign In</Button>
+          <Button variant="outline" onPress={() => router.push("/register")}>
             Create an Account
           </Button>
         </View>

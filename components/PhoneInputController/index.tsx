@@ -7,8 +7,9 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { TextInput, TextInputProps, View } from "react-native";
-import { Text } from "../ui/Text";
+import { TextInputProps, View } from "react-native";
+import { InputField } from "../ui/InputField";
+import { Body } from "../ui/Typography";
 import { CountryCodeSelector } from "./CodeSelector";
 
 interface InputControllerProps<T extends FieldValues> extends TextInputProps {
@@ -53,33 +54,36 @@ export const PhoneInputController = <T extends FieldValues>({
       }
       onChange(phone);
     },
-    [onChange, phoneCode]
+    [onChange, phoneCode],
   );
 
   return (
-    <View aria-invalid={!!error?.message} className="gap-1">
-      <Text variant="caption1">{label}</Text>
-      <View className="flex-row border border-line-primary rounded-lg px-1 py-2 gap-2 items-center">
+    <View aria-invalid={!!error?.message} className="gap-4">
+      <Body variant="body3">{label}</Body>
+      <View className="flex-row gap-8">
         <CountryCodeSelector
           value={phoneCode}
           onSelect={handleSelectCountryCode}
         />
-        <TextInput
-          defaultValue={value}
-          value={phoneNumber}
-          className="py-1 flex-1 placeholder:text-text-secondary selection:text-text-link"
+        <InputField
+          className="flex-1"
+          hasError={!!error?.message}
           onChangeText={handleFormatPhoneNumber}
-          inputMode="tel"
           onBlur={(e) => {
             onBlur?.(e);
             handleBlur();
           }}
+          inputMode="tel"
+          value={phoneNumber}
+          defaultValue={value}
           {...props}
         />
       </View>
-      <Text className="text-text-negative" variant="footnote">
-        {error?.message}
-      </Text>
+      {error?.message && (
+        <Body variant="body4" className="text-text-negative">
+          {error?.message}
+        </Body>
+      )}
     </View>
   );
 };

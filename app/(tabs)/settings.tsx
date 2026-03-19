@@ -1,33 +1,15 @@
-import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { signOutMutation } from "@/services";
-import { useUserInfoStore } from "@/stores/user-info";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function TabTwoScreen() {
-  const queryClient = useQueryClient();
-
-  const { logout, tokens } = useUserInfoStore();
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: signOutMutation,
-    onSuccess: () => {
-      logout();
-      queryClient.resetQueries();
-    },
-    onError: (e) => {
-      Toast.error({ text: e.message.message });
-    },
-  });
-  const handleLogout = () => {
-    mutateAsync({ refreshToken: tokens?.refreshToken });
-  };
+  const { loading, logout } = useLogout();
   return (
     <ScreenContainer>
       <Text>setting</Text>
-      <Button onPress={handleLogout} loading={isPending}>
+      <Button onPress={logout} loading={loading}>
         Logout
       </Button>
       <ThemeToggle />

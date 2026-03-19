@@ -4,11 +4,7 @@ interface ErrorResponse {
   statusCode: number;
   timestamp: string;
   path: string;
-  message: {
-    message: string;
-    error: string;
-    statusCode: number;
-  };
+  message: string;
 }
 
 declare module "@tanstack/react-query" {
