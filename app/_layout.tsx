@@ -27,12 +27,22 @@ const RootNavigation = () => {
   const { user } = useUserInfoStore();
   const isAuthenticated = !!user;
   const isOnboardingComplete = !!user?.onboardingCompleted;
+  const isVerified = !!user?.isVerified;
 
   return (
     <Stack>
       <Stack.Protected guard={!isAuthenticated}>
         <Stack.Screen
           name="(auth)"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Protected>
+
+      <Stack.Protected guard={isAuthenticated && !isVerified}>
+        <Stack.Screen
+          name="verify-otp"
           options={{
             headerShown: false,
           }}
@@ -48,7 +58,9 @@ const RootNavigation = () => {
         />
       </Stack.Protected>
 
-      <Stack.Protected guard={isAuthenticated && isOnboardingComplete}>
+      <Stack.Protected
+        guard={isAuthenticated && isOnboardingComplete && isVerified}
+      >
         <Stack.Screen
           name="(tabs)"
           options={{

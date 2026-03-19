@@ -15,7 +15,7 @@ export const useLogout = () => {
       queryClient.resetQueries();
     },
     onError: (e) => {
-      Toast.error({ text: e.message.message });
+      Toast.error({ text: e.message });
     },
   });
 

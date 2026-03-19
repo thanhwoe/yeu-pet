@@ -7,6 +7,8 @@ export const API_ROUTES = {
   LOGOUT: "/auth/logout",
 
   COMPLETE_ONBOARDING: "/users/complete-onboarding",
+  RESEND_OTP: "/users/resend-otp",
+  VERIFY_OTP: "/users/verify",
 
   CREATE_PET: "/create-pet",
   LIST_PET: "/pet",

@@ -13,6 +13,7 @@ type State = {
     accessToken: string;
     refreshToken: string;
   } | null;
+  otpExpire: Date | null;
 };
 
 type Action = {
@@ -20,6 +21,7 @@ type Action = {
   updateTokens: (data: State["tokens"]) => void;
   logout: () => void;
   clearToken: () => void;
+  updateOtpExpire: (date: Date | null) => void;
 };
 
 const useUserInfoStoreBase = create<State & Action>()(
@@ -27,19 +29,31 @@ const useUserInfoStoreBase = create<State & Action>()(
     (set) => ({
       user: null,
       tokens: null,
+      otpExpire: null,
+
       updateUser: (user) => {
         set(() => ({ user }));
       },
+
       logout: () => set(() => ({ user: null, tokens: null })),
+
       clearToken: () => {
         set(() => ({
           tokens: null,
         }));
       },
-      updateTokens: (tokens) =>
+
+      updateTokens: (tokens) => {
         set(() => ({
           tokens,
-        })),
+        }));
+      },
+
+      updateOtpExpire: (date) => {
+        set(() => ({
+          otpExpire: date,
+        }));
+      },
     }),
     {
       name: PERSIST_KEYS.USER_INFO,
@@ -47,6 +61,7 @@ const useUserInfoStoreBase = create<State & Action>()(
       partialize: (state) => ({
         user: state.user,
         tokens: state.tokens,
+        otpExpire: state.otpExpire,
       }),
     },
   ),

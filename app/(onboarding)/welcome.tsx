@@ -59,7 +59,7 @@ export default function WelcomeScreen() {
       updateUser(res);
     },
     onError: (e) => {
-      Toast.error({ text: e.message.message });
+      Toast.error({ text: e.message });
       logout();
     },
   });
@@ -190,7 +190,7 @@ export default function WelcomeScreen() {
       />
       <View className="flex-row justify-between py-8 px-4">
         <Button
-          variant="plain"
+          variant="ghost"
           disabled={isPending}
           onPress={handleCompleteOnboarding}
         >

@@ -59,9 +59,6 @@ export default function LoginScreen() {
           <Link href="/register">
             <Body className="text-text-link">Sign Up</Body>
           </Link>
-          <Link href="/verify-otp">
-            <Body className="text-text-link">otp</Body>
-          </Link>
         </View>
       </View>
     </View>
