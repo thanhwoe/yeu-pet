@@ -1,9 +1,9 @@
 export const fontFamily = {
-  regular: "Geist-Regular",
-  medium: "Geist-Medium",
-  bold: "Geist-Bold",
-  light: "Geist-Light",
-  semiBold: "Geist-SemiBold",
+  regular: "Nunito-Regular",
+  medium: "Nunito-Medium",
+  bold: "Nunito-Bold",
+  light: "Nunito-Light",
+  semiBold: "Nunito-SemiBold",
 };
 
 export const fontSize = {

@@ -9,7 +9,13 @@ import { cn } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  View,
+} from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -141,6 +147,10 @@ export const VerifyOtpScreen = () => {
 
   return (
     <KeyboardAvoidingView
+      onStartShouldSetResponder={() => {
+        Keyboard.dismiss();
+        return true;
+      }}
       className="flex-1 bg-white"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >

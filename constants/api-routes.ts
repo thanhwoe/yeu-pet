@@ -9,6 +9,8 @@ export const API_ROUTES = {
   COMPLETE_ONBOARDING: "/users/complete-onboarding",
   RESEND_OTP: "/users/resend-otp",
   VERIFY_OTP: "/users/verify",
+  ME: "/users/me",
+  DEVICE: "/devices",
 
   CREATE_PET: "/create-pet",
   LIST_PET: "/pet",

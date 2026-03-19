@@ -9,6 +9,7 @@
     "build:dev:android": "eas build --platform android --profile development",
     "build:dev:ios": "eas build --platform ios --profile ios-simulator",
     "install:dev:ios": "eas build:run -p ios",
+    "prebuild": "expo prebuild --clean",
     "android": "expo run:android",
     "ios": "expo run:ios"
   },

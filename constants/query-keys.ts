@@ -1,5 +1,13 @@
 type IQueryParams = Record<string, any>;
 
+export const USER_KEY = {
+  all: [{ scope: "user" }] as const,
+  lists: () => [...USER_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) => [...USER_KEY.lists(), { params }] as const,
+  details: () => [...USER_KEY.all, "detail"] as const,
+  detail: (id?: string) => [...USER_KEY.details(), id] as const,
+};
+
 export const PET_KEY = {
   all: [{ scope: "pet" }] as const,
   lists: () => [...PET_KEY.all, "list"] as const,

@@ -10,3 +10,14 @@ export const resendOtpMutation = () =>
 
 export const verifyOtpMutation = (code: string) =>
   APIs.post<IUser>(API_ROUTES.VERIFY_OTP, { data: { code } });
+
+export const getUserQuery = () => APIs.get<IUser>(API_ROUTES.ME);
+
+interface DeviceInfoParams {
+  pushToken: string;
+  platform: "unknown" | "android" | "ios";
+  deviceName?: string;
+  osVersion?: string;
+}
+export const saveDeviceInfoMutation = (params: DeviceInfoParams) =>
+  APIs.post(API_ROUTES.DEVICE, { data: params });

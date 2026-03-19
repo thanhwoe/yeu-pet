@@ -40,7 +40,7 @@ export async function registerForPushNotificationsAsync() {
     }
     if (finalStatus !== "granted") {
       handleRegistrationError(
-        "Permission not granted to get push token for push notification!"
+        "Permission not granted to get push token for push notification!",
       );
       return;
     }
@@ -56,7 +56,6 @@ export async function registerForPushNotificationsAsync() {
           projectId,
         })
       ).data;
-      console.log(pushTokenString);
       return pushTokenString;
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);
@@ -92,7 +91,7 @@ export const schedulePushNotification = async (payload: IReminderResponse) => {
 };
 
 export const updateSchedulePushNotification = async (
-  payload: IReminderResponse
+  payload: IReminderResponse,
 ) => {
   if (!Device.isDevice) {
     return;
@@ -121,7 +120,7 @@ export const updateSchedulePushNotification = async (
 };
 
 export const cancelSchedulePushNotification = async (
-  payload: IReminderResponse
+  payload: IReminderResponse,
 ) => {
   if (!Device.isDevice) {
     return;

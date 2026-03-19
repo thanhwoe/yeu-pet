@@ -1,7 +1,7 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
-import { date, registerForPushNotificationsAsync } from "@/utils";
+import { date } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
@@ -65,16 +65,11 @@ const InitialProvider = ({ children }: Children) => {
     LocaleConfig.defaultLocale = "default";
   }, []);
 
-  const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => setExpoPushToken(token ?? ""))
-      .catch((error: any) => setExpoPushToken(`${error}`));
-
     const notificationListener = Notifications.addNotificationReceivedListener(
       (notification) => {
         setNotification(notification);
