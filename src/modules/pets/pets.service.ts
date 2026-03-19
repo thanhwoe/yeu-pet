@@ -12,6 +12,8 @@ import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { paginate } from '@app/utils/pagination';
 
 @Injectable()
 export class PetsService {
@@ -56,8 +58,16 @@ export class PetsService {
     return pet;
   }
 
-  async findAllByUserId(account_id: string) {
-    return this.petsRepository.findAll({ account_id });
+  async findAllByUserId(account_id: string, pagination: PaginationDto) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+    const [data, total] = await this.petsRepository.findAll({
+      account_id,
+      skip,
+      take: limit,
+    });
+
+    return paginate(data, total, page, limit);
   }
 
   async findOne(user: accounts, id: string) {

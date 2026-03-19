@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { notifications } from '@app/generated/prisma/client';
+import { notificationsWhereInput } from '@app/generated/prisma/models';
 import { INotificationsRepository } from '@app/interfaces/notifications-repository.interface';
 import { Injectable } from '@nestjs/common';
 import { JsonNull } from '@prisma/client/runtime/client';
@@ -86,15 +87,20 @@ export class NotificationsRepository implements INotificationsRepository {
     account_id: string;
     is_read?: boolean;
   }) {
-    return this.prisma.notifications.findMany({
-      where: {
-        account_id: params?.account_id,
-        is_read: params?.is_read,
-      },
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    const where: notificationsWhereInput = {
+      account_id: params?.account_id,
+      is_read: params?.is_read,
+    };
+
+    return this.prisma.$transaction([
+      this.prisma.notifications.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.notifications.count({ where }),
+    ]);
   }
 
   async findById(id: string) {

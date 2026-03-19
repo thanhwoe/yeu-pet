@@ -48,8 +48,11 @@ export class PetsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@CurrentUser() user: accounts) {
-    return this.petsService.findAllByUserId(user.id);
+  findAll(
+    @CurrentUser() user: accounts,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.petsService.findAllByUserId(user.id, pagination);
   }
 
   @Get(':id')

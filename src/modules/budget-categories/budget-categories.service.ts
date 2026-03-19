@@ -7,6 +7,8 @@ import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { paginate } from '@app/utils/pagination';
 
 @Injectable()
 export class BudgetCategoriesService {
@@ -38,8 +40,14 @@ export class BudgetCategoriesService {
     return category;
   }
 
-  findAll() {
-    return this.budgetCategoriesRepository.findAll();
+  async findAll(pagination: PaginationDto) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+    const [data, total] = await this.budgetCategoriesRepository.findAll({
+      skip,
+      take: limit,
+    });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(id: string) {

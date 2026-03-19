@@ -14,11 +14,14 @@ import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
-import type { accounts, reminder_status } from '@app/generated/prisma/client';
+import { type accounts, reminder_status } from '@app/generated/prisma/client';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
 import { IdParam } from '@app/decorators/id-param.decorator';
+import { PaginationQuery } from '@app/decorators/pagination.decorator';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { AllowValuesPipe } from '@app/pipes/allow-values.pipe';
 
 @Controller('reminders')
 @UseGuards(PoliciesGuard)
@@ -39,9 +42,11 @@ export class RemindersController {
   @HttpCode(HttpStatus.OK)
   findAll(
     @CurrentUser() user: accounts,
-    @Query('status') status?: reminder_status,
+    @PaginationQuery() pagination: PaginationDto,
+    @Query('status', new AllowValuesPipe(reminder_status))
+    status?: reminder_status,
   ) {
-    return this.remindersService.findAll(user.id, status);
+    return this.remindersService.findAll(user.id, pagination, status);
   }
 
   @Get(':id')

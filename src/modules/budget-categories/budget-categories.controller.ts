@@ -16,6 +16,8 @@ import { IdParam } from '@app/decorators/id-param.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 import { AdminOnly } from '@app/decorators/admin.decorator';
+import { PaginationQuery } from '@app/decorators/pagination.decorator';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Controller('budgets/categories')
 export class BudgetCategoriesController {
@@ -37,8 +39,8 @@ export class BudgetCategoriesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.budgetCategoriesService.findAll();
+  findAll(@PaginationQuery() pagination: PaginationDto) {
+    return this.budgetCategoriesService.findAll(pagination);
   }
 
   @Patch(':id')

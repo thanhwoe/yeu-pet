@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { pets } from '@app/generated/prisma/client';
+import { petsWhereInput } from '@app/generated/prisma/models';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -34,14 +35,18 @@ export class PetsRepository implements IPetsRepository {
     });
   }
   async findAll(params?: { skip?: number; take?: number; account_id: string }) {
-    return this.prisma.pets.findMany({
-      where: {
-        account_id: params?.account_id,
-      },
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    const where: petsWhereInput = {
+      account_id: params?.account_id,
+    };
+    return this.prisma.$transaction([
+      this.prisma.pets.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.pets.count({ where }),
+    ]);
   }
 
   async findById(id: string) {

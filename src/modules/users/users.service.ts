@@ -101,18 +101,17 @@ export class UsersService {
       throw new BadRequestException('Invalid OTP code');
     }
 
-    await this.usersRepository.update(userId, {
-      is_verified: true,
-    });
     await this.otpService.revokeToken(userId, token);
 
-    return { message: 'User verified successfully' };
+    return this.usersRepository.update(userId, {
+      is_verified: true,
+    });
   }
 
   async resendVerificationCode(account_id: string) {
-    await this.sendVerificationCode(account_id);
+    const { expires_at } = await this.sendVerificationCode(account_id);
 
-    return { message: 'Verification code resent successfully' };
+    return { expires_at };
   }
 
   async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto) {
@@ -274,7 +273,7 @@ export class UsersService {
     return user;
   }
 
-  private async sendVerificationCode(userId: string): Promise<void> {
+  private async sendVerificationCode(userId: string) {
     const user = await this.getUser({ id: userId });
 
     const otpRecord = await this.otpService.findByUserId(user.id);
@@ -294,7 +293,7 @@ export class UsersService {
 
     const otp = await this.otpService.sendOtpToMobile(user.phone);
 
-    await this.otpService.upsertToken(userId, otp);
+    return this.otpService.upsertToken(userId, otp);
   }
 
   private async hashPassword(value: string) {

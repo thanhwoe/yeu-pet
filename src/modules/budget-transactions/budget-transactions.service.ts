@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { Action } from '../casl/casl.types';
 import { assertAbility } from '../casl/casl.helper';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { paginate } from '@app/utils/pagination';
 
 @Injectable()
 export class BudgetTransactionsService {
@@ -27,10 +29,15 @@ export class BudgetTransactionsService {
     });
   }
 
-  findAll(user: accounts) {
-    return this.budgetTransactionsRepository.findAll({
+  async findAll(user: accounts, pagination: PaginationDto) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+    const [data, total] = await this.budgetTransactionsRepository.findAll({
       account_id: user.id,
+      skip,
+      take: limit,
     });
+    return paginate(data, total, page, limit);
   }
 
   async update(

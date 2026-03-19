@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { budget_transactions } from '@app/generated/prisma/client';
+import { budget_transactionsWhereInput } from '@app/generated/prisma/models';
 import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -29,14 +30,19 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
     });
   }
   async findAll(params?: { skip?: number; take?: number; account_id: string }) {
-    return this.prisma.budget_transactions.findMany({
-      where: {
-        account_id: params?.account_id,
-      },
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    const where: budget_transactionsWhereInput = {
+      account_id: params?.account_id,
+    };
+
+    return this.prisma.$transaction([
+      this.prisma.budget_transactions.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.budget_transactions.count({ where }),
+    ]);
   }
   async findById(id: string) {
     return this.prisma.budget_transactions.findUnique({ where: { id } });

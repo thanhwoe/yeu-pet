@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { account_devices } from '@app/generated/prisma/client';
+import { account_devicesWhereInput } from '@app/generated/prisma/models';
 import { IUserDevicesRepository } from '@app/interfaces/user-devices-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -57,12 +58,16 @@ export class UserDevicesRepository implements IUserDevicesRepository {
   }
 
   async findAll(params?: { skip?: number; take?: number; account_id: string }) {
-    return this.prisma.account_devices.findMany({
-      where: { account_id: params?.account_id },
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    const where: account_devicesWhereInput = { account_id: params?.account_id };
+    return this.prisma.$transaction([
+      this.prisma.account_devices.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.account_devices.count({ where }),
+    ]);
   }
 
   async update(id: string, data: Partial<account_devices>) {

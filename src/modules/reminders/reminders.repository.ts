@@ -36,15 +36,19 @@ export class RemindersRepository implements IRemindersRepository {
     account_id: string;
     status?: reminder_status;
   }) {
-    return this.prisma.reminders.findMany({
-      where: {
-        account_id: params?.account_id,
-        status: params?.status,
-      },
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { scheduled_at: 'desc' },
-    });
+    const where: remindersWhereInput = {
+      account_id: params?.account_id,
+      status: params?.status,
+    };
+    return this.prisma.$transaction([
+      this.prisma.reminders.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { scheduled_at: 'desc' },
+      }),
+      this.prisma.reminders.count({ where }),
+    ]);
   }
 
   async findMany(params: { where: remindersWhereInput }) {

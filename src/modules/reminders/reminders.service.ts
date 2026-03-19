@@ -9,6 +9,8 @@ import { Action } from '../casl/casl.types';
 import { assertAbility } from '../casl/casl.helper';
 import { NotificationsService } from '../notifications/notifications.service';
 import { UserSettingsRepository } from '../user-settings/user-settings.repository';
+import { paginate } from '@app/utils/pagination';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Injectable()
 export class RemindersService {
@@ -30,8 +32,21 @@ export class RemindersService {
     });
   }
 
-  async findAll(userId: string, status?: reminder_status) {
-    return this.remindersRepository.findAll({ account_id: userId, status });
+  async findAll(
+    userId: string,
+    pagination: PaginationDto,
+    status?: reminder_status,
+  ) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.remindersRepository.findAll({
+      account_id: userId,
+      status,
+      skip,
+      take: limit,
+    });
+    return paginate(data, total, page, limit);
   }
 
   async findOne(user: accounts, id: string) {

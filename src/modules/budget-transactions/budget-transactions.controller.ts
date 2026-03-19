@@ -18,6 +18,8 @@ import { IdParam } from '@app/decorators/id-param.decorator';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
+import { PaginationQuery } from '@app/decorators/pagination.decorator';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
 @Controller('budgets/transactions')
 @UseGuards(PoliciesGuard)
@@ -41,8 +43,11 @@ export class BudgetTransactionsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@CurrentUser() user: accounts) {
-    return this.budgetTransactionsService.findAll(user);
+  findAll(
+    @CurrentUser() user: accounts,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.budgetTransactionsService.findAll(user, pagination);
   }
 
   @Patch(':id')

@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { budgets } from '@app/generated/prisma/client';
+import { budgetsWhereInput } from '@app/generated/prisma/models';
 import { IBudgetsRepository } from '@app/interfaces/budgets-repository.interface';
 import { Injectable } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/client';
@@ -43,15 +44,18 @@ export class BudgetsRepository implements IBudgetsRepository {
     return this.prisma.budgets.delete({ where: { id } });
   }
   findAll(params?: { skip?: number; take?: number; account_id: string }) {
-    return this.prisma.budgets.findMany({
-      where: {
-        account_id: params?.account_id,
-      },
-
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    const where: budgetsWhereInput = {
+      account_id: params?.account_id,
+    };
+    return this.prisma.$transaction([
+      this.prisma.budgets.findMany({
+        where,
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.budgets.count({ where }),
+    ]);
   }
   findById(id: string) {
     return this.prisma.budgets.findUnique({

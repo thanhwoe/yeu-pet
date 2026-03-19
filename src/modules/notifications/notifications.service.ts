@@ -17,6 +17,8 @@ import { assertAbility } from '../casl/casl.helper';
 import { Action } from '../casl/casl.types';
 import { NotificationDeliveriesRepository } from './notification-deliveries.repository';
 import { jsonValueToStringMap } from '@app/utils/transform';
+import { PaginationDto } from '../shared/dto/pagination.dto';
+import { paginate } from '@app/utils/pagination';
 
 @Injectable()
 export class NotificationsService {
@@ -63,7 +65,7 @@ export class NotificationsService {
       image_id: null,
     });
 
-    const devices = await this.userDevicesRepository.findAll({
+    const [devices] = await this.userDevicesRepository.findAll({
       account_id: reminder.account_id,
     });
 
@@ -159,8 +161,17 @@ export class NotificationsService {
     }
   }
 
-  async findAll(account_id: string) {
-    return this.notificationsRepository.findAll({ account_id });
+  async findAll(account_id: string, pagination: PaginationDto) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.notificationsRepository.findAll({
+      account_id,
+      skip,
+      take: limit,
+    });
+
+    return paginate(data, total, page, limit);
   }
 
   async getBadge(account_id: string) {

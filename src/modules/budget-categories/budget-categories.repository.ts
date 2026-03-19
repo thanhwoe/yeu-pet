@@ -24,11 +24,14 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
     });
   }
   async findAll(params?: { skip?: number; take?: number }) {
-    return this.prisma.budget_categories.findMany({
-      skip: params?.skip,
-      take: params?.take,
-      orderBy: { created_at: 'desc' },
-    });
+    return this.prisma.$transaction([
+      this.prisma.budget_categories.findMany({
+        skip: params?.skip,
+        take: params?.take,
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.budget_categories.count(),
+    ]);
   }
   async findById(id: string) {
     return this.prisma.budget_categories.findUnique({ where: { id } });
