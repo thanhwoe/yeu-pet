@@ -51,7 +51,7 @@ export default function RegisterScreen() {
 
       <View className="flex-row mt-10 justify-center items-center">
         <Body>Already have an account? </Body>
-        <Link href="/login">
+        <Link href="/login" replace>
           <Body className="text-text-link">Sign In</Body>
         </Link>
       </View>

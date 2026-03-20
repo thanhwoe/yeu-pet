@@ -35,7 +35,7 @@ export const CountryCodeSelector = ({
   );
 
   return (
-    <View className="border border-line-secondary-inverse items-center justify-center px-12 bg-background-tertiary rounded-8">
+    <View className="border border-line-secondary-inverse items-center justify-center px-12 bg-background-foreground rounded-8">
       <Body
         onPress={() => setShowOptions(true)}
         variant="body2"

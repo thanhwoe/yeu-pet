@@ -1,7 +1,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 
 export const inputVariants = cva(
-  "h-40 rounded-8 bg-background-tertiary flex-row items-center gap-8 border px-16",
+  "h-40 rounded-8 bg-background-foreground flex-row items-center gap-8 border px-16",
   {
     variants: {
       variant: {
@@ -13,7 +13,9 @@ export const inputVariants = cva(
       multiline: {
         true: "h-[100px] py-16",
       },
-      disabled: { true: "opacity-50" },
+      disabled: {
+        true: "opacity-80 border-line-secondary-inverse bg-background-tertiary",
+      },
       focus: {
         true: "bg-background-foreground border-line-primary",
         false: null,

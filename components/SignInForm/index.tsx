@@ -1,10 +1,12 @@
 import { ISignInForm, signInSchema } from "@/constants/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "expo-router";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { InputController } from "../InputController";
 import { PhoneInputController } from "../PhoneInputController";
 import { Button } from "../ui/Button";
+import { Body } from "../ui/Typography";
 
 interface IProps {
   onSubmit: (data: ISignInForm) => Promise<void>;
@@ -19,7 +21,10 @@ export const SignInForm = ({ onSubmit, isSubmitting }: IProps) => {
   });
 
   return (
-    <View className="gap-8">
+    <KeyboardAvoidingView
+      className="gap-8"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <PhoneInputController<ISignInForm>
         control={control}
         placeholder="Enter your phone number"
@@ -33,13 +38,13 @@ export const SignInForm = ({ onSubmit, isSubmitting }: IProps) => {
         placeholder="Password"
         secureTextEntry
       />
-      <Button
-        wrapperClassName="mt-24"
-        onPress={() => handleSubmit(onSubmit)()}
-        loading={isSubmitting}
-      >
+      <Link href="/forgot-password" className="self-end my-6" replace>
+        <Body className="text-text-link">Forgot Password</Body>
+      </Link>
+
+      <Button onPress={() => handleSubmit(onSubmit)()} loading={isSubmitting}>
         Sign In
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };

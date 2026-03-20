@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/constants/api-routes";
-import { IUser } from "@/interfaces";
+import { IDeviceResponse, IUser } from "@/interfaces";
 import { APIs } from "./api-helper";
 
 export const completeOnboardingMutation = () =>
@@ -20,4 +20,7 @@ interface DeviceInfoParams {
   osVersion?: string;
 }
 export const saveDeviceInfoMutation = (params: DeviceInfoParams) =>
-  APIs.post(API_ROUTES.DEVICE, { data: params });
+  APIs.post<IDeviceResponse>(API_ROUTES.DEVICE, { data: params });
+
+export const deleteDeviceInfoMutation = (id: string) =>
+  APIs.delete(API_ROUTES.DEVICE + `/${id}`);

@@ -36,8 +36,8 @@ export default function WelcomeScreen() {
           </Heading>
         </View>
         <View className="gap-12 mb-safe-offset-4">
-          <Button onPress={() => router.push("/login")}>Sign In</Button>
-          <Button variant="outline" onPress={() => router.push("/register")}>
+          <Button onPress={() => router.replace("/login")}>Sign In</Button>
+          <Button variant="outline" onPress={() => router.replace("/register")}>
             Create an Account
           </Button>
         </View>

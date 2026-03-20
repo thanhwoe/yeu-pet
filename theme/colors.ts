@@ -295,7 +295,7 @@ export const lightColorTheme = {
   "--text-emphasis-disabled": "--amber-30",
 
   // BACKGROUND
-  "--background": "--orange-5",
+  "--background": "--orange-0",
   "--background-primary": "--amber-40",
   "--background-primary-pressed": "--amber-30",
   "--background-secondary": "--orange-10",
@@ -316,7 +316,7 @@ export const lightColorTheme = {
   "--line-primary": "--orange-20",
   "--line-primary-inverse": "--grey-60",
   "--line-secondary": "--amber-20",
-  "--line-secondary-inverse": "--grey-15",
+  "--line-secondary-inverse": "--grey-20",
   "--line-secondary-pressed": "--orange-5",
   "--line-tertiary": "--orange-5",
   "--line-inverse": "--grey-70",

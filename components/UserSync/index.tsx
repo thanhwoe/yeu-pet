@@ -10,7 +10,7 @@ import { Platform } from "react-native";
 import { Toast } from "../Toast";
 
 export const UserSync = () => {
-  const { user, updateUser } = useUserInfoStore();
+  const { user, updateUser, updateDeviceInfo } = useUserInfoStore();
 
   const isAuthenticated = !!user;
 
@@ -25,6 +25,14 @@ export const UserSync = () => {
     mutationFn: saveDeviceInfoMutation,
     onError(e) {
       Toast.error({ text: e.message });
+    },
+    onSuccess(res) {
+      updateDeviceInfo({
+        deviceName: res.deviceName,
+        id: res.id,
+        isActive: res.isActive,
+        osVersion: res.osVersion,
+      });
     },
   });
 

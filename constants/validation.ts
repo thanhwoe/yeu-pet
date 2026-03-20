@@ -53,6 +53,48 @@ export const signInSchema = z.object({
     .min(8, ERROR_MESSAGE.PASSWORD_CANNOT_BE_LESS_THAN_8_CHARACTERS),
 });
 
+export const forgotPasswordSchema = z.object({
+  phone: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Phone number"),
+    })
+    .refine((val) => isValidPhoneNumber(val), {
+      message: ERROR_MESSAGE.FIELD_INVALID("Phone number"),
+    }),
+});
+
+export const resetPasswordSchema = z.object({
+  phone: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Phone number"),
+    })
+    .refine((val) => isValidPhoneNumber(val), {
+      message: ERROR_MESSAGE.FIELD_INVALID("Phone number"),
+    }),
+  password: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Password"),
+    })
+    .trim()
+    .min(8, ERROR_MESSAGE.PASSWORD_CANNOT_BE_LESS_THAN_8_CHARACTERS),
+  code: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("OTP code"),
+    })
+    .min(6, {
+      message: ERROR_MESSAGE.FIELD_LENGTH("OTP code", 6),
+    })
+    .max(6, {
+      message: ERROR_MESSAGE.FIELD_LENGTH("OTP code", 6),
+    })
+    .pipe(
+      z.coerce.number({
+        message: ERROR_MESSAGE.NUMBER_ONLY("OTP code"),
+      }),
+    )
+    .transform((v) => String(v)),
+});
+
 export const reminderSchema = z.object({
   title: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
@@ -156,5 +198,9 @@ export type IReminderForm = z.infer<typeof reminderSchema>;
 export type ISignInForm = z.infer<typeof signInSchema>;
 
 export type ISignUpForm = z.infer<typeof signUpSchema>;
+
+export type IForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
+
+export type IResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
 export type IShippingAddressForm = z.infer<typeof shippingAddressSchema>;

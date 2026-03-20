@@ -47,7 +47,7 @@ export const ResendTimer = memo<IProps>(({ onResend }) => {
   return (
     <TouchableOpacity onPress={onResend} disabled={remaining > 0}>
       <Body
-        variant="body3"
+        variant="body2"
         className={cn("text-text-link", {
           "text-text-tertiary-inverse opacity-50": remaining > 0,
         })}

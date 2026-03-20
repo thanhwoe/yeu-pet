@@ -11,3 +11,13 @@ export interface IUser {
   subscriptionExpiresAt: string | null;
   isVerified: boolean;
 }
+
+export interface IDeviceResponse {
+  id: string;
+  isActive: boolean | null;
+  accountId: string;
+  pushToken: string;
+  deviceName: string | null;
+  osVersion: string | null;
+  platform: "unknown" | "android" | "ios" | null;
+}

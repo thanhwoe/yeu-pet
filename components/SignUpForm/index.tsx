@@ -1,7 +1,7 @@
 import { ISignUpForm, signUpSchema } from "@/constants/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { InputController } from "../InputController";
 import { PhoneInputController } from "../PhoneInputController";
 import { Button } from "../ui/Button";
@@ -19,7 +19,10 @@ export const SignUpForm = ({ onSubmit, isSubmitting }: IProps) => {
   });
 
   return (
-    <View className="gap-8">
+    <KeyboardAvoidingView
+      className="gap-8"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <PhoneInputController<ISignUpForm>
         control={control}
         placeholder="Enter your phone number"
@@ -58,6 +61,6 @@ export const SignUpForm = ({ onSubmit, isSubmitting }: IProps) => {
       >
         Sign Up
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };

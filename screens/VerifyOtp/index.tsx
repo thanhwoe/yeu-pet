@@ -232,7 +232,7 @@ export const VerifyOtpScreen = () => {
         <View className="gap-16">
           {/* Resend */}
           <View className="flex-row justify-center items-center">
-            <Body variant="body3" className="text-text-tertiary-inverse">
+            <Body variant="body2" className="text-text-tertiary-inverse">
               Didn&rsquo;t receive the code?{" "}
             </Body>
             <ResendTimer onResend={handleResend} />

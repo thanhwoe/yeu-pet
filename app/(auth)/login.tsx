@@ -56,7 +56,7 @@ export default function LoginScreen() {
         <SignInForm onSubmit={handleLogin} isSubmitting={isPending} />
         <View className="flex-row mt-10 justify-center items-center">
           <Body>Don&apos;t have an account? </Body>
-          <Link href="/register">
+          <Link href="/register" replace>
             <Body className="text-text-link">Sign Up</Body>
           </Link>
         </View>

@@ -67,6 +67,7 @@ export const InputController = <T extends FieldValues>({
           </TouchableOpacity>
         ) : undefined
       }
+      disabled={props.editable === false}
       {...props}
     />
   );

@@ -1,5 +1,9 @@
 import { API_ROUTES } from "@/constants/api-routes";
-import { ISignInForm, ISignUpForm } from "@/constants/validation";
+import {
+  IResetPasswordForm,
+  ISignInForm,
+  ISignUpForm,
+} from "@/constants/validation";
 import { AuthResponse } from "@/interfaces/auth";
 import { APIs } from "./api-helper";
 
@@ -11,3 +15,18 @@ export const signInMutation = (params: ISignInForm) =>
 
 export const signOutMutation = (params?: { refreshToken?: string }) =>
   APIs.post(API_ROUTES.LOGOUT, { data: params });
+
+export const requestResetPasswordMutation = (phone: string) =>
+  APIs.post<{
+    expiresAt: string;
+    phone: string;
+  }>(API_ROUTES.REQUEST_RESET_PASSWORD, { data: { phone } });
+
+export const resetPasswordMutation = (params: IResetPasswordForm) =>
+  APIs.post(API_ROUTES.RESET_PASSWORD, {
+    data: {
+      phone: params.phone,
+      newPassword: params.password,
+      code: params.code,
+    },
+  });

@@ -1,8 +1,6 @@
 export const API_ROUTES = {
   SIGN_IN: "/auth/login",
   SIGN_UP: "/auth/register",
-  OTP_CONFIRM: "/otp-confirm",
-  UPDATE_PASSWORD: "/update-password",
   REFRESH_TOKEN: "/auth/refresh-token",
   LOGOUT: "/auth/logout",
 
@@ -11,6 +9,9 @@ export const API_ROUTES = {
   VERIFY_OTP: "/users/verify",
   ME: "/users/me",
   DEVICE: "/devices",
+
+  REQUEST_RESET_PASSWORD: "/users/password/request",
+  RESET_PASSWORD: "/users/password/reset",
 
   CREATE_PET: "/create-pet",
   LIST_PET: "/pet",
