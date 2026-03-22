@@ -64,7 +64,7 @@ export const InputField = forwardRef(
     const typing = focus && !!props.value;
 
     return (
-      <View className={cn(className)}>
+      <View className={className}>
         {label && (
           <Body variant="body3" className="mb-8">
             {label}
@@ -112,6 +112,7 @@ export const InputField = forwardRef(
             {supportText}
           </Body>
         )}
+
         {errorMessage && (
           <Body variant="body4" className="mt-6 text-text-negative">
             {errorMessage}

@@ -2,7 +2,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { CalendarIcon as Calendar, XIcon as X } from "phosphor-react-native";
+import { CalendarIcon as Calendar } from "phosphor-react-native";
 import { useState } from "react";
 import {
   Control,
@@ -11,18 +11,11 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import {
-  Modal,
-  Platform,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Modal, Platform, Pressable, View } from "react-native";
 import { Button } from "../ui/Button";
-import { Text } from "../ui/Text";
+import { InputField } from "../ui/InputField";
+import { Body } from "../ui/Typography";
 
-const XIcon = withIconClassName(X);
 const CalendarIcon = withIconClassName(Calendar);
 
 interface DateTimePickerControllerProps<T extends FieldValues> {
@@ -39,6 +32,7 @@ interface DateTimePickerControllerProps<T extends FieldValues> {
   disabled?: boolean;
   variant?: "default" | "outlined" | "filled";
   size?: "sm" | "md" | "lg";
+  supportText?: string;
 }
 
 export const DateTimePickerController = <T extends FieldValues>({
@@ -53,6 +47,7 @@ export const DateTimePickerController = <T extends FieldValues>({
   placeholder,
   format,
   disabled = false,
+  supportText,
 }: DateTimePickerControllerProps<T>) => {
   const {
     field: { value, onChange, onBlur },
@@ -64,7 +59,7 @@ export const DateTimePickerController = <T extends FieldValues>({
 
   const handleDateChange = (
     event: DateTimePickerEvent,
-    selectedDate?: Date
+    selectedDate?: Date,
   ) => {
     if (Platform.OS === "android") {
       setShowPicker(false);
@@ -142,43 +137,37 @@ export const DateTimePickerController = <T extends FieldValues>({
       <View className="flex-1 justify-end bg-black/50">
         <Pressable className="flex-1" onPress={handleIOSCancel} />
 
-        <View className="bg-white rounded-t-3xl shadow-2xl">
+        <View className="bg-background-foreground rounded-t-16 shadow-2xl">
           {/* Header */}
-          <View className="flex-row justify-between items-center px-6 py-4 border-b border-line-secondary">
-            <TouchableOpacity
-              onPress={handleIOSCancel}
-              className="flex-row items-center gap-1 px-3 py-2 rounded-lg"
-              activeOpacity={0.7}
-            >
-              <XIcon size={18} weight="bold" />
-            </TouchableOpacity>
+          <View className="flex-row justify-between items-center py-8 border-b border-line-secondary-inverse">
+            <View style={{ width: 96 }} />
 
-            <Text>
+            <Body weight="semiBold">
               {mode === "date" && "Select Date"}
               {mode === "time" && "Select Time"}
               {mode === "datetime" && "Select Date & Time"}
-            </Text>
-            <Button onPress={handleIOSConfirm} variant="tonal">
+            </Body>
+            <Button onPress={handleIOSConfirm} variant="ghost">
               Done
             </Button>
           </View>
 
           {/* Picker */}
-          <View className="pl-8 py-6 ">
-            <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <DateTimePicker
-                value={tempValue || value || new Date()}
-                mode={mode}
-                display="spinner"
-                onChange={handleDateChange}
-                minimumDate={minimumDate}
-                maximumDate={maximumDate}
-                themeVariant="light"
-                locale="vi-VI"
-                textColor="#1F2937"
-                style={{ backgroundColor: "white" }}
-              />
-            </View>
+          <View className="shadow-sm overflow-hidden">
+            <DateTimePicker
+              value={tempValue || value || new Date()}
+              mode={mode}
+              display="spinner"
+              onChange={handleDateChange}
+              minimumDate={minimumDate}
+              maximumDate={maximumDate}
+              themeVariant="light"
+              locale="vi-VI"
+              textColor="#1F2937"
+              style={{
+                alignSelf: "center",
+              }}
+            />
           </View>
         </View>
       </View>
@@ -186,31 +175,22 @@ export const DateTimePickerController = <T extends FieldValues>({
   );
 
   return (
-    <View className="gap-2 ">
-      {label && <Text variant="caption1">{label}</Text>}
-      <View className="gap-1">
-        <TouchableOpacity
-          onPress={openPicker}
-          disabled={disabled}
-          className="flex-row px-3 py-2 items-center justify-center border border-line-primary rounded-lg gap-2"
-          activeOpacity={0.8}
-        >
-          <TextInput
-            className="flex-1 py-1"
-            editable={false}
-            placeholder={placeholder}
-            pointerEvents="none"
-          >
-            {formatDisplayValue(value)}
-          </TextInput>
-
-          <CalendarIcon weight="duotone" size={20} />
-        </TouchableOpacity>
-
-        <Text className="text-text-negative" variant={"footnote"}>
-          {error?.message}
-        </Text>
-      </View>
+    <>
+      <InputField
+        label={label}
+        value={formatDisplayValue(value)}
+        placeholder={placeholder}
+        editable={false}
+        onPress={openPicker}
+        hasError={!!error?.message}
+        errorMessage={error?.message}
+        suffix={
+          <Pressable onPress={openPicker}>
+            <CalendarIcon weight="duotone" size={24} />
+          </Pressable>
+        }
+        supportText={supportText}
+      />
 
       {/* Render modals based on platform */}
       {Platform.OS === "ios"
@@ -226,6 +206,6 @@ export const DateTimePickerController = <T extends FieldValues>({
               themeVariant="light"
             />
           )}
-    </View>
+    </>
   );
 };

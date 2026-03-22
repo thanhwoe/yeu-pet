@@ -7,6 +7,7 @@ import { avatarStyles, AvatarVariants, imageStyles } from "./styles";
 interface AvatarProps extends ImageProps, AvatarVariants {
   onPress?: () => void;
 }
+
 export const Avatar = ({
   variant,
   size,
@@ -24,6 +25,8 @@ export const Avatar = ({
       <Image
         className={cn(imageStyles({ size, variant }))}
         source={source}
+        placeholderContentFit="cover"
+        placeholder={require("@/assets/images/fallback.png")}
         {...props}
       />
     </TouchableOpacity>

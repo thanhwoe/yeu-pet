@@ -1,13 +1,13 @@
 import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
-import { Text } from "@/components/ui/Text";
+import { Body, Heading } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { ArrayElement } from "@/interfaces";
 import { completeOnboardingMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRightIcon } from "phosphor-react-native";
 import React, { useRef, useState } from "react";
@@ -23,8 +23,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
 
 const ArrowRight = withIconClassName(ArrowRightIcon);
-const IMAGE_WIDTH = 286;
-const IMAGE_HEIGHT = 347;
+const IMAGE_WIDTH = (SCREEN_WIDTH * 60) / 100;
+const IMAGE_HEIGHT = (SCREEN_HEIGHT * 60) / 100;
 
 const getData = () => [
   {
@@ -125,25 +125,24 @@ export default function WelcomeScreen() {
     return (
       <GestureDetector gesture={composedGesture}>
         <View
-          className="flex-1 items-center justify-between"
+          className="flex-1 items-center justify-around"
           style={{ width: SCREEN_WIDTH }}
         >
-          <View className="bg-transparent" />
           <Image
             source={item.image}
-            contentFit="cover"
+            contentFit="contain"
             style={{
               width: IMAGE_WIDTH,
               height: IMAGE_HEIGHT,
             }}
           />
-          <View className="items-center px-6 gap-3">
-            <Text variant="largeTitle" className="text-center">
+          <View className="items-center gap-12 px-24 pb-24">
+            <Heading variant="h6" className="text-center" weight="semiBold">
               {item.title}
-            </Text>
-            <Text variant="body2" className="text-center">
+            </Heading>
+            <Body variant="body2" className="text-center">
               {item.subtitle}
-            </Text>
+            </Body>
           </View>
         </View>
       </GestureDetector>
@@ -151,7 +150,7 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <View className="py-safe-or-4 bg-white flex-1 px-4">
+    <View className="py-safe bg-white flex-1">
       <View className="flex-row gap-4 mx-auto my-4">
         {DATA.map((_, index) => (
           <Pressable
@@ -188,7 +187,7 @@ export default function WelcomeScreen() {
           index,
         })}
       />
-      <View className="flex-row justify-between py-8 px-4">
+      <View className="flex-row justify-between py-8 px-24">
         <Button
           variant="ghost"
           disabled={isPending}
@@ -199,9 +198,9 @@ export default function WelcomeScreen() {
         <TouchableOpacity
           onPress={handleGoNext}
           disabled={isPending}
-          className="bg-orange-400 p-3 rounded-full"
+          className="bg-orange-30 p-12 rounded-full"
         >
-          <ArrowRight weight="bold" className="text-stone-100" />
+          <ArrowRight weight="bold" className="text-grey-0" />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,147 +1,146 @@
 import { IPetInfoForm, petInfoSchema } from "@/constants/validation";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { date } from "@/utils";
+import { calculateAnimalAge } from "@/utils/pet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { AvatarInputController } from "../AvatarInputController";
 import { DateTimePickerController } from "../DatetimePickerController";
 import { InputController } from "../InputController";
 import { OptionInputController } from "../OptionInputController";
-import { Button } from "../ui/Button";
 import { UnitInputController } from "../UnitInputController";
+import { Button } from "../ui/Button";
 
 interface IProps {
   onSubmit: (data: IPetInfoForm) => Promise<void>;
+  isSubmitting?: boolean;
   defaultValues?: IPetInfoForm;
 }
 
-export const PetInfoForm = ({ onSubmit, defaultValues }: IProps) => {
-  const [isPending, startTransition] = useTransition();
-  const [uploading, setUploading] = useState(false);
+const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
+const EnhancedUnitInputController =
+  withBottomSheetKeyboardEvents(UnitInputController);
 
+export const PetInfoForm = ({
+  onSubmit,
+  defaultValues,
+  isSubmitting,
+}: IProps) => {
   const { control, handleSubmit, watch } = useForm<IPetInfoForm>({
     resolver: zodResolver(petInfoSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues,
   });
-  const birthdate = watch("birthdate");
+  const [birthdate, species] = watch(["birthdate", "species"]);
 
-  const age = birthdate
-    ? `${date(new Date()).year() - date(birthdate).year()}`
-    : undefined;
+  const age = useMemo(() => {
+    const result = calculateAnimalAge(birthdate, species);
+    if (!result) {
+      return "";
+    }
+    const { days, humanYears, months, years } = result;
 
-  const handleSubmitForm = (data: IPetInfoForm) => {
-    startTransition(async () => {
-      if (data?.age) {
-        await onSubmit(data);
-      } else {
-        await onSubmit({ ...data, age });
-      }
-    });
-  };
+    return `${years} years, ${months} months, ${days} days. ${humanYears} human years`;
+  }, [birthdate, species]);
+
   return (
-    <View className="px-4 pb-4">
-      <InputController<IPetInfoForm>
+    <KeyboardAvoidingView
+      className="px-26 gap-8 pb-safe-offset-8"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <AvatarInputController<IPetInfoForm>
+        control={control}
+        name="avatar"
+        label="Upload avatar"
+      />
+      <EnhancedInputController<IPetInfoForm>
         control={control}
         name="name"
         label="Name"
         placeholder="Your pet name"
       />
-      <View className="flex-row gap-10 pr-4">
-        <View className="flex-1">
-          <InputController<IPetInfoForm>
-            control={control}
-            name="breed"
-            label="Breed"
-            placeholder="Husky"
-          />
 
-          <InputController<IPetInfoForm>
-            control={control}
-            name="color"
-            label="Color"
-            placeholder="Orange"
-          />
-        </View>
-        <AvatarInputController<IPetInfoForm>
+      <View className="flex-row gap-16">
+        <OptionInputController<IPetInfoForm>
           control={control}
-          name="avatar_url"
-          label="Upload avatar"
-          onProcess={setUploading}
+          name="gender"
+          label="Gender"
+          placeholder="Gender"
+          options={[
+            { label: "Male", value: "male" },
+            { label: "Female", value: "female" },
+            { label: "Unknown", value: "unknown" },
+          ]}
+        />
+        <OptionInputController<IPetInfoForm>
+          control={control}
+          name="species"
+          label="Species"
+          placeholder="Species"
+          options={[
+            { label: "Dog", value: "dog" },
+            { label: "Cat", value: "cat" },
+            { label: "Bird", value: "bird" },
+            { label: "Rabbit", value: "rabbit" },
+            { label: "Hamster", value: "hamster" },
+            { label: "Other", value: "other" },
+          ]}
         />
       </View>
-      <UnitInputController<IPetInfoForm>
+
+      <EnhancedInputController<IPetInfoForm>
+        control={control}
+        name="breed"
+        label="Breed"
+        placeholder="Husky"
+      />
+
+      <EnhancedInputController<IPetInfoForm>
+        control={control}
+        name="color"
+        label="Color"
+        placeholder="Orange"
+      />
+
+      <EnhancedUnitInputController<IPetInfoForm>
         control={control}
         name="weight"
         label="Weight"
         inputMode="numeric"
-        placeholder="0 kg"
+        placeholder="0.0"
         options={[
           { label: "Kilogram", value: "kg" },
           { label: "Pound", value: "lbs" },
         ]}
       />
-      <OptionInputController<IPetInfoForm>
+      <DateTimePickerController
+        name="birthdate"
         control={control}
-        name="gender"
-        label="Gender"
-        placeholder="Gender"
-        options={[
-          { label: "Male", value: "male" },
-          { label: "Female", value: "female" },
-          { label: "Unknown", value: "unknown" },
-        ]}
+        label="Birthdate"
+        placeholder="Select date"
+        mode="date"
+        format={(val) => date(val).format("LL")}
+        supportText={age}
       />
-      <OptionInputController<IPetInfoForm>
-        control={control}
-        name="species"
-        label="Species"
-        placeholder="Species"
-        options={[
-          { label: "Dog", value: "dog" },
-          { label: "Cat", value: "cat" },
-          { label: "Bird", value: "bird" },
-          { label: "Rabbit", value: "rabbit" },
-          { label: "Other", value: "other" },
-        ]}
-      />
-      <View className="flex-row gap-4 items-center">
-        <View className="flex-1 basis-2/3">
-          <DateTimePickerController
-            name="birthdate"
-            control={control}
-            label="Birthdate"
-            placeholder="Select date & time"
-            mode="date"
-            format={(val) => date(val).format("LL")}
-          />
-        </View>
-        <View className="flex-1 basis-1/3">
-          <InputController<IPetInfoForm>
-            control={control}
-            name="age"
-            label="Age"
-            placeholder="0 years"
-            defaultValue={age}
-          />
-        </View>
-      </View>
-      <InputController<IPetInfoForm>
+
+      <EnhancedInputController<IPetInfoForm>
         control={control}
         name="notes"
         label="Notes"
         placeholder="Notes"
         multiline
       />
+
       <Button
-        onPress={() => handleSubmit(handleSubmitForm)()}
-        disabled={isPending || uploading}
-        loading={isPending || uploading}
+        wrapperClassName="mt-12"
+        onPress={() => handleSubmit(onSubmit)()}
+        loading={isSubmitting}
       >
         {!!defaultValues ? "Update Pet" : "Add Pet"}
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };

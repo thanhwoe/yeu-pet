@@ -1,10 +1,41 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { IPetInfoForm } from "@/constants/validation";
 import { IPet } from "@/interfaces";
+import dayjs from "dayjs";
 import { APIs } from "./api-helper";
 
-export const createPetMutation = (params: IPetInfoForm) =>
-  APIs.post<{ data: IPet }>(API_ROUTES.CREATE_PET, { data: params });
+export const createPetMutation = (params: IPetInfoForm) => {
+  const formData = new FormData();
+
+  formData.append("name", params.name);
+  formData.append("color", params.color);
+  formData.append("gender", params.gender);
+  formData.append("species", params.species);
+  if (params.birthdate) {
+    formData.append("birthdate", dayjs(params.birthdate).toISOString());
+  }
+  if (params.breed) {
+    formData.append("breed", params.breed);
+  }
+  if (params.weight) {
+    formData.append("weight", params.weight);
+  }
+  if (params.notes) {
+    formData.append("notes", params.notes);
+  }
+
+  formData.append("avatar", {
+    uri: params.avatar?.uri,
+    name: params.avatar?.name,
+    type: params.avatar?.type,
+    size: params.avatar?.size,
+  } as any);
+
+  return APIs.post<{ data: IPet }>(API_ROUTES.PETS, {
+    data: formData,
+    headers: { "content-type": "multipart/form-data" },
+  });
+};
 
 export const getListPetQuery = () =>
   APIs.get<{ data: IPet[] }>(API_ROUTES.LIST_PET);

@@ -1,4 +1,8 @@
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { withUploadImage } from "@/hocs/withUploadImage";
+import { cn } from "@/utils";
+import { ImageProps } from "expo-image";
+import { CameraIcon } from "phosphor-react-native";
 import {
   Control,
   FieldValues,
@@ -6,48 +10,78 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
-import { Text } from "../ui/Text";
+import { Body } from "../ui/Typography";
+
+const Camera = withIconClassName(CameraIcon);
 
 interface InputControllerProps<T extends FieldValues> {
   label: string;
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
-  onProcess?: (val: boolean) => void;
 }
 
-const AvatarUploader = withUploadImage(Avatar);
+interface ImageFieldProps extends ImageProps {
+  value?: string;
+  hasError?: boolean;
+  onPress?: () => void;
+}
+const ImageField = ({
+  value,
+  onPress,
+  hasError,
+  ...props
+}: ImageFieldProps) => {
+  return (
+    <TouchableOpacity onPress={onPress} className="self-start">
+      <Avatar
+        className={cn("border-4 border-line-secondary-pressed  elevation-md", {
+          "border-line-negative": hasError,
+        })}
+        size="huge"
+        source={{
+          uri: value,
+        }}
+        {...props}
+      />
+      <View className="absolute -bottom-0 -right-8 rounded-full p-8 bg-background-secondary-highlight">
+        <Camera weight="fill" size={20} className="text-icon-primary-inverse" />
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const AvatarUploader = withUploadImage(ImageField);
 
 export const AvatarInputController = <T extends FieldValues>({
   name,
   control,
   rules,
   label,
-  onProcess,
 }: InputControllerProps<T>) => {
   const {
-    field: { value: defaultValue, onChange },
+    field: { value: defaultValue, onChange, onBlur },
     fieldState: { error },
   } = useController({ name, control, rules });
 
   return (
-    <View aria-invalid={!!error?.message} className="gap-1">
-      <Text variant="caption1" className="mb-4">
-        {label}
-      </Text>
+    <View aria-invalid={!!error?.message} className="gap-6 items-center">
       <AvatarUploader
-        onUpload={onChange}
-        onProcess={onProcess}
-        size="huge"
-        source={{
-          uri: defaultValue || "https://avatar.iran.liara.run/public/32",
+        onUpload={(v) => {
+          onChange(v);
+          onBlur();
         }}
+        value={defaultValue}
+        hasError={!!error?.message}
       />
-      <Text className="text-red-500" variant="footnote">
-        {error?.message}
-      </Text>
+      <Body variant="body3">{label}</Body>
+      {error?.message && (
+        <Body variant="body4" className="text-text-negative">
+          {error?.message}
+        </Body>
+      )}
     </View>
   );
 };

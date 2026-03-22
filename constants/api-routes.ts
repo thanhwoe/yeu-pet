@@ -13,7 +13,7 @@ export const API_ROUTES = {
   REQUEST_RESET_PASSWORD: "/users/password/request",
   RESET_PASSWORD: "/users/password/reset",
 
-  CREATE_PET: "/create-pet",
+  PETS: "/pets",
   LIST_PET: "/pet",
   UPDATE_PET: (id: string) => `/pet/${id}/update`,
   DELETE_PET: (id: string) => `/pet/${id}/delete`,

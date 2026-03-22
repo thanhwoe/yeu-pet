@@ -41,13 +41,13 @@ export const inputVariants = cva(
   },
 );
 
-export const supportTextVariants = cva("mt-space-8", {
+export const supportTextVariants = cva("mt-8", {
   variants: {
     variant: {
-      default: "",
+      default: "text-text-tertiary-inverse",
     },
     hasError: {
-      true: "!text-text-negative",
+      true: "text-text-negative",
     },
   },
   defaultVariants: {

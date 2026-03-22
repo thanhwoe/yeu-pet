@@ -1,22 +1,20 @@
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
-import { Spinner } from "@/components/ui/Spinner";
-import { Text } from "@/components/ui/Text";
-import { uploadFileMutation } from "@/services/file";
-import { useMutation } from "@tanstack/react-query";
+import { Option } from "@/components/ui/Options/option";
+import { Body } from "@/components/ui/Typography";
+import { UploadFileParam } from "@/interfaces";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { ComponentType, useCallback, useEffect, useState } from "react";
-import { Alert, Linking, TouchableOpacity, View } from "react-native";
+import { ComponentType, useCallback, useState } from "react";
+import { Alert, Linking, View } from "react-native";
 
 interface WithUploadImageProps {}
 interface InjectProps {
-  onUpload: (val: string) => void;
-  onProcess?: (val: boolean) => void;
+  onUpload: (val: UploadFileParam) => void;
 }
 
 const openSettings = () =>
-  Alert.alert("Pet Land Would Like to Access the Camera", "Description", [
+  Alert.alert("Yeu Pet Would Like to Access the Camera", "Description", [
     {
       text: "Cancel",
       style: "cancel",
@@ -31,23 +29,12 @@ export const withUploadImage =
     const [isShowOptions, setIsShowOptions] = useState(false);
     const [uri, setUri] = useState("");
 
-    const { mutateAsync, isPending } = useMutation({
-      mutationFn: uploadFileMutation,
-      onError(e) {
-        Toast.error({ text: e.errors?.[0].message });
-      },
-    });
-
-    useEffect(() => {
-      props.onProcess?.(isPending);
-    }, [isPending, props]);
-
     const handleShowOption = () => {
       setIsShowOptions(true);
     };
 
     const handleError = useCallback((err: unknown) => {
-      console.log(err);
+      Toast.error({ text: (err as Error).message ?? "Select image error" });
     }, []);
 
     // Take a photo from camera
@@ -75,8 +62,12 @@ export const withUploadImage =
         }
 
         setUri(assets[0].uri);
-        const { secure_url, url } = await mutateAsync(assets[0]);
-        props.onUpload(secure_url ?? url);
+        props.onUpload({
+          uri: assets[0].uri,
+          type: assets[0].mimeType ?? "image/jpeg",
+          name: assets[0]?.fileName ?? `photo_${Date.now()}.jpg`,
+          size: assets[0].fileSize,
+        });
       } catch (error) {
         handleError(error);
       }
@@ -107,8 +98,12 @@ export const withUploadImage =
           return;
         }
         setUri(assets[0].uri);
-        const { secure_url, url } = await mutateAsync(assets[0]);
-        props.onUpload(secure_url ?? url);
+        props.onUpload({
+          uri: assets[0].uri,
+          type: assets[0].mimeType ?? "image/jpeg",
+          name: assets[0]?.fileName ?? `photo_${Date.now()}.jpg`,
+          size: assets[0].fileSize,
+        });
       } catch (error) {
         handleError(error);
       }
@@ -125,8 +120,12 @@ export const withUploadImage =
           return;
         }
         setUri(assets[0].uri);
-        const { secure_url, url } = await mutateAsync(assets[0]);
-        props.onUpload(secure_url ?? url);
+        props.onUpload({
+          uri: assets[0].uri,
+          type: assets[0].mimeType ?? "image/jpeg",
+          name: assets[0]?.name ?? `photo_${Date.now()}.jpg`,
+          size: assets[0].size,
+        });
       } catch (error) {
         handleError(error);
       }
@@ -154,27 +153,25 @@ export const withUploadImage =
           onPress={handleShowOption}
           {...(uri && { source: { uri } })}
         />
-        {isPending && (
-          <View className="absolute items-center justify-center inset-0 bottom-0 bg-white opacity-50">
-            <Spinner className="text-icon-foreground" />
-          </View>
-        )}
 
         <BottomSheet
           visible={isShowOptions}
           onDismiss={() => setIsShowOptions(false)}
           stackBehavior="push"
-          titleElement={<Text className="font-medium">Choose an option</Text>}
+          titleElement={<Body weight="semiBold">Choose an option</Body>}
         >
-          {options.map(({ label, onPress }, index) => (
-            <TouchableOpacity
-              key={label}
-              onPress={onPress}
-              className="items-center py-2 border-b border-line-secondary"
-            >
-              <Text>{label}</Text>
-            </TouchableOpacity>
-          ))}
+          <View className="gap-12 px-20">
+            {options.map(({ label, onPress }) => (
+              <Option
+                key={label}
+                item={{
+                  label,
+                  value: label,
+                }}
+                onSelect={onPress}
+              />
+            ))}
+          </View>
         </BottomSheet>
       </View>
     );

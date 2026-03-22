@@ -6,6 +6,14 @@ export const REGEX = {
   date: /^\d{2}\/\d{2}\/\d{4}$/,
 };
 
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 export const signUpSchema = z.object({
   phone: z
     .string({
@@ -130,7 +138,23 @@ export const petInfoSchema = z.object({
   color: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
   }),
-  avatar_url: z.string().optional().nullable(),
+  avatar: z
+    .object({
+      uri: z.string().min(1),
+      name: z.string().min(1),
+      type: z.string().min(1),
+      size: z.number().optional(),
+    })
+    .nullable()
+    .refine((val) => val !== null, {
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Avatar"),
+    })
+    .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), {
+      message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
+    })
+    .refine((val) => !val || !val.size || val.size <= MAX_FILE_SIZE, {
+      message: "File size must be less than 5MB",
+    }),
   gender: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Gender"),
   }),

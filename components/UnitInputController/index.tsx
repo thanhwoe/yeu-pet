@@ -6,8 +6,8 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import { TextInput, TextInputProps, View } from "react-native";
-import { Text } from "../ui/Text";
+import { TextInputProps } from "react-native";
+import { InputField } from "../ui/InputField";
 import { UnitSelector } from "./UnitSelector";
 
 interface InputControllerProps<T extends FieldValues> extends TextInputProps {
@@ -24,10 +24,11 @@ export const UnitInputController = <T extends FieldValues>({
   rules,
   label,
   options,
+  onBlur,
   ...props
 }: InputControllerProps<T>) => {
   const {
-    field: { value: defaultValue, onChange, onBlur },
+    field: { value: defaultValue, onChange, onBlur: handleBlur },
     fieldState: { error },
   } = useController({ name, control, rules });
 
@@ -51,26 +52,25 @@ export const UnitInputController = <T extends FieldValues>({
   };
 
   return (
-    <View aria-invalid={!!error?.message} className="gap-1">
-      <Text variant="caption1">{label}</Text>
-      <View className="pl-3 flex-row border border-line-primary rounded-lg px-1 py-2 gap-2 items-center">
-        <TextInput
-          defaultValue={defaultValue}
-          value={value}
-          className="py-1 flex-1 placeholder:text-text-secondary selection:text-text-link"
-          onChangeText={handleFormatPhoneNumber}
-          onBlur={onBlur}
-          {...props}
-        />
+    <InputField
+      label={label}
+      defaultValue={defaultValue}
+      value={value}
+      onChangeText={handleFormatPhoneNumber}
+      onBlur={(e) => {
+        onBlur?.(e);
+        handleBlur();
+      }}
+      hasError={!!error?.message}
+      errorMessage={error?.message}
+      suffix={
         <UnitSelector
           options={options}
           value={unit}
           onSelect={handleSelectCountryCode}
         />
-      </View>
-      <Text className="text-text-negative" variant="footnote">
-        {error?.message}
-      </Text>
-    </View>
+      }
+      {...props}
+    />
   );
 };

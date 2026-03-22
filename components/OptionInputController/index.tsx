@@ -1,4 +1,5 @@
-import { cn } from "@/utils";
+import { withIconClassName } from "@/hocs/withIconClassName";
+import { CaretDownIcon } from "phosphor-react-native";
 import { ReactNode, useState } from "react";
 import {
   Control,
@@ -7,16 +8,13 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
-import {
-  Keyboard,
-  TextInput,
-  TextInputProps,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Keyboard, Pressable, TextInputProps } from "react-native";
 import { BottomSheet } from "../ui/BottomSheet";
-import { Text } from "../ui/Text";
+import { InputField } from "../ui/InputField";
+import { Options } from "../ui/Options";
+import { Body } from "../ui/Typography";
+
+const OptionIcon = withIconClassName(CaretDownIcon);
 
 interface InputControllerProps<T extends FieldValues> extends TextInputProps {
   label: string;
@@ -40,70 +38,58 @@ export const OptionInputController = <T extends FieldValues>({
   } = useController({ name, control, rules });
 
   const defaultLabel = options.find(
-    (item) => item.value === defaultValue
+    (item) => item.value === defaultValue,
   )?.label;
 
   const [value, setValue] = useState(defaultLabel ?? "");
   const [showOptions, setShowOptions] = useState(false);
 
-  const renderItem = ({
-    item,
-  }: {
-    item: { label: string; value: string; icon?: ReactNode };
-  }) => (
-    <TouchableOpacity
-      className={cn(
-        "flex-row gap-3 items-center py-3 px-5 border-b border-line-secondary",
-        {
-          "bg-option-selected": item.value === defaultValue,
-        }
-      )}
-      onPress={() => {
-        onChange(item.value);
-        setValue(item.label);
-        setShowOptions(false);
-        onBlur();
-      }}
-    >
-      <Text>{item.label}</Text>
-      {item?.icon}
-    </TouchableOpacity>
-  );
+  const handleSelect = (data: (typeof options)[0]) => {
+    onChange(data.value);
+    setValue(data.label);
+    setShowOptions(false);
+    onBlur();
+  };
+
+  const handleShowOption = () => {
+    setShowOptions(true);
+    Keyboard.dismiss();
+  };
 
   return (
-    <View aria-invalid={!!error?.message} className="gap-1">
-      <Text variant="caption1">{label}</Text>
-      <View className="pl-3 flex-row border border-line-primary rounded-lg px-1 py-2 gap-2 items-center">
-        <TextInput
-          defaultValue={defaultValue}
-          value={value}
-          className="py-1 flex-1"
-          onBlur={onBlur}
-          onPress={() => {
-            setShowOptions(true);
-            Keyboard.dismiss();
-          }}
-          editable={false}
-          {...props}
-        />
-      </View>
-      <Text className="text-text-negative" variant="footnote">
-        {error?.message}
-      </Text>
+    <>
+      <InputField
+        className="flex-1"
+        label={label}
+        defaultValue={defaultValue}
+        value={value}
+        onBlur={onBlur}
+        onPress={handleShowOption}
+        editable={false}
+        errorMessage={error?.message}
+        hasError={!!error?.message}
+        suffix={
+          <Pressable onPress={handleShowOption}>
+            <OptionIcon className="text-icon-primary" />
+          </Pressable>
+        }
+        {...props}
+      />
+
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
         snapPoints={undefined}
-        titleElement={<Text className="font-medium">Select {label}</Text>}
+        titleElement={<Body weight="semiBold">Select {label}</Body>}
         useScrollView
         stackBehavior="push"
       >
-        <FlatList
-          scrollEnabled={false}
+        <Options
           data={options}
-          renderItem={renderItem}
+          selected={defaultValue}
+          onSelect={handleSelect}
         />
       </BottomSheet>
-    </View>
+    </>
   );
 };

@@ -210,7 +210,7 @@ export const darkColorTheme = {
   "--text-link": "--blue-40",
   "--text-link-disabled": "--blue-20",
 
-  "--text-secondary": "--grey-30",
+  "--text-secondary": "--blue-40",
   "--text-secondary-inverse": "--grey-80",
   "--text-secondary-inverse-disabled": "--grey-50",
   "--text-secondary-disabled": "--grey-60",
@@ -232,6 +232,8 @@ export const darkColorTheme = {
   "--background-primary-pressed": "--blue-50",
   "--background-secondary": "--blue-90",
   "--background-secondary-pressed": "--blue-80",
+  "--background-secondary-highlight": "--blue-50",
+
   "--background-tertiary": "--blue-80",
   "--background-tertiary-highlight": "--grey-60",
 
@@ -248,7 +250,7 @@ export const darkColorTheme = {
   // LINE
   "--line-primary": "--blue-80",
   "--line-primary-inverse": "--grey-20",
-  "--line-secondary": "--blue-90",
+  "--line-secondary": "--blue-80",
   "--line-secondary-inverse": "--grey-80",
   "--line-secondary-pressed": "--blue-80",
   "--line-tertiary": "--blue-100",
@@ -262,10 +264,13 @@ export const darkColorTheme = {
   "--icon-primary": "--grey-10",
   "--icon-primary-inverse": "--grey-90",
   "--icon-secondary": "--grey-40",
+  "--icon-tertiary": "--blue-50",
 
   "--icon-warning": "--yellow-40",
   "--icon-positive": "--green-40",
   "--icon-negative": "--red-40",
+
+  "--shadow-primary": "--grey-0",
 };
 
 export const lightColorTheme = {
@@ -300,11 +305,12 @@ export const lightColorTheme = {
   "--background-primary-pressed": "--amber-30",
   "--background-secondary": "--orange-10",
   "--background-secondary-pressed": "--orange-15",
+  "--background-secondary-highlight": "--orange-30",
   "--background-tertiary": "--grey-5",
   "--background-tertiary-highlight": "--grey-15",
   "--background-foreground": "--grey-0",
 
-  "--background-card": "--orange-0",
+  "--background-card": "--grey-0",
   "--background-card-highlight": "--amber-5",
 
   "--background-positive": "--green-50",
@@ -329,10 +335,13 @@ export const lightColorTheme = {
   "--icon-primary": "--grey-80",
   "--icon-primary-inverse": "--grey-0",
   "--icon-secondary": "--grey-60",
+  "--icon-tertiary": "--orange-40",
 
   "--icon-warning": "--yellow-60",
   "--icon-positive": "--green-60",
   "--icon-negative": "--red-60",
+
+  "--shadow-primary": "--grey-100",
 };
 
 export const colors = {

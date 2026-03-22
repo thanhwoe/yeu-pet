@@ -20,3 +20,10 @@ export interface UploadFileResponse {
   version_id: string;
   width: number;
 }
+
+export interface UploadFileParam {
+  uri: string;
+  name: string;
+  type: string;
+  size?: number;
+}

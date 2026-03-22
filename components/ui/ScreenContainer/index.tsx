@@ -11,7 +11,6 @@ interface IScreenContainerProps extends ScrollViewProps, ViewProps {}
 
 export const ScreenContainer = ({
   children,
-  contentContainerClassName,
   className,
   scrollEnabled,
   ...props
@@ -19,11 +18,7 @@ export const ScreenContainer = ({
   if (scrollEnabled) {
     return (
       <ScrollView
-        className={cn("flex-1 bg-background-screen", className)}
-        contentContainerClassName={cn(
-          "pt-safe-or-4 px-5",
-          contentContainerClassName
-        )}
+        className={cn("flex-1 bg-background", className)}
         showsVerticalScrollIndicator={false}
         keyboardDismissMode="on-drag"
         {...props}
@@ -38,7 +33,7 @@ export const ScreenContainer = ({
         Keyboard.dismiss();
         return false;
       }}
-      className={cn("flex-1 px-5 bg-background-screen pt-safe-or-4", className)}
+      className={cn("flex-1 px-20 bg-background pt-safe", className)}
       {...props}
     >
       {children}

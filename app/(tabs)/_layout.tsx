@@ -1,7 +1,7 @@
 import * as Haptics from "expo-haptics";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
-import { GestureResponderEvent, Pressable, Text, View } from "react-native";
+import { GestureResponderEvent, Pressable, View } from "react-native";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -10,13 +10,17 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { cn } from "@/utils";
+import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import {
   CalendarHeartIcon,
   GearSixIcon,
+  HandHeartIcon,
   HouseIcon,
+  IconWeight,
   PawPrintIcon,
   ShoppingCartSimpleIcon,
 } from "phosphor-react-native";
@@ -26,6 +30,7 @@ const Settings = withIconClassName(GearSixIcon);
 const Home = withIconClassName(HouseIcon);
 const Service = withIconClassName(PawPrintIcon);
 const Store = withIconClassName(ShoppingCartSimpleIcon);
+const Sitter = withIconClassName(HandHeartIcon);
 
 // Custom animated tab button component
 const AnimatedTabButton = ({
@@ -109,16 +114,16 @@ const AnimatedTabButton = ({
   return (
     <Pressable
       onPress={handlePress}
-      className="flex-1 justify-center items-center py-2"
+      className="flex-1 justify-center items-center py-8"
     >
       <Animated.View
         style={[containerAnimatedStyle]}
-        className="py-2 px-3 rounded-2xl h-10 items-center justify-center relative"
+        className="py-8 px-12 rounded-16 h-40 items-center justify-center relative"
       >
         {/* Background highlight */}
         <Animated.View
           style={[backgroundAnimatedStyle]}
-          className="absolute inset-0 bg-background-secondary rounded-2xl"
+          className="absolute inset-0 bg-background-secondary-highlight rounded-16"
         />
 
         <View className="flex-row items-center justify-center h-full w-full relative">
@@ -135,19 +140,33 @@ const AnimatedTabButton = ({
             style={[labelAnimatedStyle]}
             className="overflow-hidden absolute"
           >
-            <Text
-              className={`text-xs font-semibold whitespace-nowrap ${
-                focused ? "text-text-link" : "text-text-secondary"
-              }`}
+            <Body
+              weight="semiBold"
+              variant="body3"
+              className="whitespace-nowrap text-text-secondary"
             >
               {label}
-            </Text>
+            </Body>
           </Animated.View>
         </View>
       </Animated.View>
     </Pressable>
   );
 };
+
+const iconProps = (
+  props: BottomTabBarButtonProps,
+): {
+  size: number;
+  weight: IconWeight;
+  className: string;
+} => ({
+  size: 24,
+  weight: props["aria-selected"] ? "fill" : "regular",
+  className: cn("text-icon-secondary", {
+    "text-icon-tertiary": props["aria-selected"],
+  }),
+});
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
@@ -183,12 +202,7 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Home"
             >
-              <Home
-                weight={props["aria-selected"] ? "fill" : "regular"}
-                className={cn("text-icon-secondary", {
-                  "text-icon-primary": props["aria-selected"],
-                })}
-              />
+              <Home {...iconProps(props)} />
             </AnimatedTabButton>
           ),
         }}
@@ -203,13 +217,7 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Reminder"
             >
-              <Calendar
-                size={24}
-                weight={props["aria-selected"] ? "fill" : "regular"}
-                className={cn("text-icon-secondary", {
-                  "text-icon-primary": props["aria-selected"],
-                })}
-              />
+              <Calendar {...iconProps(props)} />
             </AnimatedTabButton>
           ),
         }}
@@ -224,18 +232,12 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Service"
             >
-              <Service
-                size={24}
-                weight={props["aria-selected"] ? "fill" : "regular"}
-                className={cn("text-icon-secondary", {
-                  "text-icon-primary": props["aria-selected"],
-                })}
-              />
+              <Service {...iconProps(props)} />
             </AnimatedTabButton>
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="store"
         options={{
           tabBarButton: (props) => (
@@ -245,12 +247,23 @@ export default function TabLayout() {
               label="Store"
             >
               <Store
-                size={24}
-                weight={props["aria-selected"] ? "fill" : "regular"}
-                className={cn("text-icon-secondary", {
-                  "text-icon-primary": props["aria-selected"],
-                })}
+                {...iconProps(props)}
               />
+            </AnimatedTabButton>
+          ),
+        }}
+      /> */}
+
+      <Tabs.Screen
+        name="store"
+        options={{
+          tabBarButton: (props) => (
+            <AnimatedTabButton
+              {...props}
+              focused={props["aria-selected"] || false}
+              label="Sitter"
+            >
+              <Sitter {...iconProps(props)} />
             </AnimatedTabButton>
           ),
         }}
@@ -265,13 +278,7 @@ export default function TabLayout() {
               focused={props["aria-selected"] || false}
               label="Settings"
             >
-              <Settings
-                size={24}
-                weight={props["aria-selected"] ? "fill" : "regular"}
-                className={cn("text-icon-secondary", {
-                  "text-icon-primary": props["aria-selected"],
-                })}
-              />
+              <Settings {...iconProps(props)} />
             </AnimatedTabButton>
           ),
         }}

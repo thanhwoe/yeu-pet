@@ -1,12 +1,13 @@
-import { cn } from "@/utils";
 import { useState } from "react";
-import { TextInputProps, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { TextInputProps, TouchableOpacity } from "react-native";
 import { BottomSheet } from "../ui/BottomSheet";
-import { Text } from "../ui/Text";
+import { Options } from "../ui/Options";
+import { Body } from "../ui/Typography";
 
-interface CountryCodeSelectorProps
-  extends Pick<TextInputProps, "onFocus" | "onBlur"> {
+interface CountryCodeSelectorProps extends Pick<
+  TextInputProps,
+  "onFocus" | "onBlur"
+> {
   onSelect: (code: string) => void;
   value?: string;
   options: { label: string; value: string }[];
@@ -20,28 +21,22 @@ export const UnitSelector = ({
 }: CountryCodeSelectorProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  const renderItem = ({ item }: { item: { label: string; value: string } }) => (
-    <View
-      className={cn("py-3 px-4 border-b border-line-secondary", {
-        "bg-option-selected": item.value === value,
-      })}
-    >
-      <Text
-        onPress={() => {
-          onSelect(item.value);
-          setShowOptions(false);
-        }}
-      >
-        {item.label}
-      </Text>
-    </View>
-  );
+  const handleSelect = (data: (typeof options)[0]) => {
+    onSelect(data.value);
+    setShowOptions(false);
+  };
 
   return (
-    <View className="border-l border-gray-200 w-12 items-center">
-      <Text onPress={() => setShowOptions(true)} variant="body2">
-        {value}
-      </Text>
+    <>
+      <TouchableOpacity
+        className="px-12 items-center"
+        onPress={() => setShowOptions(true)}
+      >
+        <Body weight="bold" variant="body2">
+          {value}
+        </Body>
+      </TouchableOpacity>
+
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
@@ -49,12 +44,8 @@ export const UnitSelector = ({
         useScrollView
         stackBehavior="push"
       >
-        <FlatList
-          scrollEnabled={false}
-          data={options}
-          renderItem={renderItem}
-        />
+        <Options data={options} selected={value} onSelect={handleSelect} />
       </BottomSheet>
-    </View>
+    </>
   );
 };

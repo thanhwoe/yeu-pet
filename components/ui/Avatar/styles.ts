@@ -4,7 +4,7 @@ export const avatarStyles = cva("self-start overflow-hidden", {
   variants: {
     variant: {
       simple: "rounded-full",
-      line: "rounded-full bg-white border-2 border-line-disabled p-1",
+      line: "rounded-full border-[1.5px] p-4 border-line-secondary",
       square: "bg-white rounded-xl",
     },
     size: {
@@ -29,10 +29,10 @@ export const imageStyles = cva("overflow-hidden", {
       square: "rounded-xl",
     },
     size: {
-      small: "size-10",
-      medium: "size-12",
-      large: "size-14",
-      huge: "size-20",
+      small: "size-40",
+      medium: "size-40",
+      large: "size-56",
+      huge: "size-80",
     },
   },
   defaultVariants: {
