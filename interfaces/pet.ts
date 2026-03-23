@@ -1,16 +1,13 @@
 export interface IPet {
-  pet_id: string;
-  account_id: string;
+  id: string;
   name: string;
-  age: number;
-  birthdate: string;
-  breed: string;
-  weight: string;
-  color: string;
-  avatar_url: string;
+  age: string | null;
+  birthdate: string | null;
+  breed: string | null;
+  weight: string | null;
+  color: string | null;
+  avatarUrl: string | null;
   gender: string;
   species: string;
-  notes: string;
-  created_at: string;
-  updated_at: string;
+  notes: string | null;
 }

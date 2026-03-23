@@ -101,7 +101,7 @@ export const PetInfoForm = ({
       <EnhancedInputController<IPetInfoForm>
         control={control}
         name="color"
-        label="Color"
+        label="Fur Color"
         placeholder="Orange"
       />
 
@@ -109,7 +109,7 @@ export const PetInfoForm = ({
         control={control}
         name="weight"
         label="Weight"
-        inputMode="numeric"
+        keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
         placeholder="0.0"
         options={[
           { label: "Kilogram", value: "kg" },

@@ -1,6 +1,6 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { IPetInfoForm } from "@/constants/validation";
-import { IPet } from "@/interfaces";
+import { IPagination, IPet } from "@/interfaces";
 import dayjs from "dayjs";
 import { APIs } from "./api-helper";
 
@@ -38,7 +38,7 @@ export const createPetMutation = (params: IPetInfoForm) => {
 };
 
 export const getListPetQuery = () =>
-  APIs.get<{ data: IPet[] }>(API_ROUTES.LIST_PET);
+  APIs.get<IPagination<IPet>>(API_ROUTES.PETS);
 
 export const updatePetMutation = ({
   pet_id,

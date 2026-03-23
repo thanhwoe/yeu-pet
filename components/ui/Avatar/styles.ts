@@ -29,7 +29,7 @@ export const imageStyles = cva("overflow-hidden", {
       square: "rounded-xl",
     },
     size: {
-      small: "size-40",
+      small: "size-32",
       medium: "size-40",
       large: "size-56",
       huge: "size-80",

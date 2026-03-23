@@ -1,8 +1,11 @@
-export interface IPagination {
-  page: number;
-  limit: number;
-  totalCount: number;
-  totalPages: number;
-  nextPage: number | null;
-  previousPage: number | null;
+export interface IPagination<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  };
 }
