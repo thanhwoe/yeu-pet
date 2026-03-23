@@ -27,7 +27,7 @@ export const BottomSheetHeader = ({
     }
   };
   return (
-    <View className="h-[66px] p-2 flex-row items-center">
+    <View className="h-[66px] px-8 flex-row items-center border-b border-line-secondary-inverse">
       {headerMode === "back" ? (
         <TouchableOpacity
           onPress={handleDismiss}
@@ -36,7 +36,7 @@ export const BottomSheetHeader = ({
           <ArrowLeftIcon
             size={18}
             weight="bold"
-            className="text-icon-primary-foreground"
+            className="text-icon-primary"
           />
         </TouchableOpacity>
       ) : (
@@ -50,11 +50,7 @@ export const BottomSheetHeader = ({
           onPress={handleDismiss}
           className="w-[50px] h-[50px] flex-row items-center justify-center"
         >
-          <XIcon
-            size={18}
-            weight="bold"
-            className="text-icon-primary-foreground"
-          />
+          <XIcon size={18} weight="bold" className="text-icon-primary" />
         </TouchableOpacity>
       ) : (
         <View className="w-[50px] h-[50px]" />

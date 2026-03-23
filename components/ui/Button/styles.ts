@@ -10,6 +10,7 @@ export const buttonStyles = cva(
         outline: "border border-line-secondary",
         ghost: "bg-transparent",
         destructive: "bg-background-negative",
+        cancel: "bg-background-tertiary",
       },
       pressed: {
         true: null,
@@ -88,6 +89,7 @@ export const textStyles = cva("text-center font-medium", {
       outline: "text-text-secondary",
       ghost: "text-text-secondary",
       destructive: "text-text-primary-inverse",
+      cancel: "text-text-tertiary-inverse",
     },
     size: {
       sm: "text-body3",
@@ -109,6 +111,7 @@ export const spinnerStyles = cva("", {
       outline: "text-text-secondary",
       ghost: "text-text-secondary",
       destructive: "text-text-primary-inverse",
+      cancel: "text-text-tertiary-inverse",
     },
   },
   defaultVariants: {

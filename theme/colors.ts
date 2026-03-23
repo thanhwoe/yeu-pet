@@ -1,19 +1,19 @@
 import { generateColorKeys, generateThemeKeys } from "./utils";
 
 export const colorPalette = {
-  "--red-100": "#1C0000",
-  "--red-90": "#3B0000",
-  "--red-80": "#610000",
-  "--red-70": "#870000",
-  "--red-60": "#AD0000",
-  "--red-50": "#E50000",
-  "--red-40": "#FF0000",
-  "--red-30": "#FF4747",
-  "--red-20": "#FF7373",
-  "--red-15": "#FFA0A0",
-  "--red-10": "#FFC5C5",
-  "--red-5": "#FFE2E2",
-  "--red-0": "#FFF3F3",
+  "--red-100": "#200809",
+  "--red-90": "#3A0F12",
+  "--red-80": "#5A171B",
+  "--red-70": "#7A2025",
+  "--red-60": "#9C2A30",
+  "--red-50": "#C43A41",
+  "--red-40": "#E5535B",
+  "--red-30": "#F27478",
+  "--red-20": "#F79A9D",
+  "--red-15": "#F9B3B6",
+  "--red-10": "#FBCBCC",
+  "--red-5": "#FDE7E8",
+  "--red-0": "#FEF3F3",
 
   "--orange-100": "#1C0A00",
   "--orange-90": "#3B1E00",
@@ -234,7 +234,7 @@ export const darkColorTheme = {
   "--background-secondary-pressed": "--blue-80",
   "--background-secondary-highlight": "--blue-50",
 
-  "--background-tertiary": "--blue-80",
+  "--background-tertiary": "--grey-80",
   "--background-tertiary-highlight": "--grey-60",
 
   "--background-foreground": "--grey-100",
@@ -243,8 +243,9 @@ export const darkColorTheme = {
   "--background-card-highlight": "--blue-80",
 
   "--background-positive": "--green-100",
-  "--background-negative": "--red-100",
-  "--background-negative-foreground": "--red-5",
+  "--background-positive-foreground": "--green-90",
+  "--background-negative": "--red-50",
+  "--background-negative-foreground": "--red-90",
   "--background-negative-pressed": "--red-90",
 
   // LINE
@@ -268,7 +269,7 @@ export const darkColorTheme = {
 
   "--icon-warning": "--yellow-40",
   "--icon-positive": "--green-40",
-  "--icon-negative": "--red-40",
+  "--icon-negative": "--red-60",
 
   "--shadow-primary": "--grey-0",
 };
@@ -314,7 +315,8 @@ export const lightColorTheme = {
   "--background-card-highlight": "--amber-5",
 
   "--background-positive": "--green-50",
-  "--background-negative": "--red-50",
+  "--background-positive-foreground": "--green-5",
+  "--background-negative": "--red-40",
   "--background-negative-foreground": "--red-5",
   "--background-negative-pressed": "--red-60",
 

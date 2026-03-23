@@ -73,7 +73,7 @@ export const AvatarInputController = <T extends FieldValues>({
           onChange(v);
           onBlur();
         }}
-        value={defaultValue}
+        value={defaultValue?.uri}
         hasError={!!error?.message}
       />
       <Body variant="body3">{label}</Body>

@@ -1,6 +1,7 @@
 import { PET_KEY } from "@/constants/query-keys";
 import { IPetInfoForm } from "@/constants/validation";
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { IPagination, IPet } from "@/interfaces";
 import { createPetMutation } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "phosphor-react-native";
@@ -58,8 +59,22 @@ export const AddCard = ({
     onError(e) {
       Toast.error({ text: e.message });
     },
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
+    onSuccess(res, variable) {
+      queryClient.setQueryData(PET_KEY.list(), (old: IPagination<IPet>) => {
+        if (!old) {
+          return old;
+        }
+
+        const data = [
+          { ...res, avatarUrl: res.avatarUrl ?? variable.avatar?.uri },
+          ...old.data,
+        ];
+
+        return {
+          ...old,
+          data,
+        };
+      });
       setShowForm(false);
     },
   });
@@ -114,7 +129,7 @@ export const AddCard = ({
         stackBehavior="push"
         visible={showForm}
         onDismiss={() => setShowForm(false)}
-        titleElement={<Text className="font-medium">Add your pet</Text>}
+        titleElement={<Body weight="semiBold">Add your pet</Body>}
       >
         <PetInfoForm onSubmit={handleSubmit} isSubmitting={isPending} />
       </BottomSheet>

@@ -48,4 +48,27 @@ export const CARD_THEME = [
     icon: "text-yellow-70",
     detail: "bg-yellow-10",
   },
+  {
+    color: "bg-grey-30",
+    accentColor: "bg-grey-50",
+    icon: "text-grey-70",
+    detail: "bg-grey-10",
+  },
+  {
+    color: "bg-teal-30",
+    accentColor: "bg-teal-50",
+    icon: "text-teal-70",
+    detail: "bg-teal-10",
+  },
+  {
+    color: "bg-lilac-30",
+    accentColor: "bg-lilac-50",
+    icon: "text-lilac-70",
+    detail: "bg-lilac-10",
+  },
 ];
+
+export function seedColorRandom(seed: number, max: number) {
+  const x = Math.sin(seed + 1) * 10000;
+  return Math.floor((x - Math.floor(x)) * max);
+}

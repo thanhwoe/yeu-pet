@@ -17,8 +17,7 @@ const StyledBottomSheetModal = cssInterop(BottomSheetModal, {
   },
 });
 
-export interface BottomSheetProps
-  extends PropsWithChildren<BottomSheetModalProps> {
+export interface BottomSheetProps extends PropsWithChildren<BottomSheetModalProps> {
   visible: boolean;
   className?: string;
   titleElement?: React.ReactNode;
@@ -55,7 +54,7 @@ export const BottomSheet = ({
        */
       backHandler = BackHandler.addEventListener(
         "hardwareBackPress",
-        () => true
+        () => true,
       );
     } else {
       bottomSheetRef.current?.dismiss();
@@ -84,7 +83,7 @@ export const BottomSheet = ({
       )}
       onDismiss={onDismiss}
       snapPoints={undefined}
-      backgroundClassName="bg-background-white rounded-tl-36 rounded-tr-36"
+      backgroundClassName="bg-background-foreground rounded-tl-36 rounded-tr-36"
       keyboardBlurBehavior="restore"
       keyboardBehavior={Platform.select({
         android: "fillParent",
@@ -97,6 +96,7 @@ export const BottomSheet = ({
       {useScrollView ? (
         <BottomSheetScrollView
           contentContainerStyle={{
+            paddingTop: 16,
             paddingBottom: insets.bottom || 16,
             ...(!enableDynamicSizing && { flexGrow: 1 }),
           }}
@@ -108,6 +108,7 @@ export const BottomSheet = ({
       ) : (
         <BottomSheetView
           style={{
+            paddingTop: 16,
             paddingBottom: insets.bottom || 16,
             ...(!enableDynamicSizing && { flexGrow: 1 }),
           }}

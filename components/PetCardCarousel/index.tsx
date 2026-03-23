@@ -1,9 +1,10 @@
 import { PET_KEY } from "@/constants/query-keys";
+import { IPet } from "@/interfaces";
 import { getListPetQuery } from "@/services";
 import { cn } from "@/utils";
 import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { View } from "react-native";
 import Animated, {
   runOnJS,
@@ -14,7 +15,12 @@ import { AddCard } from "./AddCard";
 import { DetailCard } from "./DetailCard";
 import { CARD_WIDTH } from "./utils";
 
-export const PetCardCarousel = () => {
+interface IProps {
+  onEdit: (value: IPet) => void;
+  onDelete: (value: IPet) => void;
+}
+
+export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
   const { data: petData } = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
@@ -53,6 +59,8 @@ export const PetCardCarousel = () => {
               isCenter
               index={0}
               scrollX={staticScrollX}
+              onDelete={onDelete}
+              onEdit={onEdit}
             />
           )}
         </View>
@@ -84,6 +92,8 @@ export const PetCardCarousel = () => {
                   isCenter={idx === activeIndex}
                   index={idx}
                   scrollX={scrollX}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
                 />
               )}
             </View>
@@ -104,4 +114,6 @@ export const PetCardCarousel = () => {
       </View>
     </View>
   );
-};
+});
+
+PetCardCarousel.displayName = "PetCardCarousel";

@@ -24,14 +24,16 @@ export const createPetMutation = (params: IPetInfoForm) => {
     formData.append("notes", params.notes);
   }
 
-  formData.append("avatar", {
-    uri: params.avatar?.uri,
-    name: params.avatar?.name,
-    type: params.avatar?.type,
-    size: params.avatar?.size,
-  } as any);
+  if (params.avatar) {
+    formData.append("avatar", {
+      uri: params.avatar?.uri,
+      name: params.avatar?.name,
+      type: params.avatar?.type,
+      size: params.avatar?.size,
+    } as any);
+  }
 
-  return APIs.post<{ data: IPet }>(API_ROUTES.PETS, {
+  return APIs.post<IPet>(API_ROUTES.PETS, {
     data: formData,
     headers: { "content-type": "multipart/form-data" },
   });
@@ -41,10 +43,38 @@ export const getListPetQuery = () =>
   APIs.get<IPagination<IPet>>(API_ROUTES.PETS);
 
 export const updatePetMutation = ({
-  pet_id,
+  id,
   ...params
-}: IPetInfoForm & { pet_id: string }) =>
-  APIs.patch<{ data: IPet }>(API_ROUTES.UPDATE_PET(pet_id), { data: params });
+}: IPetInfoForm & { id: string }) => {
+  const formData = new FormData();
 
-export const deletePetMutation = (pet_id: string) =>
-  APIs.delete<{ data: IPet }>(API_ROUTES.DELETE_PET(pet_id));
+  formData.append("name", params.name);
+  formData.append("color", params.color);
+  formData.append("gender", params.gender);
+  formData.append("species", params.species);
+
+  formData.append("breed", params.breed ?? "");
+  formData.append("weight", params.weight ?? "");
+  formData.append("notes", params.notes ?? "");
+
+  if (params.birthdate) {
+    formData.append("birthdate", dayjs(params.birthdate).toISOString());
+  }
+
+  if (params.avatar && params.avatar.name !== "default") {
+    formData.append("avatar", {
+      uri: params.avatar?.uri,
+      name: params.avatar?.name,
+      type: params.avatar?.type,
+      size: params.avatar?.size,
+    } as any);
+  }
+
+  return APIs.patch<IPet>(API_ROUTES.MUTATE_PET(id), {
+    data: formData,
+    headers: { "content-type": "multipart/form-data" },
+  });
+};
+
+export const deletePetMutation = (id: string) =>
+  APIs.delete(API_ROUTES.MUTATE_PET(id));

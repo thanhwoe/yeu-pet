@@ -14,9 +14,7 @@ export const API_ROUTES = {
   RESET_PASSWORD: "/users/password/reset",
 
   PETS: "/pets",
-  LIST_PET: "/pet",
-  UPDATE_PET: (id: string) => `/pet/${id}/update`,
-  DELETE_PET: (id: string) => `/pet/${id}/delete`,
+  MUTATE_PET: (id: string) => `/pets/${id}`,
 
   SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
   LIST_CLINIC: "/clinic",

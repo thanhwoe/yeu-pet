@@ -28,7 +28,12 @@ export const PetInfoForm = ({
   defaultValues,
   isSubmitting,
 }: IProps) => {
-  const { control, handleSubmit, watch } = useForm<IPetInfoForm>({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { isDirty },
+  } = useForm<IPetInfoForm>({
     resolver: zodResolver(petInfoSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -136,6 +141,7 @@ export const PetInfoForm = ({
 
       <Button
         wrapperClassName="mt-12"
+        disabled={!isDirty}
         onPress={() => handleSubmit(onSubmit)()}
         loading={isSubmitting}
       >
