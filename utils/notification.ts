@@ -1,5 +1,3 @@
-import { Toast } from "@/components/Toast";
-import { IReminderResponse } from "@/interfaces";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -65,86 +63,86 @@ export async function registerForPushNotificationsAsync() {
   }
 }
 
-export const schedulePushNotification = async (payload: IReminderResponse) => {
-  if (!Device.isDevice) {
-    return;
-  }
+// export const schedulePushNotification = async (payload: IReminderResponse) => {
+//   if (!Device.isDevice) {
+//     return;
+//   }
 
-  try {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: payload.title,
-        body: payload.description,
-        sound: "notification.wav",
-        subtitle: getReminderEmoji(payload.type),
-      },
-      trigger: {
-        date: new Date(payload.event_date),
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-      },
-      identifier: payload.id,
-    });
-  } catch (error) {
-    // TODO: log sentry
-    Toast.error({ text: "Error scheduling notification" });
-  }
-};
+//   try {
+//     await Notifications.scheduleNotificationAsync({
+//       content: {
+//         title: payload.title,
+//         body: payload.description,
+//         sound: "notification.wav",
+//         subtitle: getReminderEmoji(payload.type),
+//       },
+//       trigger: {
+//         date: new Date(payload.event_date),
+//         type: Notifications.SchedulableTriggerInputTypes.DATE,
+//       },
+//       identifier: payload.id,
+//     });
+//   } catch (error) {
+//     // TODO: log sentry
+//     Toast.error({ text: "Error scheduling notification" });
+//   }
+// };
 
-export const updateSchedulePushNotification = async (
-  payload: IReminderResponse,
-) => {
-  if (!Device.isDevice) {
-    return;
-  }
+// export const updateSchedulePushNotification = async (
+//   payload: IReminderResponse,
+// ) => {
+//   if (!Device.isDevice) {
+//     return;
+//   }
 
-  try {
-    await Notifications.cancelScheduledNotificationAsync(payload.id);
+//   try {
+//     await Notifications.cancelScheduledNotificationAsync(payload.id);
 
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: payload.title,
-        body: payload.description,
-        sound: "notification.wav",
-        subtitle: getReminderEmoji(payload.type),
-      },
-      trigger: {
-        date: new Date(payload.event_date),
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-      },
-      identifier: payload.id,
-    });
-  } catch (error) {
-    // TODO: log sentry
-    Toast.error({ text: "Error updating notification" });
-  }
-};
+//     await Notifications.scheduleNotificationAsync({
+//       content: {
+//         title: payload.title,
+//         body: payload.description,
+//         sound: "notification.wav",
+//         subtitle: getReminderEmoji(payload.type),
+//       },
+//       trigger: {
+//         date: new Date(payload.event_date),
+//         type: Notifications.SchedulableTriggerInputTypes.DATE,
+//       },
+//       identifier: payload.id,
+//     });
+//   } catch (error) {
+//     // TODO: log sentry
+//     Toast.error({ text: "Error updating notification" });
+//   }
+// };
 
-export const cancelSchedulePushNotification = async (
-  payload: IReminderResponse,
-) => {
-  if (!Device.isDevice) {
-    return;
-  }
+// export const cancelSchedulePushNotification = async (
+//   payload: IReminderResponse,
+// ) => {
+//   if (!Device.isDevice) {
+//     return;
+//   }
 
-  try {
-    await Notifications.cancelScheduledNotificationAsync(payload.id);
-  } catch (error) {
-    // TODO: log sentry
-    Toast.error({ text: "Error canceling notification" });
-  }
-};
+//   try {
+//     await Notifications.cancelScheduledNotificationAsync(payload.id);
+//   } catch (error) {
+//     // TODO: log sentry
+//     Toast.error({ text: "Error canceling notification" });
+//   }
+// };
 
-const getReminderEmoji = (category: string) => {
-  switch (category) {
-    case "medication":
-      return "💊";
-    case "vaccination":
-      return "💉";
-    case "feed":
-      return "🦴";
-    case "grooming":
-      return "✂️";
-    default:
-      return "🔔";
-  }
-};
+// const getReminderEmoji = (category: string) => {
+//   switch (category) {
+//     case "medication":
+//       return "💊";
+//     case "vaccination":
+//       return "💉";
+//     case "feed":
+//       return "🦴";
+//     case "grooming":
+//       return "✂️";
+//     default:
+//       return "🔔";
+//   }
+// };

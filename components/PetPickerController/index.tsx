@@ -9,7 +9,7 @@ import {
 } from "react-hook-form";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
-import { Text } from "../ui/Text";
+import { Body } from "../ui/Typography";
 
 interface IPetPickerControllerProps<T extends FieldValues> {
   label?: string;
@@ -33,63 +33,44 @@ export const PetPickerController = <T extends FieldValues>({
     name,
     control,
     rules,
-    defaultValue: options[0].pet_id as any,
+    defaultValue: options[0].id as any,
   });
-
-  const showAllButton = options.length > 1;
 
   return (
     <View>
-      {label && <Text variant="footnote">{label}</Text>}
+      {label && (
+        <Body variant="body3" className="mb-8">
+          {label}
+        </Body>
+      )}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerClassName="gap-3 py-2"
+        contentContainerClassName="gap-20"
       >
         {options.map((item, index) => (
           <TouchableOpacity
             onPress={() => {
-              onChange(item.pet_id);
+              onChange(item.id);
             }}
             key={index}
-            className="items-center gap-2 max-w-[68px]"
+            className="items-center gap-4 max-w-68"
           >
             <Avatar
               source={{
-                uri:
-                  item.avatar_url || "https://avatar.iran.liara.run/public/32",
+                uri: item.avatarUrl ?? "",
               }}
-              className={cn({
-                "border-line-selected": value === item.pet_id,
+              className={cn("border-line-secondary-inverse border-2", {
+                "border-line-secondary": value === item.id,
               })}
               variant="line"
               size="medium"
             />
-            <Text variant="footnote" numberOfLines={1}>
+            <Body variant="body3" numberOfLines={1}>
               {item.name}
-            </Text>
+            </Body>
           </TouchableOpacity>
         ))}
-        {/* {showAllButton && (
-          <TouchableOpacity
-            onPress={() => onChange(null)}
-            className="items-center gap-2 max-w-[68px]"
-          >
-            <Avatar
-              source={{
-                uri: "https://avatar.iran.liara.run/public/32",
-              }}
-              className={cn({
-                "border-red-200": value === null,
-              })}
-              variant="line"
-              size="medium"
-            />
-            <Text variant="footnote" numberOfLines={1}>
-              All
-            </Text>
-          </TouchableOpacity>
-        )} */}
       </ScrollView>
     </View>
   );

@@ -87,10 +87,10 @@ export const AddCard = ({
     <>
       <CardWrapper
         onPress={() => setShowForm(true)}
-        className="relative bg-background-card rounded-28 justify-center items-center border-2 border-dashed border-line-secondary overflow-hidden"
+        className="relative bg-background-card rounded-28 justify-center items-center border-2 border-dashed border-line-primary overflow-hidden"
         style={[{ width: CARD_WIDTH, height: CARD_HEIGHT }, zoomStyle]}
       >
-        <View className="size-68 rounded-full bg-background-card border-2 border-line-secondary border-dashed justify-center items-center mb-14">
+        <View className="size-68 rounded-full bg-background-card border-2 border-line-primary border-dashed justify-center items-center mb-14">
           <Plus size={30} className="text-line-secondary" />
         </View>
         <Body weight="bold">Add New Pet</Body>

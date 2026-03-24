@@ -5,52 +5,62 @@ import { date } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 
-import { useTransition } from "react";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { DateTimePickerController } from "../DatetimePickerController";
 import { InputController } from "../InputController";
 import { OptionInputController } from "../OptionInputController";
 import { PetPickerController } from "../PetPickerController";
-import { ReminderIcons } from "../ReminderIcons";
-import { Skeleton } from "../Skeleton";
+import { ReminderTypeIcon } from "../ReminderIcons";
 import { Button } from "../ui/Button";
-import { Text } from "../ui/Text";
+
+const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
 
 interface IProps {
   onSubmit: (data: IReminderForm) => Promise<void>;
   defaultValues?: IReminderForm;
+  loading?: boolean;
 }
 
-export const ReminderForm = ({ onSubmit, defaultValues }: IProps) => {
-  const [isPending, startTransition] = useTransition();
-
-  const { control, handleSubmit } = useForm<IReminderForm>({
+export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<IReminderForm>({
     resolver: zodResolver(reminderSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues,
   });
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
 
   const handleSubmitForm = (data: IReminderForm) => {
-    startTransition(async () => {
-      await onSubmit(data);
-    });
+    onSubmit(data);
   };
   return (
-    <View className="px-4 pb-4">
-      <InputController<IReminderForm>
+    <KeyboardAvoidingView
+      className="px-26 gap-16 pb-safe-offset-8"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <PetPickerController
+        name="petId"
+        control={control}
+        label="Choose your pet"
+        options={data?.data ?? []}
+      />
+      <EnhancedInputController<IReminderForm>
         control={control}
         name="title"
         label="Title"
         placeholder="Title"
       />
-      <InputController<IReminderForm>
+      <EnhancedInputController<IReminderForm>
         control={control}
         name="description"
         label="Description"
@@ -64,62 +74,45 @@ export const ReminderForm = ({ onSubmit, defaultValues }: IProps) => {
         placeholder="Type"
         options={[
           {
-            label: "Feed",
-            value: "feed",
-            icon: <ReminderIcons type="feed" />,
+            label: "Feeding",
+            value: "feeding",
+            icon: <ReminderTypeIcon type="feeding" />,
           },
           {
             label: "Grooming",
             value: "grooming",
-            icon: <ReminderIcons type="grooming" />,
+            icon: <ReminderTypeIcon type="grooming" />,
           },
           {
             label: "Vaccination",
             value: "vaccination",
-            icon: <ReminderIcons type="vaccination" />,
+            icon: <ReminderTypeIcon type="vaccination" />,
           },
           {
             label: "Medication",
             value: "medication",
-            icon: <ReminderIcons type="medication" />,
+            icon: <ReminderTypeIcon type="medication" />,
           },
         ]}
       />
       <DateTimePickerController
-        name="event_date"
+        name="scheduledAt"
         control={control}
-        label="Event Date & Time"
+        label="Schedule Date & Time"
         placeholder="Select date & time"
         mode="datetime"
         minimumDate={new Date()}
         format={(val) => date(val).format("LLL")}
       />
-      {isLoading ? (
-        <View>
-          <Text variant="footnote">Choose your pet</Text>
-          <View className="flex-row gap-3 py-2">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Skeleton className="w-14 h-14 rounded-full" key={index} />
-            ))}
-          </View>
-        </View>
-      ) : (
-        <PetPickerController
-          name="pet_id"
-          control={control}
-          label="Choose your pet"
-          options={data?.data ?? []}
-        />
-      )}
 
       <Button
         onPress={() => handleSubmit(handleSubmitForm)()}
-        disabled={isPending}
-        className="mt-4"
-        loading={isPending}
+        className="mt-16"
+        disabled={!isDirty}
+        loading={loading}
       >
         {!!defaultValues ? "Update Reminder" : "Set Reminder"}
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };

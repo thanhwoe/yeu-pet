@@ -88,7 +88,7 @@ export const textStyles = cva("text-center font-medium", {
       secondary: "text-text-secondary",
       outline: "text-text-secondary",
       ghost: "text-text-secondary",
-      destructive: "text-text-primary-inverse",
+      destructive: "text-text-primary opacity-80",
       cancel: "text-text-tertiary-inverse",
     },
     size: {

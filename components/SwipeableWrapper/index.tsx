@@ -14,7 +14,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Spinner } from "../ui/Spinner";
-import { Text } from "../ui/Text";
+import { Body } from "../ui/Typography";
 
 interface ActionButton {
   text?: string;
@@ -104,13 +104,13 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
           // Swipe right - show left action
           translateX.value = withSpring(
             leftAction.width || defaultActionWidth,
-            springConfig
+            springConfig,
           );
         } else if (translationX < 0 && rightAction) {
           // Swipe left - show right action
           translateX.value = withSpring(
             -(rightAction.width || defaultActionWidth),
-            springConfig
+            springConfig,
           );
         } else {
           // Reset if no action available
@@ -134,7 +134,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
       translateX.value,
       [0, width * 0.5, width],
       [0, 0.5, 1],
-      Extrapolation.CLAMP
+      Extrapolation.CLAMP,
     );
 
     return {
@@ -145,7 +145,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
             translateX.value,
             [0, width],
             [-width, 0],
-            Extrapolation.CLAMP
+            Extrapolation.CLAMP,
           ),
         },
       ],
@@ -158,7 +158,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
       translateX.value,
       [-width, -width * 0.5, 0],
       [1, 0.5, 0],
-      Extrapolation.CLAMP
+      Extrapolation.CLAMP,
     );
 
     return {
@@ -169,7 +169,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
             translateX.value,
             [-width, 0],
             [0, width],
-            Extrapolation.CLAMP
+            Extrapolation.CLAMP,
           ),
         },
       ],
@@ -216,16 +216,13 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               disabled={leftAction.disabled || leftAction.loading}
             >
               {leftAction.text && (
-                <Text
-                  className="text-text-primary-inverse font-semibold"
-                  variant="body2"
-                >
+                <Body weight="semiBold" variant="body2">
                   {leftAction.text}
-                </Text>
+                </Body>
               )}
               {leftAction.icon && !leftAction.loading && leftAction.icon}
               {leftAction.loading && (
-                <Spinner size={20} className="text-icon-foreground" />
+                <Spinner size={20} className="text-icon-primary" />
               )}
             </TouchableOpacity>
           </Animated.View>
@@ -262,16 +259,13 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               disabled={rightAction.disabled || rightAction.loading}
             >
               {rightAction.text && (
-                <Text
-                  className="text-text-primary-inverse font-semibold"
-                  variant="body2"
-                >
+                <Body weight="semiBold" variant="body2">
                   {rightAction.text}
-                </Text>
+                </Body>
               )}
               {rightAction.icon && !rightAction.loading && rightAction.icon}
               {rightAction.loading && (
-                <Spinner size={20} className="text-icon-foreground" />
+                <Spinner size={20} className="text-icon-primary" />
               )}
             </TouchableOpacity>
           </Animated.View>

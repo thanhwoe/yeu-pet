@@ -1,32 +1,29 @@
 export interface IReminder {
-  title: string;
-  data: IReminderInfo[];
-}
-
-export interface IReminderInfo {
   id: string;
-  time: string;
-  title: string;
-  description: string;
-  type: string;
+  accountId: string;
   petId: string;
-  petName: string;
-  petAvatar: string;
+  title: string;
+  description: string | null;
+  type: ReminderType;
+  status: ReminderStatus;
+  pets: {
+    name: string;
+    avatarUrl: string | null;
+  };
+  scheduledAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface IReminderGroup {
-  petId: string;
+export type ReminderType =
+  | "grooming"
+  | "feeding"
+  | "vaccination"
+  | "medication";
+
+export type ReminderStatus = "pending" | "sent" | "cancelled";
+
+export interface GroupedReminder {
+  title: string; // 'YYYY-MM-DD'
   data: IReminder[];
-}
-
-export interface IReminderResponse {
-  account_id: string;
-  created_at: string;
-  description: string;
-  event_date: string;
-  id: string;
-  pet_id: string;
-  title: string;
-  type: string;
-  updated_at: string;
 }

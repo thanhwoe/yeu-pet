@@ -1,9 +1,11 @@
+import { ReactNode } from "react";
 import { FlatList } from "react-native";
 import { Option } from "./option";
 
 export interface ItemType<T> {
   label: string;
   value: T;
+  icon?: ReactNode;
 }
 
 interface IProps<T> {

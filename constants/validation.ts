@@ -105,15 +105,15 @@ export const resetPasswordSchema = z.object({
 
 export const reminderSchema = z.object({
   title: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Reminder name"),
   }),
   description: z.string().optional(),
-  pet_id: z.string().optional().nullable(),
-  type: z.enum(["grooming", "feed", "vaccination", "medication"], {
+  petId: z.string().optional().nullable(),
+  type: z.enum(["grooming", "feeding", "vaccination", "medication"], {
     message: ERROR_MESSAGE.FIELD_REQUIRED("Type"),
   }),
-  event_date: z.date({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Event date"),
+  scheduledAt: z.date({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Schedule"),
   }),
 });
 

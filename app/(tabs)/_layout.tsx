@@ -209,7 +209,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="calendar"
+        name="(reminder)"
         options={{
           tabBarButton: (props) => (
             <AnimatedTabButton

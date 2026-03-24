@@ -16,15 +16,13 @@ export const API_ROUTES = {
   PETS: "/pets",
   MUTATE_PET: (id: string) => `/pets/${id}`,
 
+  REMINDERS: "/reminders",
+  MUTATE_REMINDER: (id: string) => `/reminders/${id}`,
+
   SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
   LIST_CLINIC: "/clinic",
 
   LIST_SPA: "/spa",
-
-  CREATE_REMINDER: "/reminder/create",
-  REMINDER: "/reminder",
-  UPDATE_REMINDER: (id: string) => `/reminder/${id}/update`,
-  DELETE_REMINDER: (id: string) => `/reminder/${id}/delete`,
 
   UPLOAD_FILE: "/upload-file",
 

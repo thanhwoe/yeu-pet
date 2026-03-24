@@ -239,14 +239,19 @@ export const darkColorTheme = {
 
   "--background-foreground": "--grey-100",
 
+  "--background-calendar": "--blue-90",
+
   "--background-card": "--blue-90",
   "--background-card-highlight": "--blue-80",
 
-  "--background-positive": "--green-100",
+  "--background-positive": "--green-60",
+  "--background-positive-highlight": "--green-40",
   "--background-positive-foreground": "--green-90",
-  "--background-negative": "--red-50",
+  "--background-negative": "--red-60",
   "--background-negative-foreground": "--red-90",
   "--background-negative-pressed": "--red-90",
+  "--background-warning": "--yellow-40",
+  "--background-cancel": "--grey-40",
 
   // LINE
   "--line-primary": "--blue-80",
@@ -263,6 +268,7 @@ export const darkColorTheme = {
 
   // ICON
   "--icon-primary": "--grey-10",
+  "--icon-primary-highlight": "--blue-40",
   "--icon-primary-inverse": "--grey-90",
   "--icon-secondary": "--grey-40",
   "--icon-tertiary": "--blue-50",
@@ -279,7 +285,7 @@ export const lightColorTheme = {
   "--text-primary": "--orange-100",
   "--text-primary-inverse": "--orange-0",
   "--text-primary-inverse-disabled": "--orange-20",
-  "--text-primary-disabled": "--orange-40",
+  "--text-primary-disabled": "--grey-40",
 
   "--text-link": "--amber-60",
   "--text-link-disabled": "--amber-30",
@@ -311,19 +317,24 @@ export const lightColorTheme = {
   "--background-tertiary-highlight": "--grey-15",
   "--background-foreground": "--grey-0",
 
+  "--background-calendar": "--orange-5",
+
   "--background-card": "--grey-0",
   "--background-card-highlight": "--amber-5",
 
   "--background-positive": "--green-50",
+  "--background-positive-highlight": "--green-20",
   "--background-positive-foreground": "--green-5",
   "--background-negative": "--red-40",
   "--background-negative-foreground": "--red-5",
   "--background-negative-pressed": "--red-60",
+  "--background-warning": "--yellow-20",
+  "--background-cancel": "--grey-15",
 
   // LINE
   "--line-primary": "--orange-20",
   "--line-primary-inverse": "--grey-60",
-  "--line-secondary": "--amber-20",
+  "--line-secondary": "--amber-40",
   "--line-secondary-inverse": "--grey-20",
   "--line-secondary-pressed": "--orange-5",
   "--line-tertiary": "--orange-5",
@@ -335,6 +346,7 @@ export const lightColorTheme = {
 
   // ICON
   "--icon-primary": "--grey-80",
+  "--icon-primary-highlight": "--orange-50",
   "--icon-primary-inverse": "--grey-0",
   "--icon-secondary": "--grey-60",
   "--icon-tertiary": "--orange-40",

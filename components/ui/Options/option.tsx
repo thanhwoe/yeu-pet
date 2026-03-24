@@ -13,7 +13,7 @@ export const Option = <T,>({ item, onSelect, selected }: IProps<T>) => {
   return (
     <TouchableOpacity
       className={cn(
-        "px-24 py-12 flex-row items-center bg-background-tertiary rounded-12",
+        "px-24 py-12 flex-row items-center justify-between bg-background-tertiary rounded-12",
         {
           "bg-background-secondary": selected,
         },
@@ -21,6 +21,7 @@ export const Option = <T,>({ item, onSelect, selected }: IProps<T>) => {
       onPress={() => onSelect(item)}
     >
       <Body>{item.label}</Body>
+      {item.icon && item.icon}
     </TouchableOpacity>
   );
 };

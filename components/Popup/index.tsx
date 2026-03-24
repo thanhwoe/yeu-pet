@@ -25,12 +25,12 @@ const DeleteIcon = withIconClassName(TrashIcon);
 
 interface IProps {
   visible: boolean;
-  variant?: "confirm" | "delete";
+  variant?: "confirm" | "delete" | "alert";
   title: string;
   description?: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   onCancel: () => void;
   loading?: boolean;
 }
@@ -38,7 +38,7 @@ interface IProps {
 export const Popup = memo<IProps>(
   ({
     visible,
-    variant = "confirm",
+    variant = "alert",
     title,
     description,
     confirmLabel = "Confirm",
@@ -61,7 +61,7 @@ export const Popup = memo<IProps>(
       cardTranslateY.value = withSpring(0, SPRING_CONFIG);
     };
 
-    const close = (callback: () => void) => {
+    const close = (callback?: () => void) => {
       backdropOpacity.value = withTiming(0, { duration: 180 });
       cardScale.value = withSpring(0.88, { damping: 22, stiffness: 300 });
       cardOpacity.value = withTiming(0, { duration: 160 });
@@ -98,7 +98,7 @@ export const Popup = memo<IProps>(
       if (loading === undefined) {
         close(onConfirm);
       } else {
-        onConfirm();
+        onConfirm?.();
       }
     };
 
@@ -146,6 +146,7 @@ export const Popup = memo<IProps>(
                 {
                   "bg-background-negative-foreground": isDelete,
                   "bg-background-positive-foreground": !isDelete,
+                  hidden: variant === "alert",
                 },
               )}
             >
@@ -161,7 +162,7 @@ export const Popup = memo<IProps>(
               <Body weight="bold" numberOfLines={1}>
                 {title}
               </Body>
-              <Body variant="body3" center numberOfLines={2}>
+              <Body variant="body3" center numberOfLines={3}>
                 {description}
               </Body>
             </View>
@@ -176,14 +177,16 @@ export const Popup = memo<IProps>(
               >
                 {cancelLabel}
               </Button>
-              <Button
-                onPress={handleConfirm}
-                loading={loading}
-                wrapperClassName="flex-1"
-                variant={isDelete ? "destructive" : "secondary"}
-              >
-                {confirmLabel}
-              </Button>
+              {!!onConfirm && (
+                <Button
+                  onPress={handleConfirm}
+                  loading={loading}
+                  wrapperClassName="flex-1"
+                  variant={isDelete ? "destructive" : "secondary"}
+                >
+                  {confirmLabel}
+                </Button>
+              )}
             </View>
           </Animated.View>
         </Animated.View>
