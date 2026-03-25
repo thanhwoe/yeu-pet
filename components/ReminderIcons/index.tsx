@@ -40,18 +40,37 @@ const typeIconMapping: Record<
 
 const typeColorMapping: Record<ReminderType, string> = {
   feeding: "text-orange-40",
-  vaccination: "text-green-60",
+  vaccination: "text-green-50",
   grooming: "text-cyan-60",
   medication: "text-red-50",
+};
+const typeBackgroundMapping: Record<ReminderType, string> = {
+  feeding: "bg-[#FF8000]/20",
+  vaccination: "bg-[#3E9A63]/20",
+  grooming: "bg-[#00C4CC]/20",
+  medication: "bg-[#C43A41]/20",
 };
 
 interface ReminderTypeProps extends IconProps {
   type: ReminderType;
+  circle?: boolean;
 }
 
-export const ReminderTypeIcon = ({ type, ...props }: ReminderTypeProps) => {
+export const ReminderTypeIcon = ({
+  type,
+  circle,
+  ...props
+}: ReminderTypeProps) => {
   const Icon = typeIconMapping[type];
   const color = typeColorMapping[type];
+  const bg = typeBackgroundMapping[type];
+  if (circle) {
+    return (
+      <View className={cn("p-10 rounded-12", bg)}>
+        <Icon size={20} weight="fill" className={color} {...props} />
+      </View>
+    );
+  }
   return <Icon size={20} weight="fill" className={color} {...props} />;
 };
 

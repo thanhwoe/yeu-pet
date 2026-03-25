@@ -6,7 +6,7 @@ import {
   BellRingingIcon,
   ChatsIcon,
   CoinsIcon,
-  FirstAidIcon,
+  FilesIcon,
   HairDryerIcon,
   ImagesIcon,
   NewspaperClippingIcon,
@@ -18,70 +18,65 @@ export default function Screen() {
 
   return (
     <ScreenContainer scrollEnabled>
-      <View className="flex-row gap-4 pt-8 flex-wrap">
+      <View className="flex-row gap-16 flex-wrap pt-safe-offset-8 px-18">
         <ServiceCard
-          title="Clinic"
+          title="Medical Record"
           subTitle="35+"
-          icon={FirstAidIcon}
-          iconColor="bg-amber-15"
-          decoratorColor="text-amber-15"
-          onPress={() => router.push("/list-clinic")}
+          icon={FilesIcon}
+          themeClassName="text-accent-orange"
         />
-        <ServiceCard
-          title="Grooming"
-          subTitle="35+"
-          icon={HairDryerIcon}
-          iconColor="bg-blue-10"
-          decoratorColor="text-blue-10"
-          onPress={() => router.push("/list-spa")}
-        />
+
         <ServiceCard
           title="Budget"
           // Quản lý chi tiêu
           subTitle="Budget statistics"
           icon={CoinsIcon}
-          iconColor="bg-yellow-10"
-          decoratorColor="text-yellow-10"
+          themeClassName="text-accent-yellow"
           onPress={() => router.push("/budget")}
         />
         <ServiceCard
-          title="Photos"
-          subTitle="Share photos"
+          title="Photos Social"
+          subTitle="Share your pet photos"
           icon={ImagesIcon}
-          iconColor="bg-pink-20"
+          themeClassName="text-accent-pink"
           onPress={() => router.push("/photos")}
-          decoratorColor="text-pink-20"
+        />
+
+        <ServiceCard
+          title="Doctor AI"
+          subTitle="Tư vấn sức khỏe"
+          icon={ChatsIcon}
+          themeClassName="text-accent-blue"
+        />
+        <ServiceCard
+          title="Grooming & Clinic"
+          subTitle="35+"
+          icon={HairDryerIcon}
+          themeClassName="text-accent-purple"
         />
         <ServiceCard
           title="Training"
           subTitle="35+"
           icon={BarbellIcon}
-          iconColor="bg-teal-10"
-          decoratorColor="text-teal-10"
-          onPress={() => router.push("/(training)")}
+          themeClassName="text-accent-teal"
         />
         <ServiceCard
-          title="Event"
+          title="Events"
           subTitle="35+"
           icon={NewspaperClippingIcon}
-          iconColor="bg-cyan-10"
-          decoratorColor="text-cyan-10"
+          themeClassName="text-accent-cyan"
         />
         <ServiceCard
           title="SOS"
           subTitle="Recuse"
           icon={BellRingingIcon}
-          iconColor="bg-red-20"
-          decoratorColor="text-red-20"
+          themeClassName="text-accent-red"
         />
-        <ServiceCard
-          title="Doctor AI"
-          subTitle="Tư vấn sức khỏe"
-          icon={ChatsIcon}
-          onPress={() => router.push("/doctor-ai")}
-          iconColor="bg-lilac-15"
-          decoratorColor="text-lilac-15"
-        />
+        {/* <ServiceCard
+          title="Store"
+          icon={StorefrontIcon}
+          themeClassName="text-accent-green"
+        /> */}
       </View>
     </ScreenContainer>
   );

@@ -146,9 +146,7 @@ export const DetailCard = memo<IProps>(
           style={[frontStyle]}
         >
           {/* Paw watermark */}
-          <Text className="absolute top-10 left-0 text-[120px] z-10 opacity-10">
-            🐾
-          </Text>
+
           <Text className="absolute bottom-10 right-0 text-[120px] z-10 opacity-10">
             🐾
           </Text>
@@ -156,7 +154,7 @@ export const DetailCard = memo<IProps>(
           {/* photo area */}
           <View
             className={cn(
-              "absolute top-0 left-0 right-0 justify-center items-center rounded-28",
+              "absolute top-0 left-0 right-0 justify-center items-center rounded-28 ",
               theme.accentColor,
             )}
             style={[
@@ -165,18 +163,22 @@ export const DetailCard = memo<IProps>(
               },
             ]}
           >
-            <Image
-              contentFit="cover"
-              source={{
-                uri: pet.avatarUrl ?? undefined,
-              }}
-              style={[
-                {
-                  height: CARD_HEIGHT * 0.62,
-                  width: CARD_WIDTH,
-                },
-              ]}
-            />
+            {pet.avatarUrl ? (
+              <Image
+                contentFit="cover"
+                source={{
+                  uri: pet.avatarUrl ?? undefined,
+                }}
+                style={[
+                  {
+                    height: CARD_HEIGHT * 0.62,
+                    width: CARD_WIDTH,
+                  },
+                ]}
+              />
+            ) : (
+              <Text className="text-[120px] opacity-80">🐾</Text>
+            )}
           </View>
 
           {/* Name + info */}

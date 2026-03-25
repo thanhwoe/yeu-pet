@@ -26,7 +26,7 @@ export const ReminderHeader = () => {
   const { mutateAsync: createReminder } = useMutation({
     mutationFn: createReminderMutation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
       setOpenForm(false);
     },
     onError: (e) => {

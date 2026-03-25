@@ -1,33 +1,66 @@
 import { REMINDER_KEY } from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
 import { IReminder } from "@/interfaces";
-import { deleteReminderMutation, updateReminderMutation } from "@/services";
+import {
+  deleteReminderMutation,
+  getListReminderQuery,
+  updateReminderMutation,
+} from "@/services";
 import { getMarkedDates, groupReminder } from "@/utils/reminder";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useCallback, useMemo, useState } from "react";
-import { View } from "react-native";
-import { AgendaList, CalendarProvider } from "react-native-calendars";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { SectionList, View } from "react-native";
+import { CalendarProvider, DateData } from "react-native-calendars";
 import { Popup } from "../Popup";
 import { ReminderForm } from "../ReminderForm";
-import { Skeleton } from "../Skeleton";
 import { Toast } from "../Toast";
 import { BottomSheet } from "../ui/BottomSheet";
-import { Body, Heading } from "../ui/Typography";
-import { AgendaDate } from "./AgendaDate";
-import { AgendaItem } from "./AgendaItem";
+import { Body } from "../ui/Typography";
+import { AgendaList } from "./AgendaList";
 import { Calendar } from "./Calendar";
 
-interface IProps {
-  data: IReminder[];
-  loading?: boolean;
-}
+const currentDate = dayjs().toString();
 
-export const ReminderCalendar = ({ data, loading }: IProps) => {
+export const ReminderCalendar = () => {
   const [agendaEdit, setAgendaEdit] = useState<IReminder>();
   const [agendaDelete, setAgendaDelete] = useState<IReminder>();
+  const [calendarDate, setCalendarDate] = useState<DateData>();
+
+  const listRef = useRef<SectionList>(null);
 
   const queryClient = useQueryClient();
+
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: REMINDER_KEY.list({
+        limit: 10,
+        month: calendarDate?.month,
+        year: calendarDate?.year,
+      }),
+      queryFn: ({ pageParam }) =>
+        getListReminderQuery({
+          limit: 10,
+          page: pageParam,
+          month: calendarDate?.month,
+          year: calendarDate?.year,
+        }),
+
+      initialPageParam: 1,
+      getNextPageParam: (lastPage) => {
+        if (!lastPage.meta.hasNextPage) return undefined;
+        return lastPage.meta.page + 1;
+      },
+      select: (data) => data?.pages.flatMap((item) => item.data) || [],
+    });
+
+  const handleFetchMore = useCallback(() => {
+    hasNextPage && fetchNextPage();
+  }, [fetchNextPage, hasNextPage]);
 
   const { mutateAsync: updateReminder, isPending: isUpdating } = useMutation({
     mutationFn: updateReminderMutation,
@@ -35,7 +68,7 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
       Toast.error({ text: e.message });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
       setAgendaEdit(undefined);
     },
   });
@@ -46,13 +79,13 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
       Toast.error({ text: e.message });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.list() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
       setAgendaDelete(undefined);
     },
   });
 
   const { groupData, marked } = useMemo(() => {
-    const groupData = groupReminder(data);
+    const groupData = groupReminder(data ?? []);
 
     const marked = getMarkedDates(groupData);
     return {
@@ -61,39 +94,10 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
     };
   }, [data]);
 
-  const renderItem = useCallback(
-    ({ item }: { item: IReminder }) => {
-      const handleEdit = (v: IReminder) => {
-        if (v.status !== "pending") {
-          Toast.warn({
-            text: "Reminder sent or cancelled cannot update. Please create new one.",
-            title: "Cannot edit this reminder",
-            duration: 10_000,
-          });
-          return;
-        }
-        setAgendaEdit(v);
-      };
-      return (
-        <AgendaItem
-          item={item}
-          onEdit={handleEdit}
-          onDelete={setAgendaDelete}
-          editing={isUpdating}
-          deleting={isDeleting}
-        />
-      );
-    },
-    [isDeleting, isUpdating],
-  );
-
   const handleUpdate = useCallback(
     async (data: IReminderForm) => {
       if (agendaEdit?.id) {
-        updateReminder({
-          ...data,
-          id: agendaEdit.id,
-        });
+        updateReminder({ ...data, id: agendaEdit.id });
       }
     },
     [agendaEdit?.id, updateReminder],
@@ -101,11 +105,22 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
 
   const handleDelete = useCallback(() => {
     if (agendaDelete?.id) {
-      deleteReminder(agendaDelete?.id);
+      deleteReminder(agendaDelete.id);
     }
   }, [agendaDelete?.id, deleteReminder]);
 
   const handleCancel = useCallback(() => setAgendaDelete(undefined), []);
+
+  const handleChangeMonth = useCallback((date: DateData) => {
+    listRef.current?.scrollToLocation({
+      itemIndex: 0,
+      sectionIndex: 0,
+      animated: true,
+    });
+    requestAnimationFrame(() => {
+      setCalendarDate(date);
+    });
+  }, []);
 
   const defaultValue: IReminderForm | undefined = useMemo(() => {
     if (!agendaEdit) {
@@ -120,34 +135,9 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
     };
   }, [agendaEdit]);
 
-  const ListEmptyComponent = useMemo(() => {
-    if (loading) {
-      return (
-        <View className="gap-16 mt-20">
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
-        </View>
-      );
-    }
-    return (
-      <View className="mt-40 gap-8">
-        <Heading variant="h5" center>
-          No reminders added yet.
-        </Heading>
-        <Body center>Start by adding your first one!</Body>
-      </View>
-    );
-  }, [loading]);
-
   return (
     <View className="flex-1 mx-20">
-      <CalendarProvider
-        date={dayjs().toString()}
-        // onDateChanged={onDateChanged}
-        // onMonthChange={onMonthChange}
-        // disabledOpacity={0.6}
-      >
+      <CalendarProvider date={currentDate} onMonthChange={handleChangeMonth}>
         <View className="gap-4 flex-1">
           <Calendar
             marked={marked}
@@ -155,17 +145,16 @@ export const ReminderCalendar = ({ data, loading }: IProps) => {
             arrowClassName="text-text-secondary"
             weekTitleClassName="text-text-primary"
           />
-
           <AgendaList
-            sections={groupData}
-            renderItem={renderItem}
-            scrollToNextEvent={false}
-            renderSectionHeader={AgendaDate}
-            removeClippedSubviews
-            style={{
-              flex: 1,
-            }}
-            ListEmptyComponent={ListEmptyComponent}
+            ref={listRef}
+            onEdit={setAgendaEdit}
+            data={groupData}
+            onDelete={setAgendaDelete}
+            deleting={isDeleting}
+            updating={isUpdating}
+            loading={isLoading}
+            loadingMore={isFetchingNextPage}
+            onFetchMore={handleFetchMore}
           />
         </View>
       </CalendarProvider>

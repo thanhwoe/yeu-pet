@@ -20,6 +20,7 @@ export const ScreenContainer = ({
       <ScrollView
         className={cn("flex-1 bg-background", className)}
         showsVerticalScrollIndicator={false}
+        contentContainerClassName="pb-safe"
         keyboardDismissMode="on-drag"
         {...props}
       >

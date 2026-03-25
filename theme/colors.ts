@@ -256,7 +256,7 @@ export const darkColorTheme = {
   // LINE
   "--line-primary": "--blue-80",
   "--line-primary-inverse": "--grey-20",
-  "--line-secondary": "--blue-80",
+  "--line-secondary": "--blue-70",
   "--line-secondary-inverse": "--grey-80",
   "--line-secondary-pressed": "--blue-80",
   "--line-tertiary": "--blue-100",
@@ -276,6 +276,16 @@ export const darkColorTheme = {
   "--icon-warning": "--yellow-40",
   "--icon-positive": "--green-40",
   "--icon-negative": "--red-60",
+
+  "--accent-orange": "--orange-50",
+  "--accent-yellow": "--yellow-40",
+  "--accent-blue": "--blue-50",
+  "--accent-purple": "--purple-50",
+  "--accent-teal": "--teal-50",
+  "--accent-cyan": "--cyan-50",
+  "--accent-red": "--red-50",
+  "--accent-green": "--green-50",
+  "--accent-pink": "--pink-50",
 
   "--shadow-primary": "--grey-0",
 };
@@ -354,6 +364,17 @@ export const lightColorTheme = {
   "--icon-warning": "--yellow-60",
   "--icon-positive": "--green-60",
   "--icon-negative": "--red-60",
+
+  // ACCENT
+  "--accent-orange": "--orange-15",
+  "--accent-yellow": "--yellow-15",
+  "--accent-blue": "--blue-15",
+  "--accent-purple": "--purple-15",
+  "--accent-teal": "--teal-15",
+  "--accent-cyan": "--cyan-15",
+  "--accent-red": "--red-15",
+  "--accent-green": "--green-15",
+  "--accent-pink": "--pink-15",
 
   "--shadow-primary": "--grey-100",
 };

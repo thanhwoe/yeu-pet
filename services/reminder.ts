@@ -13,6 +13,8 @@ interface IReminderQuery {
   status?: ReminderStatus;
   limit?: number;
   page?: number;
+  month?: number;
+  year?: number;
 }
 
 export const getListReminderQuery = (params?: IReminderQuery) =>

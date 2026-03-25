@@ -28,7 +28,7 @@ export const AgendaItem = ({
 
   if (isEmpty(item)) {
     return (
-      <View className="flex-row mb-10 items-center p-20 bg-background-foreground">
+      <View className="flex-row mb-10 items-center p-20 bg-background-card">
         <Body>No Events Planned</Body>
       </View>
     );
@@ -56,7 +56,7 @@ export const AgendaItem = ({
       >
         <TouchableOpacity
           onPress={() => setVisible(true)}
-          className="flex-row items-center py-20 px-20 border border-line-tertiary bg-background-foreground gap-12"
+          className="flex-row items-center py-20 px-20 border border-line-tertiary bg-background-card gap-12"
         >
           <View>
             <Avatar
