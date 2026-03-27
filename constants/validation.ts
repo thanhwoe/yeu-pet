@@ -4,6 +4,13 @@ import { ERROR_MESSAGE } from "./messages";
 
 export const REGEX = {
   date: /^\d{2}\/\d{2}\/\d{4}$/,
+  emoji: /^\p{Emoji_Presentation}$/u,
+};
+
+const parseLocalNumber = (val: string): number => {
+  // remove all dots (thousand separators)
+  const clean = val.replace(/\./g, "").replace(/,/g, ".");
+  return parseFloat(clean);
 };
 
 const ACCEPTED_IMAGE_TYPES = [
@@ -169,19 +176,47 @@ export const petInfoSchema = z.object({
     .nullable(),
 });
 
-export const budgetTransactionSchema = z.object({
-  content: z
+export const budgetCategorySchema = z.object({
+  name: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
     })
     .nonempty({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
     }),
-  amount: z.coerce.number<number>({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Amount"),
-  }),
-  type: z.enum(["grooming", "feed", "vaccination", "medication"], {
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Type"),
+  color: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
+    })
+    .nonempty({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
+    }),
+  emoji: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Emoji"),
+    })
+    .regex(REGEX.emoji, ERROR_MESSAGE.FIELD_INVALID("Emoji")),
+});
+
+export const budgetTransactionSchema = z.object({
+  description: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_INVALID("Description"),
+    })
+    .optional()
+    .nullable(),
+  amount: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Amount"),
+    })
+    .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Amount"))
+    .refine((val) => !isNaN(parseLocalNumber(val)), {
+      message: ERROR_MESSAGE.FIELD_INVALID("Amount"),
+    })
+    .transform(parseLocalNumber)
+    .pipe(z.number().min(1, ERROR_MESSAGE.FIELD_INVALID("Amount"))),
+  categoryId: z.string({
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Category"),
   }),
   date: z.date({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Date"),
@@ -215,7 +250,15 @@ export const shippingAddressSchema = z.object({
 
 export type IPetInfoForm = z.infer<typeof petInfoSchema>;
 
+export type IBudgetCategoryForm = z.infer<typeof budgetCategorySchema>;
+
 export type IBudgetTransactionForm = z.infer<typeof budgetTransactionSchema>;
+export type IBudgetTransactionFormInput = z.input<
+  typeof budgetTransactionSchema
+>;
+export type IBudgetTransactionFormOutput = z.output<
+  typeof budgetTransactionSchema
+>;
 
 export type IReminderForm = z.infer<typeof reminderSchema>;
 

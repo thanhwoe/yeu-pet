@@ -7,14 +7,10 @@ import {
   updateReminderMutation,
 } from "@/services";
 import { getMarkedDates, groupReminder } from "@/utils/reminder";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useCallback, useMemo, useRef, useState } from "react";
-import { SectionList, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { View } from "react-native";
 import { CalendarProvider, DateData } from "react-native-calendars";
 import { Popup } from "../Popup";
 import { ReminderForm } from "../ReminderForm";
@@ -31,36 +27,19 @@ export const ReminderCalendar = () => {
   const [agendaDelete, setAgendaDelete] = useState<IReminder>();
   const [calendarDate, setCalendarDate] = useState<DateData>();
 
-  const listRef = useRef<SectionList>(null);
-
   const queryClient = useQueryClient();
 
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: REMINDER_KEY.list({
-        limit: 10,
+  const { data, isLoading } = useQuery({
+    queryKey: REMINDER_KEY.list({
+      month: calendarDate?.month,
+      year: calendarDate?.year,
+    }),
+    queryFn: () =>
+      getListReminderQuery({
         month: calendarDate?.month,
         year: calendarDate?.year,
       }),
-      queryFn: ({ pageParam }) =>
-        getListReminderQuery({
-          limit: 10,
-          page: pageParam,
-          month: calendarDate?.month,
-          year: calendarDate?.year,
-        }),
-
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) => {
-        if (!lastPage.meta.hasNextPage) return undefined;
-        return lastPage.meta.page + 1;
-      },
-      select: (data) => data?.pages.flatMap((item) => item.data) || [],
-    });
-
-  const handleFetchMore = useCallback(() => {
-    hasNextPage && fetchNextPage();
-  }, [fetchNextPage, hasNextPage]);
+  });
 
   const { mutateAsync: updateReminder, isPending: isUpdating } = useMutation({
     mutationFn: updateReminderMutation,
@@ -85,7 +64,7 @@ export const ReminderCalendar = () => {
   });
 
   const { groupData, marked } = useMemo(() => {
-    const groupData = groupReminder(data ?? []);
+    const groupData = groupReminder(data?.data ?? []);
 
     const marked = getMarkedDates(groupData);
     return {
@@ -111,17 +90,6 @@ export const ReminderCalendar = () => {
 
   const handleCancel = useCallback(() => setAgendaDelete(undefined), []);
 
-  const handleChangeMonth = useCallback((date: DateData) => {
-    listRef.current?.scrollToLocation({
-      itemIndex: 0,
-      sectionIndex: 0,
-      animated: true,
-    });
-    requestAnimationFrame(() => {
-      setCalendarDate(date);
-    });
-  }, []);
-
   const defaultValue: IReminderForm | undefined = useMemo(() => {
     if (!agendaEdit) {
       return;
@@ -137,7 +105,7 @@ export const ReminderCalendar = () => {
 
   return (
     <View className="flex-1 mx-20">
-      <CalendarProvider date={currentDate} onMonthChange={handleChangeMonth}>
+      <CalendarProvider date={currentDate} onMonthChange={setCalendarDate}>
         <View className="gap-4 flex-1">
           <Calendar
             marked={marked}
@@ -146,15 +114,13 @@ export const ReminderCalendar = () => {
             weekTitleClassName="text-text-primary"
           />
           <AgendaList
-            ref={listRef}
+            key={calendarDate?.month}
             onEdit={setAgendaEdit}
             data={groupData}
             onDelete={setAgendaDelete}
             deleting={isDeleting}
             updating={isUpdating}
             loading={isLoading}
-            loadingMore={isFetchingNextPage}
-            onFetchMore={handleFetchMore}
           />
         </View>
       </CalendarProvider>

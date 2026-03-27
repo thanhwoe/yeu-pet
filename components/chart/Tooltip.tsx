@@ -33,14 +33,26 @@ export const Tooltip = ({ isPressActive, pressState }: IProps) => {
     () => pressState?.matchedIndex.value ?? 0,
     (matchedIndex, prevIndex) => {
       if (matchedIndex !== prevIndex) {
+        const isDefault =
+          pressState.x.value.value === "start" ||
+          pressState.x.value.value === "end";
+        const label = isDefault
+          ? ""
+          : new Date(pressState.x.value.value).toLocaleDateString();
+        const value = isDefault
+          ? ""
+          : pressState.y.value.value.value.toLocaleString();
+
         setNativeProps(dateValueRef, {
-          text: `${new Date(pressState.x.value.value).toLocaleDateString()}`,
+          text: label,
+          display: label ? "flex" : "none",
         });
         setNativeProps(valueRef, {
-          text: `${pressState.y.value.value.value.toLocaleString()}`,
+          text: value,
+          display: label ? "flex" : "none",
         });
       }
-    }
+    },
   );
 
   const onLayout = (event: LayoutChangeEvent) => {
@@ -54,7 +66,7 @@ export const Tooltip = ({ isPressActive, pressState }: IProps) => {
 
     const clampedX = Math.max(
       PADDING,
-      Math.min(rawX - w / 2, SCREEN_WIDTH - w - PADDING)
+      Math.min(rawX - w / 2, SCREEN_WIDTH - w - PADDING),
     );
 
     return {
@@ -66,22 +78,25 @@ export const Tooltip = ({ isPressActive, pressState }: IProps) => {
     <Animated.View
       style={animatedStyle}
       onLayout={onLayout}
-      className={cn("absolute px-3 py-2 gap-2 bg-grey-5 rounded-xl invisible", {
-        visible: isPressActive,
-      })}
+      className={cn(
+        "absolute px-12 py-4 gap-4 bg-background-card-highlight rounded-8 invisible",
+        {
+          visible: isPressActive,
+        },
+      )}
       pointerEvents="none"
     >
       <AnimatedText
         ref={dateValueRef}
         defaultValue="0"
         maxFontSizeMultiplier={24 / 12}
-        className="font-normal text-text-secondary text-[12px]"
+        className="font-normal font- text-text-primary text-[12px] font-semiBold"
       />
       <AnimatedText
         ref={valueRef}
         defaultValue="0"
         maxFontSizeMultiplier={24 / 12}
-        className="font-normal text-text-primary text-center text-[12px]"
+        className="font-normal text-text-secondary text-center text-[12px] font-bold"
       />
     </Animated.View>
   );

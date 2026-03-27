@@ -42,12 +42,31 @@ export const BUDGET_TRANSACTION_KEY = {
   detail: (id?: number) => [...BUDGET_TRANSACTION_KEY.details(), id] as const,
 };
 
+export const BUDGET_CATEGORY_KEY = {
+  all: [{ scope: "budget-category" }] as const,
+  lists: () => [...BUDGET_CATEGORY_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...BUDGET_CATEGORY_KEY.lists(), { params }] as const,
+  details: () => [...BUDGET_CATEGORY_KEY.all, "detail"] as const,
+  detail: (id?: number) => [...BUDGET_CATEGORY_KEY.details(), id] as const,
+};
+
 export const BUDGET_KEY = {
   all: [{ scope: "budget" }] as const,
   lists: () => [...BUDGET_KEY.all, "list"] as const,
   list: (params?: IQueryParams) => [...BUDGET_KEY.lists(), { params }] as const,
   details: () => [...BUDGET_KEY.all, "detail"] as const,
-  detail: (id?: number) => [...BUDGET_KEY.details(), id] as const,
+  detail: (id?: number | string) => [...BUDGET_KEY.details(), id] as const,
+};
+
+export const BUDGET_STATISTIC_KEY = {
+  all: [{ scope: "budget-statistic" }] as const,
+  lists: () => [...BUDGET_STATISTIC_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...BUDGET_STATISTIC_KEY.lists(), { params }] as const,
+  details: () => [...BUDGET_STATISTIC_KEY.all, "detail"] as const,
+  detail: (id?: number | string) =>
+    [...BUDGET_STATISTIC_KEY.details(), id] as const,
 };
 
 export const CHART_KEY = {

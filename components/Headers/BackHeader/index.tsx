@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/Text";
+import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cn } from "@/utils";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
@@ -19,7 +19,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
   return (
     <View
       className={cn(
-        "flex-row items-center gap-2 px-4 pb-2 pt-safe-offset-2 bg-background",
+        "flex-row items-center px-16 pb-12 pt-safe-offset-8 bg-background",
       )}
       style={options.headerStyle as ViewStyle}
     >
@@ -35,7 +35,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
             <ArrowLeftIcon
               size={27}
               weight="bold"
-              className="text-icon-primary-foreground"
+              className="text-icon-primary"
             />
           </TouchableOpacity>
         )
@@ -45,9 +45,9 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
           <HeaderTitle>{options.title ?? ""}</HeaderTitle>
         </View>
       ) : (
-        <Text className="flex-1 text-center font-medium" numberOfLines={1}>
+        <Body className="flex-1" center weight="semiBold" numberOfLines={1}>
           {options.title ?? ""}
-        </Text>
+        </Body>
       )}
       {HeaderRight ? (
         <View

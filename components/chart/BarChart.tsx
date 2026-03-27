@@ -1,29 +1,40 @@
 import { IChartPoints } from "@/interfaces";
-import {
-  DashPathEffect,
-  LinearGradient,
-  useFont,
-  vec,
-} from "@shopify/react-native-skia";
-import React from "react";
+import { abbreviateNumber } from "@/utils";
+import { DashPathEffect, useFont } from "@shopify/react-native-skia";
+import dayjs from "dayjs";
+import { useUnstableNativeVariable } from "nativewind";
+import React, { memo } from "react";
 import { View } from "react-native";
-import { Bar, CartesianChart } from "victory-native";
+import { CartesianChart } from "victory-native";
 import { Skeleton } from "../Skeleton";
+import { CustomBar } from "./CustomBar";
 
 interface BarChartProps {
   data: IChartPoints;
   isLoading?: boolean;
 }
 
-export const BarChart = ({ data, isLoading }: BarChartProps) => {
-  const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
+export const BarChart = memo(({ data, isLoading }: BarChartProps) => {
+  const font = useFont(require("@/assets/fonts/Nunito-Regular.ttf"), 12);
+
+  const textColor = useUnstableNativeVariable(
+    "--text-primary",
+  ) as unknown as string;
+  const bgColor = useUnstableNativeVariable(
+    "--background-primary",
+  ) as unknown as string;
 
   if (isLoading && !data) {
-    return <Skeleton className="h-[300px] w-full" />;
+    return (
+      <Skeleton
+        className="h-[300px] w-full"
+        backgroundClassName="bg-background-primary"
+      />
+    );
   }
 
   return (
-    <View style={{ height: 300 }}>
+    <View style={{ height: 300 }} className="pb-16">
       <CartesianChart
         xKey="date"
         yKeys={["value"]}
@@ -34,11 +45,12 @@ export const BarChart = ({ data, isLoading }: BarChartProps) => {
         xAxis={{
           font,
           tickCount: 12,
-          labelColor: "#71717a",
+          labelColor: textColor,
           lineWidth: 0,
           formatXLabel: (value) => {
-            const date = new Date(2023, Number(value) - 1);
-            return date.toLocaleString("default", { month: "short" });
+            return dayjs()
+              .month(Number(value) - 1)
+              .format("MM");
           },
         }}
         frame={{
@@ -46,34 +58,32 @@ export const BarChart = ({ data, isLoading }: BarChartProps) => {
         }}
         yAxis={[
           {
+            font,
+            labelColor: textColor,
+            formatYLabel: (value) => {
+              return abbreviateNumber(value);
+            },
+            lineColor: textColor,
             tickCount: 5,
             linePathEffect: <DashPathEffect intervals={[4, 4]} />,
           },
         ]}
         data={data}
       >
-        {({ points, chartBounds }) => {
-          return (
-            <Bar
-              points={points.value}
-              chartBounds={chartBounds}
-              animate={{ type: "timing", duration: 300 }}
-              innerPadding={0.33}
-              roundedCorners={{
-                topLeft: 5,
-                topRight: 5,
-              }}
-              labels={{ font, color: "#262626", position: "top" }}
-            >
-              <LinearGradient
-                start={vec(0, 0)}
-                end={vec(0, 400)}
-                colors={["#fb923c", "#fb923c50"]}
-              />
-            </Bar>
-          );
-        }}
+        {({ points, chartBounds }) => (
+          <CustomBar
+            points={points.value}
+            chartBounds={chartBounds}
+            font={font}
+            textColor={textColor}
+            bgColor={bgColor}
+            innerPadding={0.33}
+            barRadius={5}
+          />
+        )}
       </CartesianChart>
     </View>
   );
-};
+});
+
+BarChart.displayName = "BarChart";

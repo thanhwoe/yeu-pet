@@ -23,7 +23,7 @@ export function abbreviateNumber(num: number, decimals: number = 1): string {
 
 export function calculateDiscountPercentage(
   originalPrice?: number,
-  salePrice?: number
+  salePrice?: number,
 ) {
   if (!originalPrice) {
     return "0%";
@@ -34,3 +34,32 @@ export function calculateDiscountPercentage(
 
   return `-${percentageDiff.toFixed(0)}%`;
 }
+
+const abbreviateCurrency = (value: number, locale = "en-US"): string => {
+  const absValue = Math.abs(value);
+  const sign = value < 0 ? "-" : "";
+
+  if (absValue >= 1_000_000_000) {
+    return `${sign}${(absValue / 1_000_000_000).toFixed(1).replace(/\.0$/, "")}B`;
+  }
+  if (absValue >= 1_000_000) {
+    return `${sign}${(absValue / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+  }
+  if (absValue >= 1_000) {
+    return `${sign}${(absValue / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+  }
+
+  return `${sign}${absValue.toLocaleString(locale)}`;
+};
+
+export const formatCurrency = (
+  value: number,
+  symbol = "$",
+  locale = "en-US",
+): string => {
+  return `${symbol}${abbreviateCurrency(value, locale)}`;
+};
+
+// formatCurrency(1_500_000)      // "$1.5M"
+// formatCurrency(48000, '₫')    // "₫48K"
+// formatCurrency(48000, '€')

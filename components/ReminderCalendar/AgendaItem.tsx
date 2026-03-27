@@ -1,6 +1,8 @@
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminder } from "@/interfaces";
 import { date } from "@/utils";
 import isEmpty from "lodash/isEmpty";
+import { PencilIcon, TrashIcon } from "phosphor-react-native";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Popup } from "../Popup";
@@ -8,6 +10,9 @@ import { ReminderStatusChip, ReminderTypeIcon } from "../ReminderIcons";
 import { SwipeableWrapper } from "../SwipeableWrapper";
 import { Avatar } from "../ui/Avatar";
 import { Body } from "../ui/Typography";
+
+const EditIcon = withIconClassName(PencilIcon);
+const DeleteIcon = withIconClassName(TrashIcon);
 
 interface ItemProps {
   item: IReminder;
@@ -38,13 +43,13 @@ export const AgendaItem = ({
     <>
       <SwipeableWrapper
         leftAction={{
-          text: "Edit",
+          icon: <EditIcon className="text-grey-0" weight="bold" />,
           onPress: () => onEdit?.(item),
           width: 80,
           loading: editing,
         }}
         rightAction={{
-          text: "Delete",
+          icon: <DeleteIcon className="text-grey-0" weight="bold" />,
           onPress: () => onDelete?.(item),
           width: 80,
           loading: deleting,

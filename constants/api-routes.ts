@@ -26,16 +26,11 @@ export const API_ROUTES = {
 
   UPLOAD_FILE: "/upload-file",
 
-  CREATE_BUDGET_TRANSACTION: "/budget/transaction/create",
-  UPDATE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/update`,
-  DELETE_BUDGET_TRANSACTION: (id: string) => `/budget/transaction/${id}/delete`,
-  LIST_BUDGET_TRANSACTION: "/budget/transaction",
-
-  BUDGET: "/budget",
-  UPDATE_BUDGET: "/budget/update",
-
-  DAILY_SPENT_CHART: "/budget/daily-spent-chart",
-  MONTHLY_SPENT_CHART: "/budget/monthly-spent-chart",
+  BUDGETS: "/budgets",
+  BUDGET_CATEGORIES: "/budgets/categories",
+  BUDGET_TRANSACTIONS: "/budgets/transactions",
+  BUDGET_STATISTIC_MONTHLY: "/budgets/statistics/monthly",
+  BUDGET_STATISTIC_YEARLY: "/budgets/statistics/yearly",
 
   UPLOAD_PHOTO: "/photos/upload",
   PHOTOS: "/photos",

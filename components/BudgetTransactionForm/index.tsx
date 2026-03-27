@@ -1,85 +1,96 @@
 import {
   budgetTransactionSchema,
   IBudgetTransactionForm,
+  IBudgetTransactionFormInput,
+  IBudgetTransactionFormOutput,
 } from "@/constants/validation";
-import { date } from "@/utils";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
+import { IBudgetCategory } from "@/interfaces";
+import { date, hexToRgba } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 import { DateTimePickerController } from "../DatetimePickerController";
 import { InputController } from "../InputController";
 import { OptionInputController } from "../OptionInputController";
-import { ReminderIcons } from "../ReminderIcons";
 import { Button } from "../ui/Button";
 
 interface IProps {
   onSubmit: (data: IBudgetTransactionForm) => Promise<void>;
-  defaultValues?: IBudgetTransactionForm;
+  defaultValues?: IBudgetTransactionFormInput;
+  categories: IBudgetCategory[];
+  submitting?: boolean;
 }
 
-export const BudgetTransactionForm = ({ onSubmit, defaultValues }: IProps) => {
-  const [isPending, startTransition] = useTransition();
+const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
 
-  const { control, handleSubmit } = useForm<IBudgetTransactionForm>({
+export const BudgetTransactionForm = ({
+  onSubmit,
+  defaultValues,
+  categories,
+  submitting,
+}: IProps) => {
+  const { control, handleSubmit } = useForm<
+    IBudgetTransactionFormInput,
+    any,
+    IBudgetTransactionFormOutput
+  >({
     resolver: zodResolver(budgetTransactionSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues,
   });
 
-  const handleSubmitForm = (data: IBudgetTransactionForm) => {
-    startTransition(async () => {
-      await onSubmit(data);
-    });
-  };
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((c) => ({
+        label: c.name,
+        value: c.id,
+        icon: (
+          <View
+            className="p-4 rounded-8"
+            style={{ backgroundColor: hexToRgba(c.color, 0.5) }}
+          >
+            <Text>{c.emoji}</Text>
+          </View>
+        ),
+      })),
+    [categories],
+  );
   return (
-    <View className="px-4 pb-4">
-      <InputController<IBudgetTransactionForm>
+    <KeyboardAvoidingView
+      className="px-26 gap-16 pb-safe-offset-8"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <EnhancedInputController
         control={control}
-        name="content"
-        label="Content"
-        placeholder="Content"
+        name="description"
+        label="Description"
+        placeholder="Description"
       />
-      <InputController<IBudgetTransactionForm>
+      <EnhancedInputController
         control={control}
         name="amount"
         label="Amount"
         placeholder="Amount"
-        inputMode="decimal"
+        keyboardType="numeric"
+        format={(v: string) => {
+          const numericValue = v.replace(/[^0-9]/g, "");
+          return Number(numericValue).toLocaleString();
+        }}
       />
-      <OptionInputController<IBudgetTransactionForm>
+      <OptionInputController<any>
         control={control}
-        name="type"
-        label="Type"
-        placeholder="Type"
-        options={[
-          {
-            label: "Feed",
-            value: "feed",
-            icon: <ReminderIcons type="feed" />,
-          },
-          {
-            label: "Grooming",
-            value: "grooming",
-            icon: <ReminderIcons type="grooming" />,
-          },
-          {
-            label: "Vaccination",
-            value: "vaccination",
-            icon: <ReminderIcons type="vaccination" />,
-          },
-          {
-            label: "Medication",
-            value: "medication",
-            icon: <ReminderIcons type="medication" />,
-          },
-        ]}
+        name="categoryId"
+        label="Category"
+        placeholder="Select category"
+        options={categoryOptions}
       />
-      <DateTimePickerController
+      <DateTimePickerController<any>
         name="date"
         control={control}
-        label="Event Date"
+        label="Date"
         placeholder="Select date"
         mode="date"
         format={(val) => date(val).format("LL")}
@@ -87,13 +98,12 @@ export const BudgetTransactionForm = ({ onSubmit, defaultValues }: IProps) => {
       />
 
       <Button
-        onPress={() => handleSubmit(handleSubmitForm)()}
-        disabled={isPending}
-        className="mt-4"
-        loading={isPending}
+        wrapperClassName="mt-20"
+        onPress={() => handleSubmit(onSubmit)()}
+        loading={submitting}
       >
         {!!defaultValues ? "Update transaction" : "Add transaction"}
       </Button>
-    </View>
+    </KeyboardAvoidingView>
   );
 };

@@ -256,7 +256,7 @@ export const darkColorTheme = {
   // LINE
   "--line-primary": "--blue-80",
   "--line-primary-inverse": "--grey-20",
-  "--line-secondary": "--blue-70",
+  "--line-secondary": "--blue-60",
   "--line-secondary-inverse": "--grey-80",
   "--line-secondary-pressed": "--blue-80",
   "--line-tertiary": "--blue-100",
@@ -298,7 +298,7 @@ export const lightColorTheme = {
   "--text-primary-disabled": "--grey-40",
 
   "--text-link": "--amber-60",
-  "--text-link-disabled": "--amber-30",
+  "--text-link-disabled": "--amber-80",
 
   "--text-secondary": "--orange-50",
   "--text-secondary-inverse": "--orange-10",
@@ -308,9 +308,9 @@ export const lightColorTheme = {
   "--text-tertiary": "--grey-30",
   "--text-tertiary-inverse": "--grey-80",
 
-  "--text-warning": "--yellow-60",
-  "--text-positive": "--green-60",
-  "--text-negative": "--red-60",
+  "--text-warning": "--yellow-50",
+  "--text-positive": "--green-50",
+  "--text-negative": "--red-50",
 
   "--text-emphasis": "--amber-70",
   "--text-emphasis-inverse": "--amber-10",
@@ -332,7 +332,7 @@ export const lightColorTheme = {
   "--background-card": "--grey-0",
   "--background-card-highlight": "--amber-5",
 
-  "--background-positive": "--green-50",
+  "--background-positive": "--green-40",
   "--background-positive-highlight": "--green-20",
   "--background-positive-foreground": "--green-5",
   "--background-negative": "--red-40",
@@ -361,9 +361,9 @@ export const lightColorTheme = {
   "--icon-secondary": "--grey-60",
   "--icon-tertiary": "--orange-40",
 
-  "--icon-warning": "--yellow-60",
-  "--icon-positive": "--green-60",
-  "--icon-negative": "--red-60",
+  "--icon-warning": "--yellow-50",
+  "--icon-positive": "--green-50",
+  "--icon-negative": "--red-50",
 
   // ACCENT
   "--accent-orange": "--orange-15",

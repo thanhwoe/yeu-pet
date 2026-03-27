@@ -1,10 +1,12 @@
 import { IChartPoints } from "@/interfaces";
+import { abbreviateNumber, hexToRgba } from "@/utils";
 import {
   DashPathEffect,
   LinearGradient,
   useFont,
   vec,
 } from "@shopify/react-native-skia";
+import { useUnstableNativeVariable } from "nativewind";
 import * as React from "react";
 import { View } from "react-native";
 import { Area, CartesianChart, Line, useChartPressState } from "victory-native";
@@ -12,28 +14,33 @@ import { Skeleton } from "../Skeleton";
 import { ActiveIndicator } from "./ActiveIndicator";
 import { Tooltip } from "./Tooltip";
 
-const randomNumber = () => Math.floor(Math.random() * (50 - 25 + 1)) + 25;
-
-const DATA = (numberPoints = 31) =>
-  Array.from({ length: numberPoints }, (_, index) => ({
-    day: index + 1,
-    value: randomNumber(),
-  }));
-
 interface LineChartProps {
   data: IChartPoints;
   isLoading?: boolean;
 }
 
-export const LineChart = ({ data, isLoading }: LineChartProps) => {
-  const font = useFont(require("@/assets/fonts/SpaceMono-Regular.ttf"), 12);
+export const LineChart = React.memo(({ data, isLoading }: LineChartProps) => {
+  const font = useFont(require("@/assets/fonts/Nunito-Regular.ttf"), 12);
   const { state, isActive } = useChartPressState({
     x: "",
     y: { value: 0 },
   });
 
+  const textColor = useUnstableNativeVariable(
+    "--text-primary",
+  ) as unknown as string;
+  const lineColor = useUnstableNativeVariable("--line-secondary");
+  const bgColor = useUnstableNativeVariable(
+    "--background-primary",
+  ) as unknown as string;
+
   if (isLoading && !data) {
-    return <Skeleton className="h-[300px] w-full" />;
+    return (
+      <Skeleton
+        className="h-[300px] w-full"
+        backgroundClassName="bg-background-primary"
+      />
+    );
   }
 
   return (
@@ -42,32 +49,29 @@ export const LineChart = ({ data, isLoading }: LineChartProps) => {
         xKey="date"
         yKeys={["value"]}
         chartPressState={state}
-        axisOptions={{
-          font,
-          labelColor: { x: "#71717a", y: "#71717a" },
-          tickCount: { x: 0, y: 5 },
-          formatYLabel: (value) => {
-            return `${value}`;
-          },
-        }}
         frame={{
           lineWidth: 0,
         }}
         yAxis={[
           {
             font,
+            labelColor: textColor,
             tickCount: 5,
+            formatYLabel: (value) => {
+              return abbreviateNumber(value);
+            },
+            lineColor: textColor,
             linePathEffect: <DashPathEffect intervals={[4, 4]} />,
           },
         ]}
-        data={data}
+        data={[{ date: "start", value: 0 }, ...data, { date: "end", value: 0 }]}
       >
         {({ points, chartBounds }) => (
           <>
             <Line
               points={points.value}
               curveType="monotoneX"
-              color={"#FF8000"}
+              color={lineColor}
               strokeWidth={1}
               animate={{ type: "timing", duration: 300 }}
             />
@@ -80,7 +84,11 @@ export const LineChart = ({ data, isLoading }: LineChartProps) => {
               <LinearGradient
                 start={vec(0, 0)}
                 end={vec(0, 400)}
-                colors={["#fb923c", "#fb923c50"]}
+                colors={[
+                  bgColor,
+                  hexToRgba(bgColor, 0.4),
+                  hexToRgba(bgColor, 0.1),
+                ]}
               />
             </Area>
           </>
@@ -90,4 +98,6 @@ export const LineChart = ({ data, isLoading }: LineChartProps) => {
       <Tooltip pressState={state} isPressActive={isActive} />
     </View>
   );
-};
+});
+
+LineChart.displayName = "LineChart";

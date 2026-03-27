@@ -1,3 +1,4 @@
+import { hexToRgba } from "@/utils";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { cssInterop } from "nativewind";
 import { useEffect } from "react";
@@ -14,17 +15,15 @@ interface SkeletonProps extends Omit<LinearGradientProps, "colors"> {
   startColorClassName?: string;
   endColorClassName?: string;
   style?: ViewStyle;
+  backgroundColor?: string;
 }
-const AnimatedLinearGradient = cssInterop(
-  Animated.createAnimatedComponent(LinearGradient),
-  {
-    className: {
-      target: "style",
-    },
-  }
-);
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-export const Skeleton = ({ style, ...props }: SkeletonProps) => {
+export const SkeletonBase = ({
+  style,
+  backgroundColor = "#FF9947",
+  ...props
+}: SkeletonProps) => {
   const opacity = useSharedValue(1);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export const Skeleton = ({ style, ...props }: SkeletonProps) => {
         easing: Easing.bezier(0.4, 0, 0.6, 1),
       }),
       -1,
-      true
+      true,
     );
   }, [opacity]);
 
@@ -42,9 +41,25 @@ export const Skeleton = ({ style, ...props }: SkeletonProps) => {
     <AnimatedLinearGradient
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      colors={["#FED16A", "#FFDE63", "#FFF4A4"]}
+      colors={[
+        hexToRgba(backgroundColor, 1),
+        hexToRgba(backgroundColor, 0.5),
+        hexToRgba(backgroundColor, 0.2),
+      ]}
       style={[{ opacity: opacity }, style]}
       {...props}
     />
   );
 };
+
+export const Skeleton = cssInterop(SkeletonBase, {
+  backgroundClassName: {
+    target: false,
+    nativeStyleToProp: {
+      backgroundColor: "backgroundColor",
+    },
+  },
+  className: {
+    target: "style",
+  },
+});

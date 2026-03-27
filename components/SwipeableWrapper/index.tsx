@@ -33,6 +33,7 @@ interface SwipeableWrapperProps {
   swipeThreshold?: number;
   style?: ViewStyle;
   actionButtonStyle?: ViewStyle;
+  disabled?: boolean;
   springConfig?: {
     damping?: number;
     stiffness?: number;
@@ -47,6 +48,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
   swipeThreshold = 100,
   style,
   actionButtonStyle,
+  disabled = false,
   springConfig = {
     damping: 15,
     stiffness: 150,
@@ -59,6 +61,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
   const defaultActionWidth = 80;
 
   const panGesture = Gesture.Pan()
+    .enabled(!disabled)
     .activeOffsetX([-10, 10]) // Only activate when horizontal movement > 10px
     .failOffsetY([-10, 10]) // Fail when vertical movement > 10px
     .simultaneousWithExternalGesture() // Allow other gestures to run simultaneously
@@ -222,7 +225,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               )}
               {leftAction.icon && !leftAction.loading && leftAction.icon}
               {leftAction.loading && (
-                <Spinner size={20} className="text-icon-primary" />
+                <Spinner size={20} className="text-grey-0" />
               )}
             </TouchableOpacity>
           </Animated.View>
@@ -265,7 +268,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               )}
               {rightAction.icon && !rightAction.loading && rightAction.icon}
               {rightAction.loading && (
-                <Spinner size={20} className="text-icon-primary" />
+                <Spinner size={20} className="text-grey-0" />
               )}
             </TouchableOpacity>
           </Animated.View>

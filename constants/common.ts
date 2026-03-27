@@ -13,6 +13,7 @@ export const ENV = {
     ? Platform.select({
         // ios: "https://pet-land-api.thanhwoe.workers.dev/api",
         ios: "http://localhost:3000/api/v1",
+        // ios: "http://10.10.10.183:3000/api/v1",
         android: "http://10.0.2.2:8787/api",
         default: "http://localhost:8787/api",
       })

@@ -5,7 +5,7 @@ import { Body } from "../Typography";
 
 interface IProps<T> {
   item: ItemType<T>;
-  onSelect: (value: ItemType<T>) => void;
+  onSelect?: (value: ItemType<T>) => void;
   selected?: boolean;
 }
 
@@ -16,11 +16,23 @@ export const Option = <T,>({ item, onSelect, selected }: IProps<T>) => {
         "px-24 py-12 flex-row items-center justify-between bg-background-tertiary rounded-12",
         {
           "bg-background-secondary": selected,
+          " opacity-50": item.disabled,
         },
       )}
-      onPress={() => onSelect(item)}
+      disabled={item.disabled}
+      onPress={() => {
+        item.onPress?.();
+        onSelect?.(item);
+      }}
     >
-      <Body>{item.label}</Body>
+      <Body
+        className={cn({
+          "opacity-50": item.disabled,
+        })}
+        weight="semiBold"
+      >
+        {item.label}
+      </Body>
       {item.icon && item.icon}
     </TouchableOpacity>
   );

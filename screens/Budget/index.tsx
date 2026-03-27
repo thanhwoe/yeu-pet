@@ -1,298 +1,370 @@
+import { BudgetCategoryForm } from "@/components/BudgetCategoryForm";
+import { BudgetTransaction } from "@/components/BudgetTransaction";
 import { BudgetTransactionForm } from "@/components/BudgetTransactionForm";
-import { BarChart, LineChart } from "@/components/chart";
+import { MonthYear, MonthYearPicker } from "@/components/MonthYearPicker";
+import {
+  CURRENT_MONTH,
+  CURRENT_YEAR,
+} from "@/components/MonthYearPicker/utils";
 import { Tabs } from "@/components/Tabs";
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
-import { Button } from "@/components/ui/Button";
+import { Options } from "@/components/ui/Options";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
-import { Text } from "@/components/ui/Text";
+import { Body, Heading } from "@/components/ui/Typography";
 import {
+  BUDGET_CATEGORY_KEY,
   BUDGET_KEY,
+  BUDGET_STATISTIC_KEY,
   BUDGET_TRANSACTION_KEY,
-  CHART_KEY,
 } from "@/constants/query-keys";
-import { IBudgetTransactionForm } from "@/constants/validation";
+import {
+  IBudgetCategoryForm,
+  IBudgetTransactionForm,
+} from "@/constants/validation";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { IBudgetTransaction } from "@/interfaces";
-import { getDailySpentChartQuery, getMonthlySpentChartQuery } from "@/services";
 import {
+  createBudgetCategoryMutation,
   createBudgetTransactionMutation,
-  deleteBudgetTransactionMutation,
-  getListBudgetTransactionQuery,
-  updateBudgetTransactionMutation,
-} from "@/services/budget-transaction";
-import { date } from "@/utils";
-import { FlashList } from "@shopify/flash-list";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+  getBudgetCategoryQuery,
+  getBudgetMonthlyStatisticsQuery,
+  getBudgetQuery,
+  getBudgetTransactionQuery,
+  getBudgetYearlyStatisticsQuery,
+  updateBudgetMutation,
+} from "@/services";
+import { groupBudgetTransactions } from "@/utils/budget";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { useNavigation } from "expo-router";
-import { reduce } from "lodash";
-import { PlusCircleIcon } from "phosphor-react-native";
-import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native";
-import { BudgetSection } from "./BudgetSection";
-import { TransactionItem } from "./TransactionItem";
+import { CalendarBlankIcon, PlusIcon } from "phosphor-react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
+import { BudgetInput } from "./BudgetSection/BudgetInput";
+import { BudgetTabContent, TABS, TabValue } from "./BudgetTabContent";
 
-const PlusIcon = withIconClassName(PlusCircleIcon);
-
-const LIMIT = 5;
+const AddIcon = withIconClassName(PlusIcon);
+const CalendarIcon = withIconClassName(CalendarBlankIcon);
 
 export function BudgetScreen() {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabValue>(TABS[0].value);
+  const [monthYear, setMonthYear] = useState<MonthYear>({
+    month: CURRENT_MONTH,
+    year: CURRENT_YEAR,
+  });
+
+  const months = useRef(dayjs.monthsShort()).current;
+
+  const [openAddOptions, setOpenAddOptions] = useState(false);
+  const [openCategoryForm, setOpenCategoryForm] = useState(false);
   const [openTransactionForm, setOpenTransactionForm] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<IBudgetTransaction>();
+  const [openBudgetForm, setOpenBudgetForm] = useState(false);
 
-  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: BUDGET_TRANSACTION_KEY.list({ limit: LIMIT }),
-      queryFn: ({ pageParam }) =>
-        getListBudgetTransactionQuery({
-          limit: LIMIT,
-          page: pageParam,
-        }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) => {
-        if (!lastPage.metadata.nextPage) return null;
+  const actualMonth = monthYear.month + 1;
 
-        return lastPage.metadata.nextPage;
-      },
-      select: (data) => data?.pages.flatMap((item) => item.data) || [],
-    });
+  const { data: categories } = useQuery({
+    queryKey: BUDGET_CATEGORY_KEY.list({ limit: 20 }),
+    queryFn: () => getBudgetCategoryQuery({ limit: 20 }),
+  });
 
-  const { data: dailySpentChartData, isLoading: isLoadingDailySpentChart } =
+  const { data: budgetData, isLoading: isLoadingBudget } = useQuery({
+    queryKey: BUDGET_KEY.detail(`${actualMonth} ${monthYear.year}`),
+    queryFn: () => getBudgetQuery({ month: actualMonth, year: monthYear.year }),
+  });
+
+  const { data: transactions, isLoading: isLoadingTransaction } = useQuery({
+    queryKey: BUDGET_TRANSACTION_KEY.list({
+      limit: 5,
+      month: actualMonth,
+      year: monthYear.year,
+    }),
+    queryFn: () =>
+      getBudgetTransactionQuery({
+        limit: 5,
+        month: actualMonth,
+        year: monthYear.year,
+      }),
+  });
+
+  const { data: statisticYearly, isLoading: isLoadingStatisticYearly } =
     useQuery({
-      queryKey: CHART_KEY.list({ key: "dailySpent" }),
-      queryFn: getDailySpentChartQuery,
+      queryKey: BUDGET_STATISTIC_KEY.detail(`yearly ${monthYear.year}`),
+      queryFn: () => getBudgetYearlyStatisticsQuery({ year: monthYear.year }),
     });
-
-  const { data: monthlySpentChartData, isLoading: isLoadingMonthlySpentChart } =
+  const { data: statisticMonthly, isLoading: isLoadingStatisticMonthly } =
     useQuery({
-      queryKey: CHART_KEY.list({ key: "monthlySpent" }),
-      queryFn: getMonthlySpentChartQuery,
-    });
-
-  const renderFooter = () => {
-    if (!hasNextPage) {
-      return (
-        <View className="mt-4 items-center">
-          <Text className="text-text-secondary">No more items</Text>
-        </View>
-      );
-    }
-
-    return (
-      <View className="mt-4 items-center">
-        {isFetchingNextPage ? (
-          <ActivityIndicator size="small" color="#666" />
-        ) : (
-          <Button variant="tonal" onPress={() => fetchNextPage()}>
-            Tap to load more
-          </Button>
-        )}
-      </View>
-    );
-  };
-
-  const { sections, sectionIndices } = useMemo(
-    () =>
-      reduce(
-        data ?? [],
-        (acc, txn) => {
-          const currentDate = date(txn?.date).format("DD MMMM YYYY");
-
-          if (currentDate !== acc.currentSectionDate) {
-            acc.sections.push(currentDate);
-            acc.sectionIndices.push(acc.sections.length);
-            acc.currentSectionDate = currentDate;
-          }
-          if (txn) {
-            acc.sections.push(txn);
-          }
-
-          return acc;
-        },
-        {
-          sections: [] as (string | IBudgetTransaction)[],
-          sectionIndices: [] as number[],
-          currentSectionDate: null as string | null,
-        }
+      queryKey: BUDGET_STATISTIC_KEY.detail(
+        `monthly ${actualMonth} ${monthYear.year}`,
       ),
-    [data]
+      queryFn: () =>
+        getBudgetMonthlyStatisticsQuery({
+          month: actualMonth,
+          year: monthYear.year,
+        }),
+    });
+
+  const sections = useMemo(
+    () => groupBudgetTransactions(transactions?.data ?? []),
+    [transactions?.data],
   );
 
-  const { mutate: createTransaction } = useMutation({
-    mutationFn: createBudgetTransactionMutation,
-    onSuccess: () => {
-      Toast.success({ text: "Create transaction successfully" });
-      queryClient.invalidateQueries({
-        queryKey: BUDGET_TRANSACTION_KEY.lists(),
-      });
-      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
-      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
-      setOpenTransactionForm(false);
-    },
-    onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
-    },
-  });
+  const { mutateAsync: createCategory, isPending: isCategoryCreating } =
+    useMutation({
+      mutationFn: createBudgetCategoryMutation,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: BUDGET_CATEGORY_KEY.lists(),
+        });
+        setOpenAddOptions(false);
+        setOpenCategoryForm(false);
+      },
+      onError: (e) => {
+        Toast.error({ text: e.message });
+      },
+    });
 
-  const { mutate: updateTransaction } = useMutation({
-    mutationFn: updateBudgetTransactionMutation,
-    onSuccess: () => {
-      Toast.success({ text: "Update transaction successfully" });
-      queryClient.invalidateQueries({
-        queryKey: BUDGET_TRANSACTION_KEY.lists(),
-      });
-      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
-      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
+  const handleSubmitCategory = async (data: IBudgetCategoryForm) => {
+    createCategory(data);
+  };
 
-      setOpenTransactionForm(false);
-      setSelectedTransaction(undefined);
-    },
-    onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
-    },
-  });
+  const { mutateAsync: createTransaction, isPending: isTransactionCreating } =
+    useMutation({
+      mutationFn: createBudgetTransactionMutation,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: BUDGET_TRANSACTION_KEY.lists(),
+        });
+        queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+        queryClient.invalidateQueries({
+          queryKey: BUDGET_STATISTIC_KEY.details(),
+        });
+        setOpenAddOptions(false);
+        setOpenTransactionForm(false);
+      },
+      onError: (e) => {
+        Toast.error({ text: e.message });
+      },
+    });
 
-  const { mutate: deleteTransaction } = useMutation({
-    mutationFn: deleteBudgetTransactionMutation,
-    onSuccess: () => {
-      Toast.success({ text: "Delete transaction successfully" });
-      queryClient.invalidateQueries({
-        queryKey: BUDGET_TRANSACTION_KEY.lists(),
-      });
-      queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
-      queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
-    },
-    onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
-    },
-  });
+  const handleSubmitTransaction = async (data: IBudgetTransactionForm) => {
+    createTransaction(data);
+  };
+
+  const { mutateAsync: updateBudget, isPending: isUpdatingBudget } =
+    useMutation({
+      mutationFn: updateBudgetMutation,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+        setOpenBudgetForm(false);
+        setOpenAddOptions(false);
+      },
+      onError: (e) => {
+        Toast.error({ text: e.message });
+      },
+    });
+
+  // const { mutate: updateTransaction } = useMutation({
+  //   mutationFn: updateBudgetTransactionMutation,
+  //   onSuccess: () => {
+  //     Toast.success({ text: "Update transaction successfully" });
+  //     queryClient.invalidateQueries({
+  //       queryKey: BUDGET_TRANSACTION_KEY.lists(),
+  //     });
+  //     queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+  //     queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
+
+  //     setOpenTransactionForm(false);
+  //     // setSelectedTransaction(undefined);
+  //   },
+  //   onError: (e) => {
+  //     Toast.error({ text: e.errors?.[0].message });
+  //   },
+  // });
+
+  // const { mutate: deleteTransaction } = useMutation({
+  //   mutationFn: deleteBudgetTransactionMutation,
+  //   onSuccess: () => {
+  //     Toast.success({ text: "Delete transaction successfully" });
+  //     queryClient.invalidateQueries({
+  //       queryKey: BUDGET_TRANSACTION_KEY.lists(),
+  //     });
+  //     queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
+  //     queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
+  //   },
+  //   onError: (e) => {
+  //     Toast.error({ text: e.errors?.[0].message });
+  //   },
+  // });
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => setOpenTransactionForm(true)}
-          className="bg-background-white p-2 rounded-full"
+          className="bg-background-secondary-pressed p-8 rounded-8"
+          onPress={() => setOpenAddOptions(true)}
         >
-          <PlusIcon size={24} />
+          <AddIcon className="text-icon-primary" weight="bold" />
         </TouchableOpacity>
       ),
     });
   }, []);
 
-  const tabs = [
-    {
-      title: "Month",
-      content: () => (
-        <LineChart
-          data={dailySpentChartData?.data || []}
-          isLoading={isLoadingDailySpentChart}
-        />
-      ),
-    },
-    {
-      title: "Year",
-      content: () => (
-        <BarChart
-          data={monthlySpentChartData?.data || []}
-          isLoading={isLoadingMonthlySpentChart}
-        />
-      ),
-    },
-  ];
+  // const handleDeleteTransaction = (data: IBudgetTransaction) => {
+  //   Alert.alert(
+  //     "Remove Transaction",
+  //     "Are you sure you want to remove this transaction?",
+  //     [
+  //       { text: "Cancel", style: "cancel" },
+  //       {
+  //         text: "Remove",
+  //         onPress: () => {
+  //           deleteTransaction(data.id);
+  //         },
+  //         style: "destructive",
+  //       },
+  //     ],
+  //   );
+  // };
 
-  const handleCloseForm = () => {
-    setOpenTransactionForm(false);
-  };
-
-  const handleCreateTransaction = async (data: IBudgetTransactionForm) => {
-    if (selectedTransaction) {
-      updateTransaction({ ...data, id: selectedTransaction.id });
-    } else {
-      createTransaction(data);
+  const ListHeaderComponent = useMemo(() => {
+    if (sections.length > 0) {
+      return (
+        <View className="justify-between items-center flex-row pb-8">
+          <Heading variant="h5" weight="bold">
+            Recent Transactions
+          </Heading>
+          <Body className="text-text-link">See all</Body>
+        </View>
+      );
     }
-  };
 
-  const handleEditTransaction = (data: IBudgetTransaction) => {
-    setSelectedTransaction(data);
-    setOpenTransactionForm(true);
-  };
-
-  const handleDeleteTransaction = (data: IBudgetTransaction) => {
-    Alert.alert(
-      "Remove Transaction",
-      "Are you sure you want to remove this transaction?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Remove",
-          onPress: () => {
-            deleteTransaction(data.id);
-          },
-          style: "destructive",
-        },
-      ]
-    );
-  };
+    return null;
+  }, [sections]);
 
   return (
     <ScreenContainer
       scrollEnabled
-      contentContainerClassName="!pt-2 pb-safe-or-2"
+      contentContainerClassName="px-16 pb-safe-or-2 gap-20"
     >
-      <View>
-        <BudgetSection />
-        <Tabs tabs={tabs} className="mt-4" />
+      <View className="flex-row bg-background-card-highlight justify-between p-8 rounded-24">
+        <Tabs tabs={TABS} active={activeTab} onChange={setActiveTab} />
+        <TouchableOpacity
+          className="flex-row items-center gap-8 pr-8"
+          onPress={() => setOpenDatePicker(true)}
+        >
+          <Body weight="bold">
+            {months[monthYear.month]} {monthYear.year}
+          </Body>
+          <CalendarIcon weight="bold" className="text-icon-primary" />
+        </TouchableOpacity>
       </View>
-      <FlashList
-        estimatedItemSize={72}
-        ListFooterComponent={renderFooter}
-        data={sections}
-        getItemType={(item) =>
-          typeof item === "string" ? "sectionHeader" : "row"
-        }
-        stickyHeaderIndices={sectionIndices}
-        renderItem={({ item }) => {
-          if (typeof item === "string") {
-            if (!item) return null;
 
-            return (
-              <Text variant="body2" className="text-text-upcoming-title px-5">
-                {item}
-              </Text>
-            );
-          }
-          return (
-            <View className="mb-2">
-              <TransactionItem
-                data={item}
-                onEdit={handleEditTransaction}
-                onDelete={handleDeleteTransaction}
-              />
-            </View>
-          );
+      <BudgetTabContent
+        active={activeTab}
+        month={{
+          budgetData: budgetData,
+          loadingBudget: isLoadingBudget,
+          chartData: statisticMonthly?.dailyTrend || [],
+          loading: isLoadingStatisticMonthly,
+          categoryData: statisticMonthly?.spendingByCategory ?? [],
+        }}
+        year={{
+          chartData: statisticYearly?.monthlyTrend || [],
+          loading: isLoadingStatisticYearly,
+          summary: statisticYearly?.summary,
+          categoryData: statisticYearly?.spendingByCategory ?? [],
         }}
       />
 
-      <BottomSheet visible={openTransactionForm} onDismiss={handleCloseForm}>
+      <BudgetTransaction
+        sections={sections}
+        scrollEnabled={false}
+        ListHeaderComponent={ListHeaderComponent}
+        loading={isLoadingTransaction}
+      />
+      <BottomSheet
+        useScrollView={false}
+        visible={openDatePicker}
+        titleElement={<Body weight="semiBold">Select period</Body>}
+        onDismiss={() => setOpenDatePicker(false)}
+      >
+        <MonthYearPicker
+          onConfirm={(v) => {
+            setMonthYear(v);
+            setOpenDatePicker(false);
+          }}
+          initialMonth={monthYear.month}
+          initialYear={monthYear.year}
+        />
+      </BottomSheet>
+
+      <BottomSheet
+        visible={openAddOptions}
+        onDismiss={() => setOpenAddOptions(false)}
+      >
+        <Options
+          data={[
+            {
+              label: "Set monthly budget",
+              value: "budget",
+              onPress: () => setOpenBudgetForm(true),
+            },
+            {
+              label: "Add new category",
+              value: "category",
+              onPress: () => setOpenCategoryForm(true),
+            },
+            {
+              label: "Add new transaction",
+              disabled: !Boolean(categories?.data.length),
+              value: "transaction",
+              onPress: () => setOpenTransactionForm(true),
+            },
+          ]}
+        />
+      </BottomSheet>
+      <BottomSheet
+        visible={openTransactionForm}
+        onDismiss={() => setOpenTransactionForm(false)}
+      >
         <BudgetTransactionForm
-          onSubmit={handleCreateTransaction}
-          {...(selectedTransaction && {
-            defaultValues: {
-              ...selectedTransaction,
-              amount: selectedTransaction.amount + "",
-              date: new Date(selectedTransaction.date),
-            } as any,
-          })}
+          onSubmit={handleSubmitTransaction}
+          submitting={isTransactionCreating}
+          categories={categories?.data ?? []}
+        />
+      </BottomSheet>
+      <BottomSheet
+        visible={openCategoryForm}
+        onDismiss={() => setOpenCategoryForm(false)}
+      >
+        <BudgetCategoryForm
+          onSubmit={handleSubmitCategory}
+          submitting={isCategoryCreating}
+        />
+      </BottomSheet>
+
+      <BottomSheet
+        visible={openBudgetForm}
+        onDismiss={() => setOpenBudgetForm(false)}
+        snapPoints={undefined}
+        titleElement={<Body weight="semiBold">Set monthly budget</Body>}
+        useScrollView
+        keyboardBehavior="interactive"
+      >
+        <BudgetInput
+          onSubmit={(v) => {
+            updateBudget({
+              amount: v,
+              month: actualMonth,
+              year: monthYear.year,
+            });
+          }}
+          isLoading={isUpdatingBudget}
+          defaultValue={budgetData?.amount}
         />
       </BottomSheet>
     </ScreenContainer>

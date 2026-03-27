@@ -4,7 +4,6 @@ import { SectionList, View } from "react-native";
 import { AgendaList as List } from "react-native-calendars";
 import { Skeleton } from "../Skeleton";
 import { Toast } from "../Toast";
-import { Spinner } from "../ui/Spinner";
 import { Body, Heading } from "../ui/Typography";
 import { AgendaDate } from "./AgendaDate";
 import { AgendaItem } from "./AgendaItem";
@@ -15,26 +14,12 @@ interface IProps {
   deleting?: boolean;
   updating?: boolean;
   loading?: boolean;
-  loadingMore?: boolean;
   data: GroupedReminder[];
-  onFetchMore?: () => void;
 }
 
 export const AgendaList = memo(
   forwardRef<SectionList, IProps>(
-    (
-      {
-        data,
-        onDelete,
-        onEdit,
-        deleting,
-        updating,
-        onFetchMore,
-        loading,
-        loadingMore,
-      },
-      ref,
-    ) => {
+    ({ data, onDelete, onEdit, deleting, updating, loading }, ref) => {
       const renderItem = useCallback(
         ({ item }: { item: IReminder }) => {
           const handleEdit = (v: IReminder) => {
@@ -65,9 +50,18 @@ export const AgendaList = memo(
         if (loading) {
           return (
             <View className="gap-16 mt-20">
-              <Skeleton className="h-80" />
-              <Skeleton className="h-80" />
-              <Skeleton className="h-80" />
+              <Skeleton
+                className="h-80"
+                backgroundClassName="bg-background-primary"
+              />
+              <Skeleton
+                className="h-80"
+                backgroundClassName="bg-background-primary"
+              />
+              <Skeleton
+                className="h-80"
+                backgroundClassName="bg-background-primary"
+              />
             </View>
           );
         }
@@ -96,11 +90,6 @@ export const AgendaList = memo(
             paddingBottom: 20,
           }}
           ListEmptyComponent={ListEmptyComponent}
-          onEndReached={onFetchMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            loadingMore ? <Spinner className="text-icon-primary" /> : null
-          }
         />
       );
     },

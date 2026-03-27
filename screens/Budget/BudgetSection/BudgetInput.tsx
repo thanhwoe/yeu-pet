@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/Button";
-import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
+import { InputField } from "@/components/ui/InputField";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
+
+const EnhancedInputField = withBottomSheetKeyboardEvents(InputField);
 
 interface BudgetInputProps {
   onSubmit: (value: number) => void;
@@ -15,31 +18,23 @@ export const BudgetInput = ({
 }: BudgetInputProps) => {
   const [value, setValue] = useState<number>(defaultValue ?? 0);
 
-  const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
-  const handleFocus = () => {
-    shouldHandleKeyboardEvents.value = true;
-  };
-  const handleBlur = () => {
-    shouldHandleKeyboardEvents.value = false;
-  };
   return (
-    <View className="px-3 gap-4">
-      <TextInput
-        className="flex-1 border border-line-primary rounded-lg px-3 py-3"
+    <View className="px-20 gap-24">
+      <EnhancedInputField
         autoComplete="off"
         autoCorrect={false}
+        className="h-50"
         keyboardType="numeric"
         placeholder="Enter amount"
         autoFocus
         defaultValue={defaultValue?.toLocaleString()}
         value={value.toLocaleString()}
-        onChangeText={(text) => {
+        onChangeText={(text: string) => {
           const numericValue = text.replace(/[^0-9]/g, "");
           setValue(numericValue ? parseInt(numericValue, 10) : 0);
         }}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
       />
+
       <Button
         disabled={!value || isLoading}
         onPress={() => onSubmit(value ?? 0)}

@@ -1,7 +1,9 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { useUnstableNativeVariable } from "nativewind";
 import { CalendarIcon as Calendar } from "phosphor-react-native";
 import { useState } from "react";
 import {
@@ -56,6 +58,12 @@ export const DateTimePickerController = <T extends FieldValues>({
 
   const [showPicker, setShowPicker] = useState(false);
   const [tempValue, setTempValue] = useState<Date | null>(null);
+
+  const { colorScheme } = useColorScheme();
+
+  const textColor = useUnstableNativeVariable(
+    "--text-primary",
+  ) as unknown as string;
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -161,9 +169,10 @@ export const DateTimePickerController = <T extends FieldValues>({
               onChange={handleDateChange}
               minimumDate={minimumDate}
               maximumDate={maximumDate}
-              themeVariant="light"
+              themeVariant={colorScheme}
+              // TODO: update this
               locale="vi-VI"
-              textColor="#1F2937"
+              textColor={textColor}
               style={{
                 alignSelf: "center",
               }}
@@ -203,7 +212,7 @@ export const DateTimePickerController = <T extends FieldValues>({
               onChange={handleDateChange}
               minimumDate={minimumDate}
               maximumDate={maximumDate}
-              themeVariant="light"
+              themeVariant={colorScheme}
             />
           )}
     </>

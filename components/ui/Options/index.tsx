@@ -5,13 +5,15 @@ import { Option } from "./option";
 export interface ItemType<T> {
   label: string;
   value: T;
+  disabled?: boolean;
   icon?: ReactNode;
+  onPress?: () => void;
 }
 
 interface IProps<T> {
   data: ItemType<T>[];
   selected?: T;
-  onSelect: (data: ItemType<T>) => void;
+  onSelect?: (data: ItemType<T>) => void;
 }
 
 export const Options = <T,>({ data, onSelect, selected }: IProps<T>) => {
