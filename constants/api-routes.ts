@@ -27,8 +27,13 @@ export const API_ROUTES = {
   UPLOAD_FILE: "/upload-file",
 
   BUDGETS: "/budgets",
+
   BUDGET_CATEGORIES: "/budgets/categories",
+  MUTATE_BUDGET_CATEGORY: (id: string) => `/budgets/categories/${id}`,
+
   BUDGET_TRANSACTIONS: "/budgets/transactions",
+  MUTATE_BUDGET_TRANSACTION: (id: string) => `/budgets/transactions/${id}`,
+
   BUDGET_STATISTIC_MONTHLY: "/budgets/statistics/monthly",
   BUDGET_STATISTIC_YEARLY: "/budgets/statistics/yearly",
 

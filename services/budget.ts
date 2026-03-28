@@ -59,6 +59,14 @@ export const getBudgetMonthlyStatisticsQuery = (
 export const createBudgetCategoryMutation = (params: IBudgetCategoryForm) =>
   APIs.post<IBudgetCategory>(API_ROUTES.BUDGET_CATEGORIES, { data: params });
 
+export const updateBudgetCategoryMutation = ({
+  id,
+  ...params
+}: IBudgetCategoryForm & { id: string }) =>
+  APIs.patch<IBudgetCategory>(API_ROUTES.MUTATE_BUDGET_CATEGORY(id), {
+    data: params,
+  });
+
 interface IBudgetCategoryQuery {
   limit?: number;
   page?: number;
@@ -75,6 +83,17 @@ export const createBudgetTransactionMutation = (
   APIs.post<IBudgetTransaction>(API_ROUTES.BUDGET_TRANSACTIONS, {
     data: params,
   });
+
+export const updateBudgetTransactionMutation = ({
+  id,
+  ...params
+}: IBudgetTransactionForm & { id: string }) =>
+  APIs.patch<IBudgetTransaction>(API_ROUTES.MUTATE_BUDGET_TRANSACTION(id), {
+    data: params,
+  });
+
+export const deleteBudgetTransactionMutation = (id: string) =>
+  APIs.delete(API_ROUTES.MUTATE_BUDGET_TRANSACTION(id));
 
 interface IBudgetTransactionQuery {
   limit?: number;

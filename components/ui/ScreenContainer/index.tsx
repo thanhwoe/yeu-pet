@@ -34,7 +34,7 @@ export const ScreenContainer = ({
         Keyboard.dismiss();
         return false;
       }}
-      className={cn("flex-1 px-20 bg-background pt-safe", className)}
+      className={cn("flex-1 px-20 bg-background", className)}
       {...props}
     >
       {children}

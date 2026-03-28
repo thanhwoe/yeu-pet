@@ -84,13 +84,7 @@ const RootNavigation = () => {
             title: "List Spa",
           }}
         />
-        <Stack.Screen
-          name="budget"
-          options={{
-            header: BackHeader,
-            title: "Budget statistics",
-          }}
-        />
+        <Stack.Screen name="budget" options={{ headerShown: false }} />
         <Stack.Screen
           name="photos"
           options={{
@@ -132,7 +126,7 @@ const RootNavigation = () => {
             title: "Shipping Address",
           }}
         />
-        <Stack.Screen name="(training)" options={{ headerShown: false }} />
+        <Stack.Screen name="training" options={{ headerShown: false }} />
       </Stack.Protected>
 
       <Stack.Screen

@@ -36,7 +36,7 @@ import {
 import { groupBudgetTransactions } from "@/utils/budget";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import { CalendarBlankIcon, PlusIcon } from "phosphor-react-native";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -167,39 +167,6 @@ export function BudgetScreen() {
       },
     });
 
-  // const { mutate: updateTransaction } = useMutation({
-  //   mutationFn: updateBudgetTransactionMutation,
-  //   onSuccess: () => {
-  //     Toast.success({ text: "Update transaction successfully" });
-  //     queryClient.invalidateQueries({
-  //       queryKey: BUDGET_TRANSACTION_KEY.lists(),
-  //     });
-  //     queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
-  //     queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
-
-  //     setOpenTransactionForm(false);
-  //     // setSelectedTransaction(undefined);
-  //   },
-  //   onError: (e) => {
-  //     Toast.error({ text: e.errors?.[0].message });
-  //   },
-  // });
-
-  // const { mutate: deleteTransaction } = useMutation({
-  //   mutationFn: deleteBudgetTransactionMutation,
-  //   onSuccess: () => {
-  //     Toast.success({ text: "Delete transaction successfully" });
-  //     queryClient.invalidateQueries({
-  //       queryKey: BUDGET_TRANSACTION_KEY.lists(),
-  //     });
-  //     queryClient.invalidateQueries({ queryKey: BUDGET_KEY.details() });
-  //     queryClient.invalidateQueries({ queryKey: CHART_KEY.lists() });
-  //   },
-  //   onError: (e) => {
-  //     Toast.error({ text: e.errors?.[0].message });
-  //   },
-  // });
-
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -213,31 +180,16 @@ export function BudgetScreen() {
     });
   }, []);
 
-  // const handleDeleteTransaction = (data: IBudgetTransaction) => {
-  //   Alert.alert(
-  //     "Remove Transaction",
-  //     "Are you sure you want to remove this transaction?",
-  //     [
-  //       { text: "Cancel", style: "cancel" },
-  //       {
-  //         text: "Remove",
-  //         onPress: () => {
-  //           deleteTransaction(data.id);
-  //         },
-  //         style: "destructive",
-  //       },
-  //     ],
-  //   );
-  // };
-
   const ListHeaderComponent = useMemo(() => {
     if (sections.length > 0) {
       return (
-        <View className="justify-between items-center flex-row pb-8">
+        <View className="justify-between items-center flex-row py-20">
           <Heading variant="h5" weight="bold">
             Recent Transactions
           </Heading>
-          <Body className="text-text-link">See all</Body>
+          <Link href="/budget/transactions">
+            <Body className="text-text-link">See all</Body>
+          </Link>
         </View>
       );
     }

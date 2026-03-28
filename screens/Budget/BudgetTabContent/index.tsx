@@ -55,7 +55,7 @@ const MonthContent = memo(
   }: IProps["month"]) => (
     <View className="gap-20">
       <BudgetSection data={budgetData} loading={loadingBudget} />
-      <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between mt-20">
         <Heading variant="h5" weight="bold">
           Spending Trends
         </Heading>
@@ -64,7 +64,11 @@ const MonthContent = memo(
         </View>
       </View>
       <LineChart data={chartData} isLoading={loading} />
-      <BudgetCategoryStatistic data={categoryData} title="By Category" />
+      <BudgetCategoryStatistic
+        data={categoryData}
+        title="By Category"
+        allowManage
+      />
     </View>
   ),
 );
@@ -107,7 +111,7 @@ const YearContent = memo(
           </View>
         </View>
       </View>
-      <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center justify-between mt-20">
         <Heading variant="h5" weight="bold">
           Spending Trends
         </Heading>
@@ -116,7 +120,11 @@ const YearContent = memo(
         </View>
       </View>
       <BarChart data={chartData} isLoading={loading} />
-      <BudgetCategoryStatistic data={categoryData} title="By Category" />
+      <BudgetCategoryStatistic
+        data={categoryData}
+        title="By Category"
+        allowManage
+      />
     </View>
   ),
 );

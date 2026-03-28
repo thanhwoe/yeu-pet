@@ -13,9 +13,17 @@ interface IProps {
   data: IBudgetTransaction;
   onEdit?: (data: IBudgetTransaction) => void;
   onDelete?: (data: IBudgetTransaction) => void;
+  deleting?: boolean;
+  editing?: boolean;
 }
 
-export const TransactionItem = ({ data, onDelete, onEdit }: IProps) => {
+export const TransactionItem = ({
+  data,
+  onDelete,
+  onEdit,
+  deleting,
+  editing,
+}: IProps) => {
   return (
     <SwipeableWrapper
       disabled={!onEdit && !onDelete}
@@ -23,12 +31,15 @@ export const TransactionItem = ({ data, onDelete, onEdit }: IProps) => {
         icon: <EditIcon className="text-grey-0" weight="bold" />,
         onPress: () => onEdit?.(data),
         width: 80,
-        loading: true,
+        loading: editing,
+        disabled: deleting,
       }}
       rightAction={{
         icon: <DeleteIcon className="text-grey-0" weight="bold" />,
         onPress: () => onDelete?.(data),
         width: 80,
+        loading: deleting,
+        disabled: editing,
       }}
       swipeThreshold={60}
     >

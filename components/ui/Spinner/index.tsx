@@ -1,4 +1,5 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { cn } from "@/utils";
 import { CircleNotchIcon } from "phosphor-react-native";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
@@ -17,7 +18,7 @@ export const Spinner = ({
   duration = 1000,
 }: {
   size?: number;
-  className: string;
+  className?: string;
   duration?: number;
 }) => {
   const rotation = useSharedValue(0);
@@ -26,7 +27,7 @@ export const Spinner = ({
     rotation.value = withRepeat(
       withTiming(360, { duration }),
       -1, // infinite repeats
-      false // don't reverse
+      false, // don't reverse
     );
   }, [duration]);
 
@@ -43,7 +44,11 @@ export const Spinner = ({
   return (
     <View style={styles.container}>
       <Animated.View style={animatedStyle}>
-        <Icon size={size} className={className} weight="bold" />
+        <Icon
+          size={size}
+          className={cn("text-icon-primary", className)}
+          weight="bold"
+        />
       </Animated.View>
     </View>
   );

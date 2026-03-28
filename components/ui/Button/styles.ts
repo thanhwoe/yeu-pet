@@ -61,7 +61,7 @@ export const buttonStyles = cva(
       {
         variant: "primary",
         loading: true,
-        class: "bg-background-primary-pressed/80",
+        class: "bg-background-primary-pressed",
       },
       {
         variant: "secondary",
@@ -88,7 +88,7 @@ export const textStyles = cva("text-center font-medium", {
       secondary: "text-text-secondary",
       outline: "text-text-secondary",
       ghost: "text-text-secondary",
-      destructive: "text-text-primary opacity-80",
+      destructive: "text-grey-0",
       cancel: "text-text-tertiary-inverse",
     },
     size: {
@@ -110,7 +110,7 @@ export const spinnerStyles = cva("", {
       secondary: "text-text-secondary",
       outline: "text-text-secondary",
       ghost: "text-text-secondary",
-      destructive: "text-text-primary-inverse",
+      destructive: "text-grey-0",
       cancel: "text-text-tertiary-inverse",
     },
   },
