@@ -10,7 +10,6 @@ import { memo } from "react";
 import { View } from "react-native";
 
 export const BudgetStatisticSection = memo(() => {
-  console.log({ CURRENT_MONTH });
   const { data: statisticMonthly } = useQuery({
     queryKey: BUDGET_STATISTIC_KEY.detail(
       `monthly ${CURRENT_MONTH + 1} ${CURRENT_YEAR}`,
