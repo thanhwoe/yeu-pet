@@ -266,9 +266,9 @@ export type Notification_deliveriesScalarFieldEnum = (typeof Notification_delive
 
 export const Budget_categoriesScalarFieldEnum = {
   id: 'id',
+  account_id: 'account_id',
   name: 'name',
-  image_url: 'image_url',
-  image_id: 'image_id',
+  emoji: 'emoji',
   color: 'color',
   created_at: 'created_at',
   updated_at: 'updated_at'

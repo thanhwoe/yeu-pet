@@ -8,6 +8,10 @@ export class NumberRangePipe implements PipeTransform {
   ) {}
 
   transform(value: any) {
+    if (value === null || value === undefined) {
+      return undefined;
+    }
+
     const num = Number(value);
     if (!Number.isFinite(num) || !Number.isInteger(num)) {
       throw new BadRequestException(`${this.name} must be an integer`);

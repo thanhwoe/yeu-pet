@@ -21,17 +21,47 @@ export class BudgetTransactionsService {
     createBudgetTransactionDto: CreateBudgetTransactionDto,
   ) {
     return this.budgetTransactionsRepository.create({
-      account_id: user.id,
+      accounts: {
+        connect: {
+          id: user.id,
+        },
+      },
+      budget_categories: {
+        connect: {
+          id: createBudgetTransactionDto.categoryId,
+        },
+      },
       amount: createBudgetTransactionDto.amount,
-      category_id: createBudgetTransactionDto.categoryId,
       date: dayjs(createBudgetTransactionDto.date).toDate(),
       description: createBudgetTransactionDto.description,
     });
   }
 
-  async findAll(user: accounts, pagination: PaginationDto) {
+  async findAll(
+    user: accounts,
+    pagination: PaginationDto,
+    month?: number,
+    year?: number,
+  ) {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
+
+    if (year && month) {
+      const time = dayjs()
+        .year(year)
+        .month(month - 1);
+      const start = time.startOf('month').toDate();
+      const end = time.endOf('month').toDate();
+      const [data, total] = await this.budgetTransactionsRepository.findAll({
+        account_id: user.id,
+        skip,
+        take: limit,
+        endDate: end,
+        startDate: start,
+      });
+      return paginate(data, total, page, limit);
+    }
+
     const [data, total] = await this.budgetTransactionsRepository.findAll({
       account_id: user.id,
       skip,
@@ -48,8 +78,12 @@ export class BudgetTransactionsService {
     await this.assertAbility(user, id, Action.Update);
 
     return this.budgetTransactionsRepository.update(id, {
+      budget_categories: {
+        connect: {
+          id: updateBudgetTransactionDto.categoryId,
+        },
+      },
       amount: updateBudgetTransactionDto.amount,
-      category_id: updateBudgetTransactionDto.categoryId,
       date: updateBudgetTransactionDto.date
         ? dayjs(updateBudgetTransactionDto.date).toDate()
         : undefined,

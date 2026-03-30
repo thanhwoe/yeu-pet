@@ -22,9 +22,17 @@ export class RemindersService {
   ) {}
   async create(userId: string, createReminderDto: CreateReminderDto) {
     return this.remindersRepository.create({
-      account_id: userId,
+      accounts: {
+        connect: {
+          id: userId,
+        },
+      },
+      pets: {
+        connect: {
+          id: createReminderDto.petId,
+        },
+      },
       description: createReminderDto.description,
-      pet_id: createReminderDto.petId,
       scheduled_at: dayjs(createReminderDto.scheduledAt).toDate(),
       status: createReminderDto.status,
       title: createReminderDto.title,
@@ -35,18 +43,29 @@ export class RemindersService {
   async findAll(
     userId: string,
     pagination: PaginationDto,
+    month: number,
+    year: number,
     status?: reminder_status,
   ) {
-    const { page = 1, limit = 10 } = pagination;
-    const skip = (page - 1) * limit;
+    const { page = 1, limit } = pagination;
+    const skip = (page - 1) * (limit ?? 0);
+
+    const time = dayjs()
+      .year(year)
+      .month(month - 1);
+    const start = time.startOf('month').toDate();
+    const end = time.endOf('month').toDate();
 
     const [data, total] = await this.remindersRepository.findAll({
       account_id: userId,
       status,
       skip,
       take: limit,
+      endDate: end,
+      startDate: start,
     });
-    return paginate(data, total, page, limit);
+
+    return paginate(data, total, page, limit ?? 0);
   }
 
   async findOne(user: accounts, id: string) {
@@ -63,7 +82,11 @@ export class RemindersService {
     await this.assertAbility(user, id, Action.Update);
 
     return this.remindersRepository.update(id, {
-      pet_id: updateReminderDto.petId,
+      pets: {
+        connect: {
+          id: updateReminderDto.petId,
+        },
+      },
       description: updateReminderDto.description,
       title: updateReminderDto.title,
       scheduled_at: updateReminderDto.scheduledAt
@@ -121,11 +144,17 @@ export class RemindersService {
         return;
       }
 
-      await this.notificationsService.sendNotification(reminder);
+      try {
+        await this.notificationsService.sendNotification(reminder);
 
-      await this.remindersRepository.update(reminder.id, {
-        status: reminder_status.sent,
-      });
+        await this.remindersRepository.update(reminder.id, {
+          status: reminder_status.sent,
+        });
+      } catch {
+        await this.remindersRepository.update(reminder.id, {
+          status: reminder_status.cancelled,
+        });
+      }
     }
   }
 }

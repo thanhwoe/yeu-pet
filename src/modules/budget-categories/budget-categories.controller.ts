@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Delete,
-  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -13,11 +12,10 @@ import { BudgetCategoriesService } from './budget-categories.service';
 import { CreateBudgetCategoryDto } from './dto/create-budget-category.dto';
 import { UpdateBudgetCategoryDto } from './dto/update-budget-category.dto';
 import { IdParam } from '@app/decorators/id-param.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
-import { AdminOnly } from '@app/decorators/admin.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
+import { CurrentUser } from '@app/decorators/current-user.decorator';
+import type { accounts } from '@app/generated/prisma/client';
 
 @Controller('budgets/categories')
 export class BudgetCategoriesController {
@@ -26,15 +24,12 @@ export class BudgetCategoriesController {
   ) {}
 
   @Post()
-  @AdminOnly()
-  @UseInterceptors(FileInterceptor('image'))
   @HttpCode(HttpStatus.CREATED)
   create(
+    @CurrentUser() user: accounts,
     @Body() createBudgetCategoryDto: CreateBudgetCategoryDto,
-    @FileUploaded()
-    image?: Express.Multer.File,
   ) {
-    return this.budgetCategoriesService.create(createBudgetCategoryDto, image);
+    return this.budgetCategoriesService.create(user, createBudgetCategoryDto);
   }
 
   @Get()
@@ -44,26 +39,22 @@ export class BudgetCategoriesController {
   }
 
   @Patch(':id')
-  @AdminOnly()
-  @UseInterceptors(FileInterceptor('image'))
   @HttpCode(HttpStatus.OK)
   update(
+    @CurrentUser() user: accounts,
     @IdParam() id: string,
     @Body() updateBudgetCategoryDto: UpdateBudgetCategoryDto,
-    @FileUploaded()
-    image?: Express.Multer.File,
   ) {
     return this.budgetCategoriesService.update(
+      user,
       id,
       updateBudgetCategoryDto,
-      image,
     );
   }
 
   @Delete(':id')
-  @AdminOnly()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@IdParam() id: string) {
-    return this.budgetCategoriesService.remove(id);
+  remove(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.budgetCategoriesService.remove(user, id);
   }
 }

@@ -280,6 +280,7 @@ export type accountsWhereInput = {
   avatar_id?: Prisma.StringNullableFilter<"accounts"> | string | null
   account_devices?: Prisma.Account_devicesListRelationFilter
   account_settings?: Prisma.XOR<Prisma.Account_settingsNullableScalarRelationFilter, Prisma.account_settingsWhereInput> | null
+  budget_categories?: Prisma.Budget_categoriesListRelationFilter
   budget_transactions?: Prisma.Budget_transactionsListRelationFilter
   budgets?: Prisma.BudgetsListRelationFilter
   notifications?: Prisma.NotificationsListRelationFilter
@@ -316,6 +317,7 @@ export type accountsOrderByWithRelationInput = {
   avatar_id?: Prisma.SortOrderInput | Prisma.SortOrder
   account_devices?: Prisma.account_devicesOrderByRelationAggregateInput
   account_settings?: Prisma.account_settingsOrderByWithRelationInput
+  budget_categories?: Prisma.budget_categoriesOrderByRelationAggregateInput
   budget_transactions?: Prisma.budget_transactionsOrderByRelationAggregateInput
   budgets?: Prisma.budgetsOrderByRelationAggregateInput
   notifications?: Prisma.notificationsOrderByRelationAggregateInput
@@ -355,6 +357,7 @@ export type accountsWhereUniqueInput = Prisma.AtLeast<{
   avatar_id?: Prisma.StringNullableFilter<"accounts"> | string | null
   account_devices?: Prisma.Account_devicesListRelationFilter
   account_settings?: Prisma.XOR<Prisma.Account_settingsNullableScalarRelationFilter, Prisma.account_settingsWhereInput> | null
+  budget_categories?: Prisma.Budget_categoriesListRelationFilter
   budget_transactions?: Prisma.Budget_transactionsListRelationFilter
   budgets?: Prisma.BudgetsListRelationFilter
   notifications?: Prisma.NotificationsListRelationFilter
@@ -437,6 +440,7 @@ export type accountsCreateInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -473,6 +477,7 @@ export type accountsUncheckedCreateInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -509,6 +514,7 @@ export type accountsUpdateInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -545,6 +551,7 @@ export type accountsUncheckedUpdateInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -812,6 +819,20 @@ export type accountsUpdateOneRequiredWithoutRemindersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutRemindersInput, Prisma.accountsUpdateWithoutRemindersInput>, Prisma.accountsUncheckedUpdateWithoutRemindersInput>
 }
 
+export type accountsCreateNestedOneWithoutBudget_categoriesInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutBudget_categoriesInput, Prisma.accountsUncheckedCreateWithoutBudget_categoriesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutBudget_categoriesInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
+export type accountsUpdateOneRequiredWithoutBudget_categoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutBudget_categoriesInput, Prisma.accountsUncheckedCreateWithoutBudget_categoriesInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutBudget_categoriesInput
+  upsert?: Prisma.accountsUpsertWithoutBudget_categoriesInput
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutBudget_categoriesInput, Prisma.accountsUpdateWithoutBudget_categoriesInput>, Prisma.accountsUncheckedUpdateWithoutBudget_categoriesInput>
+}
+
 export type accountsCreateNestedOneWithoutBudget_transactionsInput = {
   create?: Prisma.XOR<Prisma.accountsCreateWithoutBudget_transactionsInput, Prisma.accountsUncheckedCreateWithoutBudget_transactionsInput>
   connectOrCreate?: Prisma.accountsCreateOrConnectWithoutBudget_transactionsInput
@@ -958,6 +979,7 @@ export type accountsCreateWithoutRefresh_tokensInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -993,6 +1015,7 @@ export type accountsUncheckedCreateWithoutRefresh_tokensInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1044,6 +1067,7 @@ export type accountsUpdateWithoutRefresh_tokensInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -1079,6 +1103,7 @@ export type accountsUncheckedUpdateWithoutRefresh_tokensInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1114,6 +1139,7 @@ export type accountsCreateWithoutOtp_tokensInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -1149,6 +1175,7 @@ export type accountsUncheckedCreateWithoutOtp_tokensInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1200,6 +1227,7 @@ export type accountsUpdateWithoutOtp_tokensInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -1235,6 +1263,7 @@ export type accountsUncheckedUpdateWithoutOtp_tokensInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1270,6 +1299,7 @@ export type accountsCreateWithoutPetsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -1305,6 +1335,7 @@ export type accountsUncheckedCreateWithoutPetsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1356,6 +1387,7 @@ export type accountsUpdateWithoutPetsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -1391,6 +1423,7 @@ export type accountsUncheckedUpdateWithoutPetsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1425,6 +1458,7 @@ export type accountsCreateWithoutAccount_devicesInput = {
   is_verified?: boolean | null
   avatar_id?: string | null
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -1460,6 +1494,7 @@ export type accountsUncheckedCreateWithoutAccount_devicesInput = {
   is_verified?: boolean | null
   avatar_id?: string | null
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1511,6 +1546,7 @@ export type accountsUpdateWithoutAccount_devicesInput = {
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -1546,6 +1582,7 @@ export type accountsUncheckedUpdateWithoutAccount_devicesInput = {
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1581,6 +1618,7 @@ export type accountsCreateWithoutAccount_settingsInput = {
   is_verified?: boolean | null
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -1616,6 +1654,7 @@ export type accountsUncheckedCreateWithoutAccount_settingsInput = {
   is_verified?: boolean | null
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1667,6 +1706,7 @@ export type accountsUpdateWithoutAccount_settingsInput = {
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -1702,6 +1742,7 @@ export type accountsUncheckedUpdateWithoutAccount_settingsInput = {
   is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1738,6 +1779,7 @@ export type accountsCreateWithoutNotificationsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
@@ -1773,6 +1815,7 @@ export type accountsUncheckedCreateWithoutNotificationsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
@@ -1824,6 +1867,7 @@ export type accountsUpdateWithoutNotificationsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
@@ -1859,6 +1903,7 @@ export type accountsUncheckedUpdateWithoutNotificationsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
@@ -1894,6 +1939,7 @@ export type accountsCreateWithoutRemindersInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -1929,6 +1975,7 @@ export type accountsUncheckedCreateWithoutRemindersInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1980,6 +2027,7 @@ export type accountsUpdateWithoutRemindersInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -2015,6 +2063,7 @@ export type accountsUncheckedUpdateWithoutRemindersInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2026,6 +2075,166 @@ export type accountsUncheckedUpdateWithoutRemindersInput = {
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutAccountsNestedInput
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsCreateWithoutBudget_categoriesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+  sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutAccountsInput
+  sitter_reviews?: Prisma.sitter_reviewsCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutBudget_categoriesInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+  sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutAccountsInput
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutBudget_categoriesInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutBudget_categoriesInput, Prisma.accountsUncheckedCreateWithoutBudget_categoriesInput>
+}
+
+export type accountsUpsertWithoutBudget_categoriesInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutBudget_categoriesInput, Prisma.accountsUncheckedUpdateWithoutBudget_categoriesInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutBudget_categoriesInput, Prisma.accountsUncheckedCreateWithoutBudget_categoriesInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutBudget_categoriesInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutBudget_categoriesInput, Prisma.accountsUncheckedUpdateWithoutBudget_categoriesInput>
+}
+
+export type accountsUpdateWithoutBudget_categoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+  sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutAccountsNestedInput
+  sitter_reviews?: Prisma.sitter_reviewsUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutBudget_categoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
   sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutAccountsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateManyWithoutAccountsNestedInput
 }
@@ -2050,6 +2259,7 @@ export type accountsCreateWithoutBudget_transactionsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
@@ -2085,6 +2295,7 @@ export type accountsUncheckedCreateWithoutBudget_transactionsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
@@ -2136,6 +2347,7 @@ export type accountsUpdateWithoutBudget_transactionsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
@@ -2171,6 +2383,7 @@ export type accountsUncheckedUpdateWithoutBudget_transactionsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
@@ -2206,6 +2419,7 @@ export type accountsCreateWithoutBudgetsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
@@ -2241,6 +2455,7 @@ export type accountsUncheckedCreateWithoutBudgetsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
@@ -2292,6 +2507,7 @@ export type accountsUpdateWithoutBudgetsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
@@ -2327,6 +2543,7 @@ export type accountsUncheckedUpdateWithoutBudgetsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
@@ -2362,6 +2579,7 @@ export type accountsCreateWithoutPhoto_commentsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -2397,6 +2615,7 @@ export type accountsUncheckedCreateWithoutPhoto_commentsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2448,6 +2667,7 @@ export type accountsUpdateWithoutPhoto_commentsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -2483,6 +2703,7 @@ export type accountsUncheckedUpdateWithoutPhoto_commentsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2518,6 +2739,7 @@ export type accountsCreateWithoutPhoto_likesInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -2553,6 +2775,7 @@ export type accountsUncheckedCreateWithoutPhoto_likesInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2604,6 +2827,7 @@ export type accountsUpdateWithoutPhoto_likesInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -2639,6 +2863,7 @@ export type accountsUncheckedUpdateWithoutPhoto_likesInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2674,6 +2899,7 @@ export type accountsCreateWithoutPhoto_viewsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -2709,6 +2935,7 @@ export type accountsUncheckedCreateWithoutPhoto_viewsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2760,6 +2987,7 @@ export type accountsUpdateWithoutPhoto_viewsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -2795,6 +3023,7 @@ export type accountsUncheckedUpdateWithoutPhoto_viewsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2830,6 +3059,7 @@ export type accountsCreateWithoutPhotosInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -2865,6 +3095,7 @@ export type accountsUncheckedCreateWithoutPhotosInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2916,6 +3147,7 @@ export type accountsUpdateWithoutPhotosInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -2951,6 +3183,7 @@ export type accountsUncheckedUpdateWithoutPhotosInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2986,6 +3219,7 @@ export type accountsCreateWithoutPet_sittersInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -3021,6 +3255,7 @@ export type accountsUncheckedCreateWithoutPet_sittersInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3072,6 +3307,7 @@ export type accountsUpdateWithoutPet_sittersInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -3107,6 +3343,7 @@ export type accountsUncheckedUpdateWithoutPet_sittersInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3142,6 +3379,7 @@ export type accountsCreateWithoutSitter_bookingsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -3177,6 +3415,7 @@ export type accountsUncheckedCreateWithoutSitter_bookingsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3228,6 +3467,7 @@ export type accountsUpdateWithoutSitter_bookingsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -3263,6 +3503,7 @@ export type accountsUncheckedUpdateWithoutSitter_bookingsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3298,6 +3539,7 @@ export type accountsCreateWithoutSitter_reviewsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
@@ -3333,6 +3575,7 @@ export type accountsUncheckedCreateWithoutSitter_reviewsInput = {
   avatar_id?: string | null
   account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
   account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
   budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3384,6 +3627,7 @@ export type accountsUpdateWithoutSitter_reviewsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
@@ -3419,6 +3663,7 @@ export type accountsUncheckedUpdateWithoutSitter_reviewsInput = {
   avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
   account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
   budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3441,6 +3686,7 @@ export type accountsUncheckedUpdateWithoutSitter_reviewsInput = {
 
 export type AccountsCountOutputType = {
   account_devices: number
+  budget_categories: number
   budget_transactions: number
   budgets: number
   notifications: number
@@ -3457,6 +3703,7 @@ export type AccountsCountOutputType = {
 
 export type AccountsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account_devices?: boolean | AccountsCountOutputTypeCountAccount_devicesArgs
+  budget_categories?: boolean | AccountsCountOutputTypeCountBudget_categoriesArgs
   budget_transactions?: boolean | AccountsCountOutputTypeCountBudget_transactionsArgs
   budgets?: boolean | AccountsCountOutputTypeCountBudgetsArgs
   notifications?: boolean | AccountsCountOutputTypeCountNotificationsArgs
@@ -3486,6 +3733,13 @@ export type AccountsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
  */
 export type AccountsCountOutputTypeCountAccount_devicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.account_devicesWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountBudget_categoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.budget_categoriesWhereInput
 }
 
 /**
@@ -3593,6 +3847,7 @@ export type accountsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   avatar_id?: boolean
   account_devices?: boolean | Prisma.accounts$account_devicesArgs<ExtArgs>
   account_settings?: boolean | Prisma.accounts$account_settingsArgs<ExtArgs>
+  budget_categories?: boolean | Prisma.accounts$budget_categoriesArgs<ExtArgs>
   budget_transactions?: boolean | Prisma.accounts$budget_transactionsArgs<ExtArgs>
   budgets?: boolean | Prisma.accounts$budgetsArgs<ExtArgs>
   notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
@@ -3674,6 +3929,7 @@ export type accountsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type accountsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account_devices?: boolean | Prisma.accounts$account_devicesArgs<ExtArgs>
   account_settings?: boolean | Prisma.accounts$account_settingsArgs<ExtArgs>
+  budget_categories?: boolean | Prisma.accounts$budget_categoriesArgs<ExtArgs>
   budget_transactions?: boolean | Prisma.accounts$budget_transactionsArgs<ExtArgs>
   budgets?: boolean | Prisma.accounts$budgetsArgs<ExtArgs>
   notifications?: boolean | Prisma.accounts$notificationsArgs<ExtArgs>
@@ -3698,6 +3954,7 @@ export type $accountsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     account_devices: Prisma.$account_devicesPayload<ExtArgs>[]
     account_settings: Prisma.$account_settingsPayload<ExtArgs> | null
+    budget_categories: Prisma.$budget_categoriesPayload<ExtArgs>[]
     budget_transactions: Prisma.$budget_transactionsPayload<ExtArgs>[]
     budgets: Prisma.$budgetsPayload<ExtArgs>[]
     notifications: Prisma.$notificationsPayload<ExtArgs>[]
@@ -4127,6 +4384,7 @@ export interface Prisma__accountsClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   account_devices<T extends Prisma.accounts$account_devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$account_devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$account_devicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   account_settings<T extends Prisma.accounts$account_settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$account_settingsArgs<ExtArgs>>): Prisma.Prisma__account_settingsClient<runtime.Types.Result.GetResult<Prisma.$account_settingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  budget_categories<T extends Prisma.accounts$budget_categoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$budget_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$budget_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   budget_transactions<T extends Prisma.accounts$budget_transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$budget_transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$budget_transactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   budgets<T extends Prisma.accounts$budgetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$budgetsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.accounts$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$notificationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4615,6 +4873,30 @@ export type accounts$account_settingsArgs<ExtArgs extends runtime.Types.Extensio
    */
   include?: Prisma.account_settingsInclude<ExtArgs> | null
   where?: Prisma.account_settingsWhereInput
+}
+
+/**
+ * accounts.budget_categories
+ */
+export type accounts$budget_categoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the budget_categories
+   */
+  select?: Prisma.budget_categoriesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the budget_categories
+   */
+  omit?: Prisma.budget_categoriesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.budget_categoriesInclude<ExtArgs> | null
+  where?: Prisma.budget_categoriesWhereInput
+  orderBy?: Prisma.budget_categoriesOrderByWithRelationInput | Prisma.budget_categoriesOrderByWithRelationInput[]
+  cursor?: Prisma.budget_categoriesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Budget_categoriesScalarFieldEnum | Prisma.Budget_categoriesScalarFieldEnum[]
 }
 
 /**

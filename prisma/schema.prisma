@@ -28,6 +28,7 @@ model accounts {
   avatar_id               String?
   account_devices         account_devices[]
   account_settings        account_settings?
+  budget_categories       budget_categories[]
   budget_transactions     budget_transactions[]
   budgets                 budgets[]
   notifications           notifications[]
@@ -220,16 +221,18 @@ model notification_deliveries {
 
 model budget_categories {
   id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id          String                @db.Uuid
   name                String                @unique @db.VarChar(50)
-  image_url           String?
-  image_id            String?
+  emoji               String?
   color               String?               @db.VarChar(50)
   created_at          DateTime?             @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  accounts            accounts              @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_budget_categories_account_id")
   budget_transactions budget_transactions[]
 
   @@index([id], map: "idx_budget_categories")
   @@index([name], map: "idx_budget_categories_name")
+  @@index([account_id], map: "idx_budget_categories_account_id")
 }
 
 model budget_transactions {

@@ -25,9 +25,9 @@ export class CreateReminderDto {
   @IsEnum(reminder_type)
   type: reminder_type;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(reminder_status)
-  status: reminder_status;
+  status: reminder_status = reminder_status.pending;
 
   @IsDateString()
   @IsNotEmpty()

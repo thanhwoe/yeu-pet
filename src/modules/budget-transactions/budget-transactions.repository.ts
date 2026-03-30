@@ -1,6 +1,9 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
-import { budget_transactions } from '@app/generated/prisma/client';
-import { budget_transactionsWhereInput } from '@app/generated/prisma/models';
+import {
+  budget_transactionsCreateInput,
+  budget_transactionsUpdateInput,
+  budget_transactionsWhereInput,
+} from '@app/generated/prisma/models';
 import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -8,14 +11,12 @@ import { Injectable } from '@nestjs/common';
 export class BudgetTransactionsRepository implements IBudgetTransactionsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    data: Omit<budget_transactions, 'id' | 'created_at' | 'updated_at'>,
-  ) {
+  async create(data: budget_transactionsCreateInput) {
     return this.prisma.budget_transactions.create({
       data,
     });
   }
-  async update(id: string, data: Partial<budget_transactions>) {
+  async update(id: string, data: budget_transactionsUpdateInput) {
     return this.prisma.budget_transactions.update({
       where: { id },
       data: {
@@ -29,9 +30,19 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
       where: { id },
     });
   }
-  async findAll(params?: { skip?: number; take?: number; account_id: string }) {
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    account_id: string;
+    startDate?: Date;
+    endDate?: Date;
+  }) {
     const where: budget_transactionsWhereInput = {
       account_id: params?.account_id,
+      date: {
+        gte: params?.startDate,
+        lte: params?.endDate,
+      },
     };
 
     return this.prisma.$transaction([
@@ -39,7 +50,8 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
         where,
         skip: params?.skip,
         take: params?.take,
-        orderBy: { created_at: 'desc' },
+        orderBy: { date: 'desc' },
+        include: this.include(),
       }),
       this.prisma.budget_transactions.count({ where }),
     ]);
@@ -105,5 +117,16 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
       },
       orderBy: { date: 'asc' },
     });
+  }
+  private include() {
+    return {
+      budget_categories: {
+        select: {
+          id: true,
+          emoji: true,
+          color: true,
+        },
+      },
+    };
   }
 }

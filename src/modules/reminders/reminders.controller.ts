@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
@@ -22,6 +23,7 @@ import { IdParam } from '@app/decorators/id-param.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { AllowValuesPipe } from '@app/pipes/allow-values.pipe';
+import { NumberRangePipe } from '@app/pipes/number-range.pipe';
 
 @Controller('reminders')
 @UseGuards(PoliciesGuard)
@@ -43,10 +45,28 @@ export class RemindersController {
   findAll(
     @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
+    @Query(
+      'month',
+      new DefaultValuePipe(new Date().getMonth() + 1),
+      new NumberRangePipe(1, 12, 'month'),
+    )
+    month: number,
+    @Query(
+      'year',
+      new DefaultValuePipe(new Date().getFullYear()),
+      new NumberRangePipe(1970, 3000, 'year'),
+    )
+    year: number,
     @Query('status', new AllowValuesPipe(reminder_status))
     status?: reminder_status,
   ) {
-    return this.remindersService.findAll(user.id, pagination, status);
+    return this.remindersService.findAll(
+      user.id,
+      pagination,
+      month,
+      year,
+      status,
+    );
   }
 
   @Get(':id')

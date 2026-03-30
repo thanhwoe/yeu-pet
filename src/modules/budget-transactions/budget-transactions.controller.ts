@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BudgetTransactionsService } from './budget-transactions.service';
 import { CreateBudgetTransactionDto } from './dto/create-budget-transaction.dto';
@@ -20,6 +21,7 @@ import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
+import { NumberRangePipe } from '@app/pipes/number-range.pipe';
 
 @Controller('budgets/transactions')
 @UseGuards(PoliciesGuard)
@@ -46,8 +48,17 @@ export class BudgetTransactionsController {
   findAll(
     @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
+    @Query('month', new NumberRangePipe(1, 12, 'month'))
+    month?: number,
+    @Query('year', new NumberRangePipe(1970, 3000, 'year'))
+    year?: number,
   ) {
-    return this.budgetTransactionsService.findAll(user, pagination);
+    return this.budgetTransactionsService.findAll(
+      user,
+      pagination,
+      month,
+      year,
+    );
   }
 
   @Patch(':id')

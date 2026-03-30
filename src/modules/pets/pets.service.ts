@@ -110,6 +110,7 @@ export class PetsService {
       notes: updatePetDto.notes,
       species: updatePetDto.species,
       weight: updatePetDto.weight,
+      avatar_url: null,
     });
   }
 

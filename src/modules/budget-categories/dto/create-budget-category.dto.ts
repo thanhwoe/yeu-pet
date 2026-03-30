@@ -8,4 +8,8 @@ export class CreateBudgetCategoryDto {
   @IsString()
   @IsOptional()
   color: string;
+
+  @IsString()
+  @IsOptional()
+  emoji: string;
 }

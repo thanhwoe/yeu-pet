@@ -148,9 +148,9 @@ export class UsersService {
   async requestPasswordReset(dto: RequestResetPasswordDto) {
     const user = await this.getUser({ phone: dto.phone });
 
-    await this.sendVerificationCode(user.id);
+    const { expires_at } = await this.sendVerificationCode(user.id);
 
-    return { message: 'Password reset code sent successfully' };
+    return { expires_at, phone: user.phone };
   }
 
   async resetPassword(dto: ResetPasswordDto) {

@@ -131,12 +131,13 @@ export class BudgetsService {
     const dailyMap: Record<string, number> = {};
 
     for (const t of transactions) {
-      const day = dayjs(t.date).format('YYYY-MM-DD'); // or dayjs(t.date).utc().format('YYYY-MM-DD') if you want UTC
+      const day = dayjs(t.date).toISOString();
+
       dailyMap[day] = (dailyMap[day] ?? 0) + Number(t.amount);
     }
     const dailyTrend = Object.entries(dailyMap)
       .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([date, amount]) => ({ date, amount }));
+      .map(([date, amount]) => ({ date, value: amount }));
 
     return {
       period: { month, year },
@@ -175,8 +176,8 @@ export class BudgetsService {
     }
 
     const monthlyTrend = Object.entries(monthlyMap).map(([month, amount]) => ({
-      month: Number(month),
-      amount,
+      date: month,
+      value: amount,
     }));
 
     const totalSpent = amount?.toNumber() ?? 0;

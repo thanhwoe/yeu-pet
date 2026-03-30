@@ -26,9 +26,9 @@ export type AggregateBudget_categories = {
 
 export type Budget_categoriesMinAggregateOutputType = {
   id: string | null
+  account_id: string | null
   name: string | null
-  image_url: string | null
-  image_id: string | null
+  emoji: string | null
   color: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -36,9 +36,9 @@ export type Budget_categoriesMinAggregateOutputType = {
 
 export type Budget_categoriesMaxAggregateOutputType = {
   id: string | null
+  account_id: string | null
   name: string | null
-  image_url: string | null
-  image_id: string | null
+  emoji: string | null
   color: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -46,9 +46,9 @@ export type Budget_categoriesMaxAggregateOutputType = {
 
 export type Budget_categoriesCountAggregateOutputType = {
   id: number
+  account_id: number
   name: number
-  image_url: number
-  image_id: number
+  emoji: number
   color: number
   created_at: number
   updated_at: number
@@ -58,9 +58,9 @@ export type Budget_categoriesCountAggregateOutputType = {
 
 export type Budget_categoriesMinAggregateInputType = {
   id?: true
+  account_id?: true
   name?: true
-  image_url?: true
-  image_id?: true
+  emoji?: true
   color?: true
   created_at?: true
   updated_at?: true
@@ -68,9 +68,9 @@ export type Budget_categoriesMinAggregateInputType = {
 
 export type Budget_categoriesMaxAggregateInputType = {
   id?: true
+  account_id?: true
   name?: true
-  image_url?: true
-  image_id?: true
+  emoji?: true
   color?: true
   created_at?: true
   updated_at?: true
@@ -78,9 +78,9 @@ export type Budget_categoriesMaxAggregateInputType = {
 
 export type Budget_categoriesCountAggregateInputType = {
   id?: true
+  account_id?: true
   name?: true
-  image_url?: true
-  image_id?: true
+  emoji?: true
   color?: true
   created_at?: true
   updated_at?: true
@@ -161,9 +161,9 @@ export type budget_categoriesGroupByArgs<ExtArgs extends runtime.Types.Extension
 
 export type Budget_categoriesGroupByOutputType = {
   id: string
+  account_id: string
   name: string
-  image_url: string | null
-  image_id: string | null
+  emoji: string | null
   color: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -192,23 +192,25 @@ export type budget_categoriesWhereInput = {
   OR?: Prisma.budget_categoriesWhereInput[]
   NOT?: Prisma.budget_categoriesWhereInput | Prisma.budget_categoriesWhereInput[]
   id?: Prisma.UuidFilter<"budget_categories"> | string
+  account_id?: Prisma.UuidFilter<"budget_categories"> | string
   name?: Prisma.StringFilter<"budget_categories"> | string
-  image_url?: Prisma.StringNullableFilter<"budget_categories"> | string | null
-  image_id?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
+  accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   budget_transactions?: Prisma.Budget_transactionsListRelationFilter
 }
 
 export type budget_categoriesOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  image_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  image_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  accounts?: Prisma.accountsOrderByWithRelationInput
   budget_transactions?: Prisma.budget_transactionsOrderByRelationAggregateInput
 }
 
@@ -218,19 +220,20 @@ export type budget_categoriesWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.budget_categoriesWhereInput | Prisma.budget_categoriesWhereInput[]
   OR?: Prisma.budget_categoriesWhereInput[]
   NOT?: Prisma.budget_categoriesWhereInput | Prisma.budget_categoriesWhereInput[]
-  image_url?: Prisma.StringNullableFilter<"budget_categories"> | string | null
-  image_id?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  account_id?: Prisma.UuidFilter<"budget_categories"> | string
+  emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
+  accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   budget_transactions?: Prisma.Budget_transactionsListRelationFilter
 }, "id" | "name">
 
 export type budget_categoriesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  image_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  image_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -244,9 +247,9 @@ export type budget_categoriesScalarWhereWithAggregatesInput = {
   OR?: Prisma.budget_categoriesScalarWhereWithAggregatesInput[]
   NOT?: Prisma.budget_categoriesScalarWhereWithAggregatesInput | Prisma.budget_categoriesScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"budget_categories"> | string
+  account_id?: Prisma.UuidWithAggregatesFilter<"budget_categories"> | string
   name?: Prisma.StringWithAggregatesFilter<"budget_categories"> | string
-  image_url?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
-  image_id?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
+  emoji?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_categories"> | Date | string | null
@@ -255,19 +258,19 @@ export type budget_categoriesScalarWhereWithAggregatesInput = {
 export type budget_categoriesCreateInput = {
   id?: string
   name: string
-  image_url?: string | null
-  image_id?: string | null
+  emoji?: string | null
   color?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutBudget_categoriesInput
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutBudget_categoriesInput
 }
 
 export type budget_categoriesUncheckedCreateInput = {
   id?: string
+  account_id: string
   name: string
-  image_url?: string | null
-  image_id?: string | null
+  emoji?: string | null
   color?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -277,19 +280,19 @@ export type budget_categoriesUncheckedCreateInput = {
 export type budget_categoriesUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_categoriesNestedInput
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutBudget_categoriesNestedInput
 }
 
 export type budget_categoriesUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -298,9 +301,9 @@ export type budget_categoriesUncheckedUpdateInput = {
 
 export type budget_categoriesCreateManyInput = {
   id?: string
+  account_id: string
   name: string
-  image_url?: string | null
-  image_id?: string | null
+  emoji?: string | null
   color?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -309,8 +312,7 @@ export type budget_categoriesCreateManyInput = {
 export type budget_categoriesUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -318,19 +320,29 @@ export type budget_categoriesUpdateManyMutationInput = {
 
 export type budget_categoriesUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type Budget_categoriesListRelationFilter = {
+  every?: Prisma.budget_categoriesWhereInput
+  some?: Prisma.budget_categoriesWhereInput
+  none?: Prisma.budget_categoriesWhereInput
+}
+
+export type budget_categoriesOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type budget_categoriesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  image_url?: Prisma.SortOrder
-  image_id?: Prisma.SortOrder
+  emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -338,9 +350,9 @@ export type budget_categoriesCountOrderByAggregateInput = {
 
 export type budget_categoriesMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  image_url?: Prisma.SortOrder
-  image_id?: Prisma.SortOrder
+  emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -348,9 +360,9 @@ export type budget_categoriesMaxOrderByAggregateInput = {
 
 export type budget_categoriesMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  image_url?: Prisma.SortOrder
-  image_id?: Prisma.SortOrder
+  emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -359,6 +371,48 @@ export type budget_categoriesMinOrderByAggregateInput = {
 export type Budget_categoriesScalarRelationFilter = {
   is?: Prisma.budget_categoriesWhereInput
   isNot?: Prisma.budget_categoriesWhereInput
+}
+
+export type budget_categoriesCreateNestedManyWithoutAccountsInput = {
+  create?: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput> | Prisma.budget_categoriesCreateWithoutAccountsInput[] | Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput[]
+  connectOrCreate?: Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput | Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput[]
+  createMany?: Prisma.budget_categoriesCreateManyAccountsInputEnvelope
+  connect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+}
+
+export type budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput = {
+  create?: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput> | Prisma.budget_categoriesCreateWithoutAccountsInput[] | Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput[]
+  connectOrCreate?: Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput | Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput[]
+  createMany?: Prisma.budget_categoriesCreateManyAccountsInputEnvelope
+  connect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+}
+
+export type budget_categoriesUpdateManyWithoutAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput> | Prisma.budget_categoriesCreateWithoutAccountsInput[] | Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput[]
+  connectOrCreate?: Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput | Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput[]
+  upsert?: Prisma.budget_categoriesUpsertWithWhereUniqueWithoutAccountsInput | Prisma.budget_categoriesUpsertWithWhereUniqueWithoutAccountsInput[]
+  createMany?: Prisma.budget_categoriesCreateManyAccountsInputEnvelope
+  set?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  disconnect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  delete?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  connect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  update?: Prisma.budget_categoriesUpdateWithWhereUniqueWithoutAccountsInput | Prisma.budget_categoriesUpdateWithWhereUniqueWithoutAccountsInput[]
+  updateMany?: Prisma.budget_categoriesUpdateManyWithWhereWithoutAccountsInput | Prisma.budget_categoriesUpdateManyWithWhereWithoutAccountsInput[]
+  deleteMany?: Prisma.budget_categoriesScalarWhereInput | Prisma.budget_categoriesScalarWhereInput[]
+}
+
+export type budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput> | Prisma.budget_categoriesCreateWithoutAccountsInput[] | Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput[]
+  connectOrCreate?: Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput | Prisma.budget_categoriesCreateOrConnectWithoutAccountsInput[]
+  upsert?: Prisma.budget_categoriesUpsertWithWhereUniqueWithoutAccountsInput | Prisma.budget_categoriesUpsertWithWhereUniqueWithoutAccountsInput[]
+  createMany?: Prisma.budget_categoriesCreateManyAccountsInputEnvelope
+  set?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  disconnect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  delete?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  connect?: Prisma.budget_categoriesWhereUniqueInput | Prisma.budget_categoriesWhereUniqueInput[]
+  update?: Prisma.budget_categoriesUpdateWithWhereUniqueWithoutAccountsInput | Prisma.budget_categoriesUpdateWithWhereUniqueWithoutAccountsInput[]
+  updateMany?: Prisma.budget_categoriesUpdateManyWithWhereWithoutAccountsInput | Prisma.budget_categoriesUpdateManyWithWhereWithoutAccountsInput[]
+  deleteMany?: Prisma.budget_categoriesScalarWhereInput | Prisma.budget_categoriesScalarWhereInput[]
 }
 
 export type budget_categoriesCreateNestedOneWithoutBudget_transactionsInput = {
@@ -375,21 +429,80 @@ export type budget_categoriesUpdateOneRequiredWithoutBudget_transactionsNestedIn
   update?: Prisma.XOR<Prisma.XOR<Prisma.budget_categoriesUpdateToOneWithWhereWithoutBudget_transactionsInput, Prisma.budget_categoriesUpdateWithoutBudget_transactionsInput>, Prisma.budget_categoriesUncheckedUpdateWithoutBudget_transactionsInput>
 }
 
-export type budget_categoriesCreateWithoutBudget_transactionsInput = {
+export type budget_categoriesCreateWithoutAccountsInput = {
   id?: string
   name: string
-  image_url?: string | null
-  image_id?: string | null
+  emoji?: string | null
   color?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutBudget_categoriesInput
+}
+
+export type budget_categoriesUncheckedCreateWithoutAccountsInput = {
+  id?: string
+  name: string
+  emoji?: string | null
+  color?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutBudget_categoriesInput
+}
+
+export type budget_categoriesCreateOrConnectWithoutAccountsInput = {
+  where: Prisma.budget_categoriesWhereUniqueInput
+  create: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput>
+}
+
+export type budget_categoriesCreateManyAccountsInputEnvelope = {
+  data: Prisma.budget_categoriesCreateManyAccountsInput | Prisma.budget_categoriesCreateManyAccountsInput[]
+  skipDuplicates?: boolean
+}
+
+export type budget_categoriesUpsertWithWhereUniqueWithoutAccountsInput = {
+  where: Prisma.budget_categoriesWhereUniqueInput
+  update: Prisma.XOR<Prisma.budget_categoriesUpdateWithoutAccountsInput, Prisma.budget_categoriesUncheckedUpdateWithoutAccountsInput>
+  create: Prisma.XOR<Prisma.budget_categoriesCreateWithoutAccountsInput, Prisma.budget_categoriesUncheckedCreateWithoutAccountsInput>
+}
+
+export type budget_categoriesUpdateWithWhereUniqueWithoutAccountsInput = {
+  where: Prisma.budget_categoriesWhereUniqueInput
+  data: Prisma.XOR<Prisma.budget_categoriesUpdateWithoutAccountsInput, Prisma.budget_categoriesUncheckedUpdateWithoutAccountsInput>
+}
+
+export type budget_categoriesUpdateManyWithWhereWithoutAccountsInput = {
+  where: Prisma.budget_categoriesScalarWhereInput
+  data: Prisma.XOR<Prisma.budget_categoriesUpdateManyMutationInput, Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsInput>
+}
+
+export type budget_categoriesScalarWhereInput = {
+  AND?: Prisma.budget_categoriesScalarWhereInput | Prisma.budget_categoriesScalarWhereInput[]
+  OR?: Prisma.budget_categoriesScalarWhereInput[]
+  NOT?: Prisma.budget_categoriesScalarWhereInput | Prisma.budget_categoriesScalarWhereInput[]
+  id?: Prisma.UuidFilter<"budget_categories"> | string
+  account_id?: Prisma.UuidFilter<"budget_categories"> | string
+  name?: Prisma.StringFilter<"budget_categories"> | string
+  emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
+}
+
+export type budget_categoriesCreateWithoutBudget_transactionsInput = {
+  id?: string
+  name: string
+  emoji?: string | null
+  color?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutBudget_categoriesInput
 }
 
 export type budget_categoriesUncheckedCreateWithoutBudget_transactionsInput = {
   id?: string
+  account_id: string
   name: string
-  image_url?: string | null
-  image_id?: string | null
+  emoji?: string | null
   color?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
@@ -414,18 +527,56 @@ export type budget_categoriesUpdateToOneWithWhereWithoutBudget_transactionsInput
 export type budget_categoriesUpdateWithoutBudget_transactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_categoriesNestedInput
+}
+
+export type budget_categoriesUncheckedUpdateWithoutBudget_transactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type budget_categoriesUncheckedUpdateWithoutBudget_transactionsInput = {
+export type budget_categoriesCreateManyAccountsInput = {
+  id?: string
+  name: string
+  emoji?: string | null
+  color?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type budget_categoriesUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  image_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutBudget_categoriesNestedInput
+}
+
+export type budget_categoriesUncheckedUpdateWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutBudget_categoriesNestedInput
+}
+
+export type budget_categoriesUncheckedUpdateManyWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -464,64 +615,73 @@ export type Budget_categoriesCountOutputTypeCountBudget_transactionsArgs<ExtArgs
 
 export type budget_categoriesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  account_id?: boolean
   name?: boolean
-  image_url?: boolean
-  image_id?: boolean
+  emoji?: boolean
   color?: boolean
   created_at?: boolean
   updated_at?: boolean
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_transactions?: boolean | Prisma.budget_categories$budget_transactionsArgs<ExtArgs>
   _count?: boolean | Prisma.Budget_categoriesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["budget_categories"]>
 
 export type budget_categoriesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  account_id?: boolean
   name?: boolean
-  image_url?: boolean
-  image_id?: boolean
+  emoji?: boolean
   color?: boolean
   created_at?: boolean
   updated_at?: boolean
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["budget_categories"]>
 
 export type budget_categoriesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  account_id?: boolean
   name?: boolean
-  image_url?: boolean
-  image_id?: boolean
+  emoji?: boolean
   color?: boolean
   created_at?: boolean
   updated_at?: boolean
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["budget_categories"]>
 
 export type budget_categoriesSelectScalar = {
   id?: boolean
+  account_id?: boolean
   name?: boolean
-  image_url?: boolean
-  image_id?: boolean
+  emoji?: boolean
   color?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type budget_categoriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "image_url" | "image_id" | "color" | "created_at" | "updated_at", ExtArgs["result"]["budget_categories"]>
+export type budget_categoriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "name" | "emoji" | "color" | "created_at" | "updated_at", ExtArgs["result"]["budget_categories"]>
 export type budget_categoriesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_transactions?: boolean | Prisma.budget_categories$budget_transactionsArgs<ExtArgs>
   _count?: boolean | Prisma.Budget_categoriesCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type budget_categoriesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type budget_categoriesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type budget_categoriesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+}
+export type budget_categoriesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+}
 
 export type $budget_categoriesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "budget_categories"
   objects: {
+    accounts: Prisma.$accountsPayload<ExtArgs>
     budget_transactions: Prisma.$budget_transactionsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    account_id: string
     name: string
-    image_url: string | null
-    image_id: string | null
+    emoji: string | null
     color: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -919,6 +1079,7 @@ readonly fields: budget_categoriesFieldRefs;
  */
 export interface Prisma__budget_categoriesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   budget_transactions<T extends Prisma.budget_categories$budget_transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.budget_categories$budget_transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$budget_transactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -950,9 +1111,9 @@ export interface Prisma__budget_categoriesClient<T, Null = never, ExtArgs extend
  */
 export interface budget_categoriesFieldRefs {
   readonly id: Prisma.FieldRef<"budget_categories", 'String'>
+  readonly account_id: Prisma.FieldRef<"budget_categories", 'String'>
   readonly name: Prisma.FieldRef<"budget_categories", 'String'>
-  readonly image_url: Prisma.FieldRef<"budget_categories", 'String'>
-  readonly image_id: Prisma.FieldRef<"budget_categories", 'String'>
+  readonly emoji: Prisma.FieldRef<"budget_categories", 'String'>
   readonly color: Prisma.FieldRef<"budget_categories", 'String'>
   readonly created_at: Prisma.FieldRef<"budget_categories", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"budget_categories", 'DateTime'>
@@ -1205,6 +1366,10 @@ export type budget_categoriesCreateManyAndReturnArgs<ExtArgs extends runtime.Typ
    */
   data: Prisma.budget_categoriesCreateManyInput | Prisma.budget_categoriesCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.budget_categoriesIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1275,6 +1440,10 @@ export type budget_categoriesUpdateManyAndReturnArgs<ExtArgs extends runtime.Typ
    * Limit how many budget_categories to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.budget_categoriesIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

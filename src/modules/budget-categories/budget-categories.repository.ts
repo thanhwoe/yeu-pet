@@ -1,15 +1,18 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
-import { budget_categories } from '@app/generated/prisma/client';
+import {
+  budget_categoriesCreateInput,
+  budget_categoriesUpdateInput,
+} from '@app/generated/prisma/models';
 import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async create(data: Pick<budget_categories, 'name' | 'color'>) {
+  async create(data: budget_categoriesCreateInput) {
     return this.prisma.budget_categories.create({ data });
   }
-  async update(id: string, data: Partial<budget_categories>) {
+  async update(id: string, data: budget_categoriesUpdateInput) {
     return this.prisma.budget_categories.update({
       where: { id },
       data: {
