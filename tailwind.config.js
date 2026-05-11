@@ -1,6 +1,7 @@
 import borderRadius from "./theme/borderRadius";
 import { colorPalette, colors } from "./theme/colors";
 import { fontFamily, fontSize } from "./theme/fonts";
+import boxShadow from "./theme/shadows";
 import spacing from "./theme/spacing";
 
 const { hairlineWidth } = require("nativewind/theme");
@@ -22,6 +23,7 @@ module.exports = {
     fontSize,
     spacing,
     borderRadius,
+    boxShadow,
     extend: {
       borderWidth: {
         hairline: hairlineWidth(),

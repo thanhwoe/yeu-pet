@@ -37,9 +37,9 @@ export const PetPickerController = <T extends FieldValues>({
   });
 
   return (
-    <View>
+    <View className="gap-12">
       {label && (
-        <Body variant="body3" className="mb-8">
+        <Body variant="body3" weight="semiBold">
           {label}
         </Body>
       )}
@@ -64,7 +64,7 @@ export const PetPickerController = <T extends FieldValues>({
                 "border-line-secondary": value === item.id,
               })}
               variant="line"
-              size="medium"
+              size="large"
             />
             <Body variant="body3" numberOfLines={1}>
               {item.name}

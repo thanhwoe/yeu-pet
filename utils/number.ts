@@ -63,3 +63,10 @@ export const formatCurrency = (
 // formatCurrency(1_500_000)      // "$1.5M"
 // formatCurrency(48000, '₫')    // "₫48K"
 // formatCurrency(48000, '€')
+
+export const shortID = (id: string, maxLength = 10) => {
+  if (id.length <= maxLength) {
+    return id;
+  }
+  return id.slice(0, 5) + "..." + id.slice(-5);
+};

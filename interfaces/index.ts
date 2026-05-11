@@ -13,3 +13,4 @@ export * from "./products";
 export * from "./reminder";
 export * from "./shipping-address";
 export * from "./user";
+export * from "./medical-record";

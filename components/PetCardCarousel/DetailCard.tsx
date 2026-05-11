@@ -3,7 +3,12 @@ import { IPet } from "@/interfaces";
 import { cn } from "@/utils";
 import { calculateAnimalAge } from "@/utils/pet";
 import dayjs from "dayjs";
-import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
+import {
+  ArrowDownLeftIcon,
+  ArrowUpRightIcon,
+  PencilSimpleIcon,
+  TrashIcon,
+} from "phosphor-react-native";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -29,6 +34,8 @@ import {
 
 const EditIcon = withIconClassName(PencilSimpleIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
+const FrontIcon = withIconClassName(ArrowUpRightIcon);
+const BackIcon = withIconClassName(ArrowDownLeftIcon);
 
 interface IProps {
   onEdit: (value: IPet) => void;
@@ -213,9 +220,7 @@ export const DetailCard = memo<IProps>(
                 )}
                 onPress={flip}
               >
-                <Body weight="bold" className={theme.icon}>
-                  ↗
-                </Body>
+                <FrontIcon className={theme.icon} weight="bold" size={20} />
               </Pressable>
               <Pressable
                 className={cn(
@@ -317,9 +322,7 @@ export const DetailCard = memo<IProps>(
             onPress={flip}
             activeOpacity={0.8}
           >
-            <Body weight="bold" className={theme.icon}>
-              ↙
-            </Body>
+            <BackIcon className={theme.icon} weight="bold" size={20} />
           </TouchableOpacity>
         </Animated.View>
       </Animated.View>

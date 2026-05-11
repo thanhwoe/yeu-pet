@@ -223,6 +223,66 @@ export const budgetTransactionSchema = z.object({
   }),
 });
 
+export const medicalRecordSchema = z
+  .object({
+    title: z
+      .string({
+        message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+      })
+      .nonempty({
+        message: ERROR_MESSAGE.FIELD_REQUIRED("Title"),
+      }),
+    description: z.string().optional(),
+    vetClinic: z.string().optional(),
+    vetName: z.string().optional(),
+
+    petId: z.string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Pet"),
+    }),
+    recordType: z.enum(["vaccination", "checkup", "surgery", "medication"], {
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Record type"),
+    }),
+    date: z.date({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Date"),
+    }),
+    attachmentIds: z
+      .array(
+        z.object({
+          id: z.string(),
+          url: z.string(),
+          name: z.string(),
+        }),
+      )
+      .optional(),
+    attachments: z
+      .array(
+        z
+          .object({
+            uri: z.string().min(1),
+            name: z.string().min(1),
+            type: z.string().min(1),
+            size: z.number().optional(),
+          })
+          .refine((val) => ACCEPTED_IMAGE_TYPES.includes(val.type), {
+            message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
+          })
+          .refine((val) => !val.size || val.size <= MAX_FILE_SIZE, {
+            message: "File size must be less than 5MB",
+          }),
+      )
+      .optional(),
+  })
+  .check((ctx) => {
+    if (!ctx.value.attachmentIds?.length && !ctx.value.attachments?.length) {
+      ctx.issues.push({
+        code: "custom",
+        message: ERROR_MESSAGE.FIELD_REQUIRED("Attachments"),
+        input: ctx.value,
+        path: ["attachments"],
+      });
+    }
+  });
+
 export const shippingAddressSchema = z.object({
   phone: z
     .string({
@@ -261,6 +321,8 @@ export type IBudgetTransactionFormOutput = z.output<
 >;
 
 export type IReminderForm = z.infer<typeof reminderSchema>;
+
+export type IMedicalRecordForm = z.infer<typeof medicalRecordSchema>;
 
 export type ISignInForm = z.infer<typeof signInSchema>;
 

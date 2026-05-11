@@ -66,7 +66,7 @@ export const InputField = forwardRef(
     return (
       <View className={className}>
         {label && (
-          <Body variant="body3" className="mb-8">
+          <Body variant="body3" className="mb-8" weight="semiBold">
             {label}
           </Body>
         )}

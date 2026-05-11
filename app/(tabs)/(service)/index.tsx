@@ -24,6 +24,7 @@ export default function Screen() {
           subTitle="35+"
           icon={FilesIcon}
           themeClassName="text-accent-orange"
+          onPress={() => router.push("/medical-record")}
         />
 
         <ServiceCard

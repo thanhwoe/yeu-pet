@@ -27,3 +27,9 @@ export interface UploadFileParam {
   type: string;
   size?: number;
 }
+
+export interface DefaultFileParam {
+  id: string;
+  url: string;
+  name: string;
+}

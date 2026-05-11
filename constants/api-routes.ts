@@ -61,4 +61,8 @@ export const API_ROUTES = {
   DELETE_SHIPPING_ADDRESS: (id: string) => `/shipping-address/${id}/delete`,
 
   PAYMENT_VNPAY: "/payment/vnpay",
+
+  MEDICAL_RECORDS: "/medical-records",
+  MEDICAL_RECORD_DETAIL: (id: string) => `/medical-records/${id}`,
+  MEDICAL_RECORDS_BY_PET: (petId: string) => `/pets/${petId}/medical-records`,
 };

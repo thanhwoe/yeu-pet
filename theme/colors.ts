@@ -251,6 +251,8 @@ export const darkColorTheme = {
   "--background-negative-foreground": "--red-90",
   "--background-negative-pressed": "--red-90",
   "--background-warning": "--yellow-40",
+  "--background-warning-foreground": "--yellow-90",
+
   "--background-cancel": "--grey-40",
 
   // LINE
@@ -278,14 +280,32 @@ export const darkColorTheme = {
   "--icon-negative": "--red-60",
 
   "--accent-orange": "--orange-50",
+  "--accent-orange-bold": "--orange-30",
+  "--accent-orange-foreground": "--orange-90",
   "--accent-yellow": "--yellow-40",
+  "--accent-yellow-bold": "--yellow-30",
+  "--accent-yellow-foreground": "--yellow-90",
   "--accent-blue": "--blue-50",
+  "--accent-blue-bold": "--blue-30",
+  "--accent-blue-foreground": "--blue-90",
   "--accent-purple": "--purple-50",
+  "--accent-purple-bold": "--purple-30",
+  "--accent-purple-foreground": "--purple-90",
   "--accent-teal": "--teal-50",
+  "--accent-teal-bold": "--teal-30",
+  "--accent-teal-foreground": "--teal-90",
   "--accent-cyan": "--cyan-50",
+  "--accent-cyan-bold": "--cyan-30",
+  "--accent-cyan-foreground": "--cyan-90",
   "--accent-red": "--red-50",
+  "--accent-red-bold": "--red-30",
+  "--accent-red-foreground": "--red-90",
   "--accent-green": "--green-50",
+  "--accent-green-bold": "--green-30",
+  "--accent-green-foreground": "--green-90",
   "--accent-pink": "--pink-50",
+  "--accent-pink-bold": "--pink-30",
+  "--accent-pink-foreground": "--pink-90",
 
   "--shadow-primary": "--grey-0",
 };
@@ -339,6 +359,7 @@ export const lightColorTheme = {
   "--background-negative-foreground": "--red-5",
   "--background-negative-pressed": "--red-60",
   "--background-warning": "--yellow-20",
+  "--background-warning-foreground": "--yellow-0",
   "--background-cancel": "--grey-15",
 
   // LINE
@@ -367,14 +388,32 @@ export const lightColorTheme = {
 
   // ACCENT
   "--accent-orange": "--orange-15",
+  "--accent-orange-bold": "--orange-50",
+  "--accent-orange-foreground": "--orange-5",
   "--accent-yellow": "--yellow-15",
+  "--accent-yellow-bold": "--yellow-50",
+  "--accent-yellow-foreground": "--yellow-5",
   "--accent-blue": "--blue-15",
+  "--accent-blue-bold": "--blue-50",
+  "--accent-blue-foreground": "--blue-5",
   "--accent-purple": "--purple-15",
+  "--accent-purple-bold": "--purple-50",
+  "--accent-purple-foreground": "--purple-5",
   "--accent-teal": "--teal-15",
+  "--accent-teal-bold": "--teal-50",
+  "--accent-teal-foreground": "--teal-5",
   "--accent-cyan": "--cyan-15",
+  "--accent-cyan-bold": "--cyan-50",
+  "--accent-cyan-foreground": "--cyan-5",
   "--accent-red": "--red-15",
+  "--accent-red-bold": "--red-50",
+  "--accent-red-foreground": "--red-5",
   "--accent-green": "--green-15",
+  "--accent-green-bold": "--green-50",
+  "--accent-green-foreground": "--green-5",
   "--accent-pink": "--pink-15",
+  "--accent-pink-bold": "--pink-50",
+  "--accent-pink-foreground": "--pink-5",
 
   "--shadow-primary": "--grey-100",
 };

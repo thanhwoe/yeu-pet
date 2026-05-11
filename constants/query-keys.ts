@@ -69,6 +69,16 @@ export const BUDGET_STATISTIC_KEY = {
     [...BUDGET_STATISTIC_KEY.details(), id] as const,
 };
 
+export const MEDICAL_RECORDS_KEY = {
+  all: [{ scope: "medical-record" }] as const,
+  lists: () => [...MEDICAL_RECORDS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...MEDICAL_RECORDS_KEY.lists(), { params }] as const,
+  details: () => [...MEDICAL_RECORDS_KEY.all, "detail"] as const,
+  detail: (id?: number | string) =>
+    [...MEDICAL_RECORDS_KEY.details(), id] as const,
+};
+
 export const CHART_KEY = {
   all: [{ scope: "chart" }] as const,
   lists: () => [...CHART_KEY.all, "list"] as const,

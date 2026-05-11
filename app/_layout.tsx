@@ -85,6 +85,7 @@ const RootNavigation = () => {
           }}
         />
         <Stack.Screen name="budget" options={{ headerShown: false }} />
+        <Stack.Screen name="medical-record" options={{ headerShown: false }} />
         <Stack.Screen
           name="photos"
           options={{
