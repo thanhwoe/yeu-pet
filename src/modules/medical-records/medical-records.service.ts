@@ -144,6 +144,11 @@ export class MedicalRecordsService {
     }
 
     return this.medicalRecordsRepository.update(id, {
+      pets: {
+        connect: {
+          id: updateMedicalRecordDto.petId,
+        },
+      },
       date: updateMedicalRecordDto.date
         ? dayjs(updateMedicalRecordDto.date).toDate()
         : undefined,

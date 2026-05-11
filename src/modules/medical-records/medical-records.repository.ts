@@ -3,7 +3,10 @@ import {
   attachment_status,
   medical_records,
 } from '@app/generated/prisma/client';
-import { medical_recordsWhereInput } from '@app/generated/prisma/models';
+import {
+  medical_recordsUpdateInput,
+  medical_recordsWhereInput,
+} from '@app/generated/prisma/models';
 import { IMedicalRecordsRepository } from '@app/interfaces/medical-records-repository.interface';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
@@ -23,10 +26,7 @@ export class MedicalRecordsRepository implements IMedicalRecordsRepository {
     });
   }
 
-  async update(
-    id: string,
-    data: Omit<Partial<medical_records>, 'pet_id' | 'id'>,
-  ) {
+  async update(id: string, data: medical_recordsUpdateInput) {
     const updateData: Record<string, unknown> = { ...data };
 
     return this.prisma.medical_records.update({
