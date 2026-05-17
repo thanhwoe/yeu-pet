@@ -262,7 +262,7 @@ export type PetsGroupByOutputType = {
   _max: PetsMaxAggregateOutputType | null
 }
 
-type GetPetsGroupByPayload<T extends petsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPetsGroupByPayload<T extends petsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PetsGroupByOutputType, T['by']> &
       {
@@ -1968,6 +1968,11 @@ export type petsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` pets.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of pets.
+   */
   distinct?: Prisma.PetsScalarFieldEnum | Prisma.PetsScalarFieldEnum[]
 }
 

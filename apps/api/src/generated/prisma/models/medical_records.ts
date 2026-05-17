@@ -200,7 +200,7 @@ export type Medical_recordsGroupByOutputType = {
   _max: Medical_recordsMaxAggregateOutputType | null
 }
 
-type GetMedical_recordsGroupByPayload<T extends medical_recordsGroupByArgs> = Prisma.PrismaPromise<
+export type GetMedical_recordsGroupByPayload<T extends medical_recordsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Medical_recordsGroupByOutputType, T['by']> &
       {
@@ -1477,6 +1477,11 @@ export type medical_recordsFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` medical_records.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of medical_records.
+   */
   distinct?: Prisma.Medical_recordsScalarFieldEnum | Prisma.Medical_recordsScalarFieldEnum[]
 }
 

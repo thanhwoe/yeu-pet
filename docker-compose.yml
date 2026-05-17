@@ -1,0 +1,53 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: yeu-pet-api
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    env_file:
+      - apps/api/.env
+    environment:
+      - PORT=${PORT:-3000}
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT:-6379}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/yeu-pet-firebase-adminsdk.json:/app/yeu-pet-firebase-adminsdk.json:ro
+    networks:
+      - yeu-pet-net
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:${PORT:-3000}/api/v1']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: yeu-pet-redis
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - yeu-pet-net
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+networks:
+  yeu-pet-net:
+    driver: bridge
+
+volumes:
+  redis_data:

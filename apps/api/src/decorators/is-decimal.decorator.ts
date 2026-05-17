@@ -1,11 +1,11 @@
-import {
-  registerDecorator,
-  ValidationOptions,
-  buildMessage,
-} from 'class-validator';
-import { Transform } from 'class-transformer';
 import { applyDecorators } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/client';
+import { Transform } from 'class-transformer';
+import {
+  buildMessage,
+  registerDecorator,
+  ValidationOptions,
+} from 'class-validator';
 
 export function IsDecimal(validationOptions?: ValidationOptions) {
   return applyDecorators(
@@ -15,7 +15,8 @@ export function IsDecimal(validationOptions?: ValidationOptions) {
       if (typeof value === 'number') return new Decimal(value);
       return value;
     }),
-    (target: object, propertyKey: string) => {
+    // @ts-expect-error ----
+    (target: object, propertyKey: string): void => {
       registerDecorator({
         name: 'isDecimal',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type

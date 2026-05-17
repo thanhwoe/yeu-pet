@@ -158,7 +158,7 @@ export type Account_settingsGroupByOutputType = {
   _max: Account_settingsMaxAggregateOutputType | null
 }
 
-type GetAccount_settingsGroupByPayload<T extends account_settingsGroupByArgs> = Prisma.PrismaPromise<
+export type GetAccount_settingsGroupByPayload<T extends account_settingsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Account_settingsGroupByOutputType, T['by']> &
       {
@@ -1072,6 +1072,11 @@ export type account_settingsFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` account_settings.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of account_settings.
+   */
   distinct?: Prisma.Account_settingsScalarFieldEnum | Prisma.Account_settingsScalarFieldEnum[]
 }
 

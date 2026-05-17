@@ -172,7 +172,7 @@ export type Refresh_tokensGroupByOutputType = {
   _max: Refresh_tokensMaxAggregateOutputType | null
 }
 
-type GetRefresh_tokensGroupByPayload<T extends refresh_tokensGroupByArgs> = Prisma.PrismaPromise<
+export type GetRefresh_tokensGroupByPayload<T extends refresh_tokensGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Refresh_tokensGroupByOutputType, T['by']> &
       {
@@ -1196,6 +1196,11 @@ export type refresh_tokensFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` refresh_tokens.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of refresh_tokens.
+   */
   distinct?: Prisma.Refresh_tokensScalarFieldEnum | Prisma.Refresh_tokensScalarFieldEnum[]
 }
 

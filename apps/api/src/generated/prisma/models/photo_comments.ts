@@ -220,7 +220,7 @@ export type Photo_commentsGroupByOutputType = {
   _max: Photo_commentsMaxAggregateOutputType | null
 }
 
-type GetPhoto_commentsGroupByPayload<T extends photo_commentsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPhoto_commentsGroupByPayload<T extends photo_commentsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Photo_commentsGroupByOutputType, T['by']> &
       {
@@ -1733,6 +1733,11 @@ export type photo_commentsFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` photo_comments.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of photo_comments.
+   */
   distinct?: Prisma.Photo_commentsScalarFieldEnum | Prisma.Photo_commentsScalarFieldEnum[]
 }
 

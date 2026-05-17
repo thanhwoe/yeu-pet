@@ -1,43 +1,24 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
+# Root-level ignores
 node_modules/
+.turbo/
+.env
+.env.*
+!.env.example
 
-# Expo
-.expo/
+# Build outputs
 dist/
-web-build/
-expo-env.d.ts
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
+build/
 *.tsbuildinfo
 
-app-example
+# OS
+.DS_Store
+*.log
 
+# IDE
+.vscode/
+.idea/
 
-/android/
-/ios/
+# Docker local overrides
+docker-compose.override.yml
+
+# Each app has its own .gitignore too

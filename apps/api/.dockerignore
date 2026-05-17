@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.gitignore
+README.md
+.env
+.env.*
+!.env.example
+coverage
+*.log
+.DS_Store
+.idea
+.vscode
+test
+*.spec.ts
+*.test.ts
+.turbo

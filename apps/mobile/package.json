@@ -1,9 +1,10 @@
 {
-  "name": "pet-care",
+  "name": "@yeu-pet/mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "APP_VARIANT=development expo start",
+    "dev": "APP_VARIANT=development expo start",
     "lint": "expo lint",
     "eas": "npx eas-cli@latest",
     "build:dev:android": "eas build --platform android --profile development",

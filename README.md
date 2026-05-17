@@ -1,50 +1,90 @@
-# Welcome to your Expo app 👋
+# Yeu Pet - Monorepo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A monorepo built with Turborepo and pnpm, containing:
 
-## Get started
+- **API**: NestJS backend with Prisma, PostgreSQL, Redis, Firebase Admin
+- **Mobile**: React Native Expo app
 
-1. Install dependencies
+## Prerequisites
 
-   ```bash
-   npm install
-   ```
+- Node.js >= 20
+- pnpm >= 9
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Setup
 
 ```bash
-npm run reset-project
+# Install dependencies
+pnpm install
+
+# Run development servers
+pnpm dev:api    # Start API server
+pnpm dev:mobile # Start Expo mobile app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Available Scripts
 
-## Learn more
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Run all apps in dev mode |
+| `pnpm dev:api` | Run only API |
+| `pnpm dev:mobile` | Run only mobile |
+| `pnpm build` | Build all apps |
+| `pnpm build:api` | Build only API |
+| `pnpm build:mobile` | Build only mobile |
+| `pnpm lint` | Lint all apps |
+| `pnpm test` | Run tests |
+| `pnpm clean` | Clean all builds and node_modules |
 
-To learn more about developing your project with Expo, look at the following resources:
+## Project Structure
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+yeu-pet/
+├── apps/
+│   ├── api/          # NestJS backend
+│   └── mobile/       # React Native app
+├── packages/
+│   ├── tsconfig/     # Shared TypeScript configs
+│   └── eslint-config/# Shared ESLint configs
+├── package.json
+├── pnpm-workspace.yaml
+├── turbo.json
+└── tsconfig.json
+```
 
-## Join the community
+## Development
 
-Join our community of developers creating universal apps.
+### API
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The API uses NestJS with Prisma for database access. Key features:
+
+- PostgreSQL database
+- Redis caching
+- Firebase Admin SDK
+- JWT authentication
+- BullMQ for background jobs
+
+### Mobile
+
+The mobile app uses React Native with Expo. Key features:
+
+- Expo Router for navigation
+- React Query for data fetching
+- Zustand for state management
+- NativeWind for styling
+
+## Docker
+
+```bash
+# Start all services
+pnpm docker:up
+
+# Stop services
+pnpm docker:down
+
+# Build images
+pnpm docker:build
+```
+
+## License
+
+UNLICENSED

@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Turbo cache
+.turbo
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+*.log
+
+# Mobile app (not needed for API build)
+apps/mobile
+
+# Node modules (will be installed fresh in Docker)
+node_modules
+apps/*/node_modules
+packages/*/node_modules
+
+# Build outputs
+dist
+build
+*.tsbuildinfo
+coverage
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Docs
+README.md
+apps/*/README.md
+
+# Environment files (secrets must not be baked into image)
+.env
+apps/*/.env
+apps/*/.env.*
+!apps/*/.env.example
+
+# Tests
+apps/*/test
+**/*.spec.ts
+**/*.test.ts
+
+# Firebase credentials (mount at runtime, don't bake in)
+apps/api/yeu-pet-firebase-adminsdk.json

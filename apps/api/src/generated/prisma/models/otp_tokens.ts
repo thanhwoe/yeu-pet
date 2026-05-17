@@ -158,7 +158,7 @@ export type Otp_tokensGroupByOutputType = {
   _max: Otp_tokensMaxAggregateOutputType | null
 }
 
-type GetOtp_tokensGroupByPayload<T extends otp_tokensGroupByArgs> = Prisma.PrismaPromise<
+export type GetOtp_tokensGroupByPayload<T extends otp_tokensGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Otp_tokensGroupByOutputType, T['by']> &
       {
@@ -1072,6 +1072,11 @@ export type otp_tokensFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Skip the first `n` otp_tokens.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of otp_tokens.
+   */
   distinct?: Prisma.Otp_tokensScalarFieldEnum | Prisma.Otp_tokensScalarFieldEnum[]
 }
 

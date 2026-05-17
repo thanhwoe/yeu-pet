@@ -213,7 +213,7 @@ export type Sitter_reviewsGroupByOutputType = {
   _max: Sitter_reviewsMaxAggregateOutputType | null
 }
 
-type GetSitter_reviewsGroupByPayload<T extends sitter_reviewsGroupByArgs> = Prisma.PrismaPromise<
+export type GetSitter_reviewsGroupByPayload<T extends sitter_reviewsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Sitter_reviewsGroupByOutputType, T['by']> &
       {
@@ -1512,6 +1512,11 @@ export type sitter_reviewsFindManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Skip the first `n` sitter_reviews.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of sitter_reviews.
+   */
   distinct?: Prisma.Sitter_reviewsScalarFieldEnum | Prisma.Sitter_reviewsScalarFieldEnum[]
 }
 

@@ -1,17 +1,17 @@
 {
-  "name": "yeu-pet-api",
+  "name": "@yeu-pet/api",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -25,10 +25,7 @@
     "db:migrate:diff": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/20260227_add_budget_table/migration.sql",
     "db:migrate:resolve": "prisma migrate resolve --applied 20260227_add_budget_table",
     "db:generate": "prisma generate",
-    "docker:down": "docker compose down -v",
-    "docker:build": "docker compose build",
-    "docker:build:no-cache": "docker compose build --no-cache",
-    "docker:up": "docker compose up"
+    "dev": "nest start --watch"
   },
   "dependencies": {
     "@casl/ability": "^6.8.0",
@@ -67,6 +64,8 @@
     "twilio": "^5.12.0"
   },
   "devDependencies": {
+    "@yeu-pet/tsconfig": "workspace:*",
+    "@yeu-pet/eslint-config": "workspace:*",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",

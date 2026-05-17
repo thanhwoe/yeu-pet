@@ -1,0 +1,15 @@
+{
+  "name": "@yeu-pet/tsconfig",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "base.json",
+    "nestjs.json",
+    "react-native.json"
+  ],
+  "scripts": {
+    "build": "echo 'No build needed for tsconfig package'"
+  }
+}

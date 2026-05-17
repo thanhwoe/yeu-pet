@@ -165,7 +165,7 @@ export type Photo_viewsGroupByOutputType = {
   _max: Photo_viewsMaxAggregateOutputType | null
 }
 
-type GetPhoto_viewsGroupByPayload<T extends photo_viewsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPhoto_viewsGroupByPayload<T extends photo_viewsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Photo_viewsGroupByOutputType, T['by']> &
       {
@@ -1163,6 +1163,11 @@ export type photo_viewsFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` photo_views.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of photo_views.
+   */
   distinct?: Prisma.Photo_viewsScalarFieldEnum | Prisma.Photo_viewsScalarFieldEnum[]
 }
 

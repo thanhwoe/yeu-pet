@@ -186,7 +186,7 @@ export type Notification_deliveriesGroupByOutputType = {
   _max: Notification_deliveriesMaxAggregateOutputType | null
 }
 
-type GetNotification_deliveriesGroupByPayload<T extends notification_deliveriesGroupByArgs> = Prisma.PrismaPromise<
+export type GetNotification_deliveriesGroupByPayload<T extends notification_deliveriesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Notification_deliveriesGroupByOutputType, T['by']> &
       {
@@ -1410,6 +1410,11 @@ export type notification_deliveriesFindManyArgs<ExtArgs extends runtime.Types.Ex
    * Skip the first `n` notification_deliveries.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of notification_deliveries.
+   */
   distinct?: Prisma.Notification_deliveriesScalarFieldEnum | Prisma.Notification_deliveriesScalarFieldEnum[]
 }
 

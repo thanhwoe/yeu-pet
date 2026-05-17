@@ -186,7 +186,7 @@ export type Account_devicesGroupByOutputType = {
   _max: Account_devicesMaxAggregateOutputType | null
 }
 
-type GetAccount_devicesGroupByPayload<T extends account_devicesGroupByArgs> = Prisma.PrismaPromise<
+export type GetAccount_devicesGroupByPayload<T extends account_devicesGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Account_devicesGroupByOutputType, T['by']> &
       {
@@ -1395,6 +1395,11 @@ export type account_devicesFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` account_devices.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of account_devices.
+   */
   distinct?: Prisma.Account_devicesScalarFieldEnum | Prisma.Account_devicesScalarFieldEnum[]
 }
 
