@@ -1,24 +1,28 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
 const path = require("path");
+
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, "../..");
+
 const config = getDefaultConfig(__dirname);
 
 config.resolver.blockList = [
   ...Array.from(config.resolver.blockList ?? []),
-  new RegExp(path.resolve("..", "node_modules", "react")),
-  new RegExp(path.resolve("..", "node_modules", "react-native")),
+  new RegExp(path.resolve(workspaceRoot, "apps/node_modules/react")),
+  new RegExp(path.resolve(workspaceRoot, "apps/node_modules/react-native")),
 ];
 
 config.resolver.nodeModulesPaths = [
-  path.resolve(__dirname, "./node_modules"),
-  path.resolve(__dirname, "../node_modules"),
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(workspaceRoot, "node_modules"),
 ];
 
 config.resolver.extraNodeModules = {
   "vnpay-merchant": "..",
 };
 
-config.watchFolders = [path.resolve(__dirname, "..")];
+config.watchFolders = [workspaceRoot];
 
 config.transformer.getTransformOptions = async () => ({
   transform: {

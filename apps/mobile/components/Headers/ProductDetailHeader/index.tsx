@@ -3,7 +3,6 @@ import { CART_KEY } from "@/constants/query-keys";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { getCartCountQuery } from "@/services";
-import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -25,12 +24,20 @@ const AnimatedLinearGradient = cssInterop(
     className: {
       target: "style",
     },
-  }
+  },
 );
 
 const BackIcon = withIconClassName(ArrowLeftIcon);
 
-export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
+interface ProductDetailHeaderProps {
+  navigation: {
+    goBack: () => void;
+  };
+}
+
+export const ProductDetailHeader = ({
+  navigation,
+}: ProductDetailHeaderProps) => {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
   const translateX = useSharedValue(-400);
@@ -48,10 +55,10 @@ export const ProductDetailHeader = ({ navigation }: NativeStackHeaderProps) => {
         }),
         withTiming(-400, {
           duration: 0,
-        })
+        }),
       ),
       -1,
-      false
+      false,
     );
   }, []);
 

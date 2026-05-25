@@ -43,7 +43,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy noeviction
 
 networks:
   yeu-pet-net:

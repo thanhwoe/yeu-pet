@@ -5,10 +5,9 @@ import { MEDICAL_RECORDS_KEY } from "@/constants/query-keys";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IMedicalRecord, IPet } from "@/interfaces";
 import { getMedicalRecordsByPetIdQuery } from "@/services";
-import { cn, date } from "@/utils";
+import { cn } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-import { cva } from "class-variance-authority";
-import { CaretDownIcon, DotsThreeVerticalIcon } from "phosphor-react-native";
+import { CaretDownIcon } from "phosphor-react-native";
 import React, { memo, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -17,18 +16,19 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { MedicalRecordListItem } from "./MedicalRecordListItem";
 
 const ExpandIcon = withIconClassName(CaretDownIcon);
-const MoreIcon = withIconClassName(DotsThreeVerticalIcon);
 
 interface MedicalRecordContainerProps {
   pet: IPet;
   onRecordPress?: (record: IMedicalRecord) => void;
   onMorePress?: (record: IMedicalRecord) => void;
+  onSeeAllPress?: (pet: IPet) => void;
 }
 
 export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
-  ({ pet, onRecordPress, onMorePress }) => {
+  ({ pet, onRecordPress, onMorePress, onSeeAllPress }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     // Animated values
@@ -117,8 +117,17 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
             <Body weight="semiBold">{pet.name}</Body>
           </View>
 
-          {/* TODO: implement medical record list screen */}
-          {/* <Body className="mx-8">See all</Body> */}
+          <TouchableOpacity
+            className="mx-8 px-8 py-4"
+            onPress={(event) => {
+              event.stopPropagation();
+              onSeeAllPress?.(pet);
+            }}
+          >
+            <Body variant="body3" weight="semiBold" className="text-text-link">
+              See all
+            </Body>
+          </TouchableOpacity>
 
           {isLoading ? (
             <Spinner size={24} className="text-icon-primary" />
@@ -174,9 +183,6 @@ const MedicalRecordItem: React.FC<MedicalRecordItemProps> = ({
   isFirst,
   isLast,
 }) => {
-  const isProcessing = record.attachmentStatus === "processing";
-  const isFailed = record.attachmentStatus === "failed";
-
   return (
     <View
       className={cn("relative mb-16", {
@@ -204,62 +210,12 @@ const MedicalRecordItem: React.FC<MedicalRecordItemProps> = ({
         />
       )}
 
-      <TouchableOpacity
-        className="flex-row bg-background-card rounded-16 p-16 ml-68 mr-16 elevation-sm shadow-sm"
+      <MedicalRecordListItem
+        record={record}
+        className="ml-68 mr-16"
         onPress={onPress}
-        activeOpacity={0.7}
-        disabled={isProcessing || isFailed}
-      >
-        <View className="flex-1 flex-row items-center justify-between">
-          <View className="flex-1 mr-12">
-            <Body weight="semiBold" numberOfLines={1}>
-              {record.title}
-            </Body>
-            <Body variant="body3" className="text-text-primary-disabled">
-              {date(record.date).format("L")}
-            </Body>
-          </View>
-          <View className="flex-row items-center gap-8">
-            <StatusChip status={record.attachmentStatus} />
-            <TouchableOpacity onPress={onMorePress}>
-              <MoreIcon size={24} className="text-icon-primary" weight="bold" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-};
-
-const statusWrapperStyle = cva("px-12 py-6 rounded-18", {
-  variants: {
-    status: {
-      ready: "bg-background-positive-foreground",
-      processing: "bg-background-warning-foreground",
-      failed: "bg-background-negative-foreground",
-    },
-  },
-});
-const statusTextStyle = cva("", {
-  variants: {
-    status: {
-      ready: "text-text-positive",
-      processing: "text-text-warning",
-      failed: "text-text-negative",
-    },
-  },
-});
-
-const StatusChip = ({
-  status,
-}: {
-  status: IMedicalRecord["attachmentStatus"];
-}) => {
-  return (
-    <View className={statusWrapperStyle({ status })}>
-      <Body variant="body3" className={statusTextStyle({ status })}>
-        {status}
-      </Body>
+        onMorePress={onMorePress}
+      />
     </View>
   );
 };

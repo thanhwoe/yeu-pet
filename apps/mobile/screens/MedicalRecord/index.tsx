@@ -17,7 +17,7 @@ import {
 } from "@/services";
 import { useIsFocused } from "@react-navigation/native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigation, useRouter } from "expo-router";
+import { type Href, useNavigation, useRouter } from "expo-router";
 import { PlusIcon, TrashIcon } from "phosphor-react-native";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -132,6 +132,13 @@ export const MedicalRecordScreen = () => {
             key={pet.id}
             pet={pet}
             onRecordPress={handlePress}
+            onSeeAllPress={(selectedPet) => {
+              router.push(
+                `/medical-record/pet/${selectedPet.id}?petName=${encodeURIComponent(
+                  selectedPet.name,
+                )}` as Href,
+              );
+            }}
             onMorePress={(record) => {
               setSelectedRecord(record);
             }}

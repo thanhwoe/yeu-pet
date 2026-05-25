@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "39cf60f7-2141-4c03-b1d0-6c6a9c1003af"
+      }
+    },
+    "android": {
+      "package": "com.thanhwoe.yeupet"
+    }
+  }
+}

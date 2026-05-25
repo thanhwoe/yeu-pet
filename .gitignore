@@ -22,3 +22,5 @@ build/
 docker-compose.override.yml
 
 # Each app has its own .gitignore too
+
+.pnpm-store

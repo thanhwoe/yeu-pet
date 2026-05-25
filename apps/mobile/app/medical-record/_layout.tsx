@@ -18,6 +18,13 @@ export default function Layout() {
           title: `Medical Record Detail`,
         }}
       />
+      <Stack.Screen
+        name="pet/[petId]"
+        options={{
+          header: BackHeader,
+          title: "Medical Records",
+        }}
+      />
     </Stack>
   );
 }

@@ -1,14 +1,29 @@
 import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cn } from "@/utils";
-import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import { ArrowLeftIcon as ArrowLeft } from "phosphor-react-native";
-import { useState } from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { ReactNode, useState } from "react";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 const ArrowLeftIcon = withIconClassName(ArrowLeft);
 
-export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
+type HeaderRenderer = (props: any) => ReactNode;
+
+interface BackHeaderProps {
+  navigation: {
+    canGoBack: () => boolean;
+    goBack: () => void;
+  };
+  options: {
+    title?: string;
+    headerStyle?: StyleProp<ViewStyle>;
+    headerLeft?: HeaderRenderer;
+    headerRight?: HeaderRenderer;
+    headerTitle?: HeaderRenderer | string;
+  };
+}
+
+export const BackHeader = ({ options, navigation }: BackHeaderProps) => {
   const [rightButtonWidth, setRightButtonWidth] = useState(27);
 
   const HeaderRight = options.headerRight;
@@ -21,7 +36,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
       className={cn(
         "flex-row items-center px-16 pb-12 pt-safe-offset-8 bg-background",
       )}
-      style={options.headerStyle as ViewStyle}
+      style={options.headerStyle}
     >
       {HeaderLeft ? (
         <HeaderLeft canGoBack={navigation.canGoBack()} />
@@ -40,13 +55,13 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
           </TouchableOpacity>
         )
       )}
-      {HeaderTitle ? (
+      {typeof HeaderTitle === "function" ? (
         <View className="flex-1 justify-center items-center">
-          <HeaderTitle>{options.title ?? ""}</HeaderTitle>
+          {HeaderTitle({ children: options.title ?? "" })}
         </View>
       ) : (
         <Body className="flex-1" center weight="semiBold" numberOfLines={1}>
-          {options.title ?? ""}
+          {HeaderTitle ?? options.title ?? ""}
         </Body>
       )}
       {HeaderRight ? (
@@ -56,7 +71,7 @@ export const BackHeader = ({ options, navigation }: NativeStackHeaderProps) => {
             setRightButtonWidth(width);
           }}
         >
-          <HeaderRight />
+          {HeaderRight({})}
         </View>
       ) : (
         <View className="w-[27px]" />
