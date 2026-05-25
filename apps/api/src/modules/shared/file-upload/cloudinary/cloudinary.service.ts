@@ -80,7 +80,7 @@ export class CloudinaryService implements IFileUploadService {
               ...this.optionMapping[quality],
             },
             (error, result) => {
-              if (error) return reject(error as Error);
+              if (error) return reject(new Error(error.message));
               resolve(result);
             },
           );

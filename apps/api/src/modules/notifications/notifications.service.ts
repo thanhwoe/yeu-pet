@@ -30,19 +30,41 @@ export class NotificationsService {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {
     if (!admin.apps.length) {
-      const serviceAccountPath = this.configService.getOrThrow<string>(
+      const creds = this.configService.getOrThrow<string>(
         'GOOGLE_APPLICATION_CREDENTIALS',
       );
-      const absolutePath = path.resolve(process.cwd(), serviceAccountPath);
 
-      // Check if file exists
-      if (!fs.existsSync(absolutePath)) {
-        throw new Error(`Service account file not found: ${absolutePath}`);
+      let serviceAccount: admin.ServiceAccount;
+      if (creds.trim().startsWith('{')) {
+        try {
+          serviceAccount = JSON.parse(creds) as admin.ServiceAccount;
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          throw new Error(
+            `Failed to parse GOOGLE_APPLICATION_CREDENTIALS JSON: ${message}`,
+          );
+        }
+      } else {
+        const absolutePath = path.resolve(process.cwd(), creds);
+
+        // Check if file exists
+        if (!fs.existsSync(absolutePath)) {
+          throw new Error(`Service account file not found: ${absolutePath}`);
+        }
+
+        try {
+          serviceAccount = JSON.parse(
+            fs.readFileSync(absolutePath, 'utf8'),
+          ) as admin.ServiceAccount;
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          throw new Error(
+            `Failed to parse Firebase credentials file: ${message}`,
+          );
+        }
       }
-
-      const serviceAccount = JSON.parse(
-        fs.readFileSync(absolutePath, 'utf8'),
-      ) as string;
 
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),

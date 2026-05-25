@@ -1,0 +1,115 @@
+name: API Docker Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api/**"
+      - "packages/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "turbo.json"
+      - ".github/workflows/api-deploy.yml"
+  workflow_dispatch:
+    inputs:
+      push_image:
+        description: "Build and push the API image to GHCR"
+        required: true
+        type: boolean
+        default: true
+      deploy_ssh:
+        description: "Deploy on your server over SSH after pushing the image"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: api-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/yeu-pet-api
+
+jobs:
+  docker:
+    name: Build and optionally deploy API image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check API lint
+        run: pnpm --filter @yeu-pet/api lint:check
+
+      - name: Build API
+        run: pnpm --filter @yeu-pet/api build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'push' || inputs.push_image
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-
+
+      - name: Build API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: ${{ github.event_name == 'push' || inputs.push_image }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy over SSH
+        if: inputs.deploy_ssh
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        with:
+          host: ${{ secrets.API_SSH_HOST }}
+          username: ${{ secrets.API_SSH_USER }}
+          key: ${{ secrets.API_SSH_KEY }}
+          port: ${{ secrets.API_SSH_PORT || 22 }}
+          envs: IMAGE_NAME
+          script: |
+            set -e
+            cd "${{ secrets.API_DEPLOY_PATH }}"
+            docker compose pull api
+            docker compose up -d api
+            docker image prune -f
