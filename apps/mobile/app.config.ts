@@ -1,4 +1,4 @@
-import { ConfigContext, ExpoConfig } from 'expo/config.js';
+import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 type Variant = 'development' | 'preview' | 'production';
 type Values = {
