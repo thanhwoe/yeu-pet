@@ -31,6 +31,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
   return {
     ...config,
+    // EAS Update only ships iOS/Android bundles; omit web so `expo export` skips it in CI.
+    platforms: ['ios', 'android'],
     slug: 'pet-care',
     name: value.name,
     ios: {

@@ -69,7 +69,9 @@ EAS can manage Android keystores and iOS signing credentials for you. For iOS, y
 - **Channel** is what native builds listen to (`channel: "preview"` in `eas.json` build profiles).
 - A channel must point at a branch, or `--channel` updates fail with “Channel has no branches associated with it.”
 
-CI publishes to a **branch**, then links the same-named channel with `eas channel:edit`. One-time local fix if needed:
+CI publishes to a **branch**, then links the same-named channel with `eas channel:edit`. The app config sets `platforms: ["ios", "android"]` so EAS Update does not bundle web (avoids `@expo/metro-runtime` export errors in CI).
+
+One-time local fix if needed:
 
 ```sh
 cd apps/mobile
