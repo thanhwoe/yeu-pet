@@ -21,8 +21,10 @@ on:
         default: update-preview
         options:
           - update-preview
+          - update-development
           - update-production
           - build-preview
+          - build-development
           - build-production
           - submit-production
       platform:
@@ -80,14 +82,16 @@ jobs:
       - name: Run Expo lint
         run: pnpm --filter @yeu-pet/mobile lint
 
-      - name: Publish production update on main
+      - name: Publish preview update on main
         if: github.event_name == 'push'
         working-directory: apps/mobile
+        env:
+          APP_VARIANT: preview
         run: |
           eas update \
-            --channel production \
-            --environment production \
-            --message "GitHub Actions production update ${GITHUB_SHA}" \
+            --channel preview \
+            --environment preview \
+            --message "GitHub Actions preview update ${GITHUB_SHA}" \
             --non-interactive
 
       - name: Run manual EAS action
@@ -99,14 +103,21 @@ jobs:
         run: |
           case "$EAS_ACTION" in
             update-preview)
-              eas update \
+              APP_VARIANT=preview eas update \
                 --channel preview \
                 --environment preview \
                 --message "GitHub Actions preview update ${GITHUB_SHA}" \
                 --non-interactive
               ;;
+            update-development)
+              APP_VARIANT=development eas update \
+                --channel development \
+                --environment development \
+                --message "GitHub Actions development update ${GITHUB_SHA}" \
+                --non-interactive
+              ;;
             update-production)
-              eas update \
+              APP_VARIANT=production eas update \
                 --channel production \
                 --environment production \
                 --message "GitHub Actions production update ${GITHUB_SHA}" \
@@ -116,6 +127,13 @@ jobs:
               eas build \
                 --platform "$EAS_PLATFORM" \
                 --profile preview \
+                --non-interactive \
+                --no-wait
+              ;;
+            build-development)
+              eas build \
+                --platform "$EAS_PLATFORM" \
+                --profile development \
                 --non-interactive \
                 --no-wait
               ;;
