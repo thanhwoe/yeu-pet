@@ -46,6 +46,7 @@ jobs:
     name: Run EAS command
     runs-on: ubuntu-latest
     env:
+      CI: "1"
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
@@ -91,6 +92,8 @@ jobs:
           eas update \
             --branch preview \
             --environment preview \
+            --platform android \
+            --platform ios \
             --message "GitHub Actions preview update ${GITHUB_SHA}" \
             --non-interactive
           eas channel:edit preview --branch preview --non-interactive
@@ -107,6 +110,8 @@ jobs:
               APP_VARIANT=preview eas update \
                 --branch preview \
                 --environment preview \
+                --platform android \
+                --platform ios \
                 --message "GitHub Actions preview update ${GITHUB_SHA}" \
                 --non-interactive
               eas channel:edit preview --branch preview --non-interactive
@@ -115,6 +120,8 @@ jobs:
               APP_VARIANT=development eas update \
                 --branch development \
                 --environment development \
+                --platform android \
+                --platform ios \
                 --message "GitHub Actions development update ${GITHUB_SHA}" \
                 --non-interactive
               eas channel:edit development --branch development --non-interactive
@@ -123,6 +130,8 @@ jobs:
               APP_VARIANT=production eas update \
                 --branch production \
                 --environment production \
+                --platform android \
+                --platform ios \
                 --message "GitHub Actions production update ${GITHUB_SHA}" \
                 --non-interactive
               eas channel:edit production --branch production --non-interactive
