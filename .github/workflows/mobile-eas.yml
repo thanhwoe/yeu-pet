@@ -89,10 +89,11 @@ jobs:
           APP_VARIANT: preview
         run: |
           eas update \
-            --channel preview \
+            --branch preview \
             --environment preview \
             --message "GitHub Actions preview update ${GITHUB_SHA}" \
             --non-interactive
+          eas channel:edit preview --branch preview --non-interactive
 
       - name: Run manual EAS action
         if: github.event_name == 'workflow_dispatch'
@@ -104,24 +105,27 @@ jobs:
           case "$EAS_ACTION" in
             update-preview)
               APP_VARIANT=preview eas update \
-                --channel preview \
+                --branch preview \
                 --environment preview \
                 --message "GitHub Actions preview update ${GITHUB_SHA}" \
                 --non-interactive
+              eas channel:edit preview --branch preview --non-interactive
               ;;
             update-development)
               APP_VARIANT=development eas update \
-                --channel development \
+                --branch development \
                 --environment development \
                 --message "GitHub Actions development update ${GITHUB_SHA}" \
                 --non-interactive
+              eas channel:edit development --branch development --non-interactive
               ;;
             update-production)
               APP_VARIANT=production eas update \
-                --channel production \
+                --branch production \
                 --environment production \
                 --message "GitHub Actions production update ${GITHUB_SHA}" \
                 --non-interactive
+              eas channel:edit production --branch production --non-interactive
               ;;
             build-preview)
               eas build \

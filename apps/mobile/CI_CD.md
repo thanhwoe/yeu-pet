@@ -10,11 +10,13 @@ This app uses Expo Application Services (EAS) for over-the-air updates, cloud bu
   - Runs `pnpm --filter @yeu-pet/mobile lint`.
 
 - `.github/workflows/mobile-eas.yml`
-  - On pushes to `main`, publishes an EAS Update to the `production` channel.
+  - On pushes to `main`, publishes an EAS Update to the `preview` branch (linked to the `preview` channel).
   - Can be run manually from GitHub Actions for:
     - `update-preview`
+    - `update-development`
     - `update-production`
     - `build-preview`
+    - `build-development`
     - `build-production`
     - `submit-production`
 
@@ -57,9 +59,22 @@ EAS can manage Android keystores and iOS signing credentials for you. For iOS, y
 1. Open a pull request.
 2. GitHub runs Mobile CI.
 3. Merge to `main`.
-4. GitHub publishes an OTA update to the EAS `production` channel.
+4. GitHub publishes an OTA update to the EAS `preview` branch.
 5. When native code, permissions, app config, SDK version, or dependencies change, run **Mobile EAS Deploy** manually with `build-preview` or `build-production`.
 6. When ready to upload the latest production binary, run **Mobile EAS Deploy** manually with `submit-production`.
+
+## EAS Update: channels vs branches
+
+- **Branch** is where update bundles are published (`eas update --branch preview`).
+- **Channel** is what native builds listen to (`channel: "preview"` in `eas.json` build profiles).
+- A channel must point at a branch, or `--channel` updates fail with “Channel has no branches associated with it.”
+
+CI publishes to a **branch**, then links the same-named channel with `eas channel:edit`. One-time local fix if needed:
+
+```sh
+cd apps/mobile
+eas channel:edit preview --branch preview
+```
 
 ## Notes
 
