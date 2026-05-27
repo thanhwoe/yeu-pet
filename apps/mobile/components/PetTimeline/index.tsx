@@ -1,5 +1,5 @@
+import { SCREEN_WIDTH } from "@/constants/common";
 import { IPet } from "@/interfaces";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
 import { FlatList, View } from "react-native";
@@ -26,7 +26,7 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
   useEffect(() => {
     if (selectedPet && data.length > 0) {
       const targetIndex = data.findIndex(
-        (pet) => pet.pet_id === selectedPet.pet_id
+        (pet) => pet.pet_id === selectedPet.pet_id,
       );
 
       if (targetIndex !== -1) {
@@ -81,7 +81,7 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
         </View>
       </View>
     ),
-    []
+    [],
   );
 
   const keyExtractor = (item: IPet) => item.pet_id;

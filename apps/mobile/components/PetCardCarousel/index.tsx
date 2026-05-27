@@ -1,8 +1,8 @@
+import { SCREEN_WIDTH } from "@/constants/common";
 import { PET_KEY } from "@/constants/query-keys";
 import { IPet } from "@/interfaces";
 import { getListPetQuery } from "@/services";
 import { cn } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { memo, useState } from "react";
 import { View } from "react-native";

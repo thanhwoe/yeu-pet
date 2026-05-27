@@ -1,4 +1,4 @@
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@/constants/common";
 import React, { useEffect } from "react";
 import { Pressable, Modal as RNModal, StatusBar, View } from "react-native";
 import Animated, {
@@ -91,7 +91,7 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
         damping: 20,
         stiffness: 90,
         mass: 1,
-      }
+      },
     );
 
     translateX.value = withSpring(initialTranslateX, {

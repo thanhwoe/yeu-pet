@@ -1,5 +1,4 @@
 import { cn } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { Icon as IconType, PawPrintIcon } from "phosphor-react-native";
 import {
   StyleSheet,
@@ -8,6 +7,7 @@ import {
   View,
 } from "react-native";
 
+import { SCREEN_WIDTH } from "@/constants/common";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cssInterop } from "nativewind";
 import { Body } from "../ui/Typography";

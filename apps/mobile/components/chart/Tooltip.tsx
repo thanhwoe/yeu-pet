@@ -1,5 +1,5 @@
+import { SCREEN_WIDTH } from "@/constants/common";
 import { cn } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { LayoutChangeEvent, TextInput } from "react-native";
 import Animated, {
   setNativeProps,

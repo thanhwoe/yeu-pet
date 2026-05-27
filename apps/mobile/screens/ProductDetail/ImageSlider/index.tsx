@@ -1,7 +1,7 @@
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
+import { SCREEN_WIDTH } from "@/constants/common";
 import { IProductImage } from "@/interfaces";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useMemo, useRef, useState } from "react";
 import { FlatList, View, ViewToken } from "react-native";
 
@@ -17,7 +17,7 @@ export const ImageSlider = ({ data }: IProps) => {
       if (viewableItems.length > 0) {
         setCurrentIndex(viewableItems[0].index ?? 0);
       }
-    }
+    },
   ).current;
 
   const slider = useMemo(
@@ -55,7 +55,7 @@ export const ImageSlider = ({ data }: IProps) => {
         }}
       />
     ),
-    [data, onViewableItemsChanged]
+    [data, onViewableItemsChanged],
   );
 
   return (

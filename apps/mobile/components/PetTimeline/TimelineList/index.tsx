@@ -3,11 +3,11 @@ import { Skeleton } from "@/components/Skeleton";
 import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
+import { SCREEN_WIDTH } from "@/constants/common";
 import { REMINDER_KEY } from "@/constants/query-keys";
 import { IPet } from "@/interfaces";
 import { getListReminderQuery } from "@/services";
 import { date } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
@@ -25,7 +25,7 @@ export const TimelineList = ({ pet }: IProps) => {
       (data?.data || [])
         .flatMap((item) => item.data)
         .sort(
-          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
         ),
   });
 

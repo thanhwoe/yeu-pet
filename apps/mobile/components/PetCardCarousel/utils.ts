@@ -1,4 +1,4 @@
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_WIDTH } from "@/constants/common";
 
 export const CARD_WIDTH = SCREEN_WIDTH * 0.68;
 export const CARD_HEIGHT = CARD_WIDTH * 1.35;

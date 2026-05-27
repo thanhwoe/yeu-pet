@@ -1,4 +1,4 @@
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_WIDTH } from "@/constants/common";
 
 export const GAP = 2;
 export const ITEM_WIDTH = (SCREEN_WIDTH - 40) / 3 - GAP * 2;

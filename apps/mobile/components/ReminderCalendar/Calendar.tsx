@@ -1,6 +1,6 @@
+import { SCREEN_WIDTH } from "@/constants/common";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { date } from "@/utils";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
 import { cssInterop } from "nativewind";
 import { memo, useCallback } from "react";
 import { ExpandableCalendar } from "react-native-calendars";
