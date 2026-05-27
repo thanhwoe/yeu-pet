@@ -6,6 +6,8 @@
     "dev": "turbo run dev",
     "dev:api": "turbo run dev --filter=@yeu-pet/api",
     "dev:mobile": "turbo run dev --filter=@yeu-pet/mobile",
+    "dev:mobile-capacitor": "pnpm --filter @yeu-pet/mobile-capacitor dev",
+    "build:mobile-capacitor": "pnpm --filter @yeu-pet/mobile-capacitor build",
     "build": "turbo run build",
     "build:api": "turbo run build --filter=@yeu-pet/api",
     "build:mobile": "turbo run build --filter=@yeu-pet/mobile",
