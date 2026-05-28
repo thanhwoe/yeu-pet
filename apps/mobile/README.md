@@ -1,50 +1,223 @@
-# Welcome to your Expo app 👋
+# Yeu Pet Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo-based mobile app for the Yeu Pet product.
 
-## Get started
+This is the active mobile client. It uses Expo Router, NativeWind, Zustand, React Query, Axios, React Hook Form, and Zod.
 
-1. Install dependencies
+## Purpose
 
-   ```bash
-   npm install
-   ```
+The app provides the current user-facing mobile experience for:
 
-2. Start the app
+- authentication
+- onboarding
+- home dashboard
+- reminders
+- services hub
+- budget
+- photos
+- medical records
+- settings
+- sitter booking
+- subscription
 
-   ```bash
-   npx expo start
-   ```
+## Important notes
 
-In the output, you'll find options to open the app in a
+- `apps/mobile-capacitor` is only a reference for migration ideas and documentation patterns.
+- The Expo app is the canonical mobile app for current users.
+- Keep deferred features clearly separated from the active product scope:
+  - store / commerce
+  - clinics
+  - spas
+  - training
+  - doctor AI
+  - VNPay / payments
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Tech stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Expo SDK 53
+- Expo Router
+- React Native
+- NativeWind
+- Zustand
+- React Query
+- Axios
+- React Hook Form
+- Zod
+- Phosphor icons
+- Victory Native
 
-## Get a fresh project
+## Project structure
 
-When you're ready, run:
+- `app/` — Expo Router screens and layouts
+- `components/` — reusable UI and feature components
+- `constants/` — API routes, query keys, validation, shared values
+- `services/` — Axios helper and API domain services
+- `stores/` — Zustand state
+- `hooks/` — shared hooks
+- `interfaces/` — TypeScript types
+- `theme/` — design tokens
+- `utils/` — helpers and formatters
+
+## Navigation flow
+
+The root layout controls access based on auth and onboarding state:
+
+- unauthenticated users go to the auth flow
+- verified users who have not completed onboarding go to onboarding
+- authenticated and onboarded users go to the main tabs
+- selected feature screens are mounted outside the tabs
+
+See `app/_layout.tsx` for the actual guard logic.
+
+## API and state patterns
+
+### API access
+
+Use `services/api-helper.ts` and the exported `APIs` client for all network requests.
+
+Important behaviors:
+
+- attaches bearer access tokens automatically
+- converts API responses to camelCase
+- refreshes tokens on 401 responses
+- throws network errors with a friendly message
+
+### Session state
+
+User/session data lives in Zustand and is persisted with secure storage-backed adapters.
+
+Important fields include:
+
+- user profile
+- access token
+- refresh token
+- OTP expiry
+- device info
+
+### Server state
+
+Use React Query for server data and cache management.
+
+## Key feature domains
+
+### Auth
+
+- sign in
+- sign up
+- logout
+- forgot/reset password
+- OTP verification
+
+### Onboarding
+
+- onboarding carousel
+- complete onboarding mutation
+
+### Home
+
+- pet cards
+- reminder snapshot
+- budget snapshot
+
+### Services
+
+- launch entry points to app features
+- keep this screen limited to in-scope domains
+
+### Budget
+
+- categories
+- transactions
+- statistics
+
+### Photos
+
+- upload
+- social feed
+- likes and stats
+
+### Medical records
+
+- record lists
+- record details
+- records by pet
+
+### Sitter booking
+
+- sitter browsing
+- sitter profile
+- booking creation
+- booking management
+- sitter reviews
+
+### Subscription
+
+- current tier display
+- expiry information
+- upgrade CTA when backend support is available
+
+## API route conventions
+
+`constants/api-routes.ts` is the shared route registry.
+
+Keep route groups aligned to the backend domains:
+
+- auth
+- users
+- pets
+- reminders
+- budget
+- photos
+- medical records
+- sitter booking
+- subscription
+
+Prefer grouped constants over ad-hoc inline paths.
+
+## Query key conventions
+
+`constants/query-keys.ts` contains query key factories.
+
+Use query keys consistently by feature domain so cache invalidation stays predictable.
+
+## Environment variables
+
+The app reads these environment values:
+
+- `EXPO_PUBLIC_API_URL`
+- `EXPO_PUBLIC_GEMINI_API_KEY`
+
+Default API URL behavior:
+
+- iOS: `http://localhost:3000/api/v1`
+- Android: `http://10.0.2.2:3000/api/v1`
+- fallback: `http://localhost:3000/api/v1`
+
+## Useful commands
 
 ```bash
-npm run reset-project
+# Start the Expo app
+pnpm --filter @yeu-pet/mobile dev
+
+# Run lint
+pnpm --filter @yeu-pet/mobile lint
+
+# Run native builds
+pnpm --filter @yeu-pet/mobile android
+pnpm --filter @yeu-pet/mobile ios
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Documentation to read first
 
-## Learn more
+1. `AGENTS.md`
+2. `app/_layout.tsx`
+3. `services/api-helper.ts`
+4. `services/auth.ts`
+5. `constants/api-routes.ts`
+6. `constants/query-keys.ts`
 
-To learn more about developing your project with Expo, look at the following resources:
+## Maintenance rules
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Keep the README aligned with the active product scope.
+- Do not reintroduce deferred features into the main docs without product approval.
+- If new domains are added, document them here and in `AGENTS.md`.

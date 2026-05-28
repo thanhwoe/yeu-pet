@@ -14,7 +14,40 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - **Charts**: Victory Native (`victory-native`)
 - **Animation**: React Native Reanimated
 
-## 2. Directory Structure
+## 2. Product Scope
+
+`apps/mobile` is the canonical mobile app for current users.
+
+### In scope
+
+- Authentication
+- Onboarding
+- Home
+- Reminders
+- Services hub
+- Budget
+- Photos
+- Medical records
+- Settings
+- Sitter booking
+- Subscription
+
+### Deferred / legacy unless explicitly requested
+
+- Store / commerce
+- Clinics
+- Spas
+- Training
+- Doctor AI
+- VNPay / payments
+
+### Notes
+
+- Use `apps/mobile-capacitor` only as a documentation and architecture reference.
+- Do not treat Capacitor-specific implementation details as mandatory for Expo.
+- Keep the active mobile scope visible in README, route docs, and feature docs.
+
+## 3. Directory Structure
 
 - `app/` - Expo Router screens and layouts.
 - `assets/` - Static assets including fonts (Nunito) and images.
@@ -28,7 +61,7 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - `theme/` - Design system configuration (colors, spacing, roundness).
 - `utils/` - Utility functions (e.g., formatters, validators).
 
-## 3. Coding Conventions
+## 4. Coding Conventions
 
 - **UI Components:** Use `class-variance-authority` (`cva`) for UI primitives in `components/ui`. Keep `styles.ts` containing the CVA logic separate from the `index.tsx` component logic.
 - **Styling Strategy:** Use tailwind classes via the `className` prop. Strictly respect the custom theme variables and color palettes defined in `tailwind.config.js` and `theme/`.
@@ -40,7 +73,47 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - **TypeScript:** Enforce strict null checks and proper typing using `interfaces/`. Avoid `any`.
 - **Imports:** Use absolute imports leveraging the `@/*` alias scheme.
 
-## 4. Development Workflow
+## 5. Documentation Rules
+
+Keep the docs aligned with the active Expo product.
+
+### Required documentation priorities
+
+1. Update `README.md` when the app scope or setup instructions change.
+2. Keep `AGENTS.md` aligned with architecture and product scope.
+3. Document route flow in `app/_layout.tsx` when auth/onboarding behavior changes.
+4. Keep `constants/api-routes.ts` aligned with backend route families.
+5. Keep `constants/query-keys.ts` aligned with feature domains and cache boundaries.
+
+### What to document explicitly
+
+- Active vs deferred features
+- Auth/onboarding flow
+- Session/token handling
+- API ownership by domain
+- Query key conventions
+- Route groups and navigation boundaries
+
+## 6. Development Workflow
 
 - Run the project using `npm start` or `npx expo start`.
 - Follow standard Git branching and commit practices.
+
+## 7. Implementation Guidance
+
+- Prefer feature-domain organization over generic screen-only organization.
+- Keep `services/` focused on API transport and domain requests.
+- Keep `components/` focused on reusable UI and feature composition.
+- If a new feature is added, document the feature domain and route behavior before or alongside the code.
+- If a feature is deferred, mark it clearly in docs rather than leaving it mixed into active scope.
+
+## 8. Migration Reference
+
+`apps/mobile-capacitor` contains useful documentation patterns, especially:
+
+- explicit scope boundaries
+- route grouping by domain
+- checklist-based progress tracking
+- API client/session normalization patterns
+
+Use those ideas to improve the Expo app docs and structure, but keep the Expo app as the source of truth for implementation.
