@@ -1,16 +1,18 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import './instrument';
+
 import {
   BadRequestException,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './filters/all-exceptions.filter';
-import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import helmet from 'helmet';
+import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from './filters/prisma-exceptions.filter';
+import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
