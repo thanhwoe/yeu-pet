@@ -6,10 +6,7 @@ import { BudgetsRepository } from './budgets.repository';
 import { BudgetCategoriesModule } from '../budget-categories/budget-categories.module';
 
 @Module({
-  imports: [
-    BudgetTransactionsModule,
-    BudgetCategoriesModule,
-  ],
+  imports: [BudgetTransactionsModule, BudgetCategoriesModule],
   controllers: [BudgetsController],
   providers: [BudgetsService, BudgetsRepository],
 })

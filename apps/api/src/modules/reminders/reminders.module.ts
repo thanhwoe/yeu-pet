@@ -8,11 +8,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { UserSettingsModule } from '../user-settings/user-settings.module';
 
 @Module({
-  imports: [
-    CaslModule,
-    NotificationsModule,
-    UserSettingsModule,
-  ],
+  imports: [CaslModule, NotificationsModule, UserSettingsModule],
   controllers: [RemindersController],
   providers: [RemindersService, RemindersRepository, ScheduleRemindersTask],
 })

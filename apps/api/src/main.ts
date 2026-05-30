@@ -96,7 +96,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`${apiPrefix}/docs`, app, document);
 
-
   // Global Validation DTO
   app.useGlobalPipes(
     new ValidationPipe({
