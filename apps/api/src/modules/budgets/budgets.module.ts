@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { BudgetsService } from './budgets.service';
 import { BudgetsController } from './budgets.controller';
 import { BudgetTransactionsModule } from '../budget-transactions/budget-transactions.module';
@@ -7,8 +7,8 @@ import { BudgetCategoriesModule } from '../budget-categories/budget-categories.m
 
 @Module({
   imports: [
-    forwardRef(() => BudgetTransactionsModule),
-    forwardRef(() => BudgetCategoriesModule),
+    BudgetTransactionsModule,
+    BudgetCategoriesModule,
   ],
   controllers: [BudgetsController],
   providers: [BudgetsService, BudgetsRepository],

@@ -4,13 +4,15 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
-import { SentryExceptionCaptured } from '@sentry/nestjs';
+import * as Sentry from '@sentry/nestjs';
 import { Request, Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  @SentryExceptionCaptured()
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -23,6 +25,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const exceptionResponse =
       exception instanceof HttpException ? exception.getResponse() : null;
+
+    // Unexpected server crash (status >= 500) -> capture to Sentry
+    // Client-side exceptions (400, 401, 403, 404) -> lightweight logging warning, ignore in Sentry
+    if (status >= 500) {
+      Sentry.captureException(exception);
+    } else {
+      this.logger.warn(
+        `Client Exception: ${status} | Path: ${request.url} | Message: ${JSON.stringify(exceptionResponse)}`,
+      );
+    }
 
     const body = {
       statusCode: status,

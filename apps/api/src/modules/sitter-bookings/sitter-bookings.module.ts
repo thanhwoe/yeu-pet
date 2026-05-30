@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { SitterBookingsService } from './sitter-bookings.service';
 import { SitterBookingsController } from './sitter-bookings.controller';
 import { SitterBookingsRepository } from './sitter-bookings.repository';
@@ -7,7 +7,7 @@ import { PetsModule } from '../pets/pets.module';
 import { ActiveBookingsTask } from './tasks/active-bookings.task';
 
 @Module({
-  imports: [forwardRef(() => PetSittersModule), forwardRef(() => PetsModule)],
+  imports: [PetSittersModule, PetsModule],
   controllers: [SitterBookingsController],
   providers: [
     SitterBookingsService,

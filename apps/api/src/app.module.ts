@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
+import { HttpCacheInterceptor } from './interceptors/http-cache.interceptor';
+import { TrackInterceptor } from './interceptors/track.interceptor';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { PrismaExceptionFilter } from './filters/prisma-exceptions.filter';
 import { ThrottlerModule, minutes, seconds } from '@nestjs/throttler';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppController } from './app.controller';
@@ -82,6 +87,14 @@ import { UsersModule } from './modules/users/users.module';
       useClass: SentryGlobalFilter,
     },
     {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: PrismaExceptionFilter,
+    },
+    {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
@@ -92,6 +105,14 @@ import { UsersModule } from './modules/users/users.module';
     {
       provide: APP_GUARD,
       useClass: CustomThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorLoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TrackInterceptor,
     },
   ],
 })

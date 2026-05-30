@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 import { RemindersController } from './reminders.controller';
 import { RemindersRepository } from './reminders.repository';
@@ -10,8 +10,8 @@ import { UserSettingsModule } from '../user-settings/user-settings.module';
 @Module({
   imports: [
     CaslModule,
-    forwardRef(() => NotificationsModule),
-    forwardRef(() => UserSettingsModule),
+    NotificationsModule,
+    UserSettingsModule,
   ],
   controllers: [RemindersController],
   providers: [RemindersService, RemindersRepository, ScheduleRemindersTask],

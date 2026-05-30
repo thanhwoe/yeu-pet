@@ -2,8 +2,8 @@
 
 > **Reference Project:** `smart-booking` (`/Users/thanh/projects/smart-booking`)
 > **Target Project:** `yeu-pet` (`apps/api`)
-> **Date:** 2026-05-28
-> **Status:** Planning Phase
+> **Date:** 2026-05-30
+> **Status:** Planning Phase (Audited & Updated)
 
 ---
 
@@ -26,28 +26,19 @@
 
 ## 1. Executive Summary
 
-The Yeu-Pet backend (NestJS, PostgreSQL, Prisma, Redis) has a solid foundation but lacks several production-grade patterns that the `smart-booking` project demonstrates. Key deficiencies include:
+The Yeu-Pet backend (NestJS, PostgreSQL, Prisma, Redis) has a solid foundation but requires refactoring into a production-grade, highly maintainable codebase. Following a rigorous architectural audit of the initial plan, the following structural improvements have been integrated to prevent stale-data bugs, telemetric noise, and application crashes:
 
-- **No consistent Repository pattern** with interface contracts
-- **No distributed locking** for concurrent booking operations
-- **No analytics/tracking** (PostHog or similar)
-- **No HTTP response caching** on GET endpoints
-- **No RolesGuard** — authorization roles mixed into JwtAuthGuard
-- **No Response DTOs** for Swagger documentation
-- **No email delivery tracking** or suppression management
-- **No Sentry integration** for error monitoring
-- **No scheduled cleanup tasks** (e.g., expired booking cleanup)
-- **Tight coupling** between modules (circular dependencies, `forwardRef` usage)
-- **Mixed naming conventions** (snake_case vs camelCase across modules)
-- **No RevenueCat integration** for subscription management
-
-This plan provides a **complete blueprint** to refactor the Yeu-Pet backend into a maintainable, scalable, production-grade codebase using the proven patterns from `smart-booking`.
+- **Selective (Opt-in) HTTP Response Caching:** Replaced the dangerous "global-by-default" caching interceptor with an **opt-in** cache decorator (`@Cacheable()`). This protects dynamic user states from stale-data issues and incorporates strict cache invalidation on mutations.
+- **Unexpected-Only Telemetry:** Refactored Sentry and PostHog error logging to trigger only on true system-level failures (`statusCode >= 500`). Client-side validation errors (`400`, `401`, `403`, `404`) are safely filtered out of exception trackers.
+- **NestJS DI Exception Filters:** Unified manual global filters with `SentryGlobalFilter` in `app.module.ts` via `APP_FILTER` to prevent shadowing and resolve startup injection warnings.
+- **Database-Level Sitter Booking Concurrency:** Corrected the fatal assumption that Yeu-Pet uses a slot-based booking system. Replaced the high-overhead, Redis-dependent Redlock logic with **PostgreSQL pessimistic row locking (`SELECT ... FOR UPDATE` on `pet_sitters`)** to guarantee transaction integrity without distributed lock lease-time risks.
+- **Roadmap Efficiency:** Reordered Phase 4 (Module Consolidation) to run before/simultaneously with Phase 3 (Module Refactoring). This prevents writing repository and DTO layers twice for unconsolidated features.
+- **TDD-Lite Fast Feedback:** Moved testing infrastructure setup (test factories, app fixtures) from the end of the project to Phase 2 to allow unit testing of refactored repositories in stride.
+- **Decoupled Modules & Bounded Contexts:** Preserved the `event-bus` (rather than deprecating it) for inter-module side-effects, and decoupled `PetsModule` from `MedicalRecordsModule` by moving sub-resource routing to `MedicalRecordsController`.
 
 ---
 
 ## 2. Smart-Booking Architecture Analysis
-
-> **Note:** Not all smart-booking patterns are directly applicable. Yeu-Pet will use **RevenueCat** for subscriptions/payments instead of Stripe, so Stripe-specific modules (payments/stripe) from smart-booking should be excluded. RevenueCat handles the mobile-side purchase flow, while the backend integrates via RevenueCat webhooks.
 
 ### 2.1 Folder Structure
 
@@ -63,24 +54,24 @@ src/
 ├── database/
 │   └── prisma/
 │       ├── prisma.module.ts         # Global PrismaModule
-│       └── prisma.service.ts        # Extends PrismaClient, lifecycle hooks, query logging
+│       └── prisma.service.ts        # Extends PrismaClient, query logging
 ├── decorators/                      # Custom decorators
-│   ├── cache.decorator.ts           # @CacheTTL(), @IgnoreCache()
+│   ├── cache.decorator.ts           # @Cacheable(), @IgnoreCache()
 │   ├── current-user.decorator.ts    # @CurrentUser()
 │   ├── pagination.decorator.ts      # @PaginationQuery()
 │   ├── public.decorator.ts          # @Public()
 │   ├── roles.decorator.ts           # @Roles(), @AdminOnly()
 │   └── swagger.decorator.ts         # @ApiOkResponse(), @ApiCreatedResponse()
 ├── filters/
-│   ├── all-exceptions.filter.ts     # Catch-all with Sentry
-│   └── prisma-exceptions.filter.ts  # Prisma errors → HTTP
+│   ├── all-exceptions.filter.ts     # Catch-all with Sentry (status >= 500 only)
+│   └── prisma-exceptions.filter.ts  # Prisma errors → HTTP mapping
 ├── guards/
-│   ├── jwt-auth.guard.ts            # Clerk JWT guard with public bypass
+│   ├── jwt-auth.guard.ts            # JWT guard with public bypass
 │   ├── roles.guard.ts               # Role-based access (RBAC)
 │   └── throttler.guard.ts           # Custom rate limiting (user/IP-based)
 ├── interceptors/
-│   ├── error-logging.interceptor.ts # Log errors to PostHog + Logger
-│   ├── http-cache.interceptor.ts    # Auto-cache GET responses via Redis
+│   ├── error-logging.interceptor.ts # Log errors (unexpected -> PostHog + Logger)
+│   ├── http-cache.interceptor.ts    # Opt-in GET caching with invalidation
 │   └── track.interceptor.ts         # Track API calls to PostHog
 ├── interfaces/                      # TypeScript interfaces & DI tokens
 │   ├── cache.interface.ts           # ICacheService interface + Symbol
@@ -92,14 +83,10 @@ src/
     ├── auth/
     ├── bookings/
     ├── email-logs/
-    ├── payments/                    # Stripe — NOT applicable to Yeu-Pet
-    ├── services/
-    ├── slots/
-    ├── users/
     └── shared/
         ├── cache/
         ├── email/
-        ├── lock/
+        ├── lock/                    # Optional distributed lock limits
         ├── queue/
         ├── redis/
         └── track/
@@ -114,7 +101,6 @@ interface IUsersRepository {
   create(data: UserCreateInput): Promise<User>;
   findById(id: string): Promise<User | null>;
   findAll(params?: { skip?: number; take?: number }): Promise<[User[], number]>;
-  findByClerkId(clerkId: string): Promise<User | null>;
 }
 
 @Injectable()
@@ -123,221 +109,95 @@ export class UsersRepository implements IUsersRepository {
 }
 ```
 
-#### Pattern 2: Service with Cache Decorator Pattern
+#### Pattern 2: Service with Opt-in Cache Decorator
 
 ```typescript
-async findOne(id: string) {
-  return this.cacheService.wrap(
-    CACHE_KEY.USER_BY_ID(id),
-    CACHE_TTL.USER,
-    async () => {
-      const user = await this.usersRepository.findById(id);
-      if (!user) throw new NotFoundException(`User with ID "${id}" not found`);
-      return user;
-    },
-  );
+// Caching is selective and opt-in to avoid dynamic state corruption
+@Get(':id')
+@Cacheable({ key: CACHE_KEY.USER_BY_ID, ttl: CACHE_TTL.USER })
+async findOne(@IdParam() id: string) {
+  const user = await this.usersRepository.findById(id);
+  if (!user) throw new NotFoundException(`User not found`);
+  return user;
 }
 ```
 
-#### Pattern 3: Distributed Lock for Concurrent Operations
+#### Pattern 3: Pessimistic Row-level Locking (PostgreSQL)
+
+Instead of complex Redis-distributed lock cycles, concurrent sitter booking limits are enforced natively inside a database transaction:
 
 ```typescript
-return this.distributedLockService.withLock(
-  slotId,
-  async () => {
-    return this.bookingsRepository.create(data);
-  },
-  "booking",
-);
-```
+// Enforce booking limitations transactionally
+return this.prisma.$transaction(async (tx) => {
+  // Lock pet sitter row to prevent concurrent booking count race conditions
+  const sitter = await tx.$queryRaw`
+    SELECT * FROM pet_sitters WHERE id = ${sitterId}::uuid FOR UPDATE
+  `;
+  
+  // Validate active booking count overlaps dynamically
+  const activeOverlappingBookings = await tx.sitter_bookings.count({
+    where: {
+      sitter_id: sitterId,
+      status: { in: ['pending', 'confirmed', 'active'] },
+      start_time: { lt: endTime },
+      end_time: { gt: startTime }
+    }
+  });
 
-#### Pattern 4: Queue Dispatching via Typed Service
+  if (activeOverlappingBookings >= sitter.max_concurrent_bookings) {
+    throw new ConflictException('Pet Sitter is fully booked for this timeframe');
+  }
 
-```typescript
-await this.queueService.dispatchBookingCancelled({
-  bookingId: booking.id,
-  userEmail: booking.user.email,
-  userName: booking.user.name,
+  return tx.sitter_bookings.create({ data });
 });
 ```
 
-#### Pattern 5: Swagger Decorator Composition
+#### Pattern 4: Decoupled Queue Dispatching via Event Bus
+
+To maintain clean DDD boundaries, feature modules publish events to the `event-bus`, and listener modules handle queue dispatching asynchronously.
 
 ```typescript
-@ApiOkResponse({ summary: 'Get all users', response: ResponseUsersDto, roles: [UserRole.ADMIN] })
-@AdminOnly()
-findAll(@PaginationQuery() pagination: PaginationDto) { ... }
-```
+// In SitterBookingsService
+this.eventBus.publish(new BookingCreatedEvent(booking));
 
-#### Pattern 6: HTTP Response Caching
-
-```typescript
-@Controller("services")
-@CacheTTL(CACHE_TTL.SERVICE)
-export class ServicesController {}
-```
-
-#### Pattern 7: Prisma Transaction with Serializable Isolation
-
-```typescript
-return this.prisma.$transaction(
-  async (tx) => {
-    const [lockedSlot] = await tx.$queryRaw<...>`SELECT ... FOR UPDATE OF s`;
-  },
-  { isolationLevel: TransactionIsolationLevel.Serializable },
-);
-```
-
-### 2.3 Module Dependency Graph (Smart-Booking — Reference Only)
-
-```
-AppModule
- ├── SentryModule
- ├── ScheduleModule
- ├── PrismaModule (global)
- ├── AuthModule (Clerk)
- ├── UsersModule
- ├── SharedModule (global) — Cache, Redis, Lock, Queue, Track
- ├── SlotsModule → ServicesModule
- ├── ServicesModule
- ├── BookingsModule → SlotsModule
- ├── EmailLogsModule
- └── PaymentsModule (Stripe — NOT applicable to Yeu-Pet)
+// In SitterBookingsListener
+@OnEvent('booking.created')
+async handleBookingCreated(event: BookingCreatedEvent) {
+  await this.queueService.dispatchBookingConfirmed({
+    bookingId: event.booking.id,
+    userEmail: event.booking.user.email,
+  });
+}
 ```
 
 ---
 
 ## 3. Yeu-Pet Current State Assessment
 
-### 3.1 Current Folder Structure
+### 3.1 Current Module Problems
 
-```
-apps/api/src/
-├── main.ts
-├── app.module.ts
-├── app.controller.ts
-├── app.service.ts
-├── database/
-│   └── prisma/
-│       └── prisma.module.ts, prisma.service.ts
-├── decorators/
-│   ├── admin.decorator.ts           # @Admin() — mixed role check
-│   ├── current-user.decorator.ts
-│   ├── file-uploaded.decorator.ts
-│   ├── files-uploaded.decorator.ts
-│   ├── id-param.decorator.ts
-│   ├── is-after.decorator.ts
-│   ├── is-decimal.decorator.ts
-│   ├── pagination.decorator.ts
-│   ├── policy.decorator.ts          # CASL
-│   └── public.decorator.ts
-├── filters/
-│   ├── all-exceptions.filter.ts
-│   └── prisma-exceptions.filter.ts
-├── guards/
-│   ├── jwt-auth.guard.ts            # JWT + admin role inline
-│   ├── local-auth.guard.ts
-│   ├── policy.guard.ts              # CASL
-│   ├── throttler.guard.ts
-│   └── user-verified.guard.ts
-├── interceptors/
-│   └── error-logging.interceptor.ts
-├── interfaces/
-│   ├── cache.interface.ts
-│   ├── event-bus.interface.ts
-│   ├── file-upload.interface.ts
-│   ├── otp.interface.ts
-│   ├── pagination.interface.ts
-│   ├── repository.interface.ts      # IBaseRepository<T>
-│   └── *-repository.interface.ts    # 15+ per-module repository interfaces
-├── pipes/
-│   ├── allow-values.pipe.ts
-│   └── number-range.pipe.ts
-├── strategies/
-│   ├── jwt.strategy.ts
-│   └── local.strategy.ts
-├── types/
-│   └── jwt.ts
-├── utils/
-│   ├── pagination.ts
-│   └── transform.ts
-└── modules/
-    ├── auth/
-    ├── users/
-    ├── pets/
-    ├── medical-records/
-    ├── reminders/
-    ├── casl/                        # CASL authorization
-    ├── budget-categories/
-    ├── budget-transactions/
-    ├── budgets/
-    ├── photos/
-    ├── photo-comments/
-    ├── pet-sitters/
-    ├── sitter-bookings/
-    ├── sitter-reviews/
-    ├── notifications/
-    ├── user-devices/
-    ├── user-settings/
-    ├── file-workers/
-    └── shared/
-        ├── bullmq/
-        ├── cache/
-        ├── event-bus/
-        ├── file-upload/
-        ├── otp/
-        └── redis/
-```
-
-### 3.2 Current Module Problems
-
-| Problem                                            | Location                          | Impact                             |
-| -------------------------------------------------- | --------------------------------- | ---------------------------------- |
-| CASL tied to `@casl/prisma` tightly                | `casl/` module                    | High coupling, hard to test        |
-| `forwardRef` in 5+ modules                         | pets, medical-records, auth, etc. | Circular dependency smell          |
-| No `@Roles()` decorator                            | `guards/jwt-auth.guard.ts`        | Violates SRP, hard to extend       |
-| Inline file upload handler in controllers          | `pets.controller.ts`              | Tight coupling to multer           |
-| No response DTOs for Swagger                       | All controllers                   | Poor API documentation             |
-| No HTTP cache interceptor                          | Missing                           | No GET response caching            |
-| No tracking/analytics                              | Missing                           | No product event data              |
-| No distributed lock                                | Missing                           | Concurrent booking race conditions |
-| No email delivery tracking                         | Missing                           | Cannot monitor email reliability   |
-| No Sentry                                          | Missing                           | No error monitoring                |
-| No scheduled cleanup tasks                         | Missing                           | Orphaned records accumulate        |
-| No RevenueCat integration                          | Missing                           | No subscription management         |
-| Repository interfaces not consistently implemented | `interfaces/*.repository.ts`      | Dead code, incomplete adoption     |
-
-### 3.3 Current Module Dependency Issues
-
-```
-PetsModule → MedicalRecordsModule (forwardRef) ↕ (circular)
-MedicalRecordsModule → PetsModule (forwardRef)
-AuthModule → UsersModule → AuthModule (forwardRef)
-```
+| Problem | Location | Impact & Resolution |
+| :--- | :--- | :--- |
+| **Real Circular Dependency** | `PetsModule ↔ MedicalRecordsModule` | High coupling. Resolved by moving `GET /pets/:id/medical-records` sub-resource logic/routing directly into `MedicalRecordsController`. |
+| **Fake Circular Dependencies** | `Reminders`, `Budgets`, `UserDevices` | Cargo-culted `forwardRef` usage. Removed all redundant forward imports since their dependencies are unidirectional. |
+| **No `@Roles()` decorator** | `guards/jwt-auth.guard.ts` | Decoupled in Phase 1.2; JwtAuthGuard now only validates token authenticity. |
+| **Telemetry Noise Flood** | `ErrorLoggingInterceptor` | Audit Finding: Validation errors flood Sentry. Resolved by wrapping Sentry exception capture in a `status >= 500` filter. |
+| **Shadowed Sentry Filter** | `main.ts` | Audit Finding: Manual `AllExceptionsFilter` registration in main.ts shadows and bypasses `SentryGlobalFilter`. Resolved by registering filters as `APP_FILTER` in `app.module.ts`. |
+| **Global Cache Invalidation** | `HttpCacheInterceptor` | Audit Finding: Global GET caching causes stale dashboard states. Resolved by migrating to selective `@Cacheable()` opt-in caching. |
 
 ---
 
 ## 4. Comparative Gap Analysis
 
-| Feature                    | Smart-Booking                 | Yeu-Pet                                | Action                     |
-| -------------------------- | ----------------------------- | -------------------------------------- | -------------------------- |
-| Repository Pattern         | ✅ Interface + Implementation | ⚠️ Partial                             | **Refine & standardize**   |
-| Distributed Lock (Redlock) | ✅                            | ❌ Missing                             | **Add**                    |
-| Queue Abstraction          | ✅ QueueService               | ⚠️ Direct BullMQ                       | **Refactor**               |
-| Email Tracking             | ✅ EmailLog + Suppression     | ❌ Missing                             | **Add**                    |
-| Analytics (PostHog)        | ✅ TrackService               | ❌ Missing                             | **Add**                    |
-| HTTP Cache Interceptor     | ✅                            | ❌ Missing                             | **Add**                    |
-| Response DTOs              | ✅                            | ❌ Missing                             | **Add**                    |
-| Roles Guard                | ✅ Separate                   | ⚠️ Inline                              | **Extract**                |
-| Sentry                     | ✅                            | ❌ Missing                             | **Add**                    |
-| Swagger Decorators         | ✅ Custom                     | ❌ Basic                               | **Add**                    |
-| Scheduled Tasks            | ✅                            | ❌ Missing                             | **Add**                    |
-| Testing                    | ✅ Unit + E2E + Factories     | ⚠️ Minimal                             | **Build out**              |
-| Auth Provider              | Clerk (external)              | JWT + Local (custom)                   | **Keep custom, refine**    |
-| Authorization              | Roles (RBAC)                  | CASL (ABAC)                            | **Keep CASL, simplify**    |
-| File Upload                | ❌ N/A                        | ✅ Cloudinary + BullMQ                 | **Keep, enhance**          |
-| **Payment Processing**     | ✅ Stripe                     | ⚠️ Will use **RevenueCat**             | **Do NOT add Stripe**      |
-| **Subscription Mgmt**      | ❌ N/A                        | ⚠️ Basic `subscription_tier` in schema | **Enhance via RevenueCat** |
+| Feature | Initial Plan Strategy | Audited & Improved Strategy |
+| :--- | :--- | :--- |
+| **HTTP Cache** | Global-by-default (Opt-out) | **Selective Opt-in (`@Cacheable()`)** |
+| **Concurrency Lock** | Redlock on non-existent `slotId` | **PostgreSQL Pessimistic Row Lock (`SELECT FOR UPDATE` on `pet_sitters`)** |
+| **Queue Dispatch** | Tight coupling to services | **Decoupled domain events via Event Bus** |
+| **Telemetry Error Tracking** | Captures all errors globally | **unexpected-only filters (HTTP status >= 500)** |
+| **Global Exception Filter** | Manually registered in `main.ts` | **NestJS DI registered via `APP_FILTER` in `app.module.ts`** |
+| **Refactoring Roadmap** | Refactor repositories, then consolidate | **Consolidate modules first, then refactor once** |
+| **Test Scheduling** | Phase 6 (Waterfall end-of-project) | **Phase 2 Setup (Unit test factories in stride)** |
 
 ---
 
@@ -346,531 +206,212 @@ AuthModule → UsersModule → AuthModule (forwardRef)
 ### 5.1 High-Level Architecture
 
 ```
-┌─────────────────────────────────────┐
-│           API Gateway               │
-│  (Helmet, CORS, Versioning, Throttle)│
-├─────────────────────────────────────┤
-│      Global Interceptors            │
-│  Track | Cache | ErrorLogging       │
-├─────────────────────────────────────┤
-│      Global Guards / Filters        │
-│  JWT Auth | Roles | Exception       │
-├─────────────────────────────────────┤
-│      Domain Modules                 │
-│  Auth, Users, Pets, MedicalRecords, │
-│  Reminders, Budget, Photos,         │
-│  SitterBooking, Notifications,      │
-│  Subscription (RevenueCat)          │
-├─────────────────────────────────────┤
-│       Shared Infrastructure         │
-│  Redis | Cache | Queue (BullMQ)     │
-│  DistributedLock | Track (PostHog)  │
-│  Email (Resend) | FileUpload        │
-│  Sentry                             │
-├─────────────────────────────────────┤
-│            Data Layer               │
-│      PrismaService + PostgreSQL     │
-└─────────────────────────────────────┘
+┌───────────────────────────────────────────┐
+│                API Gateway                │
+│    (Helmet, CORS, Versioning, Throttle)   │
+├───────────────────────────────────────────┤
+│            Global Interceptors            │
+│       Track | Cache (Opt-in) | Telemetry  │
+├───────────────────────────────────────────┤
+│          Global Guards / Filters          │
+│       JWT Auth | Roles | Exception        │
+├───────────────────────────────────────────┤
+│            Bounded Contexts               │
+│   Auth, Users, Pets, MedicalRecords,      │
+│   Reminders, Budget (Consolidated),       │
+│   Photos (Consolidated),                  │
+│   SitterBooking (Consolidated),           │
+│   Subscription (RevenueCat)               │
+├───────────────────────────────────────────┤
+│         Decoupled Infrastructure          │
+│   Redis | Cache | Queue | Event Bus       │
+│   Email (Resend) | Sentry                 │
+├───────────────────────────────────────────┤
+│                Data Layer                 │
+│         PrismaService + PostgreSQL        │
+└───────────────────────────────────────────┘
 ```
-
-### 5.2 Target Directory Structure
-
-```
-apps/api/src/
-├── main.ts
-├── instrument.ts                     # NEW: Sentry init
-├── app.module.ts
-├── constants/                        # NEW
-│   ├── cache.constants.ts
-│   └── queue.constants.ts
-├── database/
-│   └── prisma/
-│       ├── prisma.module.ts
-│       └── prisma.service.ts         # Add query logging + tracking
-├── decorators/
-│   ├── cache.decorator.ts            # NEW
-│   ├── roles.decorator.ts            # NEW
-│   ├── swagger.decorator.ts          # NEW
-│   └── ...keep existing
-├── filters/
-│   ├── all-exceptions.filter.ts      # REFINE: Add Sentry
-│   └── prisma-exceptions.filter.ts   # REFINE: Add Sentry
-├── guards/
-│   ├── jwt-auth.guard.ts             # REFINE: Remove inline role check
-│   ├── roles.guard.ts                # NEW
-│   └── throttler.guard.ts
-│   └── ...keep: local-auth, policy, user-verified
-├── interceptors/
-│   ├── error-logging.interceptor.ts  # REFINE: Add TrackService
-│   ├── http-cache.interceptor.ts     # NEW
-│   └── track.interceptor.ts          # NEW
-├── interfaces/
-│   ├── cache.interface.ts            # KEEP
-│   ├── email-jobs.interface.ts       # NEW
-│   └── event-bus.interface.ts        # KEEP or MERGE
-├── utils/
-│   ├── format.ts                     # NEW
-│   └── pagination.ts                 # REFINE: Add PaginationDto + PaginationResponseDto
-├── modules/
-│   ├── auth/
-│   ├── users/
-│   ├── pets/
-│   ├── medical-records/
-│   ├── reminders/
-│   ├── budget/                       # CONSOLIDATE: budget-categories + budget-transactions + budgets
-│   ├── photos/                       # CONSOLIDATE: photos + photo-comments
-│   ├── sitter-booking/               # CONSOLIDATE: pet-sitters + sitter-bookings + sitter-reviews
-│   ├── subscription/                 # NEW: RevenueCat webhooks + plan management
-│   ├── notifications/
-│   ├── email-logs/                   # NEW
-│   ├── file-workers/                 # KEEP
-│   └── shared/
-│       ├── shared.module.ts
-│       ├── cache/                    # REFINE: Add wrap(), inflight dedup
-│       ├── redis/
-│       ├── lock/                     # NEW: Redlock
-│       ├── queue/                    # REFINE: Add QueueService abstraction
-│       ├── email/                    # NEW: Resend
-│       ├── track/                    # NEW: PostHog
-│       ├── file-upload/              # KEEP
-│       ├── otp/                      # KEEP
-│       └── event-bus/                # MERGE or deprecate
-└── generated/prisma/
-```
-
-> **IMPORTANT:** Do NOT create a `payments/` or `stripe/` module. Subscription/payment is handled by **RevenueCat** on the mobile client. The backend only needs a lightweight webhook receiver to sync subscription state.
 
 ---
 
 ## 6. Detailed Implementation Plan
 
-### Phase 1: Foundation Infrastructure (Weeks 1-2)
+### Phase 1: Foundation Infrastructure (Weeks 1-2) - *Completed / Reconciliation Needed*
 
 #### 1.1 Add Sentry Integration
-
 - Create `src/instrument.ts`
-- Add `@sentry/nestjs` and `@sentry/profiling-node` to package.json
-- Update `main.ts` to import instrument first
-- Add `SentryModule.forRoot()` in app.module.ts
-- Add `SentryGlobalFilter` as `APP_FILTER`
-- Add `@SentryExceptionCaptured()` to both exception filters
+- Add `@sentry/nestjs` and `@sentry/profiling-node` to dependencies.
+- Update `main.ts` to import `instrument` as first import.
+- **Audit Correction:** Remove manual `AllExceptionsFilter` and `PrismaExceptionFilter` instantiation from `main.ts`'s `app.useGlobalFilters()`.
+- **Audit Correction:** Register `SentryGlobalFilter`, `AllExceptionsFilter`, and `PrismaExceptionFilter` as consecutive `APP_FILTER` providers in `app.module.ts` to preserve NestJS dependency injection.
 
 #### 1.2 Add RolesGuard
-
-- Create `src/decorators/roles.decorator.ts` with `@Roles()`, `@AdminOnly()`
-- Create `src/guards/roles.guard.ts`
-- Remove admin role check from `jwt-auth.guard.ts`
-- Register `RolesGuard` globally
+- Create `src/decorators/roles.decorator.ts` and `src/guards/roles.guard.ts`.
+- Remove admin role checking from `jwt-auth.guard.ts`.
+- Register `RolesGuard` globally in `app.module.ts`.
 
 #### 1.3 Add TrackService (PostHog)
-
-- Create `src/modules/shared/track/` with PostHog client provider + TrackService
-- Register in SharedModule
+- Create `src/modules/shared/track/` PostHog providers and service.
 
 #### 1.4 Add HttpCacheInterceptor
+- **Audit Correction:** Redesign `HttpCacheInterceptor` to act as an **opt-in** decorator mechanism (`@Cacheable()`).
+- Add Redis query invalidation hooks inside `app.module` for mutation routes (`POST/PUT/DELETE`) that clear keys containing matching `userId` or resource prefixes.
 
-- Create `src/decorators/cache.decorator.ts` with `@CacheTTL()`, `@IgnoreCache()`
-- Create `src/interceptors/http-cache.interceptor.ts`
-- Create `src/constants/cache.constants.ts`
-- Register globally
+#### 1.5 Add TrackInterceptor & Telemetry Scrubber
+- Create `src/interceptors/track.interceptor.ts`.
+- **Audit Correction:** Update `ErrorLoggingInterceptor` to ignore exceptions with status codes `< 500` (such as BadRequestException, UnauthorizedException, NotFoundException). Prevent sending standard validation warnings to PostHog and Sentry.
 
-#### 1.5 Add TrackInterceptor
+### Phase 2: Test Rigging & Common Infrastructures (Weeks 3-4)
 
-- Create `src/interceptors/track.interceptor.ts`
-- Register globally
+#### 2.1 Setup Automated Testing Fixtures
+- Create `apps/api/test/jest-unit.json` and `test/jest-e2e.json`.
+- Create shared test app factories (`test-app.factory.ts`), mock providers, and transaction-wrapped test database services.
+- Define mock factories for database models (User, Pet, Sitter, Booking) to allow TDD-lite throughout subsequent phases.
 
-### Phase 2: Infrastructure Enhancement (Weeks 2-3)
+#### 2.2 Add Database Pessimistic Locking Helper
+- Design a helper method inside `PrismaService` or a shared module that executes `SELECT ... FOR UPDATE` raw queries on a specified table row inside a transaction context, wrapping dynamic checks safely.
 
-#### 2.1 Add Distributed Lock Service
+#### 2.3 Refactor Queue System & Event Bus Decoupling
+- Create `src/interfaces/email-jobs.interface.ts`.
+- Create `src/modules/shared/queue/queue.service.ts` BullMQ abstraction.
+- Integrate the NestJS `event-bus` to decouple bookings and reminders from direct service calls. Domain modules will publish events; `QueueService` listeners will queue the jobs asynchronously.
 
-- Add `redlock` to package.json
-- Create `src/modules/shared/lock/lock.module.ts`
-- Create `src/modules/shared/lock/distributed-lock.service.ts`
+#### 2.4 Add Email Logging & Suppression (Resend)
+- Add `EmailLog` and `EmailSuppression` models to the Prisma schema.
+- Run migrations and generate Prisma client.
+- Create `src/modules/shared/email` Resend client provider and `EmailService`. Connect to `EmailLog` to track bounces/delivery.
 
-#### 2.2 Refactor Queue System
+### Phase 3: Domain Bounded Context Consolidation & Refactoring (Weeks 5-7)
 
-- Create `src/interfaces/email-jobs.interface.ts`
-- Create `src/modules/shared/queue/queue.service.ts` abstraction
-- Create `src/modules/shared/queue/queue.constants.ts`
-- Create `EmailProcessor`
-- Refactor existing BullMQ usage to go through `QueueService`
+#### 3.1 Bounded Context Consolidation (Execute First)
+- **Budget Consolidation:** Merge `budget-categories/`, `budget-transactions/`, and `budgets/` into a single, cohesive `budget/` directory under a unified `BudgetModule`.
+- **Photos Consolidation:** Merge `photo-comments/` into `photos/` under a single module block.
+- **SitterBooking Consolidation:** Merge `pet-sitters/`, `sitter-bookings/`, and `sitter-reviews/` into a unified `sitter-booking/` module directory.
 
-#### 2.3 Add Email Logging System
+#### 3.2 Decouple Pets and Medical Records Bounded Contexts
+- Remove `forwardRef` module imports.
+- Relocate sub-resource routing (`GET /pets/:id/medical-records`) out of `PetsController` and declare it directly within `MedicalRecordsController` as `@Get('pets/:id/medical-records')`.
+- Configure `MedicalRecordsModule` to have a simple unidirectional import of `PetsModule` to access `PetsRepository`.
 
-- Add `EmailLog` and `EmailSuppression` models to Prisma schema
-- Create `src/modules/email-logs/` module with repository pattern
-- Run migration
+#### 3.3 Standardize Bounded Context Repositories & DTOs
+- Convert consolidated modules to strict contract-based repositories:
+  - Users, Pets, MedicalRecords, Reminders, Budget, Photos, SitterBooking.
+- Clean up CASL rules: replace simple ownership queries inside CASL with explicit `userId === ownerId` checks in the services. Keep CASL solely for admin-level ABAC checks.
+- Add standard Response DTOs and composed Swagger decorators.
 
-#### 2.4 Add Email Module (Resend)
+### Phase 4: Concurrency & Sync Integration (Weeks 8-9)
 
-- Create `src/modules/shared/email/` with Resend client provider + EmailService
-- Connect to email-logs for delivery tracking
+#### 4.1 RevenueCat Webhook Integration
+- Create `src/modules/subscription/` module, controller, and service.
+- Implement `/api/v1/subscription/webhook` endpoint with `REVENUECAT_WEBHOOK_SECRET` validation.
+- **Audit Correction:** Add webhook event timestamp or expiration comparison guards. Only update the user's tier if the webhook payload's event date is newer than the database's `subscription_expires_at` timestamp.
 
-### Phase 3: Module Refactoring (Weeks 3-5)
+#### 4.2 Sitter Booking Dynamic Concurrency Protection
+- **Audit Correction:** Add `idempotencyKey`, `expiresAt`, `confirmedAt`, and `cancelledAt` fields to `sitter_bookings` Prisma model. Run database migrations.
+- In `SitterBookingService.createBooking()`:
+  1. Validate booking request idempotency against `sitter_bookings.idempotency_key`.
+  2. Start a transaction and execute `SELECT * FROM pet_sitters WHERE id = $1 FOR UPDATE` to lock the sitter row.
+  3. Validate sitter time-overlap counts against `sitter_bookings` where status is active/confirmed and overlaps the requested start/end time.
+  4. Create booking with `expiresAt = now + 15min` (pending status) and release row lock.
+  5. Emit `BookingCreatedEvent` to notify users asynchronously.
 
-#### 3.1 Standardize Repository Pattern
+#### 4.3 Scheduled Expiry Cleanups
+- Create `@Cron(CronExpression.EVERY_MINUTE)` task under `SitterBookingModule` to search and flag all pending `sitter_bookings` whose `expiresAt < now`. Auto-decrement sitter active booking counters, mark booking as `cancelled`, and dispatch cancellation emails asynchronously.
 
-Convert modules in order: users → pets → medical-records → reminders → budget → photos → sitter-booking → notifications
+### Phase 5: Verification and CI Pipeline (Weeks 10-12)
 
-#### 3.2 Add Response DTOs + Swagger Decorators
+#### 5.1 Unit Tests Run
+- Run unit test suites for all services, guards, and custom filters:
+  ```bash
+  pnpm --filter @yeu-pet/api test
+  ```
 
-- Create `src/decorators/swagger.decorator.ts`
-- Create `Response{Entity}Dto` for each module
-- Create `Response{Entity}sDto` extending `PaginationResponseDto`
-
-#### 3.3 Add PaginationDto + PaginationResponseDto
-
-- Update `src/utils/pagination.ts` to add DTO classes with validation
-
-#### 3.4 Refactor CASL Module
-
-- Replace simple ownership checks with direct `userId === ownerId`
-- Keep CASL only for admin ABAC permissions
-
-### Phase 4: Module Consolidation (Weeks 5-6)
-
-#### 4.1 Budget Consolidation
-
-- Merge `budget-categories/` + `budget-transactions/` + `budgets/` → `budget/`
-
-#### 4.2 Photos Consolidation
-
-- Merge `photo-comments/` into `photos/`
-
-#### 4.3 SitterBooking Consolidation
-
-- Merge `pet-sitters/` + `sitter-bookings/` + `sitter-reviews/` → `sitter-booking/`
-
-#### 4.4 Remaining Modules
-
-- Refactor `notifications/`, `user-devices/`, `user-settings/`
-
-### Phase 5: Feature Enhancements (Weeks 6-7)
-
-> **Note on Payments/Subscriptions:** Yeu-Pet uses **RevenueCat** for in-app purchases and subscription management — NOT Stripe. RevenueCat handles the entire purchase flow on the mobile client side. The backend only needs to receive RevenueCat webhooks to update user subscription tiers in the existing `accounts.subscription` and `accounts.subscription_expires_at` fields. Do NOT create a `payments/` or `stripe/` module.
-
-#### 5.1 Add Subscription Module (RevenueCat)
-
-- Create `src/modules/subscription/subscription.module.ts`
-- Create `src/modules/subscription/subscription.controller.ts`:
-  - `POST /api/v1/subscription/webhook` — RevenueCat webhook receiver (`@Public()`)
-  - `GET /api/v1/subscription/me` — Get current user subscription status
-- Create `src/modules/subscription/subscription.service.ts`:
-  - `handleWebhook(event)` — Process RevenueCat webhook events:
-    - `INITIAL_PURCHASE`, `RENEWAL`, `CANCELLATION`, `UNCANCELLATION`, `NON_RENEWING_PURCHASE`
-  - Update `accounts.subscription` (enum: `free`, `premium`) and `accounts.subscription_expires_at`
-  - `getSubscriptionStatus(userId)` — Return current tier and expiry
-- Create `src/modules/subscription/dto/response-subscription.dto.ts`
-- Add `REVENUECAT_WEBHOOK_SECRET` to env config
-- Register `SubscriptionModule` in `app.module.ts`
-
-#### 5.2 Add Scheduled Cleanup Tasks
-
-- Create `src/modules/sitter-booking/tasks/cleanup-expired-bookings.task.ts`:
-  - `@Cron(CronExpression.EVERY_MINUTE)` handler
-  - Auto-cancel expired PENDING bookings
-  - Decrement slot bookedCount
-  - Dispatch cancellation emails via QueueService
-
-#### 5.3 Enhance Sitter Booking with Distributed Lock
-
-```typescript
-async createBooking(user: accounts, dto: CreateSitterBookingDto) {
-  // 1. Check idempotency
-  // 2. Validate slot availability
-  // 3. Acquire distributed lock on slotId
-  // 4. Create booking in serializable transaction
-  // 5. Release lock
-  // 6. Dispatch confirmation email via QueueService
-}
-```
-
-#### 5.4 Add Booking Idempotency
-
-- Add `idempotencyKey` to CreateSitterBookingDto
-- Add `idempotency_key` field to `sitter_bookings` (unique)
-- Run migration
-
-#### 5.5 Add Expiry Tracking to SitterBookings
-
-- Add `expiresAt`, `confirmedAt`, `cancelledAt` to `sitter_bookings`
-- Run migration
-- Set `expiresAt = now + 15min` on PENDING booking creation
-
-#### 5.6 Pagination Audit
-
-- Audit ALL `@Get()` endpoints to use `@PaginationQuery()` and return paginated responses
-
-### Phase 6: Testing (Weeks 7-8)
-
-#### 6.1 Test Infrastructure
-
-- Create `test/jest-unit.json`, `test/jest-e2e.json`
-- Create test factories (user, pet, sitter, booking, slot)
-- Create test app factory, mock providers, test Prisma service
-
-#### 6.2 Unit Tests
-
-- Services: users, pets, sitter-bookings, budget, reminders, subscription
-- Guards: jwt-auth, roles, throttler
-- Filters: all-exceptions, prisma-exceptions
-
-#### 6.3 E2E Tests
-
-- Auth flow, Pets CRUD, Sitter booking (register → slot → book → confirm → cancel), Budget
+#### 5.2 End-to-End Dynamic Flows
+- Execute E2E integrations verifying:
+  - Auth token refreshes and RBAC blockades.
+  - Sitter bookings race conditions (triggering simultaneous E2E bookings on the same sitter to verify row-locking safety).
+  - RevenueCat webhook sync validation.
+  - Budget transaction calculations.
 
 ---
 
 ## 7. Database Refactor Plan
 
-### 7.1 Naming Convention Standardization
+### 7.1 Schema Changes
 
-All new models: `snake_case` + `@map("table_name")`, `@map("field_name")`, UUID primary keys.
+```prisma
+// Add Email Tracking
+model email_logs {
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resend_email_id String?     @unique @db.VarChar(255)
+  booking_id      String?     @db.Uuid
+  user_id         String?     @db.Uuid
+  to_email        String      @db.VarChar(255)
+  subject         String      @db.VarChar(255)
+  status          String      @default("pending")
+  error           String?     @db.Text
+  created_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?   @default(now()) @db.Timestamptz(6)
+}
 
-### 7.2 New Models to Add
+model email_suppressions {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email      String    @unique @db.VarChar(255)
+  reason     String    @db.VarChar(50)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
 
-| Model                | Purpose                    | Priority |
-| -------------------- | -------------------------- | -------- |
-| `email_logs`         | Email delivery tracking    | High     |
-| `email_suppressions` | Suppressed email addresses | High     |
-
-### 7.3 Schema Changes to Existing Models
-
-| Table             | Change                                                     | Reason                     |
-| ----------------- | ---------------------------------------------------------- | -------------------------- |
-| `sitter_bookings` | Add `idempotency_key` (unique)                             | Prevent duplicate bookings |
-| `sitter_bookings` | Add `expires_at`                                           | Track pending expiry       |
-| `sitter_bookings` | Add `confirmed_at`, `cancelled_at`                         | Lifecycle tracking         |
-| `accounts`        | `subscription` and `subscription_expires_at` already exist | Used by RevenueCat sync    |
-
-Note: The `accounts` table already has `subscription` (enum: `free`, `premium`) and `subscription_expires_at` fields. These are sufficient for RevenueCat integration — no new subscription-specific tables are needed.
-
-### 7.4 Migration Strategy
-
-```bash
-pnpm --filter @yeu-pet/api db:migrate --name add_email_logs_and_idempotency
-pnpm --filter @yeu-pet/api db:generate
+// Modify Sitter Bookings to support Concurrency and Idempotency
+alter table sitter_bookings 
+  add column idempotency_key varchar(255) unique,
+  add column expires_at timestamptz,
+  add column confirmed_at timestamptz,
+  add column cancelled_at timestamptz;
 ```
 
 ---
 
 ## 8. Migration Strategy
 
-### 8.1 Backward Compatibility Approach
-
-1. Additive changes first
-2. Deprecate, don't delete
-3. Feature flags via env vars
-4. Parallel run for logging/analytics
-
-### 8.2 Migration Order by Module
-
-```
-Phase 1 (Infrastructure)      Phase 2 (Infrastructure+)    Phase 3 (Modules)
-─────────────────────────     ─────────────────────────    ─────────────────
-Sentry                        Distributed Lock             Users refactor
-RolesGuard                    QueueService                 Pets refactor
-TrackService (PostHog)        Email Logs                   MedicalRecords
-HttpCacheInterceptor          Email (Resend)               Reminders
-TrackInterceptor              PaginationDto                Budget consolidation
-Cache decorators              Response DTOs                Photos consolidation
-Swagger decorators            PaginationResponseDto        SitterBooking consolidation
-                                                           Subscription (RevenueCat)
-```
-
-### 8.3 Git Branch Strategy
-
-```
-main
- └── refactor/phase-1-infrastructure
- └── refactor/phase-2-infrastructure-plus
- └── refactor/phase-3-modules
- └── refactor/phase-4-consolidation
- └── refactor/phase-5-enhancements
- └── refactor/phase-6-testing
-```
+- Keep database schema expansions strictly **additive** first.
+- Execute data backfills asynchronously using scheduled script workers inside `scratch/`.
+- Deploy changes incrementally via:
+  `pnpm --filter @yeu-pet/api db:migrate --name add_email_logs_and_idempotency`
 
 ---
 
 ## 9. Testing Strategy
 
-### 9.1 Test Structure
+We transition from a delayed testing strategy to a **TDD-Lite** strategy:
 
-```
-apps/api/test/
-├── jest-unit.json
-├── jest-e2e.json
-├── setup/           (test-app.factory, test-prisma.service, mock-providers)
-├── factories/       (user, pet, sitter, booking, slot)
-├── unit/            (services, guards, filters)
-└── e2e/             (auth, pets, bookings, budget)
-```
-
-### 9.2 What to Test
-
-| Layer        | Test Type     | Target                          |
-| ------------ | ------------- | ------------------------------- |
-| Services     | Unit          | Business logic, error paths     |
-| Repositories | Integration   | Query correctness, transactions |
-| Controllers  | Unit (mocked) | HTTP status, DTO validation     |
-| Guards       | Unit          | Auth bypass, role enforcement   |
-| Filters      | Unit          | Error mapping                   |
-| E2E          | Integration   | Full request/response cycles    |
+1. **Phase 2 Setup:** Configure Jest suites and write factories.
+2. **In-Stride Unit Tests:** Every repository and service refactored in Phase 3 must include its companion `.spec.ts` unit tests before the task is marked completed in the checklist.
+3. **Concurrency Simulation:** E2E suites will spawn parallel promises booking the same sitter to verify transactional row-locking boundaries.
 
 ---
 
 ## 10. Performance & Security
 
-### 10.1 Performance
-
-| Concern              | Solution                               | Priority |
-| -------------------- | -------------------------------------- | -------- |
-| Duplicate DB queries | HttpCacheInterceptor                   | High     |
-| Cache stampede       | Inflight dedup in CacheService.wrap()  | High     |
-| Expired bookings     | Cron job EVERY_MINUTE                  | High     |
-| N+1 queries          | Prisma `include`/`select` optimization | Medium   |
-
-### 10.2 Security
-
-| Concern       | Status          | Action                        |
-| ------------- | --------------- | ----------------------------- |
-| Rate limiting | ✅ Present      | Enhance with role-based skip  |
-| Helmet        | ✅ Present      | Keep                          |
-| IDOR          | ⚠️ CASL partial | Add explicit ownership checks |
-| JWT rotation  | ✅ Present      | Keep                          |
+- **Opt-in Caching:** Prevents stale state bugs on highly dynamic routes while securing fast responses for static paths (pet categories, sitter listings).
+- **PostgreSQL Lock Efficiency:** Replaces external Redis network lock queries with local, index-optimized PostgreSQL row-level locks, reducing API response times.
+- **Telemetry Protection:** Scrubbing client-side error stack traces prevents excessive network payloads and telemetry cost overruns.
 
 ---
 
 ## 11. Risks and Tradeoffs
 
-| Risk                        | Impact | Mitigation                                            |
-| --------------------------- | ------ | ----------------------------------------------------- |
-| Breaking circular deps      | High   | Extract shared interfaces                             |
-| CASL complexity             | Medium | Simplify, keep only for admin                         |
-| Prisma migration conflicts  | Medium | Backup DB, dev-first                                  |
-| No Stripe — RevenueCat only | Low    | RevenueCat handles payments; backend only syncs state |
+| Core Architectural Risk | Mitigation |
+| :--- | :--- |
+| **Pessimistic Row Lock Deadlocks** | Keep transactional row lock periods extremely short. Do NOT execute external HTTP requests (e.g., calling Resend or RevenueCat APIs) inside the PostgreSQL database transaction block. |
+| **Out-of-Order Webhook downgrades** | Ensure webhook updates perform an additive timestamp comparison on `subscription_expires_at`. |
+| **Broken sub-resource routes** | Route `GET /pets/:id/medical-records` to `MedicalRecordsController` using custom path mapping, preserving mobile client URL contracts while decoupling modules. |
 
 ---
 
 ## 12. Incremental Migration Roadmap
 
-### Week 1-2: Phase 1 — Foundation Infrastructure
-
-```
-Sentry → RolesGuard → TrackService → HttpCacheInterceptor → TrackInterceptor
-```
-
-**Files:** ~15 create, ~8 modify. No DB changes.
-
-### Week 3-4: Phase 2 — Infrastructure Enhancement
-
-```
-DistributedLock → QueueService → EmailLogs → Email Module
-```
-
-**Files:** ~20 create, ~10 modify. DB migration: email_logs, email_suppressions.
-
-### Week 5-6: Phase 3 — Module Refactoring
-
-```
-Users → Pets → MedicalRecords → Reminders → Auth cleanup
-```
-
-**Files:** ~25 create, ~15 modify. No DB changes.
-
-### Week 7-8: Phase 4 — Module Consolidation
-
-```
-Budget → Photos → SitterBooking → Notifications
-```
-
-**Files:** ~15 create, ~25 modify. No DB changes.
-
-### Week 9-10: Phase 5 — Feature Enhancements
-
-```
-Subscription (RevenueCat) → Idempotency → Expiry tracking → Distributed Lock on SitterBooking
-```
-
-**Files:** ~12 create (including subscription module), ~12 modify. DB migration: idempotency_key, expires_at.
-
-### Week 11-12: Phase 6 — Testing
-
-```
-Test infrastructure → Unit tests → E2E tests
-```
-
-**Files:** ~25 create. No code changes.
-
----
-
-## Appendix A: Key Files to Create
-
-| File                                                     | Purpose                                 | Phase |
-| -------------------------------------------------------- | --------------------------------------- | ----- |
-| `src/instrument.ts`                                      | Sentry initialization                   | 1     |
-| `src/constants/cache.constants.ts`                       | CACHE_KEY, CACHE_TTL                    | 1     |
-| `src/constants/queue.constants.ts`                       | QUEUES, JOBS                            | 2     |
-| `src/decorators/cache.decorator.ts`                      | @CacheTTL(), @IgnoreCache()             | 1     |
-| `src/decorators/roles.decorator.ts`                      | @Roles(), @AdminOnly()                  | 1     |
-| `src/decorators/swagger.decorator.ts`                    | @ApiOkResponse(), @ApiCreatedResponse() | 1     |
-| `src/guards/roles.guard.ts`                              | RBAC guard                              | 1     |
-| `src/interceptors/http-cache.interceptor.ts`             | Auto-cache GET                          | 1     |
-| `src/interceptors/track.interceptor.ts`                  | PostHog tracking                        | 1     |
-| `src/interfaces/email-jobs.interface.ts`                 | Typed job payloads                      | 2     |
-| `src/modules/shared/lock/lock.module.ts`                 | Distributed lock                        | 2     |
-| `src/modules/shared/lock/distributed-lock.service.ts`    | Redlock service                         | 2     |
-| `src/modules/shared/queue/queue.service.ts`              | Queue dispatcher                        | 2     |
-| `src/modules/shared/queue/queue.constants.ts`            | Queue/job names                         | 2     |
-| `src/modules/shared/queue/processors/email.processor.ts` | Email processor                         | 2     |
-| `src/modules/shared/email/`                              | Resend email module                     | 2     |
-| `src/modules/shared/track/`                              | PostHog analytics                       | 1     |
-| `src/modules/email-logs/`                                | Email delivery tracking                 | 2     |
-| `src/modules/subscription/`                              | RevenueCat webhook + status             | 5     |
-| `src/utils/format.ts`                                    | Formatters                              | 1     |
-
-## Appendix B: Key Files to Modify
-
-| File                           | Change                                                | Phase |
-| ------------------------------ | ----------------------------------------------------- | ----- |
-| `package.json`                 | Add Sentry, Redlock, PostHog, Resend deps             | 1     |
-| `src/main.ts`                  | Add instrument import                                 | 1     |
-| `src/app.module.ts`            | Add guards, interceptors, filters, SubscriptionModule | 1,5   |
-| `src/guards/jwt-auth.guard.ts` | Remove inline role check                              | 1     |
-| `src/filters/*.filter.ts`      | Add @SentryExceptionCaptured                          | 1     |
-| `prisma/schema.prisma`         | Add email_logs, email_suppressions, idempotency       | 2,5   |
-| All modules                    | Repository pattern, DTOs, Swagger                     | 3,4   |
-| All controllers                | @ApiOkResponse, @CacheTTL, @IgnoreCache               | 3,4   |
-
-## Appendix C: Naming Conventions
-
-| Item          | Convention                | Example                 |
-| ------------- | ------------------------- | ----------------------- |
-| Prisma models | `snake_case` + `@@map`    | `sitter_bookings`       |
-| Prisma fields | `snake_case` + `@map`     | `expires_at`            |
-| Classes       | PascalCase                | `CreateBookingDto`      |
-| Files         | kebab-case                | `create-booking.dto.ts` |
-| Controllers   | PascalCase + `Controller` | `PetsController`        |
-| Services      | PascalCase + `Service`    | `PetsService`           |
-| Repositories  | PascalCase + `Repository` | `PetsRepository`        |
-| Interfaces    | PascalCase + `I` prefix   | `IPetsRepository`       |
-| DI Tokens     | PascalCase + `Symbol`     | `ICacheService`         |
-| Enums         | PascalCase                | `BookingStatus`         |
-| Enum values   | UPPER_SNAKE_CASE          | `PENDING`, `CONFIRMED`  |
-
-## Appendix D: Dependency Upgrade Plan
-
-| Package                  | Current    | Target     | Reason              |
-| ------------------------ | ---------- | ---------- | ------------------- |
-| `@sentry/nestjs`         | ❌ Missing | `^10.49.0` | Error monitoring    |
-| `@sentry/profiling-node` | ❌ Missing | `^10.49.0` | Profiling           |
-| `redlock`                | ❌ Missing | `^4.2.0`   | Distributed locking |
-| `posthog-node`           | ❌ Missing | `^5.28.0`  | Product analytics   |
-| `resend`                 | ❌ Missing | `^6.10.0`  | Email delivery      |
-| `ioredis`                | ✅ Present | Keep       | Redis client        |
-
-> **Do NOT add:** `stripe`, `@stripe/stripe-js`, or any Stripe-related packages. Payment/subscription is handled by **RevenueCat** on the mobile client.
-
----
-
-This plan was generated by analyzing the `smart-booking` reference project's architecture and comparing it with the current `yeu-pet` backend. All patterns recommended here have been proven in production in the smart-booking codebase.
+- **Week 1 (Phase 1.3 Reconciliation):** Fix Sentry filter shadowing, convert HTTP cache to opt-in, clean up fake `forwardRef`s, and scrub telemetry noise.
+- **Week 2-3 (Phase 2 - Test Rigging & Core Infrastructures):** Setup Jest configs, factories, event-bus queue integration, and Resend email logging models.
+- **Week 4-7 (Phase 3 - Domain Consolidation & Refactoring):** Consolidate Budget, Photos, and SitterBooking modules. Refactor repositories, DTOs, and ownership checks in one clean pass. Decouple Pets and Medical Records modules.
+- **Week 8-9 (Phase 4 - Concurrency & Webhook Integration):** Add Postgres row-locking sitter logic, dynamic overlap validation, idempotency, and RevenueCat webhook sync.
+- **Week 10 (Phase 5 - Verification):** Execute entire unit and E2E dynamic suites. Verify that no circular dependencies or stale-caching paths exist.

@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsRepository } from './notifications.repository';
@@ -7,7 +7,7 @@ import { CaslModule } from '../casl/casl.module';
 import { NotificationDeliveriesRepository } from './notification-deliveries.repository';
 
 @Module({
-  imports: [CaslModule, forwardRef(() => UserDevicesModule)],
+  imports: [CaslModule, UserDevicesModule],
   controllers: [NotificationsController],
   providers: [
     NotificationsService,
