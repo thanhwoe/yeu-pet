@@ -61,6 +61,20 @@ export class RedisCacheService implements ICacheService {
     await this.client.del(key);
   }
 
+  async delByPattern(pattern: string): Promise<void> {
+    const stream = this.client.scanStream({
+      match: pattern,
+      count: 100,
+    });
+
+    for await (const keys of stream) {
+      const keysToDelete = keys as string[];
+      if (keysToDelete.length > 0) {
+        await this.client.del(...keysToDelete);
+      }
+    }
+  }
+
   // ─── Fetch-or-compute with stampede protection ───────────────────
   //
   // Problem: if 100 requests miss cache simultaneously, all 100 call

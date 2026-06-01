@@ -13,6 +13,7 @@ import { BudgetsService } from './budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetAmountDto } from './dto/update-budget.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { NumberRangePipe } from '@app/pipes/number-range.pipe';
 
@@ -21,6 +22,7 @@ export class BudgetsController {
   constructor(private readonly budgetsService: BudgetsService) {}
 
   @Post()
+  @CacheEvict()
   @HttpCode(HttpStatus.CREATED)
   create(
     @CurrentUser() user: accounts,
@@ -30,6 +32,7 @@ export class BudgetsController {
   }
 
   @Get()
+  @Cacheable(30)
   @HttpCode(HttpStatus.OK)
   findOne(
     @CurrentUser() user: accounts,
@@ -50,6 +53,7 @@ export class BudgetsController {
   }
 
   @Patch()
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   update(
     @CurrentUser() user: accounts,
@@ -59,6 +63,7 @@ export class BudgetsController {
   }
 
   @Get('statistics/monthly')
+  @Cacheable(30)
   @HttpCode(HttpStatus.OK)
   statisticsMonthly(
     @CurrentUser() user: accounts,
@@ -79,6 +84,7 @@ export class BudgetsController {
   }
 
   @Get('statistics/yearly')
+  @Cacheable(60)
   @HttpCode(HttpStatus.OK)
   statisticsYearly(
     @CurrentUser() user: accounts,

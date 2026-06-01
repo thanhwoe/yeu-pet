@@ -14,6 +14,7 @@ import { BudgetTransactionsService } from './budget-transactions.service';
 import { CreateBudgetTransactionDto } from './dto/create-budget-transaction.dto';
 import { UpdateBudgetTransactionDto } from './dto/update-budget-transaction.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { PoliciesGuard } from '@app/guards/policy.guard';
@@ -31,6 +32,7 @@ export class BudgetTransactionsController {
   ) {}
 
   @Post()
+  @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'BudgetTransactions'))
   @HttpCode(HttpStatus.CREATED)
   create(
@@ -44,6 +46,7 @@ export class BudgetTransactionsController {
   }
 
   @Get()
+  @Cacheable(30)
   @HttpCode(HttpStatus.OK)
   findAll(
     @CurrentUser() user: accounts,
@@ -62,6 +65,7 @@ export class BudgetTransactionsController {
   }
 
   @Patch(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.OK)
   update(
     @CurrentUser() user: accounts,
@@ -76,6 +80,7 @@ export class BudgetTransactionsController {
   }
 
   @Delete(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.budgetTransactionsService.remove(user, id);

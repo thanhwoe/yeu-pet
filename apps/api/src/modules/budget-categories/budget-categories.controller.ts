@@ -15,6 +15,7 @@ import { IdParam } from '@app/decorators/id-param.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 
 @Controller('budgets/categories')
@@ -24,6 +25,7 @@ export class BudgetCategoriesController {
   ) {}
 
   @Post()
+  @CacheEvict()
   @HttpCode(HttpStatus.CREATED)
   create(
     @CurrentUser() user: accounts,
@@ -33,12 +35,14 @@ export class BudgetCategoriesController {
   }
 
   @Get()
+  @Cacheable(300)
   @HttpCode(HttpStatus.OK)
   findAll(@PaginationQuery() pagination: PaginationDto) {
     return this.budgetCategoriesService.findAll(pagination);
   }
 
   @Patch(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.OK)
   update(
     @CurrentUser() user: accounts,
@@ -53,6 +57,7 @@ export class BudgetCategoriesController {
   }
 
   @Delete(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.budgetCategoriesService.remove(user, id);

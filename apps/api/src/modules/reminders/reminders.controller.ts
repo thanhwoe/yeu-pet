@@ -15,6 +15,7 @@ import { RemindersService } from './reminders.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import { type accounts, reminder_status } from '@app/generated/prisma/client';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
@@ -31,6 +32,7 @@ export class RemindersController {
   constructor(private readonly remindersService: RemindersService) {}
 
   @Post()
+  @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Reminders'))
   @HttpCode(HttpStatus.CREATED)
   create(
@@ -41,6 +43,7 @@ export class RemindersController {
   }
 
   @Get()
+  @Cacheable(30)
   @HttpCode(HttpStatus.OK)
   findAll(
     @CurrentUser() user: accounts,
@@ -70,12 +73,14 @@ export class RemindersController {
   }
 
   @Get(':id')
+  @Cacheable(60)
   @HttpCode(HttpStatus.OK)
   findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.remindersService.findOne(user, id);
   }
 
   @Patch(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.OK)
   update(
     @CurrentUser() user: accounts,
@@ -86,6 +91,7 @@ export class RemindersController {
   }
 
   @Delete(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.remindersService.remove(user, id);

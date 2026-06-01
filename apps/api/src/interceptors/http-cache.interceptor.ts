@@ -1,7 +1,9 @@
 import {
+  CACHEABLE_KEY,
   CACHE_TTL_KEY,
+  HTTP_CACHE_PREFIX,
   IGNORE_CACHE_KEY,
-} from '@app/decorators/cache.decorator';
+} from '@app/constants/cache.constants';
 import type { accounts } from '@app/generated/prisma/client';
 import { ICacheService } from '@app/interfaces/cache.interface';
 import {
@@ -37,6 +39,15 @@ export class HttpCacheInterceptor implements NestInterceptor {
       return next.handle();
     }
 
+    const isCacheable = this.reflector.getAllAndOverride<boolean>(
+      CACHEABLE_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (!isCacheable) {
+      return next.handle();
+    }
+
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest<Request & { user: accounts }>();
 
@@ -51,8 +62,8 @@ export class HttpCacheInterceptor implements NestInterceptor {
 
     const cacheTtl = ttl !== undefined ? ttl : 60;
     const user = request.user;
-    const userId = user?.id ? `:${user.id}` : '';
-    const key = `http_cache:${request.url}${userId}`;
+    const scope = user?.id ? `user:${user.id}` : 'public';
+    const key = `${HTTP_CACHE_PREFIX}:${scope}:${request.originalUrl ?? request.url}`;
 
     try {
       const cachedResponse = await this.cacheService.get(key);

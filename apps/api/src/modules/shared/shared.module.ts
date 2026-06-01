@@ -1,4 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { HttpCacheEvictInterceptor } from '@app/interceptors/http-cache-evict.interceptor';
+import { HttpCacheInterceptor } from '@app/interceptors/http-cache.interceptor';
 import { BullMQModule } from './bullmq/bullmq.module';
 import { CacheModule } from './cache/cache.module';
 import { EventBusModule } from './event-bus/event-bus.module';
@@ -7,6 +9,7 @@ import { OtpModule } from './otp/otp.module';
 import { RedisModule } from './redis/redis.module';
 import { TrackModule } from './track/track.module';
 
+@Global()
 @Module({
   imports: [
     RedisModule,
@@ -17,6 +20,7 @@ import { TrackModule } from './track/track.module';
     EventBusModule,
     TrackModule,
   ],
+  providers: [HttpCacheInterceptor, HttpCacheEvictInterceptor],
 
   exports: [
     BullMQModule,
@@ -25,6 +29,8 @@ import { TrackModule } from './track/track.module';
     CacheModule,
     EventBusModule,
     TrackModule,
+    HttpCacheInterceptor,
+    HttpCacheEvictInterceptor,
   ],
 })
 export class SharedModule {}

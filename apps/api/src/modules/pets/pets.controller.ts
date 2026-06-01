@@ -14,6 +14,7 @@ import { PetsService } from './pets.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
@@ -34,6 +35,7 @@ export class PetsController {
   ) {}
 
   @Post()
+  @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Pets'))
   @UseInterceptors(FileInterceptor('avatar'))
   @HttpCode(HttpStatus.CREATED)
@@ -47,6 +49,7 @@ export class PetsController {
   }
 
   @Get()
+  @Cacheable(60)
   @HttpCode(HttpStatus.OK)
   findAll(
     @CurrentUser() user: accounts,
@@ -56,12 +59,14 @@ export class PetsController {
   }
 
   @Get(':id')
+  @Cacheable(60)
   @HttpCode(HttpStatus.OK)
   findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petsService.findOne(user, id);
   }
 
   @Get(':id/medical-records')
+  @Cacheable(60)
   @HttpCode(HttpStatus.OK)
   findAllMedicalRecords(
     @CurrentUser() user: accounts,
@@ -72,6 +77,7 @@ export class PetsController {
   }
 
   @Patch(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('avatar'))
   update(
@@ -85,6 +91,7 @@ export class PetsController {
   }
 
   @Delete(':id')
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petsService.remove(user, id);

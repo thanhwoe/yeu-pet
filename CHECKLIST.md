@@ -54,8 +54,8 @@
 ### 1.4 Cache Decorators & Opt-in HttpCacheInterceptor
 - [x] Create `cache.constants.ts` and `@IgnoreCache()` / `@CacheTTL()` decorators
 - [x] Create `HttpCacheInterceptor` under `src/interceptors/`
-- [ ] **[AUDIT CORRECTION]** Refactor `HttpCacheInterceptor` to be **opt-in**. Remove global `APP_INTERCEPTOR` registration from `app.module.ts`. Caching must only trigger on routes explicitly decorated with a new `@Cacheable()` decorator.
-- [ ] **[AUDIT CORRECTION]** Add Redis key eviction hooks triggered by write routes (`POST/PUT/DELETE`) to clean up dynamic dashboard states.
+- [x] **[AUDIT CORRECTION]** Refactor `HttpCacheInterceptor` to be **opt-in**. Remove global `APP_INTERCEPTOR` registration from `app.module.ts`. Caching must only trigger on routes explicitly decorated with a new `@Cacheable()` decorator.
+- [x] **[AUDIT CORRECTION]** Add Redis key eviction hooks triggered by write routes (`POST/PUT/DELETE`) to clean up dynamic dashboard states.
 
 ### 1.5 Cargo-Culted Dependency Purging
 - [ ] **[AUDIT CORRECTION]** Remove redundant `forwardRef` wraps from modules with unidirectional relationships:
