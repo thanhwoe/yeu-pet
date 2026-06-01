@@ -61,20 +61,15 @@ export class PetSittersRepository implements IPetSittersRepository {
   }
 
   async lock(tx: Omit<PrismaClient, ITXClientDenyList>, sitter_id: string) {
-    const rows = await tx.$queryRaw<
+    return this.prisma.lockRowForUpdate<
       Pick<
         pet_sitters,
         'id' | 'active_bookings_count' | 'max_concurrent_bookings'
-      >[]
-    >`
-      SELECT  id,
-              active_bookings_count,
-              max_concurrent_bookings
-      FROM   pet_sitters
-      WHERE  id = ${sitter_id}::uuid
-      FOR UPDATE`;
-
-    if (!rows?.length) return null;
-    return rows[0];
+      >
+    >(tx, {
+      table: 'pet_sitters',
+      id: sitter_id,
+      columns: ['id', 'active_bookings_count', 'max_concurrent_bookings'],
+    });
   }
 }

@@ -80,11 +80,11 @@
 ### 2.1 Automated Test Setup
 - [x] Create `apps/api/test/jest-unit.json` and `test/jest-e2e.json`
 - [x] Define test scripts in `package.json` mapping unit and E2E targets
-- [ ] Create test bootstrap app factories (`test-app.factory.ts`) and mock providers
-- [ ] Create mock database factories for: User, Pet, Sitter, SitterBooking, Budget, Photo, Reminder
+- [x] Create test bootstrap app factories (`test-app.factory.ts`) and mock providers
+- [x] Create mock database factories for: User, Pet, Sitter, SitterBooking, Budget, Photo, Reminder
 
 ### 2.2 Database Concurrency Row-Locking Helper
-- [ ] Define helper methods in `PrismaService` that execute native PostgreSQL `SELECT ... FOR UPDATE` raw queries inside transaction boundaries, safely handling row-level lock lifecycles.
+- [x] Define helper methods in `PrismaService` that execute native PostgreSQL `SELECT ... FOR UPDATE` raw queries inside transaction boundaries, safely handling row-level lock lifecycles.
 
 ### 2.3 Event Bus Decoupling
 - [ ] Create `src/interfaces/email-jobs.interface.ts`

@@ -5,6 +5,7 @@
   "testMatch": [
     "<rootDir>/src/app.controller.spec.ts",
     "<rootDir>/src/**/*.architecture.spec.ts",
+    "<rootDir>/src/database/**/*.spec.ts",
     "<rootDir>/src/decorators/**/*.spec.ts",
     "<rootDir>/src/guards/**/*.spec.ts",
     "<rootDir>/src/interceptors/**/*.spec.ts",
@@ -14,6 +15,8 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
+    "^\\./internal/(.*)\\.js$": "<rootDir>/src/generated/prisma/internal/$1.ts",
+    "^\\./(enums|commonInputTypes|models)\\.js$": "<rootDir>/src/generated/prisma/$1.ts",
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@app/(.*)$": "<rootDir>/src/$1"
   },

@@ -278,9 +278,11 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - Create `apps/api/test/jest-unit.json` and `test/jest-e2e.json`.
 - Create shared test app factories (`test-app.factory.ts`), mock providers, and transaction-wrapped test database services.
 - Define mock factories for database models (User, Pet, Sitter, SitterBooking, Budget, Photo, Reminder) to allow TDD-lite throughout subsequent phases.
+- Standardize unit specs on the helpers under `apps/api/test/`: `test-app.factory.ts`, `mocks/provider.mocks.ts`, and `factories/model.factories.ts`.
 
 #### 2.2 Add Database Pessimistic Locking Helper
 - Design a helper method inside `PrismaService` or a shared module that executes `SELECT ... FOR UPDATE` raw queries on a specified table row inside a transaction context, wrapping dynamic checks safely.
+- The helper must validate SQL identifiers before using raw identifier fragments, bind row ids as query parameters, and be used by sitter-booking related repositories instead of hand-rolled row-lock SQL.
 
 #### 2.3 Refactor Queue System & Event Bus Decoupling
 - Create `src/interfaces/email-jobs.interface.ts`.
