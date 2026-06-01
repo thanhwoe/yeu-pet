@@ -31,6 +31,6 @@ export interface IPetSittersRepository {
     sitter_id: string,
   ): Promise<Pick<
     pet_sitters,
-    'id' | 'active_bookings_count' | 'max_concurrent_bookings'
+    'id' | 'account_id' | 'is_available' | 'max_concurrent_bookings'
   > | null>;
 }

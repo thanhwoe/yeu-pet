@@ -39,11 +39,14 @@ export type Sitter_bookingsMinAggregateOutputType = {
   account_id: string | null
   sitter_id: string | null
   pet_id: string | null
+  idempotency_key: string | null
   type: $Enums.sitter_bookings_type | null
   status: $Enums.sitter_bookings_status | null
   start_time: Date | null
   end_time: Date | null
   total_price: runtime.Decimal | null
+  expires_at: Date | null
+  confirmed_at: Date | null
   cancelled_by: string | null
   cancelled_at: Date | null
   cancel_reason: string | null
@@ -56,11 +59,14 @@ export type Sitter_bookingsMaxAggregateOutputType = {
   account_id: string | null
   sitter_id: string | null
   pet_id: string | null
+  idempotency_key: string | null
   type: $Enums.sitter_bookings_type | null
   status: $Enums.sitter_bookings_status | null
   start_time: Date | null
   end_time: Date | null
   total_price: runtime.Decimal | null
+  expires_at: Date | null
+  confirmed_at: Date | null
   cancelled_by: string | null
   cancelled_at: Date | null
   cancel_reason: string | null
@@ -73,11 +79,14 @@ export type Sitter_bookingsCountAggregateOutputType = {
   account_id: number
   sitter_id: number
   pet_id: number
+  idempotency_key: number
   type: number
   status: number
   start_time: number
   end_time: number
   total_price: number
+  expires_at: number
+  confirmed_at: number
   cancelled_by: number
   cancelled_at: number
   cancel_reason: number
@@ -100,11 +109,14 @@ export type Sitter_bookingsMinAggregateInputType = {
   account_id?: true
   sitter_id?: true
   pet_id?: true
+  idempotency_key?: true
   type?: true
   status?: true
   start_time?: true
   end_time?: true
   total_price?: true
+  expires_at?: true
+  confirmed_at?: true
   cancelled_by?: true
   cancelled_at?: true
   cancel_reason?: true
@@ -117,11 +129,14 @@ export type Sitter_bookingsMaxAggregateInputType = {
   account_id?: true
   sitter_id?: true
   pet_id?: true
+  idempotency_key?: true
   type?: true
   status?: true
   start_time?: true
   end_time?: true
   total_price?: true
+  expires_at?: true
+  confirmed_at?: true
   cancelled_by?: true
   cancelled_at?: true
   cancel_reason?: true
@@ -134,11 +149,14 @@ export type Sitter_bookingsCountAggregateInputType = {
   account_id?: true
   sitter_id?: true
   pet_id?: true
+  idempotency_key?: true
   type?: true
   status?: true
   start_time?: true
   end_time?: true
   total_price?: true
+  expires_at?: true
+  confirmed_at?: true
   cancelled_by?: true
   cancelled_at?: true
   cancel_reason?: true
@@ -238,11 +256,14 @@ export type Sitter_bookingsGroupByOutputType = {
   account_id: string
   sitter_id: string
   pet_id: string
+  idempotency_key: string | null
   type: $Enums.sitter_bookings_type
   status: $Enums.sitter_bookings_status
   start_time: Date
   end_time: Date
   total_price: runtime.Decimal | null
+  expires_at: Date | null
+  confirmed_at: Date | null
   cancelled_by: string | null
   cancelled_at: Date | null
   cancel_reason: string | null
@@ -278,11 +299,14 @@ export type sitter_bookingsWhereInput = {
   account_id?: Prisma.UuidFilter<"sitter_bookings"> | string
   sitter_id?: Prisma.UuidFilter<"sitter_bookings"> | string
   pet_id?: Prisma.UuidFilter<"sitter_bookings"> | string
+  idempotency_key?: Prisma.StringNullableFilter<"sitter_bookings"> | string | null
   type?: Prisma.Enumsitter_bookings_typeFilter<"sitter_bookings"> | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFilter<"sitter_bookings"> | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   end_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   total_price?: Prisma.DecimalNullableFilter<"sitter_bookings"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
+  confirmed_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancelled_by?: Prisma.UuidNullableFilter<"sitter_bookings"> | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancel_reason?: Prisma.StringNullableFilter<"sitter_bookings"> | string | null
@@ -300,11 +324,14 @@ export type sitter_bookingsOrderByWithRelationInput = {
   account_id?: Prisma.SortOrder
   sitter_id?: Prisma.SortOrder
   pet_id?: Prisma.SortOrder
+  idempotency_key?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   start_time?: Prisma.SortOrder
   end_time?: Prisma.SortOrder
   total_price?: Prisma.SortOrderInput | Prisma.SortOrder
+  expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmed_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancel_reason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -319,6 +346,7 @@ export type sitter_bookingsOrderByWithRelationInput = {
 
 export type sitter_bookingsWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  idempotency_key?: string
   AND?: Prisma.sitter_bookingsWhereInput | Prisma.sitter_bookingsWhereInput[]
   OR?: Prisma.sitter_bookingsWhereInput[]
   NOT?: Prisma.sitter_bookingsWhereInput | Prisma.sitter_bookingsWhereInput[]
@@ -330,6 +358,8 @@ export type sitter_bookingsWhereUniqueInput = Prisma.AtLeast<{
   start_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   end_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   total_price?: Prisma.DecimalNullableFilter<"sitter_bookings"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
+  confirmed_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancelled_by?: Prisma.UuidNullableFilter<"sitter_bookings"> | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancel_reason?: Prisma.StringNullableFilter<"sitter_bookings"> | string | null
@@ -340,18 +370,21 @@ export type sitter_bookingsWhereUniqueInput = Prisma.AtLeast<{
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersScalarRelationFilter, Prisma.pet_sittersWhereInput>
   email_logs?: Prisma.Email_logsListRelationFilter
   sitter_reviews?: Prisma.XOR<Prisma.Sitter_reviewsNullableScalarRelationFilter, Prisma.sitter_reviewsWhereInput> | null
-}, "id">
+}, "id" | "idempotency_key">
 
 export type sitter_bookingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   sitter_id?: Prisma.SortOrder
   pet_id?: Prisma.SortOrder
+  idempotency_key?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   start_time?: Prisma.SortOrder
   end_time?: Prisma.SortOrder
   total_price?: Prisma.SortOrderInput | Prisma.SortOrder
+  expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmed_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_by?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancel_reason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -372,11 +405,14 @@ export type sitter_bookingsScalarWhereWithAggregatesInput = {
   account_id?: Prisma.UuidWithAggregatesFilter<"sitter_bookings"> | string
   sitter_id?: Prisma.UuidWithAggregatesFilter<"sitter_bookings"> | string
   pet_id?: Prisma.UuidWithAggregatesFilter<"sitter_bookings"> | string
+  idempotency_key?: Prisma.StringNullableWithAggregatesFilter<"sitter_bookings"> | string | null
   type?: Prisma.Enumsitter_bookings_typeWithAggregatesFilter<"sitter_bookings"> | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusWithAggregatesFilter<"sitter_bookings"> | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeWithAggregatesFilter<"sitter_bookings"> | Date | string
   end_time?: Prisma.DateTimeWithAggregatesFilter<"sitter_bookings"> | Date | string
   total_price?: Prisma.DecimalNullableWithAggregatesFilter<"sitter_bookings"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_bookings"> | Date | string | null
+  confirmed_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_bookings"> | Date | string | null
   cancelled_by?: Prisma.UuidNullableWithAggregatesFilter<"sitter_bookings"> | string | null
   cancelled_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_bookings"> | Date | string | null
   cancel_reason?: Prisma.StringNullableWithAggregatesFilter<"sitter_bookings"> | string | null
@@ -386,11 +422,14 @@ export type sitter_bookingsScalarWhereWithAggregatesInput = {
 
 export type sitter_bookingsCreateInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -408,11 +447,14 @@ export type sitter_bookingsUncheckedCreateInput = {
   account_id: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -424,11 +466,14 @@ export type sitter_bookingsUncheckedCreateInput = {
 
 export type sitter_bookingsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -446,11 +491,14 @@ export type sitter_bookingsUncheckedUpdateInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -465,11 +513,14 @@ export type sitter_bookingsCreateManyInput = {
   account_id: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -479,11 +530,14 @@ export type sitter_bookingsCreateManyInput = {
 
 export type sitter_bookingsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -496,11 +550,14 @@ export type sitter_bookingsUncheckedUpdateManyInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -523,11 +580,14 @@ export type sitter_bookingsCountOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   sitter_id?: Prisma.SortOrder
   pet_id?: Prisma.SortOrder
+  idempotency_key?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   start_time?: Prisma.SortOrder
   end_time?: Prisma.SortOrder
   total_price?: Prisma.SortOrder
+  expires_at?: Prisma.SortOrder
+  confirmed_at?: Prisma.SortOrder
   cancelled_by?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
   cancel_reason?: Prisma.SortOrder
@@ -544,11 +604,14 @@ export type sitter_bookingsMaxOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   sitter_id?: Prisma.SortOrder
   pet_id?: Prisma.SortOrder
+  idempotency_key?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   start_time?: Prisma.SortOrder
   end_time?: Prisma.SortOrder
   total_price?: Prisma.SortOrder
+  expires_at?: Prisma.SortOrder
+  confirmed_at?: Prisma.SortOrder
   cancelled_by?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
   cancel_reason?: Prisma.SortOrder
@@ -561,11 +624,14 @@ export type sitter_bookingsMinOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   sitter_id?: Prisma.SortOrder
   pet_id?: Prisma.SortOrder
+  idempotency_key?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   start_time?: Prisma.SortOrder
   end_time?: Prisma.SortOrder
   total_price?: Prisma.SortOrder
+  expires_at?: Prisma.SortOrder
+  confirmed_at?: Prisma.SortOrder
   cancelled_by?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
   cancel_reason?: Prisma.SortOrder
@@ -761,11 +827,14 @@ export type sitter_bookingsUpdateOneWithoutEmail_logsNestedInput = {
 
 export type sitter_bookingsCreateWithoutAccountsInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -781,11 +850,14 @@ export type sitter_bookingsUncheckedCreateWithoutAccountsInput = {
   id?: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -829,11 +901,14 @@ export type sitter_bookingsScalarWhereInput = {
   account_id?: Prisma.UuidFilter<"sitter_bookings"> | string
   sitter_id?: Prisma.UuidFilter<"sitter_bookings"> | string
   pet_id?: Prisma.UuidFilter<"sitter_bookings"> | string
+  idempotency_key?: Prisma.StringNullableFilter<"sitter_bookings"> | string | null
   type?: Prisma.Enumsitter_bookings_typeFilter<"sitter_bookings"> | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFilter<"sitter_bookings"> | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   end_time?: Prisma.DateTimeFilter<"sitter_bookings"> | Date | string
   total_price?: Prisma.DecimalNullableFilter<"sitter_bookings"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
+  confirmed_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancelled_by?: Prisma.UuidNullableFilter<"sitter_bookings"> | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"sitter_bookings"> | Date | string | null
   cancel_reason?: Prisma.StringNullableFilter<"sitter_bookings"> | string | null
@@ -843,11 +918,14 @@ export type sitter_bookingsScalarWhereInput = {
 
 export type sitter_bookingsCreateWithoutPetsInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -863,11 +941,14 @@ export type sitter_bookingsUncheckedCreateWithoutPetsInput = {
   id?: string
   account_id: string
   sitter_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -905,11 +986,14 @@ export type sitter_bookingsUpdateManyWithWhereWithoutPetsInput = {
 
 export type sitter_bookingsCreateWithoutPet_sittersInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -925,11 +1009,14 @@ export type sitter_bookingsUncheckedCreateWithoutPet_sittersInput = {
   id?: string
   account_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -967,11 +1054,14 @@ export type sitter_bookingsUpdateManyWithWhereWithoutPet_sittersInput = {
 
 export type sitter_bookingsCreateWithoutSitter_reviewsInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -988,11 +1078,14 @@ export type sitter_bookingsUncheckedCreateWithoutSitter_reviewsInput = {
   account_id: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1019,11 +1112,14 @@ export type sitter_bookingsUpdateToOneWithWhereWithoutSitter_reviewsInput = {
 
 export type sitter_bookingsUpdateWithoutSitter_reviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1040,11 +1136,14 @@ export type sitter_bookingsUncheckedUpdateWithoutSitter_reviewsInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1055,11 +1154,14 @@ export type sitter_bookingsUncheckedUpdateWithoutSitter_reviewsInput = {
 
 export type sitter_bookingsCreateWithoutEmail_logsInput = {
   id?: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1076,11 +1178,14 @@ export type sitter_bookingsUncheckedCreateWithoutEmail_logsInput = {
   account_id: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1107,11 +1212,14 @@ export type sitter_bookingsUpdateToOneWithWhereWithoutEmail_logsInput = {
 
 export type sitter_bookingsUpdateWithoutEmail_logsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1128,11 +1236,14 @@ export type sitter_bookingsUncheckedUpdateWithoutEmail_logsInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1145,11 +1256,14 @@ export type sitter_bookingsCreateManyAccountsInput = {
   id?: string
   sitter_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1159,11 +1273,14 @@ export type sitter_bookingsCreateManyAccountsInput = {
 
 export type sitter_bookingsUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1179,11 +1296,14 @@ export type sitter_bookingsUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1197,11 +1317,14 @@ export type sitter_bookingsUncheckedUpdateManyWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1213,11 +1336,14 @@ export type sitter_bookingsCreateManyPetsInput = {
   id?: string
   account_id: string
   sitter_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1227,11 +1353,14 @@ export type sitter_bookingsCreateManyPetsInput = {
 
 export type sitter_bookingsUpdateWithoutPetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1247,11 +1376,14 @@ export type sitter_bookingsUncheckedUpdateWithoutPetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1265,11 +1397,14 @@ export type sitter_bookingsUncheckedUpdateManyWithoutPetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1281,11 +1416,14 @@ export type sitter_bookingsCreateManyPet_sittersInput = {
   id?: string
   account_id: string
   pet_id: string
+  idempotency_key?: string | null
   type: $Enums.sitter_bookings_type
   status?: $Enums.sitter_bookings_status
   start_time: Date | string
   end_time: Date | string
   total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Date | string | null
+  confirmed_at?: Date | string | null
   cancelled_by?: string | null
   cancelled_at?: Date | string | null
   cancel_reason?: string | null
@@ -1295,11 +1433,14 @@ export type sitter_bookingsCreateManyPet_sittersInput = {
 
 export type sitter_bookingsUpdateWithoutPet_sittersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1315,11 +1456,14 @@ export type sitter_bookingsUncheckedUpdateWithoutPet_sittersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1333,11 +1477,14 @@ export type sitter_bookingsUncheckedUpdateManyWithoutPet_sittersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotency_key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
   status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
   start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1381,11 +1528,14 @@ export type sitter_bookingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   account_id?: boolean
   sitter_id?: boolean
   pet_id?: boolean
+  idempotency_key?: boolean
   type?: boolean
   status?: boolean
   start_time?: boolean
   end_time?: boolean
   total_price?: boolean
+  expires_at?: boolean
+  confirmed_at?: boolean
   cancelled_by?: boolean
   cancelled_at?: boolean
   cancel_reason?: boolean
@@ -1404,11 +1554,14 @@ export type sitter_bookingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   account_id?: boolean
   sitter_id?: boolean
   pet_id?: boolean
+  idempotency_key?: boolean
   type?: boolean
   status?: boolean
   start_time?: boolean
   end_time?: boolean
   total_price?: boolean
+  expires_at?: boolean
+  confirmed_at?: boolean
   cancelled_by?: boolean
   cancelled_at?: boolean
   cancel_reason?: boolean
@@ -1424,11 +1577,14 @@ export type sitter_bookingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   account_id?: boolean
   sitter_id?: boolean
   pet_id?: boolean
+  idempotency_key?: boolean
   type?: boolean
   status?: boolean
   start_time?: boolean
   end_time?: boolean
   total_price?: boolean
+  expires_at?: boolean
+  confirmed_at?: boolean
   cancelled_by?: boolean
   cancelled_at?: boolean
   cancel_reason?: boolean
@@ -1444,11 +1600,14 @@ export type sitter_bookingsSelectScalar = {
   account_id?: boolean
   sitter_id?: boolean
   pet_id?: boolean
+  idempotency_key?: boolean
   type?: boolean
   status?: boolean
   start_time?: boolean
   end_time?: boolean
   total_price?: boolean
+  expires_at?: boolean
+  confirmed_at?: boolean
   cancelled_by?: boolean
   cancelled_at?: boolean
   cancel_reason?: boolean
@@ -1456,7 +1615,7 @@ export type sitter_bookingsSelectScalar = {
   updated_at?: boolean
 }
 
-export type sitter_bookingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "sitter_id" | "pet_id" | "type" | "status" | "start_time" | "end_time" | "total_price" | "cancelled_by" | "cancelled_at" | "cancel_reason" | "created_at" | "updated_at", ExtArgs["result"]["sitter_bookings"]>
+export type sitter_bookingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "sitter_id" | "pet_id" | "idempotency_key" | "type" | "status" | "start_time" | "end_time" | "total_price" | "expires_at" | "confirmed_at" | "cancelled_by" | "cancelled_at" | "cancel_reason" | "created_at" | "updated_at", ExtArgs["result"]["sitter_bookings"]>
 export type sitter_bookingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
@@ -1490,11 +1649,14 @@ export type $sitter_bookingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     account_id: string
     sitter_id: string
     pet_id: string
+    idempotency_key: string | null
     type: $Enums.sitter_bookings_type
     status: $Enums.sitter_bookings_status
     start_time: Date
     end_time: Date
     total_price: runtime.Decimal | null
+    expires_at: Date | null
+    confirmed_at: Date | null
     cancelled_by: string | null
     cancelled_at: Date | null
     cancel_reason: string | null
@@ -1932,11 +2094,14 @@ export interface sitter_bookingsFieldRefs {
   readonly account_id: Prisma.FieldRef<"sitter_bookings", 'String'>
   readonly sitter_id: Prisma.FieldRef<"sitter_bookings", 'String'>
   readonly pet_id: Prisma.FieldRef<"sitter_bookings", 'String'>
+  readonly idempotency_key: Prisma.FieldRef<"sitter_bookings", 'String'>
   readonly type: Prisma.FieldRef<"sitter_bookings", 'sitter_bookings_type'>
   readonly status: Prisma.FieldRef<"sitter_bookings", 'sitter_bookings_status'>
   readonly start_time: Prisma.FieldRef<"sitter_bookings", 'DateTime'>
   readonly end_time: Prisma.FieldRef<"sitter_bookings", 'DateTime'>
   readonly total_price: Prisma.FieldRef<"sitter_bookings", 'Decimal'>
+  readonly expires_at: Prisma.FieldRef<"sitter_bookings", 'DateTime'>
+  readonly confirmed_at: Prisma.FieldRef<"sitter_bookings", 'DateTime'>
   readonly cancelled_by: Prisma.FieldRef<"sitter_bookings", 'String'>
   readonly cancelled_at: Prisma.FieldRef<"sitter_bookings", 'DateTime'>
   readonly cancel_reason: Prisma.FieldRef<"sitter_bookings", 'String'>

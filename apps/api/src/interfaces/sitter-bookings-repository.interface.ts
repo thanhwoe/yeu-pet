@@ -25,6 +25,10 @@ export interface SitterInformation {
 
 export interface ISitterBookingsRepository {
   create(data: sitter_bookingsCreateInput): Promise<sitter_bookings>;
+  createInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    data: sitter_bookingsCreateInput,
+  ): Promise<sitter_bookings>;
   update(
     id: string,
     data: sitter_bookingsUpdateInput,
@@ -35,6 +39,15 @@ export interface ISitterBookingsRepository {
     reason?: string,
   ): Promise<sitter_bookings>;
   findById(id: string): Promise<(sitter_bookings & SitterInformation) | null>;
+  findByIdempotencyKey(
+    accountId: string,
+    idempotencyKey: string,
+  ): Promise<sitter_bookings | null>;
+  findByIdempotencyKeyInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    accountId: string,
+    idempotencyKey: string,
+  ): Promise<sitter_bookings | null>;
   findAllByUser(params?: {
     skip?: number;
     take?: number;
@@ -54,6 +67,14 @@ export interface ISitterBookingsRepository {
     end_time: Date,
     excludeId: string,
   ): Promise<sitter_bookings | null>;
+  countHeldOverlappingInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    sitter_id: string,
+    start_time: Date,
+    end_time: Date,
+    now: Date,
+    excludeId?: string,
+  ): Promise<number>;
   confirmInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     id: string,

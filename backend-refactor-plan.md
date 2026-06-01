@@ -323,11 +323,11 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - **Audit Correction:** Add webhook event timestamp or expiration comparison guards. Only update the user's tier if the webhook payload's event date is newer than the database's `subscription_expires_at` timestamp.
 
 #### 4.2 Sitter Booking Dynamic Concurrency Protection
-- **Audit Correction:** Add `idempotencyKey`, `expiresAt`, `confirmedAt`, and `cancelledAt` fields to `sitter_bookings` Prisma model. Run database migrations.
+- **Audit Correction:** Add `idempotencyKey`, `expiresAt`, and `confirmedAt` fields to `sitter_bookings` Prisma model; preserve the existing `cancelledAt` field. Run database migrations and backfill existing pending rows with an expiry timestamp.
 - In `SitterBookingService.createBooking()`:
   1. Validate booking request idempotency against `sitter_bookings.idempotency_key`.
   2. Start a transaction and execute `SELECT * FROM pet_sitters WHERE id = $1 FOR UPDATE` to lock the sitter row.
-  3. Validate sitter time-overlap counts against `sitter_bookings` where status is active/confirmed and overlaps the requested start/end time.
+  3. Validate sitter time-overlap counts against held `sitter_bookings` where status is pending/confirmed/active and overlaps the requested start/end time.
   4. Create booking with `expiresAt = now + 15min` (pending status) and release row lock.
   5. Emit `BookingCreatedEvent` to notify users asynchronously.
 

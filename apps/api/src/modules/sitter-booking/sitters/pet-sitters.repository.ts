@@ -64,12 +64,12 @@ export class PetSittersRepository implements IPetSittersRepository {
     return this.prisma.lockRowForUpdate<
       Pick<
         pet_sitters,
-        'id' | 'active_bookings_count' | 'max_concurrent_bookings'
+        'id' | 'account_id' | 'is_available' | 'max_concurrent_bookings'
       >
     >(tx, {
       table: 'pet_sitters',
       id: sitter_id,
-      columns: ['id', 'active_bookings_count', 'max_concurrent_bookings'],
+      columns: ['id', 'account_id', 'is_available', 'max_concurrent_bookings'],
     });
   }
 }

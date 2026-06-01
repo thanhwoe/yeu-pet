@@ -21,6 +21,14 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
       data,
     });
   }
+  createInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    data: sitter_bookingsCreateInput,
+  ) {
+    return tx.sitter_bookings.create({
+      data,
+    });
+  }
   update(id: string, data: sitter_bookingsUpdateInput) {
     return this.prisma.sitter_bookings.update({
       where: { id },
@@ -39,6 +47,29 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         cancel_reason: reason,
         cancelled_at: new Date(),
         cancelled_by: cancelledBy,
+        updated_at: new Date(),
+      },
+    });
+  }
+
+  findByIdempotencyKey(accountId: string, idempotencyKey: string) {
+    return this.prisma.sitter_bookings.findFirst({
+      where: {
+        account_id: accountId,
+        idempotency_key: idempotencyKey,
+      },
+    });
+  }
+
+  findByIdempotencyKeyInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    accountId: string,
+    idempotencyKey: string,
+  ) {
+    return tx.sitter_bookings.findFirst({
+      where: {
+        account_id: accountId,
+        idempotency_key: idempotencyKey,
       },
     });
   }
@@ -66,11 +97,62 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
       },
     });
   }
+
+  countHeldOverlappingInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    sitter_id: string,
+    start_time: Date,
+    end_time: Date,
+    now: Date,
+    excludeId?: string,
+  ) {
+    return tx.sitter_bookings.count({
+      where: {
+        id: excludeId ? { not: excludeId } : undefined,
+        sitter_id,
+        start_time: {
+          lt: end_time,
+        },
+        end_time: {
+          gt: start_time,
+        },
+        OR: [
+          {
+            status: {
+              in: [
+                sitter_bookings_status.confirmed,
+                sitter_bookings_status.active,
+              ],
+            },
+          },
+          {
+            status: sitter_bookings_status.pending,
+            OR: [
+              {
+                expires_at: null,
+              },
+              {
+                expires_at: {
+                  gt: now,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+  }
+
   confirmInTx(tx: Omit<PrismaClient, ITXClientDenyList>, id: string) {
+    const now = new Date();
+
     return tx.sitter_bookings.update({
       where: { id },
       data: {
         status: sitter_bookings_status.confirmed,
+        confirmed_at: now,
+        expires_at: null,
+        updated_at: now,
       },
     });
   }

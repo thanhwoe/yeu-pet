@@ -132,13 +132,15 @@
 - [x] Add unit coverage for invalid auth, renewal updates, stale event ignores, expiration downgrades, and cancellation ignores.
 
 ### 4.2 Sitter Booking Transactional Row-Locking Concurrency
-- [ ] Add `idempotency_key` (unique), `expires_at`, `confirmed_at`, and `cancelled_at` fields to `sitter_bookings` Prisma model. Run database migration and regenerate client.
-- [ ] In `SitterBookingService.createBooking()`:
+- [x] Add `idempotency_key` (unique), `expires_at`, and `confirmed_at` fields to `sitter_bookings` Prisma model; verify existing `cancelled_at`. Run database migration and regenerate client.
+- [x] Backfill existing pending sitter bookings with `expires_at = created_at + 15min` so legacy rows do not bypass expiry cleanup.
+- [x] In `SitterBookingsService.create()`:
   - Add validation checks for `idempotency_key`.
   - Open a transaction and execute `SELECT * FROM pet_sitters WHERE id = $1 FOR UPDATE` to lock the sitter row.
-  - Dynamically check the sitter's active booking count overlap for the requested start/end time. Throw a ConflictException if counts exceed `max_concurrent_bookings`.
-  - Write sitter booking with `expiresAt = now + 15min` (pending status) and commit transaction to release row lock.
+  - Dynamically check the sitter's held overlapping booking count for the requested start/end time. Throw a ConflictException if counts exceed `max_concurrent_bookings`.
+  - Write sitter booking with `expires_at = now + 15min` (pending status) and commit transaction to release row lock.
   - Dispatch domain events to the Event Bus.
+- [x] Add unit coverage for idempotency replay, row-lock create flow, capacity conflicts, self-booking rejection, and expired-hold confirmation rejection.
 
 ### 4.3 Scheduled Cleanups
 - [ ] Add `@Cron(CronExpression.EVERY_MINUTE)` task in `SitterBookingModule` to search and flag all pending `sitter_bookings` where `expiresAt < now`. Mark status as cancelled and release slots.

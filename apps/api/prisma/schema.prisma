@@ -367,11 +367,14 @@ model sitter_bookings {
   account_id     String                 @db.Uuid
   sitter_id      String                 @db.Uuid
   pet_id         String                 @db.Uuid
+  idempotency_key String?               @unique @db.VarChar(255)
   type           sitter_bookings_type
   status         sitter_bookings_status @default(pending)
   start_time     DateTime               @db.Timestamptz(6)
   end_time       DateTime               @db.Timestamptz(6)
   total_price    Decimal?               @db.Decimal(10, 2)
+  expires_at     DateTime?              @db.Timestamptz(6)
+  confirmed_at   DateTime?              @db.Timestamptz(6)
   cancelled_by   String?                @db.Uuid
   cancelled_at   DateTime?              @db.Timestamptz(6)
   cancel_reason  String?
@@ -386,6 +389,8 @@ model sitter_bookings {
   @@index([account_id], map: "idx_sitter_bookings_account_id")
   @@index([sitter_id], map: "idx_sitter_bookings_sitter_id")
   @@index([start_time], map: "idx_sitter_bookings_start_time")
+  @@index([expires_at], map: "idx_sitter_bookings_expires_at")
+  @@index([sitter_id, start_time, end_time], map: "idx_sitter_bookings_overlap")
   @@index([sitter_id, status], map: "idx_sitter_bookings_status")
   @@index([id], map: "idx_sitter_bookings")
 }
