@@ -71,7 +71,9 @@ export const ModelName = {
   photos: 'photos',
   pet_sitters: 'pet_sitters',
   sitter_bookings: 'sitter_bookings',
-  sitter_reviews: 'sitter_reviews'
+  sitter_reviews: 'sitter_reviews',
+  email_logs: 'email_logs',
+  email_suppressions: 'email_suppressions'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,6 +415,32 @@ export const Sitter_reviewsScalarFieldEnum = {
 } as const
 
 export type Sitter_reviewsScalarFieldEnum = (typeof Sitter_reviewsScalarFieldEnum)[keyof typeof Sitter_reviewsScalarFieldEnum]
+
+
+export const Email_logsScalarFieldEnum = {
+  id: 'id',
+  resend_email_id: 'resend_email_id',
+  account_id: 'account_id',
+  booking_id: 'booking_id',
+  to_email: 'to_email',
+  subject: 'subject',
+  status: 'status',
+  error: 'error',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Email_logsScalarFieldEnum = (typeof Email_logsScalarFieldEnum)[keyof typeof Email_logsScalarFieldEnum]
+
+
+export const Email_suppressionsScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  reason: 'reason',
+  created_at: 'created_at'
+} as const
+
+export type Email_suppressionsScalarFieldEnum = (typeof Email_suppressionsScalarFieldEnum)[keyof typeof Email_suppressionsScalarFieldEnum]
 
 
 export const SortOrder = {

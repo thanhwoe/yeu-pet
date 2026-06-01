@@ -291,6 +291,7 @@ export type sitter_bookingsWhereInput = {
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   pets?: Prisma.XOR<Prisma.PetsScalarRelationFilter, Prisma.petsWhereInput>
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersScalarRelationFilter, Prisma.pet_sittersWhereInput>
+  email_logs?: Prisma.Email_logsListRelationFilter
   sitter_reviews?: Prisma.XOR<Prisma.Sitter_reviewsNullableScalarRelationFilter, Prisma.sitter_reviewsWhereInput> | null
 }
 
@@ -312,6 +313,7 @@ export type sitter_bookingsOrderByWithRelationInput = {
   accounts?: Prisma.accountsOrderByWithRelationInput
   pets?: Prisma.petsOrderByWithRelationInput
   pet_sitters?: Prisma.pet_sittersOrderByWithRelationInput
+  email_logs?: Prisma.email_logsOrderByRelationAggregateInput
   sitter_reviews?: Prisma.sitter_reviewsOrderByWithRelationInput
 }
 
@@ -336,6 +338,7 @@ export type sitter_bookingsWhereUniqueInput = Prisma.AtLeast<{
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   pets?: Prisma.XOR<Prisma.PetsScalarRelationFilter, Prisma.petsWhereInput>
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersScalarRelationFilter, Prisma.pet_sittersWhereInput>
+  email_logs?: Prisma.Email_logsListRelationFilter
   sitter_reviews?: Prisma.XOR<Prisma.Sitter_reviewsNullableScalarRelationFilter, Prisma.sitter_reviewsWhereInput> | null
 }, "id">
 
@@ -396,6 +399,7 @@ export type sitter_bookingsCreateInput = {
   accounts: Prisma.accountsCreateNestedOneWithoutSitter_bookingsInput
   pets: Prisma.petsCreateNestedOneWithoutSitter_bookingsInput
   pet_sitters: Prisma.pet_sittersCreateNestedOneWithoutSitter_bookingsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -414,6 +418,7 @@ export type sitter_bookingsUncheckedCreateInput = {
   cancel_reason?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -432,6 +437,7 @@ export type sitter_bookingsUpdateInput = {
   accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pets?: Prisma.petsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -450,6 +456,7 @@ export type sitter_bookingsUncheckedUpdateInput = {
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -573,6 +580,11 @@ export type sitter_bookingsSumOrderByAggregateInput = {
 export type Sitter_bookingsScalarRelationFilter = {
   is?: Prisma.sitter_bookingsWhereInput
   isNot?: Prisma.sitter_bookingsWhereInput
+}
+
+export type Sitter_bookingsNullableScalarRelationFilter = {
+  is?: Prisma.sitter_bookingsWhereInput | null
+  isNot?: Prisma.sitter_bookingsWhereInput | null
 }
 
 export type sitter_bookingsCreateNestedManyWithoutAccountsInput = {
@@ -731,6 +743,22 @@ export type sitter_bookingsUpdateOneRequiredWithoutSitter_reviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.sitter_bookingsUpdateToOneWithWhereWithoutSitter_reviewsInput, Prisma.sitter_bookingsUpdateWithoutSitter_reviewsInput>, Prisma.sitter_bookingsUncheckedUpdateWithoutSitter_reviewsInput>
 }
 
+export type sitter_bookingsCreateNestedOneWithoutEmail_logsInput = {
+  create?: Prisma.XOR<Prisma.sitter_bookingsCreateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedCreateWithoutEmail_logsInput>
+  connectOrCreate?: Prisma.sitter_bookingsCreateOrConnectWithoutEmail_logsInput
+  connect?: Prisma.sitter_bookingsWhereUniqueInput
+}
+
+export type sitter_bookingsUpdateOneWithoutEmail_logsNestedInput = {
+  create?: Prisma.XOR<Prisma.sitter_bookingsCreateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedCreateWithoutEmail_logsInput>
+  connectOrCreate?: Prisma.sitter_bookingsCreateOrConnectWithoutEmail_logsInput
+  upsert?: Prisma.sitter_bookingsUpsertWithoutEmail_logsInput
+  disconnect?: Prisma.sitter_bookingsWhereInput | boolean
+  delete?: Prisma.sitter_bookingsWhereInput | boolean
+  connect?: Prisma.sitter_bookingsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.sitter_bookingsUpdateToOneWithWhereWithoutEmail_logsInput, Prisma.sitter_bookingsUpdateWithoutEmail_logsInput>, Prisma.sitter_bookingsUncheckedUpdateWithoutEmail_logsInput>
+}
+
 export type sitter_bookingsCreateWithoutAccountsInput = {
   id?: string
   type: $Enums.sitter_bookings_type
@@ -745,6 +773,7 @@ export type sitter_bookingsCreateWithoutAccountsInput = {
   updated_at?: Date | string | null
   pets: Prisma.petsCreateNestedOneWithoutSitter_bookingsInput
   pet_sitters: Prisma.pet_sittersCreateNestedOneWithoutSitter_bookingsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -762,6 +791,7 @@ export type sitter_bookingsUncheckedCreateWithoutAccountsInput = {
   cancel_reason?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -825,6 +855,7 @@ export type sitter_bookingsCreateWithoutPetsInput = {
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutSitter_bookingsInput
   pet_sitters: Prisma.pet_sittersCreateNestedOneWithoutSitter_bookingsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -842,6 +873,7 @@ export type sitter_bookingsUncheckedCreateWithoutPetsInput = {
   cancel_reason?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -885,6 +917,7 @@ export type sitter_bookingsCreateWithoutPet_sittersInput = {
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutSitter_bookingsInput
   pets: Prisma.petsCreateNestedOneWithoutSitter_bookingsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -902,6 +935,7 @@ export type sitter_bookingsUncheckedCreateWithoutPet_sittersInput = {
   cancel_reason?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutSitter_bookingsInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput
 }
 
@@ -946,6 +980,7 @@ export type sitter_bookingsCreateWithoutSitter_reviewsInput = {
   accounts: Prisma.accountsCreateNestedOneWithoutSitter_bookingsInput
   pets: Prisma.petsCreateNestedOneWithoutSitter_bookingsInput
   pet_sitters: Prisma.pet_sittersCreateNestedOneWithoutSitter_bookingsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutSitter_bookingsInput
 }
 
 export type sitter_bookingsUncheckedCreateWithoutSitter_reviewsInput = {
@@ -963,6 +998,7 @@ export type sitter_bookingsUncheckedCreateWithoutSitter_reviewsInput = {
   cancel_reason?: string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutSitter_bookingsInput
 }
 
 export type sitter_bookingsCreateOrConnectWithoutSitter_reviewsInput = {
@@ -996,6 +1032,7 @@ export type sitter_bookingsUpdateWithoutSitter_reviewsInput = {
   accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pets?: Prisma.petsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutSitter_bookingsNestedInput
 }
 
 export type sitter_bookingsUncheckedUpdateWithoutSitter_reviewsInput = {
@@ -1013,6 +1050,95 @@ export type sitter_bookingsUncheckedUpdateWithoutSitter_reviewsInput = {
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutSitter_bookingsNestedInput
+}
+
+export type sitter_bookingsCreateWithoutEmail_logsInput = {
+  id?: string
+  type: $Enums.sitter_bookings_type
+  status?: $Enums.sitter_bookings_status
+  start_time: Date | string
+  end_time: Date | string
+  total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cancelled_by?: string | null
+  cancelled_at?: Date | string | null
+  cancel_reason?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutSitter_bookingsInput
+  pets: Prisma.petsCreateNestedOneWithoutSitter_bookingsInput
+  pet_sitters: Prisma.pet_sittersCreateNestedOneWithoutSitter_bookingsInput
+  sitter_reviews?: Prisma.sitter_reviewsCreateNestedOneWithoutSitter_bookingsInput
+}
+
+export type sitter_bookingsUncheckedCreateWithoutEmail_logsInput = {
+  id?: string
+  account_id: string
+  sitter_id: string
+  pet_id: string
+  type: $Enums.sitter_bookings_type
+  status?: $Enums.sitter_bookings_status
+  start_time: Date | string
+  end_time: Date | string
+  total_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cancelled_by?: string | null
+  cancelled_at?: Date | string | null
+  cancel_reason?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedOneWithoutSitter_bookingsInput
+}
+
+export type sitter_bookingsCreateOrConnectWithoutEmail_logsInput = {
+  where: Prisma.sitter_bookingsWhereUniqueInput
+  create: Prisma.XOR<Prisma.sitter_bookingsCreateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedCreateWithoutEmail_logsInput>
+}
+
+export type sitter_bookingsUpsertWithoutEmail_logsInput = {
+  update: Prisma.XOR<Prisma.sitter_bookingsUpdateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedUpdateWithoutEmail_logsInput>
+  create: Prisma.XOR<Prisma.sitter_bookingsCreateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedCreateWithoutEmail_logsInput>
+  where?: Prisma.sitter_bookingsWhereInput
+}
+
+export type sitter_bookingsUpdateToOneWithWhereWithoutEmail_logsInput = {
+  where?: Prisma.sitter_bookingsWhereInput
+  data: Prisma.XOR<Prisma.sitter_bookingsUpdateWithoutEmail_logsInput, Prisma.sitter_bookingsUncheckedUpdateWithoutEmail_logsInput>
+}
+
+export type sitter_bookingsUpdateWithoutEmail_logsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
+  status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
+  start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  pets?: Prisma.petsUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  sitter_reviews?: Prisma.sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput
+}
+
+export type sitter_bookingsUncheckedUpdateWithoutEmail_logsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  sitter_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.Enumsitter_bookings_typeFieldUpdateOperationsInput | $Enums.sitter_bookings_type
+  status?: Prisma.Enumsitter_bookings_statusFieldUpdateOperationsInput | $Enums.sitter_bookings_status
+  start_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  end_time?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  total_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cancelled_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput
 }
 
 export type sitter_bookingsCreateManyAccountsInput = {
@@ -1045,6 +1171,7 @@ export type sitter_bookingsUpdateWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pets?: Prisma.petsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1062,6 +1189,7 @@ export type sitter_bookingsUncheckedUpdateWithoutAccountsInput = {
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1111,6 +1239,7 @@ export type sitter_bookingsUpdateWithoutPetsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1128,6 +1257,7 @@ export type sitter_bookingsUncheckedUpdateWithoutPetsInput = {
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1177,6 +1307,7 @@ export type sitter_bookingsUpdateWithoutPet_sittersInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput
   pets?: Prisma.petsUpdateOneRequiredWithoutSitter_bookingsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1194,6 +1325,7 @@ export type sitter_bookingsUncheckedUpdateWithoutPet_sittersInput = {
   cancel_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutSitter_bookingsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateOneWithoutSitter_bookingsNestedInput
 }
 
@@ -1214,6 +1346,35 @@ export type sitter_bookingsUncheckedUpdateManyWithoutPet_sittersInput = {
 }
 
 
+/**
+ * Count Type Sitter_bookingsCountOutputType
+ */
+
+export type Sitter_bookingsCountOutputType = {
+  email_logs: number
+}
+
+export type Sitter_bookingsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  email_logs?: boolean | Sitter_bookingsCountOutputTypeCountEmail_logsArgs
+}
+
+/**
+ * Sitter_bookingsCountOutputType without action
+ */
+export type Sitter_bookingsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Sitter_bookingsCountOutputType
+   */
+  select?: Prisma.Sitter_bookingsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Sitter_bookingsCountOutputType without action
+ */
+export type Sitter_bookingsCountOutputTypeCountEmail_logsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.email_logsWhereInput
+}
+
 
 export type sitter_bookingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1233,7 +1394,9 @@ export type sitter_bookingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
   pet_sitters?: boolean | Prisma.pet_sittersDefaultArgs<ExtArgs>
+  email_logs?: boolean | Prisma.sitter_bookings$email_logsArgs<ExtArgs>
   sitter_reviews?: boolean | Prisma.sitter_bookings$sitter_reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.Sitter_bookingsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sitter_bookings"]>
 
 export type sitter_bookingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1298,7 +1461,9 @@ export type sitter_bookingsInclude<ExtArgs extends runtime.Types.Extensions.Inte
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   pets?: boolean | Prisma.petsDefaultArgs<ExtArgs>
   pet_sitters?: boolean | Prisma.pet_sittersDefaultArgs<ExtArgs>
+  email_logs?: boolean | Prisma.sitter_bookings$email_logsArgs<ExtArgs>
   sitter_reviews?: boolean | Prisma.sitter_bookings$sitter_reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.Sitter_bookingsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type sitter_bookingsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -1317,6 +1482,7 @@ export type $sitter_bookingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     accounts: Prisma.$accountsPayload<ExtArgs>
     pets: Prisma.$petsPayload<ExtArgs>
     pet_sitters: Prisma.$pet_sittersPayload<ExtArgs>
+    email_logs: Prisma.$email_logsPayload<ExtArgs>[]
     sitter_reviews: Prisma.$sitter_reviewsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1731,6 +1897,7 @@ export interface Prisma__sitter_bookingsClient<T, Null = never, ExtArgs extends 
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   pets<T extends Prisma.petsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.petsDefaultArgs<ExtArgs>>): Prisma.Prisma__petsClient<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   pet_sitters<T extends Prisma.pet_sittersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.pet_sittersDefaultArgs<ExtArgs>>): Prisma.Prisma__pet_sittersClient<runtime.Types.Result.GetResult<Prisma.$pet_sittersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  email_logs<T extends Prisma.sitter_bookings$email_logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.sitter_bookings$email_logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$email_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sitter_reviews<T extends Prisma.sitter_bookings$sitter_reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.sitter_bookings$sitter_reviewsArgs<ExtArgs>>): Prisma.Prisma__sitter_reviewsClient<runtime.Types.Result.GetResult<Prisma.$sitter_reviewsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2173,6 +2340,30 @@ export type sitter_bookingsDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many sitter_bookings to delete.
    */
   limit?: number
+}
+
+/**
+ * sitter_bookings.email_logs
+ */
+export type sitter_bookings$email_logsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the email_logs
+   */
+  select?: Prisma.email_logsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the email_logs
+   */
+  omit?: Prisma.email_logsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.email_logsInclude<ExtArgs> | null
+  where?: Prisma.email_logsWhereInput
+  orderBy?: Prisma.email_logsOrderByWithRelationInput | Prisma.email_logsOrderByWithRelationInput[]
+  cursor?: Prisma.email_logsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Email_logsScalarFieldEnum | Prisma.Email_logsScalarFieldEnum[]
 }
 
 /**

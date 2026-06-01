@@ -9,6 +9,7 @@
     "<rootDir>/src/decorators/**/*.spec.ts",
     "<rootDir>/src/guards/**/*.spec.ts",
     "<rootDir>/src/interceptors/**/*.spec.ts",
+    "<rootDir>/src/modules/shared/email/**/*.spec.ts",
     "<rootDir>/src/modules/shared/queue/**/*.spec.ts",
     "<rootDir>/src/modules/budget-categories/budget-categories.service.spec.ts"
   ],

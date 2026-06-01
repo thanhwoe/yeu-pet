@@ -31,6 +31,7 @@ model accounts {
   budget_categories       budget_categories[]
   budget_transactions     budget_transactions[]
   budgets                 budgets[]
+  email_logs              email_logs[]
   notifications           notifications[]
   otp_tokens              otp_tokens?
   pet_sitters             pet_sitters?
@@ -379,6 +380,7 @@ model sitter_bookings {
   accounts       accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_account_id")
   pets           pets                   @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_pet_id")
   pet_sitters    pet_sitters            @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_sitter_id")
+  email_logs     email_logs[]
   sitter_reviews sitter_reviews?
 
   @@index([account_id], map: "idx_sitter_bookings_account_id")
@@ -404,6 +406,35 @@ model sitter_reviews {
 
   @@index([account_id], map: "idx_sitter_reviews_account_id")
   @@index([sitter_id], map: "idx_sitter_reviews_sitter_id")
+}
+
+model email_logs {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  resend_email_id String?          @unique @db.VarChar(255)
+  account_id      String?          @db.Uuid
+  booking_id      String?          @db.Uuid
+  to_email        String           @db.VarChar(255)
+  subject         String           @db.VarChar(255)
+  status          String           @default("pending") @db.VarChar(50)
+  error           String?
+  created_at      DateTime?        @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?        @default(now()) @db.Timestamptz(6)
+  accounts        accounts?        @relation(fields: [account_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_email_logs_account_id")
+  sitter_bookings sitter_bookings? @relation(fields: [booking_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_email_logs_booking_id")
+
+  @@index([account_id], map: "idx_email_logs_account_id")
+  @@index([booking_id], map: "idx_email_logs_booking_id")
+  @@index([status], map: "idx_email_logs_status")
+  @@index([to_email], map: "idx_email_logs_to_email")
+}
+
+model email_suppressions {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email      String    @unique @db.VarChar(255)
+  reason     String    @db.VarChar(50)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([email], map: "idx_email_suppressions_email")
 }
 
 enum subscription_tier {

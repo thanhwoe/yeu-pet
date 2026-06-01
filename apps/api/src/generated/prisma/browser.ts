@@ -122,3 +122,13 @@ export type sitter_bookings = Prisma.sitter_bookingsModel
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  */
 export type sitter_reviews = Prisma.sitter_reviewsModel
+/**
+ * Model email_logs
+ * 
+ */
+export type email_logs = Prisma.email_logsModel
+/**
+ * Model email_suppressions
+ * 
+ */
+export type email_suppressions = Prisma.email_suppressionsModel

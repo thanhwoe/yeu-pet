@@ -291,9 +291,9 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - Existing file upload and OTP job dispatch must go through `QueueService` so queue behavior is centralized before adding email and booking listeners.
 
 #### 2.4 Add Email Logging & Suppression (Resend)
-- Add `EmailLog` and `EmailSuppression` models to the Prisma schema.
+- Add `email_logs` and `email_suppressions` models to the Prisma schema, including nullable `account_id` and `booking_id` relations for auditability without blocking account or booking deletion.
 - Run migrations and generate Prisma client.
-- Create `src/modules/shared/email` Resend client provider and `EmailService`. Connect to `EmailLog` to track bounces/delivery.
+- Create `src/modules/shared/email` Resend HTTP client provider, `EmailService`, and EMAIL queue processor. Connect to `email_logs` to track sent, failed, and suppressed attempts; suppression ingestion/bounce webhooks remain outside Phase 2.4.
 
 ### Phase 3: Domain Bounded Context Consolidation & Refactoring (Weeks 5-7)
 
@@ -359,10 +359,10 @@ model email_logs {
   id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   resend_email_id String?     @unique @db.VarChar(255)
   booking_id      String?     @db.Uuid
-  user_id         String?     @db.Uuid
+  account_id      String?     @db.Uuid
   to_email        String      @db.VarChar(255)
   subject         String      @db.VarChar(255)
-  status          String      @default("pending")
+  status          String      @default("pending") @db.VarChar(50)
   error           String?     @db.Text
   created_at      DateTime?   @default(now()) @db.Timestamptz(6)
   updated_at      DateTime?   @default(now()) @db.Timestamptz(6)

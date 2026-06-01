@@ -92,9 +92,12 @@
 - [x] Register listeners on NestJS `event-bus` to capture domain events (e.g. `BookingCreatedEvent`) and dispatch queues asynchronously, preventing cross-module code coupling.
 
 ### 2.4 Resend Email Integration
-- [ ] Add `email_logs` and `email_suppressions` tables to the database schema
-- [ ] Run migrations and regenerate the Prisma client (`pnpm db:generate`)
-- [ ] Create `Resend` service providers under `shared/email/` and connect to logging tables.
+- [x] Add `email_logs` and `email_suppressions` tables to the database schema
+- [x] Run migrations and regenerate the Prisma client (`pnpm db:generate`)
+- [x] Create `Resend` service providers under `shared/email/` and connect to logging tables.
+- [x] Register an EMAIL queue processor that writes sent, failed, and suppressed delivery attempts to `email_logs`.
+- [x] Add unit coverage for email success, Resend failure, suppression skip, and queue processor dispatch.
+- [x] Verify the target database migration status is up to date after applying the Phase 2.4 migration.
 
 ---
 

@@ -404,7 +404,9 @@ export const ModelName = {
   photos: 'photos',
   pet_sitters: 'pet_sitters',
   sitter_bookings: 'sitter_bookings',
-  sitter_reviews: 'sitter_reviews'
+  sitter_reviews: 'sitter_reviews',
+  email_logs: 'email_logs',
+  email_suppressions: 'email_suppressions'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos" | "pet_sitters" | "sitter_bookings" | "sitter_reviews"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos" | "pet_sitters" | "sitter_bookings" | "sitter_reviews" | "email_logs" | "email_suppressions"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1978,6 +1980,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    email_logs: {
+      payload: Prisma.$email_logsPayload<ExtArgs>
+      fields: Prisma.email_logsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.email_logsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.email_logsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        findFirst: {
+          args: Prisma.email_logsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.email_logsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        findMany: {
+          args: Prisma.email_logsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>[]
+        }
+        create: {
+          args: Prisma.email_logsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        createMany: {
+          args: Prisma.email_logsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.email_logsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>[]
+        }
+        delete: {
+          args: Prisma.email_logsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        update: {
+          args: Prisma.email_logsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        deleteMany: {
+          args: Prisma.email_logsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.email_logsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.email_logsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>[]
+        }
+        upsert: {
+          args: Prisma.email_logsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_logsPayload>
+        }
+        aggregate: {
+          args: Prisma.Email_logsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmail_logs>
+        }
+        groupBy: {
+          args: Prisma.email_logsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_logsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.email_logsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_logsCountAggregateOutputType> | number
+        }
+      }
+    }
+    email_suppressions: {
+      payload: Prisma.$email_suppressionsPayload<ExtArgs>
+      fields: Prisma.email_suppressionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.email_suppressionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.email_suppressionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        findFirst: {
+          args: Prisma.email_suppressionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.email_suppressionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        findMany: {
+          args: Prisma.email_suppressionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>[]
+        }
+        create: {
+          args: Prisma.email_suppressionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        createMany: {
+          args: Prisma.email_suppressionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.email_suppressionsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>[]
+        }
+        delete: {
+          args: Prisma.email_suppressionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        update: {
+          args: Prisma.email_suppressionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.email_suppressionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.email_suppressionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.email_suppressionsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>[]
+        }
+        upsert: {
+          args: Prisma.email_suppressionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_suppressionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Email_suppressionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmail_suppressions>
+        }
+        groupBy: {
+          args: Prisma.email_suppressionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_suppressionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.email_suppressionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_suppressionsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2340,6 +2490,32 @@ export const Sitter_reviewsScalarFieldEnum = {
 } as const
 
 export type Sitter_reviewsScalarFieldEnum = (typeof Sitter_reviewsScalarFieldEnum)[keyof typeof Sitter_reviewsScalarFieldEnum]
+
+
+export const Email_logsScalarFieldEnum = {
+  id: 'id',
+  resend_email_id: 'resend_email_id',
+  account_id: 'account_id',
+  booking_id: 'booking_id',
+  to_email: 'to_email',
+  subject: 'subject',
+  status: 'status',
+  error: 'error',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Email_logsScalarFieldEnum = (typeof Email_logsScalarFieldEnum)[keyof typeof Email_logsScalarFieldEnum]
+
+
+export const Email_suppressionsScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  reason: 'reason',
+  created_at: 'created_at'
+} as const
+
+export type Email_suppressionsScalarFieldEnum = (typeof Email_suppressionsScalarFieldEnum)[keyof typeof Email_suppressionsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2792,6 +2968,8 @@ export type GlobalOmitConfig = {
   pet_sitters?: Prisma.pet_sittersOmit
   sitter_bookings?: Prisma.sitter_bookingsOmit
   sitter_reviews?: Prisma.sitter_reviewsOmit
+  email_logs?: Prisma.email_logsOmit
+  email_suppressions?: Prisma.email_suppressionsOmit
 }
 
 /* Types for Logging */
