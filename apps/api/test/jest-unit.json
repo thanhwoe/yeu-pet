@@ -1,0 +1,26 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../",
+  "testEnvironment": "node",
+  "testMatch": [
+    "<rootDir>/src/app.controller.spec.ts",
+    "<rootDir>/src/**/*.architecture.spec.ts",
+    "<rootDir>/src/decorators/**/*.spec.ts",
+    "<rootDir>/src/guards/**/*.spec.ts",
+    "<rootDir>/src/interceptors/**/*.spec.ts",
+    "<rootDir>/src/modules/budget-categories/budget-categories.service.spec.ts"
+  ],
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^@app/(.*)$": "<rootDir>/src/$1"
+  },
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/generated/**"
+  ],
+  "coverageDirectory": "coverage"
+}

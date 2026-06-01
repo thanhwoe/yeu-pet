@@ -15,7 +15,7 @@ import { RefreshTokenDto } from './dto/refresh-tokens.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { Public } from '@app/decorators/public.decorator';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
-import { AdminOnly } from '@app/decorators/admin.decorator';
+import { AdminOnly } from '@app/decorators/roles.decorator';
 import { LocalAuthGuard } from '@app/guards/local-auth.guard';
 import { seconds, Throttle } from '@nestjs/throttler';
 

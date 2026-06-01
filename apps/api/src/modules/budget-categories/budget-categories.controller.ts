@@ -37,8 +37,11 @@ export class BudgetCategoriesController {
   @Get()
   @Cacheable(300)
   @HttpCode(HttpStatus.OK)
-  findAll(@PaginationQuery() pagination: PaginationDto) {
-    return this.budgetCategoriesService.findAll(pagination);
+  findAll(
+    @CurrentUser() user: accounts,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.budgetCategoriesService.findAll(user, pagination);
   }
 
   @Patch(':id')

@@ -34,10 +34,11 @@ export class BudgetCategoriesService {
     return category;
   }
 
-  async findAll(pagination: PaginationDto) {
+  async findAll(user: accounts, pagination: PaginationDto) {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
     const [data, total] = await this.budgetCategoriesRepository.findAll({
+      account_id: user.id,
       skip,
       take: limit,
     });

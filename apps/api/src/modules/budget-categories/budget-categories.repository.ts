@@ -2,6 +2,7 @@ import { PrismaService } from '@app/database/prisma/prisma.service';
 import {
   budget_categoriesCreateInput,
   budget_categoriesUpdateInput,
+  budget_categoriesWhereInput,
 } from '@app/generated/prisma/models';
 import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
 import { Injectable } from '@nestjs/common';
@@ -26,14 +27,23 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
       where: { id },
     });
   }
-  async findAll(params?: { skip?: number; take?: number }) {
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    account_id?: string;
+  }) {
+    const where: budget_categoriesWhereInput = {
+      account_id: params?.account_id,
+    };
+
     return this.prisma.$transaction([
       this.prisma.budget_categories.findMany({
+        where,
         skip: params?.skip,
         take: params?.take,
         orderBy: { created_at: 'desc' },
       }),
-      this.prisma.budget_categories.count(),
+      this.prisma.budget_categories.count({ where }),
     ]);
   }
   async findById(id: string) {

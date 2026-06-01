@@ -3,7 +3,9 @@
 > **Reference Project:** `smart-booking` (`/Users/thanh/projects/smart-booking`)
 > **Target Project:** `yeu-pet` (`apps/api`)
 > **Date:** 2026-05-30
-> **Status:** Planning Phase (Audited & Updated)
+> **Status:** Phase Gate Reviewed — Phase 2 Ready With Conditions
+
+> **Phase Gate Review (2026-06-01):** Phase 1 is broadly implemented. The review found a stale `admin.decorator.ts` that emitted metadata `RolesGuard` did not read; this was corrected by making the legacy decorator a compatibility re-export and moving `AuthController` to the canonical `roles.decorator.ts` import. The review also found and corrected a budget-category list data-boundary leak by scoping list queries to the current user. Phase 2.0 established a green curated unit baseline through `test/jest-unit.json`; the old placeholder suite remains available as `test:legacy` until Phase 2 replaces those skeletal specs with real unit coverage.
 
 ---
 
@@ -236,7 +238,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 
 ## 6. Detailed Implementation Plan
 
-### Phase 1: Foundation Infrastructure (Weeks 1-2) - *Completed / Reconciliation Needed*
+### Phase 1: Foundation Infrastructure (Weeks 1-2) - *Gate Reviewed*
 
 #### 1.1 Add Sentry Integration
 - Create `src/instrument.ts`
@@ -249,13 +251,15 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - Create `src/decorators/roles.decorator.ts` and `src/guards/roles.guard.ts`.
 - Remove admin role checking from `jwt-auth.guard.ts`.
 - Register `RolesGuard` globally in `app.module.ts`.
+- **Phase Gate Correction:** Remove or replace the stale `src/decorators/admin.decorator.ts`. All routes must use `AdminOnly` from `roles.decorator.ts`; otherwise `RolesGuard` does not see the metadata.
+- **Phase Gate Correction:** Add a focused RBAC test proving admin-only metadata denies non-admin authenticated users.
 
 #### 1.3 Add TrackService (PostHog)
 - Create `src/modules/shared/track/` PostHog providers and service.
 
 #### 1.4 Add HttpCacheInterceptor
 - **Audit Correction:** Redesign `HttpCacheInterceptor` to act as an **opt-in** decorator mechanism (`@Cacheable()`).
-- Add Redis query invalidation hooks inside `app.module` for mutation routes (`POST/PUT/DELETE`) that clear keys containing matching `userId` or resource prefixes.
+- Add Redis query invalidation hooks via mutation-route decorators/interceptors (`POST/PUT/PATCH/DELETE`) that clear keys containing matching `userId` or resource prefixes.
 
 #### 1.5 Add TrackInterceptor & Telemetry Scrubber
 - Create `src/interceptors/track.interceptor.ts`.
@@ -263,10 +267,17 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 
 ### Phase 2: Test Rigging & Common Infrastructures (Weeks 3-4)
 
+#### 2.0 Phase Gate Corrections (Execute First)
+- Verify the RBAC metadata regression remains fixed before adding new infrastructure.
+- Verify authenticated list endpoints remain scoped to the current account before broadening repository refactors.
+- Establish a green baseline for the existing Jest suite, or isolate empty generated specs behind a new `jest-unit.json` so failing placeholder tests do not mask regressions.
+- Keep the old placeholder suite visible through `test:legacy` until each skeletal spec is either repaired or removed during module refactors.
+- Add smoke tests for global guard/filter/interceptor wiring and decorator metadata (`@Public`, `@Roles`, `@AdminOnly`, `@Cacheable`, `@CacheEvict`).
+
 #### 2.1 Setup Automated Testing Fixtures
 - Create `apps/api/test/jest-unit.json` and `test/jest-e2e.json`.
 - Create shared test app factories (`test-app.factory.ts`), mock providers, and transaction-wrapped test database services.
-- Define mock factories for database models (User, Pet, Sitter, Booking) to allow TDD-lite throughout subsequent phases.
+- Define mock factories for database models (User, Pet, Sitter, SitterBooking, Budget, Photo, Reminder) to allow TDD-lite throughout subsequent phases.
 
 #### 2.2 Add Database Pessimistic Locking Helper
 - Design a helper method inside `PrismaService` or a shared module that executes `SELECT ... FOR UPDATE` raw queries on a specified table row inside a transaction context, wrapping dynamic checks safely.
@@ -410,8 +421,8 @@ We transition from a delayed testing strategy to a **TDD-Lite** strategy:
 
 ## 12. Incremental Migration Roadmap
 
-- **Week 1 (Phase 1.3 Reconciliation):** Fix Sentry filter shadowing, convert HTTP cache to opt-in, clean up fake `forwardRef`s, and scrub telemetry noise.
-- **Week 2-3 (Phase 2 - Test Rigging & Core Infrastructures):** Setup Jest configs, factories, event-bus queue integration, and Resend email logging models.
+- **Week 1 (Phase 1 Reconciliation):** Fix Sentry filter shadowing, convert HTTP cache to opt-in, clean up fake `forwardRef`s, scrub telemetry noise, and repair RBAC metadata drift.
+- **Week 2-3 (Phase 2 - Test Rigging & Core Infrastructures):** Start with phase gate corrections, then setup Jest configs, factories, event-bus queue integration, and Resend email logging models.
 - **Week 4-7 (Phase 3 - Domain Consolidation & Refactoring):** Consolidate Budget, Photos, and SitterBooking modules. Refactor repositories, DTOs, and ownership checks in one clean pass. Decouple Pets and Medical Records modules.
 - **Week 8-9 (Phase 4 - Concurrency & Webhook Integration):** Add Postgres row-locking sitter logic, dynamic overlap validation, idempotency, and RevenueCat webhook sync.
 - **Week 10 (Phase 5 - Verification):** Execute entire unit and E2E dynamic suites. Verify that no circular dependencies or stale-caching paths exist.
