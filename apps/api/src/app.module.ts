@@ -25,6 +25,7 @@ import { PhotosModule } from './modules/photos/photos.module';
 import { RemindersModule } from './modules/reminders/reminders.module';
 import { SharedModule } from './modules/shared/shared.module';
 import { SitterBookingModule } from './modules/sitter-booking/sitter-booking.module';
+import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { UserDevicesModule } from './modules/user-devices/user-devices.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 import { UsersModule } from './modules/users/users.module';
@@ -67,6 +68,7 @@ import { UsersModule } from './modules/users/users.module';
     BudgetModule,
     PhotosModule,
     SitterBookingModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [

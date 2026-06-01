@@ -127,8 +127,9 @@
 ## Phase 4: Concurrency & Webhook Integration (Weeks 8-9)
 
 ### 4.1 RevenueCat Integration
-- [ ] Create `/api/v1/subscription/webhook` endpoint with secret signature verification
-- [ ] **[AUDIT CORRECTION]** Implement webhook timestamp/expiration guards. Only write to user subscription tables if the webhook event date is newer than the database's `subscription_expires_at` value.
+- [x] Create `/api/v1/subscription/webhook` endpoint with RevenueCat `Authorization` header secret verification.
+- [x] **[AUDIT CORRECTION]** Implement webhook timestamp/expiration guards. Only write to user subscription tables if the webhook event date is newer than the database's `subscription_expires_at` value.
+- [x] Add unit coverage for invalid auth, renewal updates, stale event ignores, expiration downgrades, and cancellation ignores.
 
 ### 4.2 Sitter Booking Transactional Row-Locking Concurrency
 - [ ] Add `idempotency_key` (unique), `expires_at`, `confirmed_at`, and `cancelled_at` fields to `sitter_bookings` Prisma model. Run database migration and regenerate client.

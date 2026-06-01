@@ -319,7 +319,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 
 #### 4.1 RevenueCat Webhook Integration
 - Create `src/modules/subscription/` module, controller, and service.
-- Implement `/api/v1/subscription/webhook` endpoint with `REVENUECAT_WEBHOOK_SECRET` validation.
+- Implement `/api/v1/subscription/webhook` endpoint with `REVENUECAT_WEBHOOK_SECRET` validation against RevenueCat's configured `Authorization` header.
 - **Audit Correction:** Add webhook event timestamp or expiration comparison guards. Only update the user's tier if the webhook payload's event date is newer than the database's `subscription_expires_at` timestamp.
 
 #### 4.2 Sitter Booking Dynamic Concurrency Protection

@@ -26,6 +26,7 @@ import { PetsModule } from './modules/pets/pets.module';
 import { PhotosModule } from './modules/photos/photos.module';
 import { RemindersModule } from './modules/reminders/reminders.module';
 import { SitterBookingModule } from './modules/sitter-booking/sitter-booking.module';
+import { SubscriptionController } from './modules/subscription/subscription.controller';
 import { UsersModule } from './modules/users/users.module';
 import { user_role } from './generated/prisma/client';
 import { IBudgetCategoriesRepository } from './interfaces/budget-categories-repository.interface';
@@ -139,6 +140,15 @@ describe('App architecture wiring', () => {
     expect(
       getHandler(PetsController.prototype, 'findAllMedicalRecords'),
     ).toBeUndefined();
+  });
+
+  it('keeps the RevenueCat webhook public for header-secret authentication', () => {
+    expect(
+      Reflect.getMetadata(
+        IS_PUBLIC_KEY,
+        getHandler(SubscriptionController.prototype, 'handleRevenueCatWebhook'),
+      ),
+    ).toBe(true);
   });
 
   it('keeps simple resource ownership out of CASL rules', () => {
