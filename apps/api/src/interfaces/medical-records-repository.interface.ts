@@ -4,6 +4,8 @@ import {
 } from '@app/generated/prisma/client';
 import { BatchPayload } from '@app/generated/prisma/internal/prismaNamespace';
 
+export const IMedicalRecordsRepository = Symbol('IMedicalRecordsRepository');
+
 type MedicalRecordDetail = medical_records & {
   medical_attachments: medical_attachments[];
 };
@@ -26,6 +28,6 @@ export interface IMedicalRecordsRepository {
     pet_id: string;
   }): Promise<[medical_records[], number]>;
   create(data: any): Promise<medical_records>;
-  update?(id: string, data: any): Promise<medical_records>;
+  update(id: string, data: any): Promise<medical_records>;
   delete(id: string): Promise<medical_records>;
 }

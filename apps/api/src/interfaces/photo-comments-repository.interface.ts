@@ -1,5 +1,7 @@
 import { accounts, photo_comments } from '@app/generated/prisma/client';
 
+export const IPhotoCommentsRepository = Symbol('IPhotoCommentsRepository');
+
 type PhotoCommentsClient = photo_comments & {
   accounts: Pick<accounts, 'avatar_url' | 'first_name' | 'last_name' | 'id'>;
 };

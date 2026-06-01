@@ -6,10 +6,16 @@ import { CaslModule } from '../casl/casl.module';
 import { ScheduleRemindersTask } from './tasks/schedule-reminders.task';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { UserSettingsModule } from '../user-settings/user-settings.module';
+import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
 
 @Module({
   imports: [CaslModule, NotificationsModule, UserSettingsModule],
   controllers: [RemindersController],
-  providers: [RemindersService, RemindersRepository, ScheduleRemindersTask],
+  providers: [
+    RemindersService,
+    RemindersRepository,
+    { provide: IRemindersRepository, useExisting: RemindersRepository },
+    ScheduleRemindersTask,
+  ],
 })
 export class RemindersModule {}

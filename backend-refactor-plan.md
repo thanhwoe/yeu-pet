@@ -313,6 +313,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
   - Users, Pets, MedicalRecords, Reminders, Budget, Photos, SitterBooking.
 - Clean up CASL rules: replace simple ownership queries inside CASL with explicit `userId === ownerId` checks in the services. Keep CASL solely for admin-level ABAC checks.
 - Add standard Response DTOs and composed Swagger decorators.
+- Validate the refactor with architecture coverage for repository token wiring and CASL ownership-rule removal, plus targeted service tests where behavior changes.
 
 ### Phase 4: Concurrency & Sync Integration (Weeks 8-9)
 

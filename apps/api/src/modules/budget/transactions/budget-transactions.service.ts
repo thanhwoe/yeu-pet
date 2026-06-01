@@ -1,20 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBudgetTransactionDto } from './dto/create-budget-transaction.dto';
 import { UpdateBudgetTransactionDto } from './dto/update-budget-transaction.dto';
 import { accounts } from '@app/generated/prisma/client';
-import { BudgetTransactionsRepository } from './budget-transactions.repository';
 import dayjs from 'dayjs';
-import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
-import { Action } from '../../casl/casl.types';
-import { assertAbility } from '../../casl/casl.helper';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class BudgetTransactionsService {
   constructor(
-    private readonly budgetTransactionsRepository: BudgetTransactionsRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    @Inject(IBudgetTransactionsRepository)
+    private readonly budgetTransactionsRepository: IBudgetTransactionsRepository,
   ) {}
   create(
     user: accounts,
@@ -75,7 +73,7 @@ export class BudgetTransactionsService {
     id: string,
     updateBudgetTransactionDto: UpdateBudgetTransactionDto,
   ) {
-    await this.assertAbility(user, id, Action.Update);
+    await this.assertOwner(user, id);
 
     return this.budgetTransactionsRepository.update(id, {
       budget_categories: {
@@ -92,19 +90,17 @@ export class BudgetTransactionsService {
   }
 
   async remove(user: accounts, id: string) {
-    await this.assertAbility(user, id, Action.Delete);
+    await this.assertOwner(user, id);
     await this.budgetTransactionsRepository.delete(id);
   }
 
-  private async assertAbility(user: accounts, id: string, action: Action) {
+  private async assertOwner(user: accounts, id: string) {
     const record = await this.budgetTransactionsRepository.findById(id);
 
     if (!record)
       throw new NotFoundException(`Budget transaction with ID ${id} not found`);
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, action, 'BudgetTransactions', record);
+    assertOwnerOrAdmin(user, record.account_id);
 
     return record;
   }

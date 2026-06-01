@@ -1,6 +1,6 @@
 import { accounts } from '@app/generated/prisma/client';
 
-type AccountPrivate = Omit<accounts, 'password_hash'>;
+export const IUsersRepository = Symbol('IUsersRepository');
 
 type AccountPublic = Pick<
   accounts,
@@ -18,15 +18,15 @@ type AccountPublic = Pick<
 >;
 
 export interface IUsersRepository {
-  findByEmail(email: string): Promise<AccountPrivate | null>;
-  findByPhone(phone: string): Promise<AccountPrivate | null>;
-  findByEmailOrPhone(identifier: string): Promise<AccountPrivate | null>;
+  findByEmail(email: string): Promise<accounts | null>;
+  findByPhone(phone: string): Promise<accounts | null>;
+  findByEmailOrPhone(identifier: string): Promise<accounts | null>;
   existsByEmail(email: string): Promise<boolean>;
   existsByPhone(phone: string): Promise<boolean>;
   findAccount(id: string): Promise<accounts | null>;
-  findById(id: string): Promise<AccountPrivate | null>;
-  findAll?(params?: any): Promise<AccountPrivate[]>;
-  create(data: any): Promise<AccountPrivate>;
-  update?(id: string, data: Partial<accounts>): Promise<AccountPublic>;
-  delete(id: string): Promise<AccountPrivate>;
+  findById(id: string): Promise<accounts | null>;
+  findAll(params?: any): Promise<accounts[]>;
+  create(data: any): Promise<accounts>;
+  update(id: string, data: Partial<accounts>): Promise<AccountPublic>;
+  delete(id: string): Promise<accounts>;
 }

@@ -1,25 +1,26 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePhotoCommentDto } from './dto/create-photo-comment.dto';
-import { PhotoCommentsRepository } from './photo-comments.repository';
 import { accounts, photos_status } from '@app/generated/prisma/client';
-import { PhotosRepository } from '../photos.repository';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { Action } from '../../casl/casl.types';
-import { assertAbility } from '../../casl/casl.helper';
-import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
+import { IPhotoCommentsRepository } from '@app/interfaces/photo-comments-repository.interface';
+import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
+import { isAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class PhotoCommentsService {
   constructor(
-    private readonly photoCommentsRepository: PhotoCommentsRepository,
-    private readonly photosRepository: PhotosRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    @Inject(IPhotoCommentsRepository)
+    private readonly photoCommentsRepository: IPhotoCommentsRepository,
+    @Inject(IPhotosRepository)
+    private readonly photosRepository: IPhotosRepository,
   ) {}
 
   async create(
@@ -88,8 +89,11 @@ export class PhotoCommentsService {
 
     const comment = await this.assertCommentAbility(id, photoId, Action.Delete);
 
-    // Owner or photo owner can delete
-    if (comment.account_id !== user.id && photo?.account_id !== user.id) {
+    if (
+      !isAdmin(user) &&
+      comment.account_id !== user.id &&
+      photo?.account_id !== user.id
+    ) {
       throw new ForbiddenException(
         'You do not have permission to delete this comment',
       );
@@ -108,9 +112,9 @@ export class PhotoCommentsService {
       throw new NotFoundException('Photo not available');
     }
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, Action.Read, 'Photos', record);
+    if (record.is_private && !isOwnerOrAdmin(user, record.account_id)) {
+      throw new NotFoundException('Photo not available');
+    }
 
     return record;
   }

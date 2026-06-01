@@ -13,47 +13,25 @@ export class CaslAbilityFactory {
       can(Action.Manage, 'all');
     } else {
       can(Action.Create, 'Pets');
-      can(Action.Read, 'Pets', { account_id: user.id });
-      can(Action.Update, 'Pets', { account_id: user.id });
-      can(Action.Delete, 'Pets', { account_id: user.id });
 
-      // Check user permission through action pet read
       can(Action.Create, 'MedicalRecords');
-      can(Action.Read, 'MedicalRecords');
-      can(Action.Update, 'MedicalRecords');
-      can(Action.Delete, 'MedicalRecords');
 
       can(Action.Create, 'UserDevices');
       can(Action.Read, 'UserDevices', { account_id: user.id });
       can(Action.Delete, 'UserDevices', { account_id: user.id });
 
       can(Action.Create, 'Reminders');
-      can(Action.Read, 'Reminders', { account_id: user.id });
-      can(Action.Update, 'Reminders', { account_id: user.id });
-      can(Action.Delete, 'Reminders', { account_id: user.id });
 
       can(Action.Update, 'Notifications', { account_id: user.id });
       can(Action.Delete, 'Notifications', { account_id: user.id });
 
       can(Action.Create, 'BudgetTransactions');
-      can(Action.Read, 'BudgetTransactions', { account_id: user.id });
-      can(Action.Update, 'BudgetTransactions', { account_id: user.id });
-      can(Action.Delete, 'BudgetTransactions', { account_id: user.id });
 
       can(Action.Create, 'BudgetCategories');
-      can(Action.Read, 'BudgetCategories', { account_id: user.id });
-      can(Action.Update, 'BudgetCategories', { account_id: user.id });
-      can(Action.Delete, 'BudgetCategories', { account_id: user.id });
 
       can(Action.Create, 'Photos');
-      can(Action.Read, 'Photos', { is_private: false });
-      can(Action.Read, 'Photos', { account_id: user.id });
-      can(Action.Update, 'Photos', { account_id: user.id });
-      can(Action.Delete, 'Photos', { account_id: user.id });
 
       can(Action.Create, 'PetSitters');
-      can(Action.Read, 'PetSitters');
-      can(Action.Update, 'PetSitters', { account_id: user.id });
     }
 
     return build();

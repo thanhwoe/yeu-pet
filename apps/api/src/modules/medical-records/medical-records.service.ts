@@ -1,32 +1,32 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
-import { MedicalRecordsRepository } from './medical-records.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import dayjs from 'dayjs';
-import { Action } from '../casl/casl.types';
 import { accounts, attachment_status } from '@app/generated/prisma/client';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { PetsRepository } from '../pets/pets.repository';
-import { assertAbility } from '../casl/casl.helper';
 import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { IMedicalRecordsRepository } from '@app/interfaces/medical-records-repository.interface';
+import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class MedicalRecordsService {
   constructor(
-    private readonly medicalRecordsRepository: MedicalRecordsRepository,
-    private readonly petsRepository: PetsRepository,
+    @Inject(IMedicalRecordsRepository)
+    private readonly medicalRecordsRepository: IMedicalRecordsRepository,
+    @Inject(IPetsRepository)
+    private readonly petsRepository: IPetsRepository,
     private readonly fileUploadService: FileUploadService,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
   async create(
     createMedicalRecordDto: CreateMedicalRecordDto,
@@ -69,9 +69,7 @@ export class MedicalRecordsService {
       throw new NotFoundException(`Pet with ID ${pet_id} not found`);
     }
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, Action.Read, 'Pets', pet);
+    assertOwnerOrAdmin(user, pet.account_id);
 
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
@@ -86,11 +84,7 @@ export class MedicalRecordsService {
   }
 
   async findOne(user: accounts, id: string) {
-    const medical = await this.assertMedicalRecordAbility(
-      user,
-      id,
-      Action.Read,
-    );
+    const medical = await this.assertMedicalRecordOwner(user, id);
 
     return medical;
   }
@@ -101,11 +95,7 @@ export class MedicalRecordsService {
     updateMedicalRecordDto: UpdateMedicalRecordDto,
     files?: Express.Multer.File[],
   ) {
-    const medical = await this.assertMedicalRecordAbility(
-      user,
-      id,
-      Action.Update,
-    );
+    const medical = await this.assertMedicalRecordOwner(user, id);
 
     const keepIds =
       updateMedicalRecordDto.attachmentIds ??
@@ -161,11 +151,7 @@ export class MedicalRecordsService {
   }
 
   async remove(user: accounts, id: string) {
-    const medical = await this.assertMedicalRecordAbility(
-      user,
-      id,
-      Action.Delete,
-    );
+    const medical = await this.assertMedicalRecordOwner(user, id);
 
     if (medical.medical_attachments.length > 0) {
       const fileIds = medical.medical_attachments
@@ -197,11 +183,7 @@ export class MedicalRecordsService {
     }
   }
 
-  private async assertMedicalRecordAbility(
-    user: accounts,
-    recordId: string,
-    action: Action,
-  ) {
+  private async assertMedicalRecordOwner(user: accounts, recordId: string) {
     const record = await this.medicalRecordsRepository.findById(recordId);
     if (!record)
       throw new NotFoundException(
@@ -214,11 +196,7 @@ export class MedicalRecordsService {
       throw new NotFoundException(`Pet with ID ${record.pet_id} not found`);
     }
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, Action.Read, 'Pets', pet);
-
-    assertAbility(ability, action, 'MedicalRecords', record);
+    assertOwnerOrAdmin(user, pet.account_id);
 
     return record;
   }

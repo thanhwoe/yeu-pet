@@ -21,24 +21,28 @@ import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
-import { MedicalRecordsService } from '../medical-records/medical-records.service';
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
+import {
+  ApiCreatedWrappedResponse,
+  ApiOkWrappedResponse,
+  ApiPaginatedResponse,
+} from '@app/decorators/swagger-response.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Pets')
 @Controller('pets')
 @UseGuards(PoliciesGuard)
 export class PetsController {
-  constructor(
-    private readonly petsService: PetsService,
-    private readonly medicalRecordsService: MedicalRecordsService,
-  ) {}
+  constructor(private readonly petsService: PetsService) {}
 
   @Post()
   @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'Pets'))
   @UseInterceptors(FileInterceptor('avatar'))
   @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedWrappedResponse()
   create(
     @CurrentUser() user: accounts,
     @Body() createPetDto: CreatePetDto,
@@ -51,6 +55,7 @@ export class PetsController {
   @Get()
   @Cacheable(60)
   @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse()
   findAll(
     @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
@@ -61,25 +66,16 @@ export class PetsController {
   @Get(':id')
   @Cacheable(60)
   @HttpCode(HttpStatus.OK)
+  @ApiOkWrappedResponse()
   findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.petsService.findOne(user, id);
-  }
-
-  @Get(':id/medical-records')
-  @Cacheable(60)
-  @HttpCode(HttpStatus.OK)
-  findAllMedicalRecords(
-    @CurrentUser() user: accounts,
-    @IdParam() id: string,
-    @PaginationQuery() pagination: PaginationDto,
-  ) {
-    return this.medicalRecordsService.findAllByPetId(user, id, pagination);
   }
 
   @Patch(':id')
   @CacheEvict()
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('avatar'))
+  @ApiOkWrappedResponse()
   update(
     @CurrentUser() user: accounts,
     @IdParam() id: string,

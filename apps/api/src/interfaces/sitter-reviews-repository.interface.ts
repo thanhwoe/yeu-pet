@@ -1,6 +1,8 @@
 import { sitter_reviews } from '@app/generated/prisma/client';
 import { sitter_reviewsCreateInput } from '@app/generated/prisma/models';
 
+export const ISitterReviewsRepository = Symbol('ISitterReviewsRepository');
+
 export interface ISitterReviewsRepository {
   create(data: sitter_reviewsCreateInput): Promise<sitter_reviews>;
   findAll(params?: {

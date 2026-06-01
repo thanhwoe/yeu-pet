@@ -11,6 +11,9 @@ import { SitterReviewsService } from './reviews/sitter-reviews.service';
 import { PetSittersController } from './sitters/pet-sitters.controller';
 import { PetSittersRepository } from './sitters/pet-sitters.repository';
 import { PetSittersService } from './sitters/pet-sitters.service';
+import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
+import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
+import { ISitterReviewsRepository } from '@app/interfaces/sitter-reviews-repository.interface';
 
 @Module({
   imports: [CaslModule, PetsModule],
@@ -21,13 +24,24 @@ import { PetSittersService } from './sitters/pet-sitters.service';
   ],
   providers: [
     PetSittersRepository,
+    { provide: IPetSittersRepository, useExisting: PetSittersRepository },
     PetSittersService,
     SitterBookingsRepository,
+    {
+      provide: ISitterBookingsRepository,
+      useExisting: SitterBookingsRepository,
+    },
     SitterBookingsService,
     ActiveBookingsTask,
     SitterReviewsRepository,
+    { provide: ISitterReviewsRepository, useExisting: SitterReviewsRepository },
     SitterReviewsService,
   ],
-  exports: [PetSittersRepository, SitterBookingsRepository],
+  exports: [
+    PetSittersRepository,
+    IPetSittersRepository,
+    SitterBookingsRepository,
+    ISitterBookingsRepository,
+  ],
 })
 export class SitterBookingModule {}

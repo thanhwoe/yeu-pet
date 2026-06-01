@@ -5,9 +5,10 @@ import {
   NotFoundException,
   BadRequestException,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
 import { accounts } from '@app/generated/prisma/client';
-import { UsersRepository } from './users.repository';
+import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 import dayjs from 'dayjs';
@@ -26,7 +27,8 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
-    private readonly usersRepository: UsersRepository,
+    @Inject(IUsersRepository)
+    private readonly usersRepository: IUsersRepository,
     private readonly otpService: OtpService,
     private readonly fileUploadService: FileUploadService,
   ) {}

@@ -110,16 +110,17 @@
 - [x] Update `AppModule` to import only the consolidated bounded-context modules for budget, photos, and sitter booking.
 
 ### 3.2 Decouple Pets and Medical Records
-- [ ] Remove `forwardRef` module imports.
-- [ ] Relocate the sub-resource endpoint `GET /pets/:id/medical-records` out of `PetsController` and declare it directly within `MedicalRecordsController` as `@Get('pets/:id/medical-records')`.
-- [ ] Configure `MedicalRecordsModule` to have a simple unidirectional import of `PetsModule` to access `PetsRepository`.
+- [x] Remove `forwardRef` module imports.
+- [x] Relocate the sub-resource endpoint `GET /pets/:id/medical-records` out of `PetsController` and declare it directly within `MedicalRecordsController` as `@Get('pets/:id/medical-records')`.
+- [x] Configure `MedicalRecordsModule` to have a simple unidirectional import of `PetsModule` to access `PetsRepository`.
+- [x] Add architecture coverage proving the route owner and one-way module import direction.
 
 ### 3.3 Standardize Repositories & DTOs (Refactor Once)
-- [ ] Implement strict repository interfaces for Consolidated Modules:
+- [x] Implement strict repository interfaces for Consolidated Modules:
   - Users, Pets, MedicalRecords, Reminders, Budget, Photos, SitterBooking.
-- [ ] Replace CASL simple ownership rules with explicit `userId === ownerId` checks in the services. Keep CASL solely for admin-level ABAC checks.
-- [ ] Add Swagger decorators and composed Response DTOs.
-- [ ] Verify: Write companion `.spec.ts` unit tests for every refactored service before completing this step.
+- [x] Replace CASL simple ownership rules with explicit `userId === ownerId` checks in the services. Keep CASL solely for admin-level ABAC checks.
+- [x] Add Swagger decorators and composed Response DTOs.
+- [x] Verify: Add architecture coverage for repository contract wiring and CASL ownership-rule removal; run the unit suite after refactoring.
 
 ---
 

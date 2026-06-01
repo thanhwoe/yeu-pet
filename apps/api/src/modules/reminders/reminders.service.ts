@@ -1,22 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { RemindersRepository } from './reminders.repository';
 import dayjs from 'dayjs';
 import { accounts, reminder_status } from '@app/generated/prisma/client';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
 import { NotificationsService } from '../notifications/notifications.service';
 import { UserSettingsRepository } from '../user-settings/user-settings.repository';
 import { paginate } from '@app/utils/pagination';
 import { PaginationDto } from '../shared/dto/pagination.dto';
+import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class RemindersService {
   constructor(
-    private readonly remindersRepository: RemindersRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    @Inject(IRemindersRepository)
+    private readonly remindersRepository: IRemindersRepository,
     private readonly notificationsService: NotificationsService,
     private readonly userSettingsRepository: UserSettingsRepository,
   ) {}
@@ -69,7 +67,7 @@ export class RemindersService {
   }
 
   async findOne(user: accounts, id: string) {
-    const record = await this.assertAbility(user, id, Action.Read);
+    const record = await this.assertOwner(user, id);
 
     return record;
   }
@@ -79,7 +77,7 @@ export class RemindersService {
     id: string,
     updateReminderDto: UpdateReminderDto,
   ) {
-    await this.assertAbility(user, id, Action.Update);
+    await this.assertOwner(user, id);
 
     return this.remindersRepository.update(id, {
       pets: {
@@ -98,19 +96,17 @@ export class RemindersService {
   }
 
   async remove(user: accounts, id: string) {
-    await this.assertAbility(user, id, Action.Delete);
+    await this.assertOwner(user, id);
     await this.remindersRepository.delete(id);
   }
 
-  private async assertAbility(user: accounts, id: string, action: Action) {
+  private async assertOwner(user: accounts, id: string) {
     const record = await this.remindersRepository.findById(id);
 
     if (!record)
       throw new NotFoundException(`Reminder with ID ${id} not found`);
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, action, 'Reminders', record);
+    assertOwnerOrAdmin(user, record.account_id);
 
     return record;
   }

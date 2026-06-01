@@ -7,6 +7,8 @@ import {
   Delete,
   UseInterceptors,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { MedicalRecordsService } from './medical-records.service';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
@@ -19,13 +21,16 @@ import { Action } from '../casl/casl.types';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { IdParam } from '@app/decorators/id-param.decorator';
+import { Cacheable } from '@app/decorators/cache.decorator';
+import { PaginationQuery } from '@app/decorators/pagination.decorator';
+import { PaginationDto } from '../shared/dto/pagination.dto';
 
-@Controller('medical-records')
+@Controller()
 @UseGuards(PoliciesGuard)
 export class MedicalRecordsController {
   constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
 
-  @Post()
+  @Post('medical-records')
   @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
   @UseInterceptors(FilesInterceptor('attachments', 5))
   create(
@@ -35,12 +40,23 @@ export class MedicalRecordsController {
     return this.medicalRecordsService.create(createMedicalRecordDto, files);
   }
 
-  @Get(':id')
+  @Get('pets/:id/medical-records')
+  @Cacheable(60)
+  @HttpCode(HttpStatus.OK)
+  findAllByPet(
+    @CurrentUser() user: accounts,
+    @IdParam() id: string,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.medicalRecordsService.findAllByPetId(user, id, pagination);
+  }
+
+  @Get('medical-records/:id')
   findOne(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.medicalRecordsService.findOne(user, id);
   }
 
-  @Patch(':id')
+  @Patch('medical-records/:id')
   @UseInterceptors(FilesInterceptor('attachments', 5))
   update(
     @CurrentUser() user: accounts,
@@ -56,7 +72,7 @@ export class MedicalRecordsController {
     );
   }
 
-  @Delete(':id')
+  @Delete('medical-records/:id')
   remove(@CurrentUser() user: accounts, @IdParam('id') id: string) {
     return this.medicalRecordsService.remove(user, id);
   }

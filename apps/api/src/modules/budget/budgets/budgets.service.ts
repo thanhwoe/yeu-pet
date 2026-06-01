@@ -1,23 +1,27 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetAmountDto } from './dto/update-budget.dto';
-import { BudgetsRepository } from './budgets.repository';
-import { BudgetTransactionsRepository } from '../transactions/budget-transactions.repository';
 import { accounts } from '@app/generated/prisma/client';
 import dayjs from 'dayjs';
-import { BudgetCategoriesRepository } from '../categories/budget-categories.repository';
 import { Decimal } from '@prisma/client/runtime/client';
+import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
+import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
+import { IBudgetsRepository } from '@app/interfaces/budgets-repository.interface';
 
 @Injectable()
 export class BudgetsService {
   constructor(
-    private readonly budgetsRepository: BudgetsRepository,
-    private readonly budgetTransactionsRepository: BudgetTransactionsRepository,
-    private readonly budgetCategoriesRepository: BudgetCategoriesRepository,
+    @Inject(IBudgetsRepository)
+    private readonly budgetsRepository: IBudgetsRepository,
+    @Inject(IBudgetTransactionsRepository)
+    private readonly budgetTransactionsRepository: IBudgetTransactionsRepository,
+    @Inject(IBudgetCategoriesRepository)
+    private readonly budgetCategoriesRepository: IBudgetCategoriesRepository,
   ) {}
   async create(user: accounts, createBudgetDto: CreateBudgetDto) {
     const existing = await this.budgetsRepository.findUnique({

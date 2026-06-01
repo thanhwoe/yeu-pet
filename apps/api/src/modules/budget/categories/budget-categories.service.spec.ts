@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
 import { BudgetCategoriesService } from './budget-categories.service';
 import { BudgetCategoriesRepository } from './budget-categories.repository';
-import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
 import type { accounts } from '@app/generated/prisma/client';
 
 describe('BudgetCategoriesService', () => {
@@ -17,12 +17,8 @@ describe('BudgetCategoriesService', () => {
       providers: [
         BudgetCategoriesService,
         {
-          provide: BudgetCategoriesRepository,
+          provide: IBudgetCategoriesRepository,
           useValue: repository,
-        },
-        {
-          provide: CaslAbilityFactory,
-          useValue: { createForUser: jest.fn() },
         },
       ],
     }).compile();

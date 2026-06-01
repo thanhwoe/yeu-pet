@@ -1,11 +1,11 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateSitterBookingDto } from './dto/create-sitter-booking.dto';
-import { SitterBookingsRepository } from './sitter-bookings.repository';
 import {
   accounts,
   pet_sitters,
@@ -13,19 +13,23 @@ import {
   sitter_bookings_type,
 } from '@app/generated/prisma/client';
 import dayjs from 'dayjs';
-import { PetSittersRepository } from '../sitters/pet-sitters.repository';
-import { PetsRepository } from '../../pets/pets.repository';
 import { Decimal } from '@prisma/client/runtime/client';
 import { CancelSitterBookingDto } from './dto/cancel-sitter-booking.dto';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
+import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
+import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
 
 @Injectable()
 export class SitterBookingsService {
   constructor(
-    private readonly sitterBookingsRepository: SitterBookingsRepository,
-    private readonly petsRepository: PetsRepository,
-    private readonly petSittersRepository: PetSittersRepository,
+    @Inject(ISitterBookingsRepository)
+    private readonly sitterBookingsRepository: ISitterBookingsRepository,
+    @Inject(IPetsRepository)
+    private readonly petsRepository: IPetsRepository,
+    @Inject(IPetSittersRepository)
+    private readonly petSittersRepository: IPetSittersRepository,
   ) {}
   async create(user: accounts, createSitterBookingDto: CreateSitterBookingDto) {
     const startTime = dayjs(createSitterBookingDto.startTime).toDate();

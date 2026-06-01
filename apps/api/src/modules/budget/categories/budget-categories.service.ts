@@ -1,20 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBudgetCategoryDto } from './dto/create-budget-category.dto';
 import { UpdateBudgetCategoryDto } from './dto/update-budget-category.dto';
-import { BudgetCategoriesRepository } from './budget-categories.repository';
 
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { accounts } from '@app/generated/prisma/client';
-import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
-import { Action } from '../../casl/casl.types';
-import { assertAbility } from '../../casl/casl.helper';
+import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class BudgetCategoriesService {
   constructor(
-    private readonly budgetCategoriesRepository: BudgetCategoriesRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    @Inject(IBudgetCategoriesRepository)
+    private readonly budgetCategoriesRepository: IBudgetCategoriesRepository,
   ) {}
   async create(
     user: accounts,
@@ -46,7 +44,7 @@ export class BudgetCategoriesService {
   }
 
   async findOne(user: accounts, id: string) {
-    const category = await this.assertAbility(user, id, Action.Read);
+    const category = await this.assertOwner(user, id);
 
     return category;
   }
@@ -56,7 +54,7 @@ export class BudgetCategoriesService {
     id: string,
     updateBudgetCategoryDto: UpdateBudgetCategoryDto,
   ) {
-    await this.assertAbility(user, id, Action.Update);
+    await this.assertOwner(user, id);
 
     return this.budgetCategoriesRepository.update(id, {
       color: updateBudgetCategoryDto.color,
@@ -66,20 +64,18 @@ export class BudgetCategoriesService {
   }
 
   async remove(user: accounts, id: string) {
-    await this.assertAbility(user, id, Action.Delete);
+    await this.assertOwner(user, id);
 
     await this.budgetCategoriesRepository.delete(id);
   }
 
-  private async assertAbility(user: accounts, id: string, action: Action) {
+  private async assertOwner(user: accounts, id: string) {
     const record = await this.budgetCategoriesRepository.findById(id);
 
     if (!record)
       throw new NotFoundException(`Budget Category with ID ${id} not found`);
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, action, 'BudgetCategories', record);
+    assertOwnerOrAdmin(user, record.account_id);
 
     return record;
   }

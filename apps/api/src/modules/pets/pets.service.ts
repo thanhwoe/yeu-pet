@@ -1,26 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
-import { PetsRepository } from './pets.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import dayjs from 'dayjs';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { accounts } from '@app/generated/prisma/client';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
 import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class PetsService {
   constructor(
-    private readonly petsRepository: PetsRepository,
+    @Inject(IPetsRepository)
+    private readonly petsRepository: IPetsRepository,
     private readonly fileUploadService: FileUploadService,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
   async create(
     userId: string,
@@ -71,7 +69,7 @@ export class PetsService {
   }
 
   async findOne(user: accounts, id: string) {
-    const pet = await this.assertPetAbility(user, id, Action.Read);
+    const pet = await this.assertPetOwner(user, id);
 
     return pet;
   }
@@ -82,7 +80,7 @@ export class PetsService {
     updatePetDto: UpdatePetDto,
     avatarFile?: Express.Multer.File,
   ) {
-    const pet = await this.assertPetAbility(user, id, Action.Update);
+    const pet = await this.assertPetOwner(user, id);
 
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
@@ -115,7 +113,7 @@ export class PetsService {
   }
 
   async remove(user: accounts, id: string) {
-    const pet = await this.assertPetAbility(user, id, Action.Delete);
+    const pet = await this.assertPetOwner(user, id);
 
     if (pet.avatar_id) {
       await this.fileUploadService.addDeleteJob({
@@ -127,18 +125,12 @@ export class PetsService {
     await this.petsRepository.delete(id);
   }
 
-  private async assertPetAbility(
-    user: accounts,
-    petId: string,
-    action: Action,
-  ) {
+  private async assertPetOwner(user: accounts, petId: string) {
     const pet = await this.petsRepository.findById(petId);
 
     if (!pet) throw new NotFoundException(`Pet with ID ${petId} not found`);
 
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, action, 'Pets', pet);
+    assertOwnerOrAdmin(user, pet.account_id);
 
     return pet;
   }

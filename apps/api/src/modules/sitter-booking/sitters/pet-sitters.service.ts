@@ -1,23 +1,22 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePetSitterDto } from './dto/create-pet-sitter.dto';
 import { UpdatePetSitterDto } from './dto/update-pet-sitter.dto';
-import { PetSittersRepository } from './pet-sitters.repository';
 import { accounts } from '@app/generated/prisma/client';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
-import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
-import { Action } from '../../casl/casl.types';
-import { assertAbility } from '../../casl/casl.helper';
+import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class PetSittersService {
   constructor(
-    private readonly petSittersRepository: PetSittersRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    @Inject(IPetSittersRepository)
+    private readonly petSittersRepository: IPetSittersRepository,
   ) {}
 
   async create(user: accounts, createPetSitterDto: CreatePetSitterDto) {
@@ -49,7 +48,7 @@ export class PetSittersService {
   }
 
   async findOne(user: accounts, id: string) {
-    const sitter = await this.assertAbility(user, id, Action.Read);
+    const sitter = await this.findExisting(id);
     return sitter;
   }
 
@@ -58,7 +57,7 @@ export class PetSittersService {
     id: string,
     updatePetSitterDto: UpdatePetSitterDto,
   ) {
-    await this.assertAbility(user, id, Action.Update);
+    await this.assertOwner(user, id);
 
     return this.petSittersRepository.update(id, {
       address: updatePetSitterDto.address,
@@ -78,15 +77,19 @@ export class PetSittersService {
     return sitter;
   }
 
-  private async assertAbility(user: accounts, id: string, action: Action) {
+  private async findExisting(id: string) {
     const record = await this.petSittersRepository.findById(id);
     if (!record) {
       throw new NotFoundException(`Pet sitter with ID ${id} not found`);
     }
 
-    const ability = this.caslAbilityFactory.createForUser(user);
+    return record;
+  }
 
-    assertAbility(ability, action, 'PetSitters', record);
+  private async assertOwner(user: accounts, id: string) {
+    const record = await this.findExisting(id);
+
+    assertOwnerOrAdmin(user, record.account_id);
 
     return record;
   }

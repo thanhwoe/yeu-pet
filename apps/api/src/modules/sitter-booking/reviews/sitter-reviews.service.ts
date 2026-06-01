@@ -2,21 +2,24 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateSitterReviewDto } from './dto/create-sitter-review.dto';
-import { SitterBookingsRepository } from '../bookings/sitter-bookings.repository';
 import { accounts, sitter_bookings_status } from '@app/generated/prisma/client';
-import { SitterReviewsRepository } from './sitter-reviews.repository';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
+import { ISitterReviewsRepository } from '@app/interfaces/sitter-reviews-repository.interface';
 
 @Injectable()
 export class SitterReviewsService {
   constructor(
-    private readonly sitterReviewsRepository: SitterReviewsRepository,
-    private readonly sitterBookingsRepository: SitterBookingsRepository,
+    @Inject(ISitterReviewsRepository)
+    private readonly sitterReviewsRepository: ISitterReviewsRepository,
+    @Inject(ISitterBookingsRepository)
+    private readonly sitterBookingsRepository: ISitterBookingsRepository,
   ) {}
   async create(user: accounts, createSitterReviewDto: CreateSitterReviewDto) {
     const booking = await this.sitterBookingsRepository.findById(

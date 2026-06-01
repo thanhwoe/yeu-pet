@@ -10,7 +10,9 @@ import {
 } from '@app/generated/prisma/models';
 import { ITXClientDenyList } from '@prisma/client/runtime/client';
 
-interface SitterInformation {
+export const ISitterBookingsRepository = Symbol('ISitterBookingsRepository');
+
+export interface SitterInformation {
   pet_sitters: {
     account_id: string;
     accounts: {

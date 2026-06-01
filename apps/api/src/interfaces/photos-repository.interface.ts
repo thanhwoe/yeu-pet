@@ -1,7 +1,14 @@
 import { accounts, photos } from '@app/generated/prisma/client';
-import { IBaseRepository } from './repository.interface';
 
-export interface IPhotosRepository extends IBaseRepository<photos> {
+export const IPhotosRepository = Symbol('IPhotosRepository');
+
+export interface IPhotosRepository {
+  findById(id: string): Promise<photos | null>;
+  create(
+    data: Pick<photos, 'account_id' | 'caption' | 'is_private' | 'status'>,
+  ): Promise<photos>;
+  update(id: string, data: Partial<photos>): Promise<photos>;
+  delete(id: string): Promise<photos>;
   findAllByUser(params?: {
     skip?: number;
     take?: number;

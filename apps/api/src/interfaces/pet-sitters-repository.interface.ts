@@ -5,6 +5,8 @@ import {
 } from '@app/generated/prisma/client';
 import { ITXClientDenyList } from '@prisma/client/runtime/client';
 
+export const IPetSittersRepository = Symbol('IPetSittersRepository');
+
 export type PetSittersCreate = Pick<
   pet_sitters,
   'account_id' | 'bio' | 'address' | 'hourly_rate' | 'daily_rate'

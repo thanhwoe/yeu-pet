@@ -17,7 +17,14 @@ import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';
+import {
+  ApiCreatedWrappedResponse,
+  ApiOkWrappedResponse,
+  ApiPaginatedResponse,
+} from '@app/decorators/swagger-response.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Budget')
 @Controller('budgets/categories')
 export class BudgetCategoriesController {
   constructor(
@@ -27,6 +34,7 @@ export class BudgetCategoriesController {
   @Post()
   @CacheEvict()
   @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedWrappedResponse()
   create(
     @CurrentUser() user: accounts,
     @Body() createBudgetCategoryDto: CreateBudgetCategoryDto,
@@ -37,6 +45,7 @@ export class BudgetCategoriesController {
   @Get()
   @Cacheable(300)
   @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse()
   findAll(
     @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
@@ -47,6 +56,7 @@ export class BudgetCategoriesController {
   @Patch(':id')
   @CacheEvict()
   @HttpCode(HttpStatus.OK)
+  @ApiOkWrappedResponse()
   update(
     @CurrentUser() user: accounts,
     @IdParam() id: string,

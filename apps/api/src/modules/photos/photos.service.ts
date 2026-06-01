@@ -6,28 +6,27 @@ import {
 } from '@nestjs/common';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
-import { PhotosRepository } from './photos.repository';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { accounts, photos_status } from '@app/generated/prisma/client';
 import { Observable } from 'rxjs';
 import { photoChannel, photoLastMessage, UploadEvent } from './photos.event';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { FILE_DELETE_JOBS } from '../file-workers/file-workers.job';
-import { PhotoLikesRepository } from './photo-likes.repository';
 import { IEventBusService } from '@app/interfaces/event-bus.interface';
 import { ICacheService } from '@app/interfaces/cache.interface';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
+import { IPhotoLikesRepository } from '@app/interfaces/photo-likes-repository.interface';
+import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
+import { assertOwnerOrAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
 
 @Injectable()
 export class PhotosService {
   constructor(
-    private readonly photosRepository: PhotosRepository,
-    private readonly photoLikesRepository: PhotoLikesRepository,
+    @Inject(IPhotosRepository)
+    private readonly photosRepository: IPhotosRepository,
+    @Inject(IPhotoLikesRepository)
+    private readonly photoLikesRepository: IPhotoLikesRepository,
     private readonly fileUploadService: FileUploadService,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
     @Inject(IEventBusService)
     private readonly eventBusService: IEventBusService,
     @Inject(ICacheService)
@@ -180,7 +179,7 @@ export class PhotosService {
   }
 
   async findOne(user: accounts, id: string) {
-    const photo = await this.assertAbility(user, id, Action.Read);
+    const photo = await this.assertReadable(user, id);
 
     const liked = await this.photoLikesRepository.findOne(user.id, id);
 
@@ -197,7 +196,7 @@ export class PhotosService {
   }
 
   async toggleLike(user: accounts, id: string) {
-    await this.assertAbility(user, id, Action.Read);
+    await this.assertReadable(user, id);
 
     const liked = await this.photoLikesRepository.findOne(user.id, id);
 
@@ -209,7 +208,7 @@ export class PhotosService {
   }
 
   async update(user: accounts, id: string, updatePhotoDto: UpdatePhotoDto) {
-    await this.assertAbility(user, id, Action.Update);
+    await this.assertOwner(user, id);
 
     return this.photosRepository.update(id, {
       caption: updatePhotoDto.caption,
@@ -218,7 +217,7 @@ export class PhotosService {
   }
 
   async remove(user: accounts, id: string) {
-    const photo = await this.assertAbility(user, id, Action.Delete);
+    const photo = await this.assertOwner(user, id);
 
     if (photo.file_id) {
       await this.fileUploadService.addDeleteJob({
@@ -230,7 +229,7 @@ export class PhotosService {
     await this.photosRepository.delete(id);
   }
 
-  private async assertAbility(user: accounts, id: string, action: Action) {
+  private async findAvailablePhoto(id: string) {
     const record = await this.photosRepository.findById(id);
 
     if (!record) {
@@ -241,9 +240,23 @@ export class PhotosService {
       throw new NotFoundException('Photo not available');
     }
 
-    const ability = this.caslAbilityFactory.createForUser(user);
+    return record;
+  }
 
-    assertAbility(ability, action, 'Photos', record);
+  private async assertReadable(user: accounts, id: string) {
+    const record = await this.findAvailablePhoto(id);
+
+    if (record.is_private && !isOwnerOrAdmin(user, record.account_id)) {
+      throw new NotFoundException('Photo not available');
+    }
+
+    return record;
+  }
+
+  private async assertOwner(user: accounts, id: string) {
+    const record = await this.findAvailablePhoto(id);
+
+    assertOwnerOrAdmin(user, record.account_id);
 
     return record;
   }
