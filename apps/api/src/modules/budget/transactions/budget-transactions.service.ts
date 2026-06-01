@@ -4,10 +4,10 @@ import { UpdateBudgetTransactionDto } from './dto/update-budget-transaction.dto'
 import { accounts } from '@app/generated/prisma/client';
 import { BudgetTransactionsRepository } from './budget-transactions.repository';
 import dayjs from 'dayjs';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
+import { Action } from '../../casl/casl.types';
+import { assertAbility } from '../../casl/casl.helper';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 
 @Injectable()

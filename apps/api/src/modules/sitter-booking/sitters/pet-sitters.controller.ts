@@ -14,7 +14,7 @@ import { UpdatePetSitterDto } from './dto/update-pet-sitter.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { IdParam } from '@app/decorators/id-param.decorator';
 
 @Controller('sitters')

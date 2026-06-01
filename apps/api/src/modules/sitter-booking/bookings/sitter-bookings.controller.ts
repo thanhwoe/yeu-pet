@@ -18,7 +18,7 @@ import {
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { CancelSitterBookingDto } from './dto/cancel-sitter-booking.dto';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { AllowValuesPipe } from '@app/pipes/allow-values.pipe';
 
 @Controller('sitter-bookings')

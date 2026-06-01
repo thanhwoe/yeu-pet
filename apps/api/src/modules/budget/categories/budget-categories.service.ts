@@ -3,12 +3,12 @@ import { CreateBudgetCategoryDto } from './dto/create-budget-category.dto';
 import { UpdateBudgetCategoryDto } from './dto/update-budget-category.dto';
 import { BudgetCategoriesRepository } from './budget-categories.repository';
 
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { accounts } from '@app/generated/prisma/client';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
+import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
+import { Action } from '../../casl/casl.types';
+import { assertAbility } from '../../casl/casl.helper';
 
 @Injectable()
 export class BudgetCategoriesService {

@@ -13,7 +13,7 @@ import { CreateBudgetCategoryDto } from './dto/create-budget-category.dto';
 import { UpdateBudgetCategoryDto } from './dto/update-budget-category.dto';
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import type { accounts } from '@app/generated/prisma/client';

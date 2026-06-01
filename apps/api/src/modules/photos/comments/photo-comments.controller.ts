@@ -13,7 +13,7 @@ import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 
 @Controller('photos/:id/comments')
 export class PhotoCommentsController {

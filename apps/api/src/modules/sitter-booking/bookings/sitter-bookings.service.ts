@@ -13,11 +13,11 @@ import {
   sitter_bookings_type,
 } from '@app/generated/prisma/client';
 import dayjs from 'dayjs';
-import { PetSittersRepository } from '../pet-sitters/pet-sitters.repository';
-import { PetsRepository } from '../pets/pets.repository';
+import { PetSittersRepository } from '../sitters/pet-sitters.repository';
+import { PetsRepository } from '../../pets/pets.repository';
 import { Decimal } from '@prisma/client/runtime/client';
 import { CancelSitterBookingDto } from './dto/cancel-sitter-booking.dto';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 
 @Injectable()

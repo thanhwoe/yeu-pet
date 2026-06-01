@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BudgetCategoriesService } from './budget-categories.service';
 import { BudgetCategoriesRepository } from './budget-categories.repository';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
+import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
 import type { accounts } from '@app/generated/prisma/client';
 
 describe('BudgetCategoriesService', () => {

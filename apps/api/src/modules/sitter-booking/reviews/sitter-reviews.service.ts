@@ -6,10 +6,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateSitterReviewDto } from './dto/create-sitter-review.dto';
-import { SitterBookingsRepository } from '../sitter-bookings/sitter-bookings.repository';
+import { SitterBookingsRepository } from '../bookings/sitter-bookings.repository';
 import { accounts, sitter_bookings_status } from '@app/generated/prisma/client';
 import { SitterReviewsRepository } from './sitter-reviews.repository';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 
 @Injectable()

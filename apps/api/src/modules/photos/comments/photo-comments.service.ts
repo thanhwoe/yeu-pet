@@ -7,12 +7,12 @@ import {
 import { CreatePhotoCommentDto } from './dto/create-photo-comment.dto';
 import { PhotoCommentsRepository } from './photo-comments.repository';
 import { accounts, photos_status } from '@app/generated/prisma/client';
-import { PhotosRepository } from '../photos/photos.repository';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PhotosRepository } from '../photos.repository';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
+import { Action } from '../../casl/casl.types';
+import { assertAbility } from '../../casl/casl.helper';
+import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
 
 @Injectable()
 export class PhotoCommentsService {

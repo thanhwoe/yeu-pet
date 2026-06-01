@@ -104,9 +104,10 @@
 ## Phase 3: Domain Bounded Context Consolidation & Refactoring (Weeks 5-7)
 
 ### 3.1 Grouped Bounded Context Consolidation (Execute First)
-- [ ] **Budget Module:** Move `budget-categories/`, `budget-transactions/`, and `budgets/` into a single consolidated `budget/` directory. Merge into a unified `BudgetModule`.
-- [ ] **Photos Module:** Merge `photo-comments/` into `photos/` under a consolidated `PhotosModule`.
-- [ ] **Sitter Booking Module:** Merge `pet-sitters/`, `sitter-bookings/`, and `sitter-reviews/` into a consolidated `sitter-booking/` module directory.
+- [x] **Budget Module:** Move `budget-categories/`, `budget-transactions/`, and `budgets/` into a single consolidated `budget/` directory. Merge into a unified `BudgetModule`.
+- [x] **Photos Module:** Merge `photo-comments/` into `photos/` under a consolidated `PhotosModule`.
+- [x] **Sitter Booking Module:** Merge `pet-sitters/`, `sitter-bookings/`, and `sitter-reviews/` into a consolidated `sitter-booking/` module directory.
+- [x] Update `AppModule` to import only the consolidated bounded-context modules for budget, photos, and sitter booking.
 
 ### 3.2 Decouple Pets and Medical Records
 - [ ] Remove `forwardRef` module imports.

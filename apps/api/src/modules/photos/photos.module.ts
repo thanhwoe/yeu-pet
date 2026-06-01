@@ -5,11 +5,20 @@ import { PhotosRepository } from './photos.repository';
 import { SharedModule } from '../shared/shared.module';
 import { CaslModule } from '../casl/casl.module';
 import { PhotoLikesRepository } from './photo-likes.repository';
+import { PhotoCommentsController } from './comments/photo-comments.controller';
+import { PhotoCommentsRepository } from './comments/photo-comments.repository';
+import { PhotoCommentsService } from './comments/photo-comments.service';
 
 @Module({
   imports: [SharedModule, CaslModule],
-  controllers: [PhotosController],
-  providers: [PhotosService, PhotosRepository, PhotoLikesRepository],
+  controllers: [PhotosController, PhotoCommentsController],
+  providers: [
+    PhotosService,
+    PhotosRepository,
+    PhotoLikesRepository,
+    PhotoCommentsService,
+    PhotoCommentsRepository,
+  ],
   exports: [PhotosRepository],
 })
 export class PhotosModule {}

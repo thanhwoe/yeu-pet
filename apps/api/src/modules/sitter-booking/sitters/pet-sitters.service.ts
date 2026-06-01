@@ -7,11 +7,11 @@ import { CreatePetSitterDto } from './dto/create-pet-sitter.dto';
 import { UpdatePetSitterDto } from './dto/update-pet-sitter.dto';
 import { PetSittersRepository } from './pet-sitters.repository';
 import { accounts } from '@app/generated/prisma/client';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
+import { CaslAbilityFactory } from '../../casl/casl-ability.factory';
+import { Action } from '../../casl/casl.types';
+import { assertAbility } from '../../casl/casl.helper';
 
 @Injectable()
 export class PetSittersService {

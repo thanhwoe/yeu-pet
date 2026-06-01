@@ -6,10 +6,10 @@ import {
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetAmountDto } from './dto/update-budget.dto';
 import { BudgetsRepository } from './budgets.repository';
-import { BudgetTransactionsRepository } from '../budget-transactions/budget-transactions.repository';
+import { BudgetTransactionsRepository } from '../transactions/budget-transactions.repository';
 import { accounts } from '@app/generated/prisma/client';
 import dayjs from 'dayjs';
-import { BudgetCategoriesRepository } from '../budget-categories/budget-categories.repository';
+import { BudgetCategoriesRepository } from '../categories/budget-categories.repository';
 import { Decimal } from '@prisma/client/runtime/client';
 
 @Injectable()

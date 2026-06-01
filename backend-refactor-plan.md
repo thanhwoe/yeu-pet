@@ -301,6 +301,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - **Budget Consolidation:** Merge `budget-categories/`, `budget-transactions/`, and `budgets/` into a single, cohesive `budget/` directory under a unified `BudgetModule`.
 - **Photos Consolidation:** Merge `photo-comments/` into `photos/` under a single module block.
 - **SitterBooking Consolidation:** Merge `pet-sitters/`, `sitter-bookings/`, and `sitter-reviews/` into a unified `sitter-booking/` module directory.
+- **Implementation note:** Keep route paths and controller/service class names stable during the move. Phase 3.1 is a packaging/boundary consolidation only; deeper DTO/repository contract cleanup remains in Phase 3.3.
 
 #### 3.2 Decouple Pets and Medical Records Bounded Contexts
 - Remove `forwardRef` module imports.

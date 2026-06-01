@@ -15,21 +15,16 @@ import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import { TrackInterceptor } from './interceptors/track.interceptor';
 import { AuthModule } from './modules/auth/auth.module';
-import { BudgetCategoriesModule } from './modules/budget-categories/budget-categories.module';
-import { BudgetTransactionsModule } from './modules/budget-transactions/budget-transactions.module';
-import { BudgetsModule } from './modules/budgets/budgets.module';
+import { BudgetModule } from './modules/budget/budget.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
-import { PetSittersModule } from './modules/pet-sitters/pet-sitters.module';
 import { PetsModule } from './modules/pets/pets.module';
-import { PhotoCommentsModule } from './modules/photo-comments/photo-comments.module';
 import { PhotosModule } from './modules/photos/photos.module';
 import { RemindersModule } from './modules/reminders/reminders.module';
 import { SharedModule } from './modules/shared/shared.module';
-import { SitterBookingsModule } from './modules/sitter-bookings/sitter-bookings.module';
-import { SitterReviewsModule } from './modules/sitter-reviews/sitter-reviews.module';
+import { SitterBookingModule } from './modules/sitter-booking/sitter-booking.module';
 import { UserDevicesModule } from './modules/user-devices/user-devices.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 import { UsersModule } from './modules/users/users.module';
@@ -69,14 +64,9 @@ import { UsersModule } from './modules/users/users.module';
     RemindersModule,
     NotificationsModule,
     UserSettingsModule,
-    BudgetCategoriesModule,
-    BudgetTransactionsModule,
-    BudgetsModule,
+    BudgetModule,
     PhotosModule,
-    PhotoCommentsModule,
-    PetSittersModule,
-    SitterBookingsModule,
-    SitterReviewsModule,
+    SitterBookingModule,
   ],
   controllers: [AppController],
   providers: [

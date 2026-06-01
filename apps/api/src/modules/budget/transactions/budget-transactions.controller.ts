@@ -19,9 +19,9 @@ import type { accounts } from '@app/generated/prisma/client';
 import { IdParam } from '@app/decorators/id-param.decorator';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
-import { Action } from '../casl/casl.types';
+import { Action } from '../../casl/casl.types';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
-import { PaginationDto } from '../shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { NumberRangePipe } from '@app/pipes/number-range.pipe';
 
 @Controller('budgets/transactions')
