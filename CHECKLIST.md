@@ -87,9 +87,9 @@
 - [x] Define helper methods in `PrismaService` that execute native PostgreSQL `SELECT ... FOR UPDATE` raw queries inside transaction boundaries, safely handling row-level lock lifecycles.
 
 ### 2.3 Event Bus Decoupling
-- [ ] Create `src/interfaces/email-jobs.interface.ts`
-- [ ] Refactor `QueueService` under `shared/queue/` to expose typed dispatch actions
-- [ ] Register listeners on NestJS `event-bus` to capture domain events (e.g. `BookingCreatedEvent`) and dispatch queues asynchronously, preventing cross-module code coupling.
+- [x] Create `src/interfaces/email-jobs.interface.ts`
+- [x] Refactor `QueueService` under `shared/queue/` to expose typed dispatch actions
+- [x] Register listeners on NestJS `event-bus` to capture domain events (e.g. `BookingCreatedEvent`) and dispatch queues asynchronously, preventing cross-module code coupling.
 
 ### 2.4 Resend Email Integration
 - [ ] Add `email_logs` and `email_suppressions` tables to the database schema

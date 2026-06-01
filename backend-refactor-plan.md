@@ -288,6 +288,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
 - Create `src/interfaces/email-jobs.interface.ts`.
 - Create `src/modules/shared/queue/queue.service.ts` BullMQ abstraction.
 - Integrate the NestJS `event-bus` to decouple bookings and reminders from direct service calls. Domain modules will publish events; `QueueService` listeners will queue the jobs asynchronously.
+- Existing file upload and OTP job dispatch must go through `QueueService` so queue behavior is centralized before adding email and booking listeners.
 
 #### 2.4 Add Email Logging & Suppression (Resend)
 - Add `EmailLog` and `EmailSuppression` models to the Prisma schema.

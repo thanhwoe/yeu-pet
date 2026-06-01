@@ -3,4 +3,5 @@ export const BULLMQ_QUEUES = {
   FILE_DELETE: 'file-delete',
   PHOTO_UPLOAD: 'photo-upload',
   SEND_OTP: 'send-otp',
+  EMAIL: 'email',
 };

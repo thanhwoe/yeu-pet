@@ -23,6 +23,9 @@ import { BULLMQ_QUEUES } from './bullmq.queue';
     BullModule.registerQueue({
       name: BULLMQ_QUEUES.SEND_OTP,
     }),
+    BullModule.registerQueue({
+      name: BULLMQ_QUEUES.EMAIL,
+    }),
   ],
   exports: [BullModule],
 })
