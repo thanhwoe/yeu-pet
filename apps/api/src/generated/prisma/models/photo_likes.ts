@@ -183,6 +183,7 @@ export type photo_likesWhereInput = {
   created_at?: Prisma.DateTimeNullableFilter<"photo_likes"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photo_likes"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }
 
 export type photo_likesOrderByWithRelationInput = {
@@ -192,6 +193,7 @@ export type photo_likesOrderByWithRelationInput = {
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
+  photos?: Prisma.photosOrderByWithRelationInput
 }
 
 export type photo_likesWhereUniqueInput = Prisma.AtLeast<{
@@ -205,6 +207,7 @@ export type photo_likesWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeNullableFilter<"photo_likes"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photo_likes"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }, "id" | "photo_id_account_id">
 
 export type photo_likesOrderByWithAggregationInput = {
@@ -231,10 +234,10 @@ export type photo_likesScalarWhereWithAggregatesInput = {
 
 export type photo_likesCreateInput = {
   id?: string
-  photo_id: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPhoto_likesInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_likesInput
 }
 
 export type photo_likesUncheckedCreateInput = {
@@ -247,10 +250,10 @@ export type photo_likesUncheckedCreateInput = {
 
 export type photo_likesUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_likesNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_likesNestedInput
 }
 
 export type photo_likesUncheckedUpdateInput = {
@@ -271,7 +274,6 @@ export type photo_likesCreateManyInput = {
 
 export type photo_likesUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -365,11 +367,53 @@ export type photo_likesUncheckedUpdateManyWithoutAccountsNestedInput = {
   deleteMany?: Prisma.photo_likesScalarWhereInput | Prisma.photo_likesScalarWhereInput[]
 }
 
+export type photo_likesCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput> | Prisma.photo_likesCreateWithoutPhotosInput[] | Prisma.photo_likesUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_likesCreateOrConnectWithoutPhotosInput | Prisma.photo_likesCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_likesCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+}
+
+export type photo_likesUncheckedCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput> | Prisma.photo_likesCreateWithoutPhotosInput[] | Prisma.photo_likesUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_likesCreateOrConnectWithoutPhotosInput | Prisma.photo_likesCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_likesCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+}
+
+export type photo_likesUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput> | Prisma.photo_likesCreateWithoutPhotosInput[] | Prisma.photo_likesUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_likesCreateOrConnectWithoutPhotosInput | Prisma.photo_likesCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_likesUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_likesUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_likesCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  disconnect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  delete?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  connect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  update?: Prisma.photo_likesUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_likesUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_likesUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_likesUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_likesScalarWhereInput | Prisma.photo_likesScalarWhereInput[]
+}
+
+export type photo_likesUncheckedUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput> | Prisma.photo_likesCreateWithoutPhotosInput[] | Prisma.photo_likesUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_likesCreateOrConnectWithoutPhotosInput | Prisma.photo_likesCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_likesUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_likesUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_likesCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  disconnect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  delete?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  connect?: Prisma.photo_likesWhereUniqueInput | Prisma.photo_likesWhereUniqueInput[]
+  update?: Prisma.photo_likesUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_likesUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_likesUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_likesUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_likesScalarWhereInput | Prisma.photo_likesScalarWhereInput[]
+}
+
 export type photo_likesCreateWithoutAccountsInput = {
   id?: string
-  photo_id: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_likesInput
 }
 
 export type photo_likesUncheckedCreateWithoutAccountsInput = {
@@ -416,6 +460,46 @@ export type photo_likesScalarWhereInput = {
   updated_at?: Prisma.DateTimeNullableFilter<"photo_likes"> | Date | string | null
 }
 
+export type photo_likesCreateWithoutPhotosInput = {
+  id?: string
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutPhoto_likesInput
+}
+
+export type photo_likesUncheckedCreateWithoutPhotosInput = {
+  id?: string
+  account_id: string
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photo_likesCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.photo_likesWhereUniqueInput
+  create: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_likesCreateManyPhotosInputEnvelope = {
+  data: Prisma.photo_likesCreateManyPhotosInput | Prisma.photo_likesCreateManyPhotosInput[]
+  skipDuplicates?: boolean
+}
+
+export type photo_likesUpsertWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_likesWhereUniqueInput
+  update: Prisma.XOR<Prisma.photo_likesUpdateWithoutPhotosInput, Prisma.photo_likesUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.photo_likesCreateWithoutPhotosInput, Prisma.photo_likesUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_likesUpdateWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_likesWhereUniqueInput
+  data: Prisma.XOR<Prisma.photo_likesUpdateWithoutPhotosInput, Prisma.photo_likesUncheckedUpdateWithoutPhotosInput>
+}
+
+export type photo_likesUpdateManyWithWhereWithoutPhotosInput = {
+  where: Prisma.photo_likesScalarWhereInput
+  data: Prisma.XOR<Prisma.photo_likesUpdateManyMutationInput, Prisma.photo_likesUncheckedUpdateManyWithoutPhotosInput>
+}
+
 export type photo_likesCreateManyAccountsInput = {
   id?: string
   photo_id: string
@@ -425,9 +509,9 @@ export type photo_likesCreateManyAccountsInput = {
 
 export type photo_likesUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_likesNestedInput
 }
 
 export type photo_likesUncheckedUpdateWithoutAccountsInput = {
@@ -444,6 +528,34 @@ export type photo_likesUncheckedUpdateManyWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type photo_likesCreateManyPhotosInput = {
+  id?: string
+  account_id: string
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photo_likesUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_likesNestedInput
+}
+
+export type photo_likesUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type photo_likesUncheckedUpdateManyWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 
 
 export type photo_likesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -453,6 +565,7 @@ export type photo_likesSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_likes"]>
 
 export type photo_likesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -462,6 +575,7 @@ export type photo_likesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_likes"]>
 
 export type photo_likesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -471,6 +585,7 @@ export type photo_likesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_likes"]>
 
 export type photo_likesSelectScalar = {
@@ -484,18 +599,22 @@ export type photo_likesSelectScalar = {
 export type photo_likesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "photo_id" | "created_at" | "updated_at", ExtArgs["result"]["photo_likes"]>
 export type photo_likesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 export type photo_likesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 export type photo_likesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 
 export type $photo_likesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "photo_likes"
   objects: {
     accounts: Prisma.$accountsPayload<ExtArgs>
+    photos: Prisma.$photosPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -898,6 +1017,7 @@ readonly fields: photo_likesFieldRefs;
 export interface Prisma__photo_likesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  photos<T extends Prisma.photosDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photosDefaultArgs<ExtArgs>>): Prisma.Prisma__photosClient<runtime.Types.Result.GetResult<Prisma.$photosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

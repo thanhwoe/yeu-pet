@@ -288,6 +288,7 @@ export type accountsWhereInput = {
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersNullableScalarRelationFilter, Prisma.pet_sittersWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
+  cancelled_sitter_bookings?: Prisma.Sitter_bookingsListRelationFilter
   photo_comments?: Prisma.Photo_commentsListRelationFilter
   photo_likes?: Prisma.Photo_likesListRelationFilter
   photo_views?: Prisma.Photo_viewsListRelationFilter
@@ -326,6 +327,7 @@ export type accountsOrderByWithRelationInput = {
   otp_tokens?: Prisma.otp_tokensOrderByWithRelationInput
   pet_sitters?: Prisma.pet_sittersOrderByWithRelationInput
   pets?: Prisma.petsOrderByRelationAggregateInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsOrderByRelationAggregateInput
   photo_comments?: Prisma.photo_commentsOrderByRelationAggregateInput
   photo_likes?: Prisma.photo_likesOrderByRelationAggregateInput
   photo_views?: Prisma.photo_viewsOrderByRelationAggregateInput
@@ -367,6 +369,7 @@ export type accountsWhereUniqueInput = Prisma.AtLeast<{
   otp_tokens?: Prisma.XOR<Prisma.Otp_tokensNullableScalarRelationFilter, Prisma.otp_tokensWhereInput> | null
   pet_sitters?: Prisma.XOR<Prisma.Pet_sittersNullableScalarRelationFilter, Prisma.pet_sittersWhereInput> | null
   pets?: Prisma.PetsListRelationFilter
+  cancelled_sitter_bookings?: Prisma.Sitter_bookingsListRelationFilter
   photo_comments?: Prisma.Photo_commentsListRelationFilter
   photo_likes?: Prisma.Photo_likesListRelationFilter
   photo_views?: Prisma.Photo_viewsListRelationFilter
@@ -451,6 +454,7 @@ export type accountsCreateInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -489,6 +493,7 @@ export type accountsUncheckedCreateInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -527,6 +532,7 @@ export type accountsUpdateInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -565,6 +571,7 @@ export type accountsUncheckedUpdateInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -949,12 +956,28 @@ export type accountsCreateNestedOneWithoutSitter_bookingsInput = {
   connect?: Prisma.accountsWhereUniqueInput
 }
 
+export type accountsCreateNestedOneWithoutCancelled_sitter_bookingsInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutCancelled_sitter_bookingsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutCancelled_sitter_bookingsInput
+  connect?: Prisma.accountsWhereUniqueInput
+}
+
 export type accountsUpdateOneRequiredWithoutSitter_bookingsNestedInput = {
   create?: Prisma.XOR<Prisma.accountsCreateWithoutSitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutSitter_bookingsInput>
   connectOrCreate?: Prisma.accountsCreateOrConnectWithoutSitter_bookingsInput
   upsert?: Prisma.accountsUpsertWithoutSitter_bookingsInput
   connect?: Prisma.accountsWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutSitter_bookingsInput, Prisma.accountsUpdateWithoutSitter_bookingsInput>, Prisma.accountsUncheckedUpdateWithoutSitter_bookingsInput>
+}
+
+export type accountsUpdateOneWithoutCancelled_sitter_bookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.accountsCreateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutCancelled_sitter_bookingsInput>
+  connectOrCreate?: Prisma.accountsCreateOrConnectWithoutCancelled_sitter_bookingsInput
+  upsert?: Prisma.accountsUpsertWithoutCancelled_sitter_bookingsInput
+  disconnect?: Prisma.accountsWhereInput | boolean
+  delete?: Prisma.accountsWhereInput | boolean
+  connect?: Prisma.accountsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.accountsUpdateToOneWithWhereWithoutCancelled_sitter_bookingsInput, Prisma.accountsUpdateWithoutCancelled_sitter_bookingsInput>, Prisma.accountsUncheckedUpdateWithoutCancelled_sitter_bookingsInput>
 }
 
 export type accountsCreateNestedOneWithoutSitter_reviewsInput = {
@@ -1015,6 +1038,7 @@ export type accountsCreateWithoutRefresh_tokensInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1052,6 +1076,7 @@ export type accountsUncheckedCreateWithoutRefresh_tokensInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1105,6 +1130,7 @@ export type accountsUpdateWithoutRefresh_tokensInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1142,6 +1168,7 @@ export type accountsUncheckedUpdateWithoutRefresh_tokensInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1178,6 +1205,7 @@ export type accountsCreateWithoutOtp_tokensInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1215,6 +1243,7 @@ export type accountsUncheckedCreateWithoutOtp_tokensInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1268,6 +1297,7 @@ export type accountsUpdateWithoutOtp_tokensInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1305,6 +1335,7 @@ export type accountsUncheckedUpdateWithoutOtp_tokensInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1342,6 +1373,7 @@ export type accountsCreateWithoutPetsInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1379,6 +1411,7 @@ export type accountsUncheckedCreateWithoutPetsInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1432,6 +1465,7 @@ export type accountsUpdateWithoutPetsInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1469,6 +1503,7 @@ export type accountsUncheckedUpdateWithoutPetsInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1506,6 +1541,7 @@ export type accountsCreateWithoutAccount_devicesInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1543,6 +1579,7 @@ export type accountsUncheckedCreateWithoutAccount_devicesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1596,6 +1633,7 @@ export type accountsUpdateWithoutAccount_devicesInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1633,6 +1671,7 @@ export type accountsUncheckedUpdateWithoutAccount_devicesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1670,6 +1709,7 @@ export type accountsCreateWithoutAccount_settingsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1707,6 +1747,7 @@ export type accountsUncheckedCreateWithoutAccount_settingsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1760,6 +1801,7 @@ export type accountsUpdateWithoutAccount_settingsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1797,6 +1839,7 @@ export type accountsUncheckedUpdateWithoutAccount_settingsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1834,6 +1877,7 @@ export type accountsCreateWithoutNotificationsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -1871,6 +1915,7 @@ export type accountsUncheckedCreateWithoutNotificationsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -1924,6 +1969,7 @@ export type accountsUpdateWithoutNotificationsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -1961,6 +2007,7 @@ export type accountsUncheckedUpdateWithoutNotificationsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -1999,6 +2046,7 @@ export type accountsCreateWithoutRemindersInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -2036,6 +2084,7 @@ export type accountsUncheckedCreateWithoutRemindersInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2089,6 +2138,7 @@ export type accountsUpdateWithoutRemindersInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -2126,6 +2176,7 @@ export type accountsUncheckedUpdateWithoutRemindersInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2162,6 +2213,7 @@ export type accountsCreateWithoutBudget_categoriesInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -2199,6 +2251,7 @@ export type accountsUncheckedCreateWithoutBudget_categoriesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2252,6 +2305,7 @@ export type accountsUpdateWithoutBudget_categoriesInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -2289,6 +2343,7 @@ export type accountsUncheckedUpdateWithoutBudget_categoriesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2326,6 +2381,7 @@ export type accountsCreateWithoutBudget_transactionsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -2363,6 +2419,7 @@ export type accountsUncheckedCreateWithoutBudget_transactionsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2416,6 +2473,7 @@ export type accountsUpdateWithoutBudget_transactionsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -2453,6 +2511,7 @@ export type accountsUncheckedUpdateWithoutBudget_transactionsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2490,6 +2549,7 @@ export type accountsCreateWithoutBudgetsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -2527,6 +2587,7 @@ export type accountsUncheckedCreateWithoutBudgetsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -2580,6 +2641,7 @@ export type accountsUpdateWithoutBudgetsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -2617,6 +2679,7 @@ export type accountsUncheckedUpdateWithoutBudgetsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2655,6 +2718,7 @@ export type accountsCreateWithoutPhoto_commentsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
@@ -2692,6 +2756,7 @@ export type accountsUncheckedCreateWithoutPhoto_commentsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
@@ -2745,6 +2810,7 @@ export type accountsUpdateWithoutPhoto_commentsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
@@ -2782,6 +2848,7 @@ export type accountsUncheckedUpdateWithoutPhoto_commentsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2819,6 +2886,7 @@ export type accountsCreateWithoutPhoto_likesInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
@@ -2856,6 +2924,7 @@ export type accountsUncheckedCreateWithoutPhoto_likesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
@@ -2909,6 +2978,7 @@ export type accountsUpdateWithoutPhoto_likesInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
@@ -2946,6 +3016,7 @@ export type accountsUncheckedUpdateWithoutPhoto_likesInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
@@ -2983,6 +3054,7 @@ export type accountsCreateWithoutPhoto_viewsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
@@ -3020,6 +3092,7 @@ export type accountsUncheckedCreateWithoutPhoto_viewsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
@@ -3073,6 +3146,7 @@ export type accountsUpdateWithoutPhoto_viewsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
@@ -3110,6 +3184,7 @@ export type accountsUncheckedUpdateWithoutPhoto_viewsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3147,6 +3222,7 @@ export type accountsCreateWithoutPhotosInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -3184,6 +3260,7 @@ export type accountsUncheckedCreateWithoutPhotosInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3237,6 +3314,7 @@ export type accountsUpdateWithoutPhotosInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -3274,6 +3352,7 @@ export type accountsUncheckedUpdateWithoutPhotosInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3310,6 +3389,7 @@ export type accountsCreateWithoutPet_sittersInput = {
   notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -3347,6 +3427,7 @@ export type accountsUncheckedCreateWithoutPet_sittersInput = {
   notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3400,6 +3481,7 @@ export type accountsUpdateWithoutPet_sittersInput = {
   notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -3437,6 +3519,7 @@ export type accountsUncheckedUpdateWithoutPet_sittersInput = {
   notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3475,6 +3558,7 @@ export type accountsCreateWithoutSitter_bookingsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -3512,6 +3596,7 @@ export type accountsUncheckedCreateWithoutSitter_bookingsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3524,6 +3609,87 @@ export type accountsUncheckedCreateWithoutSitter_bookingsInput = {
 export type accountsCreateOrConnectWithoutSitter_bookingsInput = {
   where: Prisma.accountsWhereUniqueInput
   create: Prisma.XOR<Prisma.accountsCreateWithoutSitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutSitter_bookingsInput>
+}
+
+export type accountsCreateWithoutCancelled_sitter_bookingsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesCreateNestedManyWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsCreateNestedManyWithoutAccountsInput
+  email_logs?: Prisma.email_logsCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
+  pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersCreateNestedManyWithoutAccountsInput
+  sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutAccountsInput
+  sitter_reviews?: Prisma.sitter_reviewsCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsUncheckedCreateWithoutCancelled_sitter_bookingsInput = {
+  id?: string
+  email?: string | null
+  first_name?: string | null
+  last_name?: string | null
+  password_hash: string
+  phone: string
+  avatar_url?: string | null
+  role?: $Enums.user_role
+  onboarding_completed?: boolean
+  subscription?: $Enums.subscription_tier
+  subscription_expires_at?: Date | string | null
+  last_sign_in_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  is_active?: boolean | null
+  is_verified?: boolean | null
+  avatar_id?: string | null
+  account_devices?: Prisma.account_devicesUncheckedCreateNestedManyWithoutAccountsInput
+  account_settings?: Prisma.account_settingsUncheckedCreateNestedOneWithoutAccountsInput
+  budget_categories?: Prisma.budget_categoriesUncheckedCreateNestedManyWithoutAccountsInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutAccountsInput
+  budgets?: Prisma.budgetsUncheckedCreateNestedManyWithoutAccountsInput
+  email_logs?: Prisma.email_logsUncheckedCreateNestedManyWithoutAccountsInput
+  notifications?: Prisma.notificationsUncheckedCreateNestedManyWithoutAccountsInput
+  otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
+  pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
+  pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
+  photos?: Prisma.photosUncheckedCreateNestedManyWithoutAccountsInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedCreateNestedManyWithoutAccountsInput
+  reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutAccountsInput
+  sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutAccountsInput
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedManyWithoutAccountsInput
+}
+
+export type accountsCreateOrConnectWithoutCancelled_sitter_bookingsInput = {
+  where: Prisma.accountsWhereUniqueInput
+  create: Prisma.XOR<Prisma.accountsCreateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutCancelled_sitter_bookingsInput>
 }
 
 export type accountsUpsertWithoutSitter_bookingsInput = {
@@ -3565,6 +3731,7 @@ export type accountsUpdateWithoutSitter_bookingsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -3602,12 +3769,100 @@ export type accountsUncheckedUpdateWithoutSitter_bookingsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
   photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
   refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
   reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+  sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUpsertWithoutCancelled_sitter_bookingsInput = {
+  update: Prisma.XOR<Prisma.accountsUpdateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedUpdateWithoutCancelled_sitter_bookingsInput>
+  create: Prisma.XOR<Prisma.accountsCreateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedCreateWithoutCancelled_sitter_bookingsInput>
+  where?: Prisma.accountsWhereInput
+}
+
+export type accountsUpdateToOneWithWhereWithoutCancelled_sitter_bookingsInput = {
+  where?: Prisma.accountsWhereInput
+  data: Prisma.XOR<Prisma.accountsUpdateWithoutCancelled_sitter_bookingsInput, Prisma.accountsUncheckedUpdateWithoutCancelled_sitter_bookingsInput>
+}
+
+export type accountsUpdateWithoutCancelled_sitter_bookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateManyWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUpdateManyWithoutAccountsNestedInput
+  email_logs?: Prisma.email_logsUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
+  pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUpdateManyWithoutAccountsNestedInput
+  sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutAccountsNestedInput
+  sitter_reviews?: Prisma.sitter_reviewsUpdateManyWithoutAccountsNestedInput
+}
+
+export type accountsUncheckedUpdateWithoutCancelled_sitter_bookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  first_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.Enumuser_roleFieldUpdateOperationsInput | $Enums.user_role
+  onboarding_completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscription?: Prisma.Enumsubscription_tierFieldUpdateOperationsInput | $Enums.subscription_tier
+  subscription_expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_sign_in_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_verified?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  avatar_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_devices?: Prisma.account_devicesUncheckedUpdateManyWithoutAccountsNestedInput
+  account_settings?: Prisma.account_settingsUncheckedUpdateOneWithoutAccountsNestedInput
+  budget_categories?: Prisma.budget_categoriesUncheckedUpdateManyWithoutAccountsNestedInput
+  budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput
+  budgets?: Prisma.budgetsUncheckedUpdateManyWithoutAccountsNestedInput
+  email_logs?: Prisma.email_logsUncheckedUpdateManyWithoutAccountsNestedInput
+  notifications?: Prisma.notificationsUncheckedUpdateManyWithoutAccountsNestedInput
+  otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
+  pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
+  pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
+  photos?: Prisma.photosUncheckedUpdateManyWithoutAccountsNestedInput
+  refresh_tokens?: Prisma.refresh_tokensUncheckedUpdateManyWithoutAccountsNestedInput
+  reminders?: Prisma.remindersUncheckedUpdateManyWithoutAccountsNestedInput
+  sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutAccountsNestedInput
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateManyWithoutAccountsNestedInput
 }
 
@@ -3639,6 +3894,7 @@ export type accountsCreateWithoutSitter_reviewsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -3676,6 +3932,7 @@ export type accountsUncheckedCreateWithoutSitter_reviewsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3729,6 +3986,7 @@ export type accountsUpdateWithoutSitter_reviewsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -3766,6 +4024,7 @@ export type accountsUncheckedUpdateWithoutSitter_reviewsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3802,6 +4061,7 @@ export type accountsCreateWithoutEmail_logsInput = {
   otp_tokens?: Prisma.otp_tokensCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutAccountsInput
@@ -3839,6 +4099,7 @@ export type accountsUncheckedCreateWithoutEmail_logsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedCreateNestedOneWithoutAccountsInput
   pet_sitters?: Prisma.pet_sittersUncheckedCreateNestedOneWithoutAccountsInput
   pets?: Prisma.petsUncheckedCreateNestedManyWithoutAccountsInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutCancelled_by_accountInput
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutAccountsInput
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutAccountsInput
   photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutAccountsInput
@@ -3892,6 +4153,7 @@ export type accountsUpdateWithoutEmail_logsInput = {
   otp_tokens?: Prisma.otp_tokensUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutAccountsNestedInput
@@ -3929,6 +4191,7 @@ export type accountsUncheckedUpdateWithoutEmail_logsInput = {
   otp_tokens?: Prisma.otp_tokensUncheckedUpdateOneWithoutAccountsNestedInput
   pet_sitters?: Prisma.pet_sittersUncheckedUpdateOneWithoutAccountsNestedInput
   pets?: Prisma.petsUncheckedUpdateManyWithoutAccountsNestedInput
+  cancelled_sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutCancelled_by_accountNestedInput
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutAccountsNestedInput
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutAccountsNestedInput
   photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput
@@ -3952,6 +4215,7 @@ export type AccountsCountOutputType = {
   email_logs: number
   notifications: number
   pets: number
+  cancelled_sitter_bookings: number
   photo_comments: number
   photo_likes: number
   photo_views: number
@@ -3970,6 +4234,7 @@ export type AccountsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   email_logs?: boolean | AccountsCountOutputTypeCountEmail_logsArgs
   notifications?: boolean | AccountsCountOutputTypeCountNotificationsArgs
   pets?: boolean | AccountsCountOutputTypeCountPetsArgs
+  cancelled_sitter_bookings?: boolean | AccountsCountOutputTypeCountCancelled_sitter_bookingsArgs
   photo_comments?: boolean | AccountsCountOutputTypeCountPhoto_commentsArgs
   photo_likes?: boolean | AccountsCountOutputTypeCountPhoto_likesArgs
   photo_views?: boolean | AccountsCountOutputTypeCountPhoto_viewsArgs
@@ -4037,6 +4302,13 @@ export type AccountsCountOutputTypeCountNotificationsArgs<ExtArgs extends runtim
  */
 export type AccountsCountOutputTypeCountPetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.petsWhereInput
+}
+
+/**
+ * AccountsCountOutputType without action
+ */
+export type AccountsCountOutputTypeCountCancelled_sitter_bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.sitter_bookingsWhereInput
 }
 
 /**
@@ -4124,6 +4396,7 @@ export type accountsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pet_sitters?: boolean | Prisma.accounts$pet_sittersArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
+  cancelled_sitter_bookings?: boolean | Prisma.accounts$cancelled_sitter_bookingsArgs<ExtArgs>
   photo_comments?: boolean | Prisma.accounts$photo_commentsArgs<ExtArgs>
   photo_likes?: boolean | Prisma.accounts$photo_likesArgs<ExtArgs>
   photo_views?: boolean | Prisma.accounts$photo_viewsArgs<ExtArgs>
@@ -4207,6 +4480,7 @@ export type accountsInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   otp_tokens?: boolean | Prisma.accounts$otp_tokensArgs<ExtArgs>
   pet_sitters?: boolean | Prisma.accounts$pet_sittersArgs<ExtArgs>
   pets?: boolean | Prisma.accounts$petsArgs<ExtArgs>
+  cancelled_sitter_bookings?: boolean | Prisma.accounts$cancelled_sitter_bookingsArgs<ExtArgs>
   photo_comments?: boolean | Prisma.accounts$photo_commentsArgs<ExtArgs>
   photo_likes?: boolean | Prisma.accounts$photo_likesArgs<ExtArgs>
   photo_views?: boolean | Prisma.accounts$photo_viewsArgs<ExtArgs>
@@ -4233,6 +4507,7 @@ export type $accountsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     otp_tokens: Prisma.$otp_tokensPayload<ExtArgs> | null
     pet_sitters: Prisma.$pet_sittersPayload<ExtArgs> | null
     pets: Prisma.$petsPayload<ExtArgs>[]
+    cancelled_sitter_bookings: Prisma.$sitter_bookingsPayload<ExtArgs>[]
     photo_comments: Prisma.$photo_commentsPayload<ExtArgs>[]
     photo_likes: Prisma.$photo_likesPayload<ExtArgs>[]
     photo_views: Prisma.$photo_viewsPayload<ExtArgs>[]
@@ -4664,6 +4939,7 @@ export interface Prisma__accountsClient<T, Null = never, ExtArgs extends runtime
   otp_tokens<T extends Prisma.accounts$otp_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$otp_tokensArgs<ExtArgs>>): Prisma.Prisma__otp_tokensClient<runtime.Types.Result.GetResult<Prisma.$otp_tokensPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pet_sitters<T extends Prisma.accounts$pet_sittersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$pet_sittersArgs<ExtArgs>>): Prisma.Prisma__pet_sittersClient<runtime.Types.Result.GetResult<Prisma.$pet_sittersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pets<T extends Prisma.accounts$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$petsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cancelled_sitter_bookings<T extends Prisma.accounts$cancelled_sitter_bookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$cancelled_sitter_bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$sitter_bookingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photo_comments<T extends Prisma.accounts$photo_commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_commentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photo_likes<T extends Prisma.accounts$photo_likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_likesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photo_views<T extends Prisma.accounts$photo_viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accounts$photo_viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_viewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5333,6 +5609,30 @@ export type accounts$petsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.PetsScalarFieldEnum | Prisma.PetsScalarFieldEnum[]
+}
+
+/**
+ * accounts.cancelled_sitter_bookings
+ */
+export type accounts$cancelled_sitter_bookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the sitter_bookings
+   */
+  select?: Prisma.sitter_bookingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the sitter_bookings
+   */
+  omit?: Prisma.sitter_bookingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.sitter_bookingsInclude<ExtArgs> | null
+  where?: Prisma.sitter_bookingsWhereInput
+  orderBy?: Prisma.sitter_bookingsOrderByWithRelationInput | Prisma.sitter_bookingsOrderByWithRelationInput[]
+  cursor?: Prisma.sitter_bookingsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Sitter_bookingsScalarFieldEnum | Prisma.Sitter_bookingsScalarFieldEnum[]
 }
 
 /**

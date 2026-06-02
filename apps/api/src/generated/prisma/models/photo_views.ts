@@ -191,6 +191,7 @@ export type photo_viewsWhereInput = {
   created_at?: Prisma.DateTimeNullableFilter<"photo_views"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photo_views"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }
 
 export type photo_viewsOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type photo_viewsOrderByWithRelationInput = {
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
+  photos?: Prisma.photosOrderByWithRelationInput
 }
 
 export type photo_viewsWhereUniqueInput = Prisma.AtLeast<{
@@ -215,6 +217,7 @@ export type photo_viewsWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeNullableFilter<"photo_views"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photo_views"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  photos?: Prisma.XOR<Prisma.PhotosScalarRelationFilter, Prisma.photosWhereInput>
 }, "id" | "photo_id_account_id">
 
 export type photo_viewsOrderByWithAggregationInput = {
@@ -243,11 +246,11 @@ export type photo_viewsScalarWhereWithAggregatesInput = {
 
 export type photo_viewsCreateInput = {
   id?: string
-  photo_id: string
   view_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPhoto_viewsInput
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_viewsInput
 }
 
 export type photo_viewsUncheckedCreateInput = {
@@ -261,11 +264,11 @@ export type photo_viewsUncheckedCreateInput = {
 
 export type photo_viewsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_viewsNestedInput
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_viewsNestedInput
 }
 
 export type photo_viewsUncheckedUpdateInput = {
@@ -288,7 +291,6 @@ export type photo_viewsCreateManyInput = {
 
 export type photo_viewsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -387,12 +389,54 @@ export type photo_viewsUncheckedUpdateManyWithoutAccountsNestedInput = {
   deleteMany?: Prisma.photo_viewsScalarWhereInput | Prisma.photo_viewsScalarWhereInput[]
 }
 
+export type photo_viewsCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput> | Prisma.photo_viewsCreateWithoutPhotosInput[] | Prisma.photo_viewsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_viewsCreateOrConnectWithoutPhotosInput | Prisma.photo_viewsCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_viewsCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+}
+
+export type photo_viewsUncheckedCreateNestedManyWithoutPhotosInput = {
+  create?: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput> | Prisma.photo_viewsCreateWithoutPhotosInput[] | Prisma.photo_viewsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_viewsCreateOrConnectWithoutPhotosInput | Prisma.photo_viewsCreateOrConnectWithoutPhotosInput[]
+  createMany?: Prisma.photo_viewsCreateManyPhotosInputEnvelope
+  connect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+}
+
+export type photo_viewsUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput> | Prisma.photo_viewsCreateWithoutPhotosInput[] | Prisma.photo_viewsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_viewsCreateOrConnectWithoutPhotosInput | Prisma.photo_viewsCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_viewsUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_viewsUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_viewsCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  disconnect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  delete?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  connect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  update?: Prisma.photo_viewsUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_viewsUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_viewsUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_viewsUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_viewsScalarWhereInput | Prisma.photo_viewsScalarWhereInput[]
+}
+
+export type photo_viewsUncheckedUpdateManyWithoutPhotosNestedInput = {
+  create?: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput> | Prisma.photo_viewsCreateWithoutPhotosInput[] | Prisma.photo_viewsUncheckedCreateWithoutPhotosInput[]
+  connectOrCreate?: Prisma.photo_viewsCreateOrConnectWithoutPhotosInput | Prisma.photo_viewsCreateOrConnectWithoutPhotosInput[]
+  upsert?: Prisma.photo_viewsUpsertWithWhereUniqueWithoutPhotosInput | Prisma.photo_viewsUpsertWithWhereUniqueWithoutPhotosInput[]
+  createMany?: Prisma.photo_viewsCreateManyPhotosInputEnvelope
+  set?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  disconnect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  delete?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  connect?: Prisma.photo_viewsWhereUniqueInput | Prisma.photo_viewsWhereUniqueInput[]
+  update?: Prisma.photo_viewsUpdateWithWhereUniqueWithoutPhotosInput | Prisma.photo_viewsUpdateWithWhereUniqueWithoutPhotosInput[]
+  updateMany?: Prisma.photo_viewsUpdateManyWithWhereWithoutPhotosInput | Prisma.photo_viewsUpdateManyWithWhereWithoutPhotosInput[]
+  deleteMany?: Prisma.photo_viewsScalarWhereInput | Prisma.photo_viewsScalarWhereInput[]
+}
+
 export type photo_viewsCreateWithoutAccountsInput = {
   id?: string
-  photo_id: string
   view_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  photos: Prisma.photosCreateNestedOneWithoutPhoto_viewsInput
 }
 
 export type photo_viewsUncheckedCreateWithoutAccountsInput = {
@@ -441,6 +485,48 @@ export type photo_viewsScalarWhereInput = {
   updated_at?: Prisma.DateTimeNullableFilter<"photo_views"> | Date | string | null
 }
 
+export type photo_viewsCreateWithoutPhotosInput = {
+  id?: string
+  view_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutPhoto_viewsInput
+}
+
+export type photo_viewsUncheckedCreateWithoutPhotosInput = {
+  id?: string
+  account_id: string
+  view_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photo_viewsCreateOrConnectWithoutPhotosInput = {
+  where: Prisma.photo_viewsWhereUniqueInput
+  create: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_viewsCreateManyPhotosInputEnvelope = {
+  data: Prisma.photo_viewsCreateManyPhotosInput | Prisma.photo_viewsCreateManyPhotosInput[]
+  skipDuplicates?: boolean
+}
+
+export type photo_viewsUpsertWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_viewsWhereUniqueInput
+  update: Prisma.XOR<Prisma.photo_viewsUpdateWithoutPhotosInput, Prisma.photo_viewsUncheckedUpdateWithoutPhotosInput>
+  create: Prisma.XOR<Prisma.photo_viewsCreateWithoutPhotosInput, Prisma.photo_viewsUncheckedCreateWithoutPhotosInput>
+}
+
+export type photo_viewsUpdateWithWhereUniqueWithoutPhotosInput = {
+  where: Prisma.photo_viewsWhereUniqueInput
+  data: Prisma.XOR<Prisma.photo_viewsUpdateWithoutPhotosInput, Prisma.photo_viewsUncheckedUpdateWithoutPhotosInput>
+}
+
+export type photo_viewsUpdateManyWithWhereWithoutPhotosInput = {
+  where: Prisma.photo_viewsScalarWhereInput
+  data: Prisma.XOR<Prisma.photo_viewsUpdateManyMutationInput, Prisma.photo_viewsUncheckedUpdateManyWithoutPhotosInput>
+}
+
 export type photo_viewsCreateManyAccountsInput = {
   id?: string
   photo_id: string
@@ -451,10 +537,10 @@ export type photo_viewsCreateManyAccountsInput = {
 
 export type photo_viewsUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  photo_id?: Prisma.StringFieldUpdateOperationsInput | string
   view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  photos?: Prisma.photosUpdateOneRequiredWithoutPhoto_viewsNestedInput
 }
 
 export type photo_viewsUncheckedUpdateWithoutAccountsInput = {
@@ -473,6 +559,38 @@ export type photo_viewsUncheckedUpdateManyWithoutAccountsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type photo_viewsCreateManyPhotosInput = {
+  id?: string
+  account_id: string
+  view_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photo_viewsUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutPhoto_viewsNestedInput
+}
+
+export type photo_viewsUncheckedUpdateWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type photo_viewsUncheckedUpdateManyWithoutPhotosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  view_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 
 
 export type photo_viewsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -483,6 +601,7 @@ export type photo_viewsSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_views"]>
 
 export type photo_viewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -493,6 +612,7 @@ export type photo_viewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_views"]>
 
 export type photo_viewsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -503,6 +623,7 @@ export type photo_viewsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photo_views"]>
 
 export type photo_viewsSelectScalar = {
@@ -517,18 +638,22 @@ export type photo_viewsSelectScalar = {
 export type photo_viewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "photo_id" | "view_at" | "created_at" | "updated_at", ExtArgs["result"]["photo_views"]>
 export type photo_viewsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 export type photo_viewsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 export type photo_viewsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  photos?: boolean | Prisma.photosDefaultArgs<ExtArgs>
 }
 
 export type $photo_viewsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "photo_views"
   objects: {
     accounts: Prisma.$accountsPayload<ExtArgs>
+    photos: Prisma.$photosPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -932,6 +1057,7 @@ readonly fields: photo_viewsFieldRefs;
 export interface Prisma__photo_viewsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  photos<T extends Prisma.photosDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photosDefaultArgs<ExtArgs>>): Prisma.Prisma__photosClient<runtime.Types.Result.GetResult<Prisma.$photosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

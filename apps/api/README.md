@@ -25,6 +25,13 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Database
+
+Database schema and migrations are managed in this codebase with Prisma.
+
+Read `DATABASE.md` before changing tables, indexes, constraints, triggers, or
+Supabase/PostgreSQL-specific SQL.
+
 ## Project setup
 
 ```bash
