@@ -143,22 +143,25 @@
 - [x] Add unit coverage for idempotency replay, row-lock create flow, capacity conflicts, self-booking rejection, and expired-hold confirmation rejection.
 
 ### 4.3 Scheduled Cleanups
-- [ ] Add `@Cron(CronExpression.EVERY_MINUTE)` task in `SitterBookingModule` to search and flag all pending `sitter_bookings` where `expiresAt < now`. Mark status as cancelled and release slots.
+- [x] Add `@Cron(CronExpression.EVERY_MINUTE)` task in `SitterBookingModule` to search and flag all pending `sitter_bookings` where `expires_at < now`. Mark status as cancelled and release held capacity.
+- [x] Dispatch expiry domain events and asynchronous owner/sitter email queue jobs for bookings cancelled by the hold-expiry cleanup.
+- [x] Add unit coverage for expired-hold cleanup count, event publishing, email queue dispatch, and no-op cleanup runs.
 
 ---
 
 ## Phase 5: Verification & CI Pipeline (Weeks 10-12)
 
 ### 5.1 Verification Checks
-- [ ] Verify that `package.json` contains standard run scripts:
+- [x] Verify that `package.json` contains standard run scripts:
   - `pnpm --filter @yeu-pet/api lint`
   - `pnpm --filter @yeu-pet/api build`
   - `pnpm --filter @yeu-pet/api test` (for unit tests)
   - `pnpm --filter @yeu-pet/api test:e2e` (for E2E tests)
+- [x] Wire API CI to run lint check, TypeScript check, unit tests, E2E tests, build, and Docker image packaging.
 
 ### 5.2 Test Execution
-- [ ] Run all unit test suites in the codebase.
-- [ ] Execute E2E integration tests, including:
+- [x] Run all unit test suites in the codebase; remove stale generated placeholder specs that failed only due missing DI providers and carried no behavior assertions.
+- [x] Execute E2E integration tests, including:
   - Simulating concurrent E2E booking requests on a single sitter to verify row-locking integrity.
   - Simulating out-of-order RevenueCat webhook deliveries.
   - Verifying the opt-in cache invalidation triggers.

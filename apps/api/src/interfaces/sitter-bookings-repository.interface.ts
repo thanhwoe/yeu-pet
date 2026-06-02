@@ -23,6 +23,23 @@ export interface SitterInformation {
   };
 }
 
+export type ExpiredSitterBooking = sitter_bookings & {
+  accounts: {
+    email: string | null;
+    first_name: string | null;
+  };
+  pets: {
+    name: string;
+  };
+  pet_sitters: {
+    accounts: {
+      email: string | null;
+      first_name: string | null;
+      last_name: string | null;
+    };
+  };
+};
+
 export interface ISitterBookingsRepository {
   create(data: sitter_bookingsCreateInput): Promise<sitter_bookings>;
   createInTx(
@@ -83,4 +100,5 @@ export interface ISitterBookingsRepository {
     fn: (tx: Omit<PrismaClient, ITXClientDenyList>) => Promise<T>,
   ): Promise<T>;
   activeDue(date: Date): Promise<BatchPayload>;
+  expirePending(date: Date): Promise<ExpiredSitterBooking[]>;
 }

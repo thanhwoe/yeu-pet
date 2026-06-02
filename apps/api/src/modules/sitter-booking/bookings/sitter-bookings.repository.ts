@@ -227,6 +227,47 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
     });
   }
 
+  expirePending(date: Date) {
+    return this.prisma.sitter_bookings.updateManyAndReturn({
+      where: {
+        status: sitter_bookings_status.pending,
+        expires_at: {
+          lte: date,
+        },
+      },
+      data: {
+        status: sitter_bookings_status.cancelled,
+        cancel_reason: 'Booking hold expired',
+        cancelled_at: date,
+        updated_at: date,
+      },
+      include: {
+        accounts: {
+          select: {
+            email: true,
+            first_name: true,
+          },
+        },
+        pets: {
+          select: {
+            name: true,
+          },
+        },
+        pet_sitters: {
+          select: {
+            accounts: {
+              select: {
+                email: true,
+                first_name: true,
+                last_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   private include() {
     return {
       pet_sitters: {

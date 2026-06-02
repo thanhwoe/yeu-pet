@@ -2,6 +2,7 @@ import { sitter_bookings_type } from '@app/generated/prisma/client';
 
 export const SITTER_BOOKING_EVENT_CHANNELS = {
   BOOKING_CREATED: 'sitter-booking.created',
+  BOOKING_EXPIRED: 'sitter-booking.expired',
 } as const;
 
 export interface SitterBookingCreatedEvent {
@@ -13,4 +14,12 @@ export interface SitterBookingCreatedEvent {
   sitterId: string;
   startTime: string;
   type: sitter_bookings_type;
+}
+
+export interface SitterBookingExpiredEvent {
+  accountId: string;
+  bookingId: string;
+  expiredAt: string;
+  petId: string;
+  sitterId: string;
 }

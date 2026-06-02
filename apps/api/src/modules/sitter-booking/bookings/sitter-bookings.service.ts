@@ -6,9 +6,13 @@ import {
   sitter_bookings_type,
 } from '@app/generated/prisma/client';
 import { IEventBusService } from '@app/interfaces/event-bus.interface';
+import type { EmailJobParams } from '@app/interfaces/email-jobs.interface';
 import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
-import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
+import {
+  ExpiredSitterBooking,
+  ISitterBookingsRepository,
+} from '@app/interfaces/sitter-bookings-repository.interface';
 import { paginate } from '@app/utils/pagination';
 import {
   BadRequestException,
@@ -30,7 +34,9 @@ import { CreateSitterBookingDto } from './dto/create-sitter-booking.dto';
 import {
   SITTER_BOOKING_EVENT_CHANNELS,
   SitterBookingCreatedEvent,
+  SitterBookingExpiredEvent,
 } from './sitter-booking.events';
+import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
 
 const BOOKING_HOLD_MINUTES = 15;
 
@@ -232,6 +238,26 @@ export class SitterBookingsService {
       });
   }
 
+  private publishBookingExpired(event: SitterBookingExpiredEvent): void {
+    this.eventBusService
+      .publish(SITTER_BOOKING_EVENT_CHANNELS.BOOKING_EXPIRED, event)
+      .catch((error) => {
+        this.logger.error(
+          `Failed to publish booking expired event: ${(error as Error).message}`,
+        );
+      });
+  }
+
+  private dispatchEmail(params: EmailJobParams): void {
+    this.eventBusService
+      .publish(QUEUE_EVENT_CHANNELS.EMAIL_REQUESTED, params)
+      .catch((error) => {
+        this.logger.error(
+          `Failed to dispatch booking expiry email: ${(error as Error).message}`,
+        );
+      });
+  }
+
   async confirm(user: accounts, id: string) {
     const booking = await this.findBookingAsSitter(user, id);
     if (booking.status !== sitter_bookings_status.pending) {
@@ -396,6 +422,53 @@ export class SitterBookingsService {
   active() {
     const now = dayjs().toDate();
     return this.sitterBookingsRepository.activeDue(now);
+  }
+
+  async expirePending() {
+    const now = dayjs().toDate();
+    const expiredBookings =
+      await this.sitterBookingsRepository.expirePending(now);
+
+    for (const booking of expiredBookings) {
+      this.publishBookingExpired({
+        accountId: booking.account_id,
+        bookingId: booking.id,
+        expiredAt: now.toISOString(),
+        petId: booking.pet_id,
+        sitterId: booking.sitter_id,
+      });
+
+      this.dispatchExpiryEmails(booking);
+    }
+
+    return {
+      count: expiredBookings.length,
+    };
+  }
+
+  private dispatchExpiryEmails(booking: ExpiredSitterBooking): void {
+    const ownerEmail = booking.accounts.email;
+    const sitterEmail = booking.pet_sitters.accounts.email;
+    const ownerFirstName = booking.accounts.first_name ?? 'there';
+
+    if (ownerEmail) {
+      this.dispatchEmail({
+        accountId: booking.account_id,
+        bookingId: booking.id,
+        to: ownerEmail,
+        subject: 'Your YeuPet booking hold expired',
+        text: `Hi ${ownerFirstName}, your booking hold for ${booking.pets.name} has expired because it was not confirmed in time.`,
+      });
+    }
+
+    if (sitterEmail && sitterEmail !== ownerEmail) {
+      this.dispatchEmail({
+        bookingId: booking.id,
+        to: sitterEmail,
+        subject: 'A YeuPet booking hold expired',
+        text: `A pending booking hold for ${booking.pets.name} has expired and no longer reserves capacity.`,
+      });
+    }
   }
 
   private async checkActiveById(id: string) {

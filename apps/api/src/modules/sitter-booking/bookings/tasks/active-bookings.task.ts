@@ -8,6 +8,9 @@ export class ActiveBookingsTask {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleActive() {
-    await this.sitterBookingsService.active();
+    await Promise.all([
+      this.sitterBookingsService.active(),
+      this.sitterBookingsService.expirePending(),
+    ]);
   }
 }

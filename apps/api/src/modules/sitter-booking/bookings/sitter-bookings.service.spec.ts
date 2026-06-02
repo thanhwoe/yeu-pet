@@ -15,6 +15,7 @@ import {
 import { Decimal } from '@prisma/client/runtime/client';
 import { SitterBookingsService } from './sitter-bookings.service';
 import { SITTER_BOOKING_EVENT_CHANNELS } from './sitter-booking.events';
+import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
 
 const accountId = '123e4567-e89b-42d3-a456-426614174000';
 const sitterAccountId = '123e4567-e89b-42d3-a456-426614174001';
@@ -66,6 +67,25 @@ const booking = {
   expires_at: new Date('2026-06-02T10:15:00.000Z'),
 };
 
+const expiredBooking = {
+  ...booking,
+  status: sitter_bookings_status.cancelled,
+  accounts: {
+    email: 'owner@example.com',
+    first_name: 'Owner',
+  },
+  pets: {
+    name: 'Mochi',
+  },
+  pet_sitters: {
+    accounts: {
+      email: 'sitter@example.com',
+      first_name: 'Sitter',
+      last_name: 'One',
+    },
+  },
+};
+
 const createSitterBookingsRepository = () =>
   ({
     activeDue: jest.fn(),
@@ -74,6 +94,7 @@ const createSitterBookingsRepository = () =>
     countHeldOverlappingInTx: jest.fn(),
     create: jest.fn(),
     createInTx: jest.fn(),
+    expirePending: jest.fn(),
     findAllBySitter: jest.fn(),
     findAllByUser: jest.fn(),
     findById: jest.fn(),
@@ -130,6 +151,7 @@ describe('SitterBookingsService', () => {
     sitterBookingsRepository.findByIdempotencyKeyInTx.mockResolvedValue(null);
     sitterBookingsRepository.countHeldOverlappingInTx.mockResolvedValue(0);
     sitterBookingsRepository.createInTx.mockResolvedValue(booking as never);
+    sitterBookingsRepository.expirePending.mockResolvedValue([]);
     petSittersRepository.findById.mockResolvedValue(sitter as never);
     petSittersRepository.lock.mockResolvedValue(lockedSitter);
     petsRepository.findByUser.mockResolvedValue(pet as never);
@@ -226,5 +248,53 @@ describe('SitterBookingsService', () => {
     await expect(
       service.confirm({ id: sitterAccountId } as accounts, bookingId),
     ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('expires pending holds and dispatches expiry notifications', async () => {
+    sitterBookingsRepository.expirePending.mockResolvedValue([
+      expiredBooking as never,
+    ]);
+
+    const result = await service.expirePending();
+
+    expect(result).toEqual({ count: 1 });
+    expect(
+      sitterBookingsRepository.expirePending.mock.calls[0][0],
+    ).toBeInstanceOf(Date);
+    expect(eventBus.publish.mock.calls).toEqual([
+      [
+        SITTER_BOOKING_EVENT_CHANNELS.BOOKING_EXPIRED,
+        expect.objectContaining({
+          accountId,
+          bookingId,
+          petId,
+          sitterId,
+        }),
+      ],
+      [
+        QUEUE_EVENT_CHANNELS.EMAIL_REQUESTED,
+        expect.objectContaining({
+          accountId,
+          bookingId,
+          subject: 'Your YeuPet booking hold expired',
+          to: 'owner@example.com',
+        }),
+      ],
+      [
+        QUEUE_EVENT_CHANNELS.EMAIL_REQUESTED,
+        expect.objectContaining({
+          bookingId,
+          subject: 'A YeuPet booking hold expired',
+          to: 'sitter@example.com',
+        }),
+      ],
+    ]);
+  });
+
+  it('does not publish expiry side effects when no holds expire', async () => {
+    const result = await service.expirePending();
+
+    expect(result).toEqual({ count: 0 });
+    expect(eventBus.publish.mock.calls).toHaveLength(0);
   });
 });

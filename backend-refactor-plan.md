@@ -332,7 +332,7 @@ async handleBookingCreated(event: BookingCreatedEvent) {
   5. Emit `BookingCreatedEvent` to notify users asynchronously.
 
 #### 4.3 Scheduled Expiry Cleanups
-- Create `@Cron(CronExpression.EVERY_MINUTE)` task under `SitterBookingModule` to search and flag all pending `sitter_bookings` whose `expiresAt < now`. Auto-decrement sitter active booking counters, mark booking as `cancelled`, and dispatch cancellation emails asynchronously.
+- Create `@Cron(CronExpression.EVERY_MINUTE)` task under `SitterBookingModule` to search and flag all pending `sitter_bookings` whose `expiresAt < now`. Mark booking as `cancelled`, release held capacity by removing the pending hold from overlap counts, and dispatch cancellation emails asynchronously.
 
 ### Phase 5: Verification and CI Pipeline (Weeks 10-12)
 
@@ -341,13 +341,14 @@ async handleBookingCreated(event: BookingCreatedEvent) {
   ```bash
   pnpm --filter @yeu-pet/api test
   ```
+- Remove stale generated placeholder specs that do not provide behavior coverage and keep both curated and legacy Jest entry points green.
+- Ensure `.github/workflows/api-ci.yml` runs lint check, TypeScript check, unit tests, E2E tests, build, and Docker image packaging.
 
 #### 5.2 End-to-End Dynamic Flows
 - Execute E2E integrations verifying:
-  - Auth token refreshes and RBAC blockades.
   - Sitter bookings race conditions (triggering simultaneous E2E bookings on the same sitter to verify row-locking safety).
   - RevenueCat webhook sync validation.
-  - Budget transaction calculations.
+  - Opt-in HTTP cache invalidation after mutations.
 
 ---
 
