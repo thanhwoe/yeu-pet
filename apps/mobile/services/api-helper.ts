@@ -6,8 +6,13 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  InternalAxiosRequestConfig,
 } from "axios";
 import camelcaseKeys from "camelcase-keys";
+
+type RetriableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
 
 class APIHelper {
   private axiosClient: AxiosInstance;
@@ -58,19 +63,42 @@ class APIHelper {
         return response;
       },
       async (error) => {
-        const { tokens, updateTokens } = useUserInfoStore.getState() || {};
-
-        if (error.response.status === 401 && tokens?.accessToken) {
-          // call api refresh token
-          const { data } = await this.post<{
-            data: { accessToken: string; refreshToken: string };
-          }>(API_ROUTES.REFRESH_TOKEN);
-          updateTokens(data);
+        if (!axios.isAxiosError(error) || !error.response) {
+          throw error;
         }
-        if (error.response.data.path.includes(API_ROUTES.REFRESH_TOKEN)) {
+
+        const { tokens, updateTokens } = useUserInfoStore.getState() || {};
+        const originalRequest = error.config as RetriableRequestConfig;
+        const isRefreshRequest = originalRequest?.url?.includes(
+          API_ROUTES.REFRESH_TOKEN,
+        );
+
+        if (
+          error.response.status === 401 &&
+          tokens?.accessToken &&
+          tokens.refreshToken &&
+          !originalRequest?._retry &&
+          !isRefreshRequest
+        ) {
+          originalRequest._retry = true;
+          const { data } = await this.axiosClient.post<{
+            accessToken: string;
+            refreshToken: string;
+          }>(API_ROUTES.REFRESH_TOKEN, {
+            refreshToken: tokens.refreshToken,
+          });
+
+          updateTokens(data);
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+
+          return this.axiosClient.request(originalRequest);
+        }
+
+        if (isRefreshRequest) {
           // force logout
           useUserInfoStore.getState().logout();
         }
+
         throw error;
       },
     );

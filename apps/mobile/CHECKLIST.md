@@ -16,18 +16,42 @@
 - [x] Create frontend refactor plan
 - [x] Create mobile implementation checklist
 
-## Phase 2: Core Architecture Refactor
+## Phase 2: Folder Structure & Code Conventions
 
-- [ ] Clean folder structure incrementally
-- [ ] Extract shared UI components only where duplication is proven
-- [ ] Standardize feature hooks for large screens
-- [ ] Standardize API client usage and response types
-- [ ] Standardize loading/error/empty states
-- [ ] Standardize theme/design token usage
-- [ ] Improve type safety in API errors and pagination responses
-- [ ] Keep deferred domains isolated from active app navigation
+- [x] Define active folder direction in `frontend-refactor-plan.md`
+- [x] Keep Expo Router files as route/layout shims where possible
+- [x] Add `features/` for domain hooks and orchestration
+- [x] Add `features/**/*` to NativeWind content scanning
+- [ ] Move feature orchestration from oversized screens into `features/*` incrementally
+- [ ] Keep `components/ui` for primitives only
+- [ ] Keep feature-specific components out of `components/ui`
+- [ ] Document code conventions for hooks, screens, services, and UI primitives
+- [ ] Audit imports for consistent `@/*` absolute paths
 
-## Phase 3: Bottom Sheet Fix
+## Phase 3: Core Architecture Refactor
+
+- [x] Clean folder structure incrementally
+- [x] Extract shared UI components only where duplication is proven
+- [x] Standardize feature hooks for large screens
+- [x] Standardize API client usage and response types
+- [x] Standardize loading/error/empty states
+- [x] Standardize theme/design token usage
+- [x] Improve type safety in API errors and pagination responses
+- [x] Keep deferred domains isolated from active app navigation
+- [x] Align bottom tabs to active product tabs: home, reminder, service, sitter, settings
+- [x] Keep deferred store route hidden from the bottom tab
+
+## Phase 4: Theme & Shadows
+
+- [x] Add `features/` to Tailwind/NativeWind scanning
+- [x] Re-check `theme/shadows.ts`
+- [x] Replace generic black shadow scale with warmer app-tinted shadows
+- [ ] Audit direct `shadowColor: "#000"` usage
+- [ ] Standardize shadow/elevation pairings for cards, floating actions, sheets, and modals
+- [ ] Confirm dark-mode shadow behavior on device/simulator
+- [ ] Document design token usage for spacing, radius, color, shadow, and typography
+
+## Phase 5: Bottom Sheet Fix
 
 - [x] Verify package compatibility
 - [x] Verify Babel/Reanimated config
@@ -40,7 +64,7 @@
 - [ ] Test keyboard behavior
 - [ ] Test Android/iOS behavior if possible
 
-## Phase 4: Performance Optimization
+## Phase 6: Performance Optimization
 
 - [ ] Optimize heavy screens
 - [ ] Optimize FlatList/FlashList usage
@@ -51,7 +75,7 @@
 - [ ] Check app startup performance
 - [ ] Check bottom sheet and modal render cost
 
-## Phase 5: UI Implementation for Existing APIs
+## Phase 7: UI Implementation for Existing APIs
 
 - [ ] Map existing backend APIs to missing frontend features
 - [ ] Create feature implementation plan
@@ -67,7 +91,7 @@
 - [ ] Implement empty states
 - [ ] Implement navigation flows
 
-## Phase 6: Testing & Verification
+## Phase 8: Testing & Verification
 
 - [ ] Run TypeScript check
 - [ ] Run lint

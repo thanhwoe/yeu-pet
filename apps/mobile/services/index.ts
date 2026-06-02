@@ -9,3 +9,7 @@ export * from "./products";
 export * from "./reminder";
 export * from "./user";
 export * from "./medical-record";
+export * from "./notifications";
+export * from "./photo-comments";
+export * from "./settings";
+export * from "./sitter";

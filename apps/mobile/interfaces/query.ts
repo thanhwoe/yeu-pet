@@ -5,6 +5,10 @@ interface ErrorResponse {
   timestamp: string;
   path: string;
   message: string;
+  errors?: {
+    message: string;
+    field?: string;
+  }[];
 }
 
 declare module "@tanstack/react-query" {

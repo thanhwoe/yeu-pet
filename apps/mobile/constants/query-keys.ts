@@ -95,6 +95,56 @@ export const PHOTOS_KEY = {
   detail: (id?: number | string) => [...PHOTOS_KEY.details(), id] as const,
 };
 
+export const PHOTO_COMMENTS_KEY = {
+  all: [{ scope: "photo-comments" }] as const,
+  lists: () => [...PHOTO_COMMENTS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...PHOTO_COMMENTS_KEY.lists(), { params }] as const,
+  replies: (commentId?: string) =>
+    [...PHOTO_COMMENTS_KEY.all, "replies", commentId] as const,
+};
+
+export const NOTIFICATIONS_KEY = {
+  all: [{ scope: "notifications" }] as const,
+  lists: () => [...NOTIFICATIONS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...NOTIFICATIONS_KEY.lists(), { params }] as const,
+  badge: () => [...NOTIFICATIONS_KEY.all, "badge"] as const,
+};
+
+export const SETTINGS_KEY = {
+  all: [{ scope: "settings" }] as const,
+  detail: () => [...SETTINGS_KEY.all, "detail"] as const,
+};
+
+export const SITTER_KEY = {
+  all: [{ scope: "sitter" }] as const,
+  lists: () => [...SITTER_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...SITTER_KEY.lists(), { params }] as const,
+  details: () => [...SITTER_KEY.all, "detail"] as const,
+  detail: (id?: string) => [...SITTER_KEY.details(), id] as const,
+  me: () => [...SITTER_KEY.all, "me"] as const,
+};
+
+export const SITTER_BOOKING_KEY = {
+  all: [{ scope: "sitter-booking" }] as const,
+  lists: () => [...SITTER_BOOKING_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...SITTER_BOOKING_KEY.lists(), { params }] as const,
+  sitterList: (params?: IQueryParams) =>
+    [...SITTER_BOOKING_KEY.all, "sitter-list", { params }] as const,
+  details: () => [...SITTER_BOOKING_KEY.all, "detail"] as const,
+  detail: (id?: string) => [...SITTER_BOOKING_KEY.details(), id] as const,
+};
+
+export const SITTER_REVIEW_KEY = {
+  all: [{ scope: "sitter-review" }] as const,
+  lists: () => [...SITTER_REVIEW_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...SITTER_REVIEW_KEY.lists(), { params }] as const,
+};
+
 export const PRODUCTS_KEY = {
   all: [{ scope: "products" }] as const,
   lists: () => [...PRODUCTS_KEY.all, "list"] as const,

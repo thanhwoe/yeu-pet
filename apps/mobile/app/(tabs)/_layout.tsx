@@ -22,14 +22,12 @@ import {
   HouseIcon,
   IconWeight,
   PawPrintIcon,
-  ShoppingCartSimpleIcon,
 } from "phosphor-react-native";
 
 const Calendar = withIconClassName(CalendarHeartIcon);
 const Settings = withIconClassName(GearSixIcon);
 const Home = withIconClassName(HouseIcon);
 const Service = withIconClassName(PawPrintIcon);
-const Store = withIconClassName(ShoppingCartSimpleIcon);
 const Sitter = withIconClassName(HandHeartIcon);
 
 // Custom animated tab button component
@@ -237,25 +235,15 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="store"
-        options={{
-          tabBarButton: (props) => (
-            <AnimatedTabButton
-              {...props}
-              focused={props["aria-selected"] || false}
-              label="Store"
-            >
-              <Store
-                {...iconProps(props)}
-              />
-            </AnimatedTabButton>
-          ),
-        }}
-      /> */}
-
       <Tabs.Screen
         name="store"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="sitter"
         options={{
           tabBarButton: (props) => (
             <AnimatedTabButton

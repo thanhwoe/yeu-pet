@@ -43,6 +43,34 @@ export const API_ROUTES = {
   TOGGLE_LIKE_PHOTO: (id: string) => `/photos/${id}/like`,
   DELETE_PHOTO: (id: string) => `/photos/${id}/delete`,
   PHOTO_STATS: (id: string) => `/photos/${id}/stats`,
+  PHOTO_COMMENTS: (photoId: string) => `/photos/${photoId}/comments`,
+  PHOTO_COMMENT_REPLIES: (photoId: string, commentId: string) =>
+    `/photos/${photoId}/comments/${commentId}/replies`,
+  DELETE_PHOTO_COMMENT: (photoId: string, commentId: string) =>
+    `/photos/${photoId}/comments/${commentId}`,
+
+  NOTIFICATIONS: "/notifications",
+  NOTIFICATION_BADGE: "/notifications/badge",
+  MARK_NOTIFICATION_READ: (id: string) => `/notifications/${id}/read`,
+  MARK_ALL_NOTIFICATIONS_READ: "/notifications/read-all",
+  DELETE_NOTIFICATION: (id: string) => `/notifications/${id}`,
+
+  SETTINGS: "/settings",
+
+  SITTERS: "/sitters",
+  REGISTER_SITTER: "/sitters/register",
+  MY_SITTER_PROFILE: "/sitters/me",
+  SITTER_DETAIL: (id: string) => `/sitters/${id}`,
+  SITTER_BOOKINGS: "/sitter-bookings",
+  SITTER_BOOKINGS_FOR_SITTER: "/sitter-bookings/sitter",
+  SITTER_BOOKING_DETAIL: (id: string) => `/sitter-bookings/${id}`,
+  CONFIRM_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/confirm`,
+  REJECT_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/reject`,
+  COMPLETE_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/complete`,
+  CANCEL_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/cancel`,
+  SITTER_REVIEWS: "/sitter-reviews",
+  SITTER_REVIEWS_BY_SITTER: (sitterId: string) =>
+    `/sitter-reviews/${sitterId}`,
 
   LIST_PRODUCTS: "/products",
   PRODUCT_DETAIL: (id: string) => `/products/${id}`,

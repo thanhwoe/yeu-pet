@@ -2,7 +2,7 @@
 
 > Project: `apps/mobile`
 > Date: 2026-06-02
-> Status: Planning gate complete, implementation pending
+> Status: Planning gate complete, Phase 2 core refactor in progress
 
 ## Architecture Assessment
 
@@ -12,7 +12,7 @@ The main maintainability issue is inconsistent feature ownership. Some routes ar
 
 ## Current Findings
 
-- Navigation is Expo Router based with root auth/onboarding guards and tab groups. The `store` tab is currently labeled "Sitter", which suggests a route/product-scope mismatch.
+- Navigation is Expo Router based with root auth/onboarding guards and tab groups. Phase 2 corrected the bottom tabs to active product tabs: home, reminder, service, sitter, settings. The deferred `store` route remains mounted but hidden from the bottom tab.
 - `Providers` wraps the app with `SafeAreaProvider`, React Query, initialization, `GestureHandlerRootView`, and `BottomSheetModalProvider`. This is close, but gesture handling should be promoted as the root visual wrapper before app content initializes.
 - The Reanimated Babel plugin is present and last in the plugin list.
 - Bottom sheet usage is centralized through `components/ui/BottomSheet`, but the primitive wraps `BottomSheetModal` with `cssInterop`, forces `snapPoints={undefined}`, recreates inline modal components, and conflates controlled visibility with modal dismissal.
@@ -58,6 +58,17 @@ apps/mobile/
 
 Adopt `features/*` only where a domain needs multiple hooks/components and where moving code reduces real complexity. Do not bulk-move every file.
 
+## Code Conventions
+
+- Route files in `app/` should usually import and export a screen from `screens/*`.
+- Screens compose UI and navigation-level behavior; server-state orchestration should move into `features/*` hooks when a screen starts carrying several queries/mutations.
+- `components/ui/*` is reserved for reusable primitives with no product-domain knowledge.
+- Feature-specific visual components can live under `screens/<Feature>` while they are screen-local; move them to `features/<feature>/components` only when reused across screens.
+- Services should use `APIs` from `services/api-helper.ts`, route constants from `constants/api-routes.ts`, and typed interfaces from `interfaces/*`.
+- Query keys should be created through factories in `constants/query-keys.ts`; avoid inline array keys in screens.
+- Use `@/*` imports for app code.
+- Keep NativeWind classes aligned with theme tokens. Avoid raw colors and ad hoc spacing unless a native API requires a concrete value.
+
 ## Component Extraction Strategy
 
 - Keep presentational components small and prop-driven.
@@ -85,8 +96,9 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 ## Navigation Strategy
 
 - Keep root auth/onboarding verification guards in `app/_layout.tsx`.
-- Rename or replace deferred tab routes so tab labels match actual routes.
-- Add active backend-supported routes incrementally: notifications, settings profile/preferences, sitter list/profile/bookings/reviews.
+- Keep bottom tabs aligned to active product tabs: home, reminder, service, sitter, settings.
+- Keep deferred tab routes hidden until product scope changes.
+- Add active backend-supported routes incrementally: notifications, settings profile/preferences, sitter profile/bookings/reviews.
 - Keep modal/bottom sheet flows screen-local unless the interaction is shared across features.
 
 ## Bottom Sheet Fix Strategy
@@ -108,6 +120,15 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 - Optimize image usage through existing `expo-image` wrapper and stable dimensions.
 - Avoid nested scroll views inside bottom sheets unless explicitly needed.
 
+## Theme And Shadow Strategy
+
+- Keep spacing, radius, fonts, colors, and shadows centralized in `theme/*`.
+- Prefer theme classes over raw style objects for normal UI.
+- Raw native styles are acceptable when React Native APIs require concrete values, but they should use the closest theme token value.
+- Shadows should feel warm and soft in the current light theme, not generic pure-black. Phase 4 updates `theme/shadows.ts` to use warmer app-tinted values.
+- Audit direct `shadowColor: "#000"` usage in tabs, product cards, and custom tab controls before the theme phase is complete.
+- Pair shadow classes with platform elevation intentionally so Android and iOS depth feel consistent.
+
 ## Backend-Supported Feature Map
 
 | Backend Feature/API | Current Frontend Status | Missing UI | Required Screens/Components | Priority |
@@ -122,7 +143,7 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 | Photo comments/replies | Not implemented | Full UI missing | Comment bottom sheet/list, reply composer, delete action | P1 |
 | Notifications, badge, read, read-all, delete | Not implemented | Full UI missing | Notification inbox, badge indicator, empty state | P1 |
 | User settings get/update | Not implemented | Full UI missing | Settings preferences screen, toggles | P1 |
-| Sitter browsing/profile/bookings/reviews | Backend implemented, frontend route currently mismatched/deferred | Most UI missing | Sitter list, profile, booking form, bookings, sitter dashboard, reviews | P1 |
+| Sitter browsing/profile/bookings/reviews | Basic sitter tab/list scaffold added; profile/bookings/reviews missing | Most sitter workflow UI missing | Sitter list, profile, booking form, bookings, sitter dashboard, reviews | P1 |
 | Subscription webhook | Backend webhook only | User-facing plan/status needs confirmable API first | Subscription status/upgrade CTA only after GET API exists | P2 |
 | Store/cart/order/shipping/payment | Frontend services/screens exist, mobile docs mark deferred | Product decision needed before expanding | Keep isolated or remove from active nav after confirmation | P3 |
 | Clinics/spas/training/Doctor AI | Frontend exists, mobile docs mark deferred | Product decision needed | Keep isolated and out of active planning unless requested | P3 |
@@ -181,9 +202,11 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 ## Implementation Phases
 
 1. Audit and planning artifacts.
-2. Bottom sheet provider/primitive fix and documentation.
+2. Folder structure and code convention cleanup.
 3. API/query-key normalization for active backend gaps.
-4. Small feature hook extraction for budget/pets/reminders where it reduces screen complexity.
-5. Missing UI planning and implementation for notifications, photo comments, settings, and sitter booking.
-6. Performance pass on heavy lists/images/modals.
-7. Verification, Expo run, and final risk review.
+4. Theme and shadow system cleanup.
+5. Bottom sheet provider/primitive fix and documentation.
+6. Small feature hook extraction for budget/pets/reminders where it reduces complexity.
+7. Missing UI planning and implementation for notifications, photo comments, settings, and sitter booking.
+8. Performance pass on heavy lists/images/modals.
+9. Verification, Expo run, and final risk review.
