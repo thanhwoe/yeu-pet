@@ -2,7 +2,7 @@
 
 > Project: `apps/mobile`
 > Date: 2026-06-02
-> Status: Planning gate complete, Phase 2 core refactor in progress
+> Status: Planning gate complete, Phase 2 folder structure and code conventions complete, bottom sheet reliability fix applied
 
 ## Architecture Assessment
 
@@ -13,9 +13,9 @@ The main maintainability issue is inconsistent feature ownership. Some routes ar
 ## Current Findings
 
 - Navigation is Expo Router based with root auth/onboarding guards and tab groups. Phase 2 corrected the bottom tabs to active product tabs: home, reminder, service, sitter, settings. The deferred `store` route remains mounted but hidden from the bottom tab.
-- `Providers` wraps the app with `SafeAreaProvider`, React Query, initialization, `GestureHandlerRootView`, and `BottomSheetModalProvider`. This is close, but gesture handling should be promoted as the root visual wrapper before app content initializes.
+- `Providers` wraps the app with `GestureHandlerRootView` as the outer visual boundary, then `SafeAreaProvider`, React Query, initialization, and `BottomSheetModalProvider`.
 - The Reanimated Babel plugin is present and last in the plugin list.
-- Bottom sheet usage is centralized through `components/ui/BottomSheet`, but the primitive wraps `BottomSheetModal` with `cssInterop`, forces `snapPoints={undefined}`, recreates inline modal components, and conflates controlled visibility with modal dismissal.
+- Bottom sheet usage is centralized through `components/ui/BottomSheet`. The reusable primitive now uses a React Native `Modal` layer with Gorhom's plain `BottomSheet`, content-height dynamic sizing by default, memoized backdrop/handle rendering, controlled visibility, safe-area padding, and keyboard defaults. Direct callers should omit `snapPoints` unless they need a fixed-height or full-screen sheet.
 - API access is centralized, but `APIHelper.checkExpiredToken` assumes `error.response` exists and refreshes without replaying the failed request.
 - React Query is used broadly, but query keys mix `meta` and `metadata` expectations across services/screens.
 - Large/high-risk areas include `screens/Budget/index.tsx`, `screens/MedicalRecordDetail/index.tsx`, `screens/VerifyOtp/index.tsx`, `screens/MedicalRecord/*`, `components/PetCardCarousel/DetailCard.tsx`, `components/SwipeableWrapper`, `components/Markdown`, `Toast`, `Modal`, and form components.
@@ -68,6 +68,7 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 - Query keys should be created through factories in `constants/query-keys.ts`; avoid inline array keys in screens.
 - Use `@/*` imports for app code.
 - Keep NativeWind classes aligned with theme tokens. Avoid raw colors and ad hoc spacing unless a native API requires a concrete value.
+- See `CODE_CONVENTIONS.md` for the working mobile conventions and current audit notes.
 
 ## Component Extraction Strategy
 
@@ -103,13 +104,13 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 
 ## Bottom Sheet Fix Strategy
 
-- Promote `GestureHandlerRootView` to the root visual provider boundary and keep `BottomSheetModalProvider` inside it.
-- Replace the `cssInterop(BottomSheetModal)` wrapper with direct `BottomSheetModal` usage and explicit `backgroundStyle`.
-- Remove forced `snapPoints={undefined}` and provide stable defaults for dynamic sizing and fixed snap point usage.
-- Memoize backdrop, handle, content styles, and callbacks.
+- Keep `GestureHandlerRootView` as the root visual provider boundary and `BottomSheetModalProvider` inside it.
+- Keep the shared React Native `Modal` + Gorhom `BottomSheet` implementation so feature sheets do not depend on the `BottomSheetModal` portal/present path.
+- Keep dynamic content-height sizing by default; callers should pass explicit `snapPoints` only for fixed-height or full-screen sheets.
+- Keep backdrop, handle, content styles, and callbacks memoized.
 - Treat `visible` as controlled input, with `onDismiss` only notifying parent state changes.
-- Provide safe-area bottom padding and keyboard behavior defaults.
-- Document the expected usage pattern in the bottom sheet component or mobile README.
+- Preserve safe-area bottom padding and keyboard behavior defaults.
+- Maintain the expected usage pattern in `components/ui/BottomSheet/README.md`.
 
 ## Performance Strategy
 
@@ -126,8 +127,8 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 - Prefer theme classes over raw style objects for normal UI.
 - Raw native styles are acceptable when React Native APIs require concrete values, but they should use the closest theme token value.
 - Shadows should feel warm and soft in the current light theme, not generic pure-black. Phase 4 updates `theme/shadows.ts` to use warmer app-tinted values.
-- Audit direct `shadowColor: "#000"` usage in tabs, product cards, and custom tab controls before the theme phase is complete.
-- Pair shadow classes with platform elevation intentionally so Android and iOS depth feel consistent.
+- Direct `shadowColor: "#000"` usage in tabs, product cards, and custom tab controls has been replaced with `nativeShadows` tokens.
+- Pair shadow classes with platform elevation intentionally so Android and iOS depth feel consistent. Use `nativeShadows.card`, `nativeShadows.floating`, and `nativeShadows.tabBar` for native style objects.
 
 ## Backend-Supported Feature Map
 

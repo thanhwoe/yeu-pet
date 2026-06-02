@@ -6,8 +6,10 @@ import { ChartPressState } from "victory-native";
 interface ActiveIndicatorProps {
   height: number;
   pressState?: ChartPressState<{
-    x: any;
-    y: any;
+    x: string;
+    y: {
+      value: number;
+    };
   }>;
 }
 

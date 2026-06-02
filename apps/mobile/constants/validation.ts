@@ -308,7 +308,8 @@ export const shippingAddressSchema = z.object({
   is_default: z.boolean().optional(),
 });
 
-export type IPetInfoForm = z.infer<typeof petInfoSchema>;
+export type IPetInfoForm = z.output<typeof petInfoSchema>;
+export type IPetInfoFormInput = z.input<typeof petInfoSchema>;
 
 export type IBudgetCategoryForm = z.infer<typeof budgetCategorySchema>;
 

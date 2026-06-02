@@ -1,6 +1,5 @@
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { ComponentType } from "react";
-import { FieldValues } from "react-hook-form";
 
 // Define the props that the HOC will inject
 interface InjectedProps {
@@ -10,14 +9,10 @@ interface InjectedProps {
 // Generic type for the wrapped component props
 type WrappedComponentProps<T> = T & InjectedProps;
 
-export function withBottomSheetKeyboardEvents<T extends FieldValues>(
-  WrappedComponent: ComponentType<WrappedComponentProps<T>>
+export function withBottomSheetKeyboardEvents(
+  WrappedComponent: ComponentType<WrappedComponentProps<any>>,
 ) {
-  return function EnhancedComponent<FV extends FieldValues = T>(
-    props: WrappedComponentProps<any>
-  ) {
-    return (
-      <WrappedComponent {...props} inputComponent={BottomSheetTextInput} />
-    );
+  return function EnhancedComponent(props: Record<string, unknown>) {
+    return <WrappedComponent {...props} inputComponent={BottomSheetTextInput} />;
   };
 }

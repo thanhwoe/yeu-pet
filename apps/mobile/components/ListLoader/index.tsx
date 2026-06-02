@@ -33,7 +33,7 @@ export const ListLoader = ({ size = 12, spacing = 8 }) => {
       -1,
       true
     );
-  }, []);
+  }, [dot1, dot2, dot3]);
 
   const dot1Style = useAnimatedStyle(() => ({
     opacity: 0.3 + dot1.value * 0.7,

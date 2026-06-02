@@ -1,3 +1,4 @@
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { EyeClosedIcon, EyeIcon } from "phosphor-react-native";
 import { useState } from "react";
 import {
@@ -10,15 +11,24 @@ import {
 import { TextInputProps, TouchableOpacity } from "react-native";
 import { InputField } from "../ui/InputField";
 
-interface InputControllerProps<T extends FieldValues> extends TextInputProps {
+const EyeClosed = withIconClassName(EyeClosedIcon);
+const Eye = withIconClassName(EyeIcon);
+
+export interface InputControllerProps<
+  T extends FieldValues,
+  TTransformedValues = T,
+> extends TextInputProps {
   label?: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
-  format?: (value: string) => void;
+  format?: (value: string) => string;
 }
 
-export const InputController = <T extends FieldValues>({
+export const InputController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
@@ -29,7 +39,7 @@ export const InputController = <T extends FieldValues>({
   numberOfLines,
   onBlur,
   ...props
-}: InputControllerProps<T>) => {
+}: InputControllerProps<T, TTransformedValues>) => {
   const {
     field: { value, onChange, onBlur: handleBlur },
     fieldState: { error },
@@ -60,9 +70,9 @@ export const InputController = <T extends FieldValues>({
         typeof secureTextEntry !== "undefined" ? (
           <TouchableOpacity onPress={onPressSecureIcon}>
             {isHide ? (
-              <EyeClosedIcon size={18} color="black" />
+              <EyeClosed size={18} className="text-icon-primary" />
             ) : (
-              <EyeIcon size={18} color="black" />
+              <Eye size={18} className="text-icon-primary" />
             )}
           </TouchableOpacity>
         ) : undefined

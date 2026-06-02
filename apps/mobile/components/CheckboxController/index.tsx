@@ -10,21 +10,24 @@ import { View } from "react-native";
 import { Checkbox } from "../ui/Checkbox";
 import { Text } from "../ui/Text";
 
-interface CheckboxControllerProps<T extends FieldValues>
+interface CheckboxControllerProps<T extends FieldValues, TTransformedValues = T>
   extends ComponentProps<typeof Checkbox> {
   label?: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
 }
 
-export const CheckboxController = <T extends FieldValues>({
+export const CheckboxController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
   label,
   ...props
-}: CheckboxControllerProps<T>) => {
+}: CheckboxControllerProps<T, TTransformedValues>) => {
   const {
     field: { value, onChange },
     fieldState: { error },

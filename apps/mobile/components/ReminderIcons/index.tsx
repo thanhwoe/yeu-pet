@@ -74,6 +74,8 @@ export const ReminderTypeIcon = ({
   return <Icon size={20} weight="fill" className={color} {...props} />;
 };
 
+export const ReminderIcons = ReminderTypeIcon;
+
 const statusIconMapping: Record<
   ReminderStatus,
   ComponentType<

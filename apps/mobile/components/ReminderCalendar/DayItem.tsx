@@ -1,8 +1,9 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { SCREEN_WIDTH } from "@gorhom/bottom-sheet";
+import { SCREEN_WIDTH } from "@/constants/common";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PawPrintIcon } from "phosphor-react-native";
 import React, { memo } from "react";
+import { DateData } from "react-native-calendars";
 import { TouchableOpacity, View } from "react-native";
 import { Body } from "../ui/Typography";
 
@@ -39,15 +40,9 @@ const textVariants = cva("", {
 });
 
 interface DayProps extends VariantProps<typeof dayVariants> {
-  date?: {
-    day: number;
-    month: number;
-    year: number;
-    timestamp: number;
-    dateString: string;
-  };
-  onPress?: (date: any) => void;
-  onLongPress?: (date: any) => void;
+  date?: DateData;
+  onPress?: (date: DateData) => void;
+  onLongPress?: (date: DateData) => void;
   marking?: {
     marked?: boolean;
   };

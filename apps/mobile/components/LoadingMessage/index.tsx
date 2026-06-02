@@ -24,7 +24,7 @@ export const LoadingMessage = () => {
       false
     );
 
-    setTimeout(() => {
+    const dot2Timer = setTimeout(() => {
       dot2.value = withRepeat(
         withSequence(
           withTiming(1, { duration: 400, easing: Easing.ease }),
@@ -35,7 +35,7 @@ export const LoadingMessage = () => {
       );
     }, 133);
 
-    setTimeout(() => {
+    const dot3Timer = setTimeout(() => {
       dot3.value = withRepeat(
         withSequence(
           withTiming(1, { duration: 400, easing: Easing.ease }),
@@ -45,7 +45,12 @@ export const LoadingMessage = () => {
         false
       );
     }, 266);
-  }, []);
+
+    return () => {
+      clearTimeout(dot2Timer);
+      clearTimeout(dot3Timer);
+    };
+  }, [dot1, dot2, dot3]);
 
   const dot1Style = useAnimatedStyle(() => ({
     opacity: 0.3 + dot1.value * 0.7,

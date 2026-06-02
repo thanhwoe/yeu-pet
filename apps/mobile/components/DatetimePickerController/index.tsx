@@ -20,10 +20,13 @@ import { Body } from "../ui/Typography";
 
 const CalendarIcon = withIconClassName(Calendar);
 
-interface DateTimePickerControllerProps<T extends FieldValues> {
+interface DateTimePickerControllerProps<
+  T extends FieldValues,
+  TTransformedValues = T,
+> {
   label?: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   mode?: "date" | "time" | "datetime";
   display?: "default" | "spinner" | "compact" | "inline";
@@ -37,7 +40,10 @@ interface DateTimePickerControllerProps<T extends FieldValues> {
   supportText?: string;
 }
 
-export const DateTimePickerController = <T extends FieldValues>({
+export const DateTimePickerController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
@@ -50,7 +56,7 @@ export const DateTimePickerController = <T extends FieldValues>({
   format,
   disabled = false,
   supportText,
-}: DateTimePickerControllerProps<T>) => {
+}: DateTimePickerControllerProps<T, TTransformedValues>) => {
   const {
     field: { value, onChange, onBlur },
     fieldState: { error },

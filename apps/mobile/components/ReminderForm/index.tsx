@@ -54,13 +54,13 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
         label="Choose your pet"
         options={data?.data ?? []}
       />
-      <EnhancedInputController<IReminderForm>
+      <EnhancedInputController
         control={control}
         name="title"
         label="Title"
         placeholder="Title"
       />
-      <EnhancedInputController<IReminderForm>
+      <EnhancedInputController
         control={control}
         name="description"
         label="Description"

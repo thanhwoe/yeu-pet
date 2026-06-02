@@ -13,6 +13,7 @@ import Animated, {
 import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { nativeShadows } from "@/theme/shadows";
 import { cn } from "@/utils";
 import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import {
@@ -179,14 +180,7 @@ export default function TabLayout() {
           borderTopWidth: 1,
           paddingTop: 20,
           paddingHorizontal: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: -2,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 5,
+          ...nativeShadows.tabBar,
         },
         tabBarShowLabel: false,
       }}

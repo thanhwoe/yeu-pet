@@ -6,7 +6,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -65,14 +65,10 @@ const InitialProvider = ({ children }: Children) => {
     LocaleConfig.defaultLocale = "default";
   }, []);
 
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined);
-
   useEffect(() => {
     const notificationListener = Notifications.addNotificationReceivedListener(
       (notification) => {
-        setNotification(notification);
+        console.log(notification);
       },
     );
 

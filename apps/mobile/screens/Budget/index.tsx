@@ -302,7 +302,6 @@ export function BudgetScreen() {
       <BottomSheet
         visible={openBudgetForm}
         onDismiss={() => setOpenBudgetForm(false)}
-        snapPoints={undefined}
         titleElement={<Body weight="semiBold">Set monthly budget</Body>}
         useScrollView
         keyboardBehavior="interactive"

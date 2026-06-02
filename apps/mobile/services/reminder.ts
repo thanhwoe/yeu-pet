@@ -15,6 +15,7 @@ interface IReminderQuery {
   page?: number;
   month?: number;
   year?: number;
+  petId?: string;
 }
 
 export const getListReminderQuery = (params?: IReminderQuery) =>

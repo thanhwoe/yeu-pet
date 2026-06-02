@@ -102,13 +102,13 @@ export const BudgetCategoryForm = ({
       className="px-26 gap-16 pb-safe-offset-8"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <EnhancedInputController<IBudgetCategoryForm>
+      <EnhancedInputController
         control={control}
         name="name"
         label="Name"
         placeholder="Category name"
       />
-      <EnhancedInputController<IBudgetCategoryForm>
+      <EnhancedInputController
         control={control}
         name="emoji"
         label="Emoji Icon"

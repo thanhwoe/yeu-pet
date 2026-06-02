@@ -61,7 +61,7 @@ export const MedicalRecordForm = ({
         label="Choose your pet"
         options={data?.data ?? []}
       />
-      <EnhancedInputController<IMedicalRecordForm>
+      <EnhancedInputController
         control={control}
         name="title"
         label="Title"
@@ -100,20 +100,20 @@ export const MedicalRecordForm = ({
           },
         ]}
       />
-      <EnhancedInputController<IMedicalRecordForm>
+      <EnhancedInputController
         control={control}
         name="vetClinic"
         label="Vet Clinic Name"
         placeholder="Enter vet clinic name"
       />
-      <EnhancedInputController<IMedicalRecordForm>
+      <EnhancedInputController
         control={control}
         name="vetName"
         label="Vet Name"
         placeholder="Enter vet name"
       />
 
-      <EnhancedInputController<IMedicalRecordForm>
+      <EnhancedInputController
         control={control}
         name="description"
         label="Description"

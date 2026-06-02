@@ -4,6 +4,7 @@ import {
   Control,
   FieldValues,
   Path,
+  PathValue,
   RegisterOptions,
   useController,
 } from "react-hook-form";
@@ -11,29 +12,31 @@ import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Body } from "../ui/Typography";
 
-interface IPetPickerControllerProps<T extends FieldValues> {
+interface IPetPickerControllerProps<T extends FieldValues, TTransformedValues = T> {
   label?: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   options: IPet[];
 }
 
-export const PetPickerController = <T extends FieldValues>({
+export const PetPickerController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   label,
   rules,
   options,
-  ...props
-}: IPetPickerControllerProps<T>) => {
+}: IPetPickerControllerProps<T, TTransformedValues>) => {
   const {
     field: { value, onChange },
   } = useController({
     name,
     control,
     rules,
-    defaultValue: options[0].id as any,
+    defaultValue: options[0]?.id as PathValue<T, Path<T>>,
   });
 
   return (

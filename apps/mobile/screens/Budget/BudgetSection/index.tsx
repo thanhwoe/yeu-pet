@@ -137,7 +137,6 @@ export const BudgetSection = memo(
         <BottomSheet
           visible={showBottomSheet}
           onDismiss={() => setShowBottomSheet(false)}
-          snapPoints={undefined}
           titleElement={<Body weight="semiBold">Set monthly budget</Body>}
           useScrollView
           keyboardBehavior="interactive"

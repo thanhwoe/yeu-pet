@@ -1,7 +1,10 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IClinic } from "@/interfaces";
 import { cn } from "@/utils";
-import parsePhoneNumber, { isValidPhoneNumber } from "libphonenumber-js";
+import {
+  isValidPhoneNumber,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 import {
   ChatCircleDotsIcon,
   ClockIcon as Clock,
@@ -25,7 +28,7 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
   const isOpen = checkIsOpening(data);
   const hasPhone = data.phone ? isValidPhoneNumber(data.phone, "VN") : false;
   const validPhone = hasPhone
-    ? parsePhoneNumber(data.phone, "VN")?.formatNational()
+    ? parsePhoneNumberFromString(data.phone, "VN")?.formatNational()
     : "";
 
   return (

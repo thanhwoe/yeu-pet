@@ -52,7 +52,7 @@ export const ProgressBar = memo(
           easing: Easing.out(Easing.cubic),
         });
       }
-    }, [clamped]);
+    }, [clamped, duration, widthProgress]);
 
     // Shimmer loop
     useEffect(() => {
@@ -80,7 +80,7 @@ export const ProgressBar = memo(
       }
 
       return () => cancelAnimation(shimmerX);
-    }, [clamped, shimmer]);
+    }, [clamped, isShimmering, shimmer, shimmerX]);
 
     const fillStyle = useAnimatedStyle(() => {
       // Invisible until first real data arrives

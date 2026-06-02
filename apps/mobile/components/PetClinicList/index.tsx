@@ -26,7 +26,7 @@ export const PetClinicList = () => {
       return (
         <View className="items-center justify-center gap-3">
           <Text>Please enable location</Text>
-          <Button variant="tonal" onPress={openSettings}>
+          <Button variant="secondary" onPress={openSettings}>
             Enable
           </Button>
         </View>

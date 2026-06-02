@@ -2,6 +2,7 @@ import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IProduct } from "@/interfaces";
+import { nativeShadows } from "@/theme/shadows";
 import { cn } from "@/utils";
 import { useRouter } from "expo-router";
 import { StarIcon } from "phosphor-react-native";
@@ -31,13 +32,7 @@ export const ProductCard = ({ index, data }: IProductCardProps) => {
         "mr-2 ml-4": index % 2 === 0,
         "ml-2 mr-4": index % 2 === 1,
       })}
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 2,
-      }}
+      style={nativeShadows.card}
     >
       <Image
         source={{

@@ -1,18 +1,15 @@
-import { ChatRole } from "@/interfaces";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "../Markdown";
 import { Text } from "../ui/Text";
 
 interface TypingMessageProps {
   value: string;
-  role: ChatRole;
   speed?: number;
   onComplete?: () => void;
   isTyping?: boolean;
 }
 export const TypingMessage = ({
   value,
-  role,
   speed = 30,
   onComplete,
   isTyping = true,

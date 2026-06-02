@@ -4,7 +4,7 @@ import { date } from "@/utils";
 import { cssInterop } from "nativewind";
 import { memo, useCallback } from "react";
 import { ExpandableCalendar } from "react-native-calendars";
-import { MarkedDates } from "react-native-calendars/src/types";
+import { DateData, MarkedDates } from "react-native-calendars/src/types";
 import { Body } from "../ui/Typography";
 import { DayItem } from "./DayItem";
 
@@ -25,10 +25,12 @@ const ExpandableCalendarBase = ({
 }: ExpandableCalendarProps) => {
   const { colorScheme } = useColorScheme();
 
-  const renderHeader = useCallback((val?: any) => {
+  const renderHeader = useCallback((val?: DateData | string) => {
     return (
       <Body weight="semiBold" className="capitalize">
-        {date(val).format("MMMM YYYY")}
+        {date(typeof val === "string" ? val : val?.dateString).format(
+          "MMMM YYYY",
+        )}
       </Body>
     );
   }, []);

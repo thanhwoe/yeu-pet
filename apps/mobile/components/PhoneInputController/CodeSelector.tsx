@@ -46,7 +46,6 @@ export const CountryCodeSelector = ({
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
-        snapPoints={undefined}
         useScrollView
         titleElement={<Body weight="semiBold">Select country code</Body>}
       >

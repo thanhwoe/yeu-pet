@@ -16,22 +16,26 @@ import { Body } from "../ui/Typography";
 
 const OptionIcon = withIconClassName(CaretDownIcon);
 
-interface InputControllerProps<T extends FieldValues> extends TextInputProps {
+interface InputControllerProps<T extends FieldValues, TTransformedValues = T>
+  extends TextInputProps {
   label: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   options: { label: string; value: string; icon?: ReactNode }[];
 }
 
-export const OptionInputController = <T extends FieldValues>({
+export const OptionInputController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
   label,
   options,
   ...props
-}: InputControllerProps<T>) => {
+}: InputControllerProps<T, TTransformedValues>) => {
   const {
     field: { value: defaultValue, onChange, onBlur },
     fieldState: { error },
@@ -79,7 +83,6 @@ export const OptionInputController = <T extends FieldValues>({
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
-        snapPoints={undefined}
         titleElement={<Body weight="semiBold">Select {label}</Body>}
         useScrollView
         stackBehavior="push"

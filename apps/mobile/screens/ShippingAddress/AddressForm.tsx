@@ -32,19 +32,19 @@ export const AddressForm = ({ onSubmit, loading }: IProps) => {
   };
   return (
     <View className="px-5">
-      <EnhancedInputController<IShippingAddressForm>
+      <EnhancedInputController
         control={control}
         name="full_name"
         label="Name"
         placeholder="Enter your full name"
       />
-      <EnhancedPhoneInputController<IShippingAddressForm>
+      <EnhancedPhoneInputController
         control={control}
         placeholder="Enter your phone number"
         name="phone"
         label="Phone"
       />
-      <EnhancedInputController<IShippingAddressForm>
+      <EnhancedInputController
         control={control}
         name="address"
         label="Shipping Address"
@@ -57,7 +57,7 @@ export const AddressForm = ({ onSubmit, loading }: IProps) => {
       />
 
       <Button
-        size="CTA"
+        size="lg"
         className="mt-2"
         loading={loading}
         onPress={handleSubmit(handleSubmitForm)}

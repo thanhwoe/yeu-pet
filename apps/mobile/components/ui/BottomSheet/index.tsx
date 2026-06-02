@@ -1,22 +1,29 @@
 import {
-  BottomSheetModal,
+  default as GorhomBottomSheet,
   BottomSheetModalProps,
   BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import {
+  ComponentRef,
   PropsWithChildren,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
 } from "react";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { BackHandler, NativeEventSubscription, Platform } from "react-native";
+import {
+  Modal,
+  Platform,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Backdrop } from "./Backdrop";
 import { BottomSheetHeader } from "./Header";
+
+const FALLBACK_SNAP_POINTS = ["50%"];
 
 export interface BottomSheetProps extends PropsWithChildren<BottomSheetModalProps> {
   visible: boolean;
@@ -43,7 +50,14 @@ export const BottomSheet = ({
   backdropComponent,
   handleComponent,
   backgroundStyle,
+  stackBehavior: _stackBehavior,
+  enableDismissOnClose: _enableDismissOnClose,
+  containerComponent: _containerComponent,
+  name: _name,
   topInset = 66,
+  index = 0,
+  snapPoints,
+  animateOnMount = true,
   keyboardBlurBehavior = "restore",
   keyboardBehavior = Platform.select({
     android: "fillParent",
@@ -54,15 +68,16 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const sheetBackgroundColor =
-    colorScheme === "dark" ? "#0A0B0D" : "#FFFFFF";
+  const bottomSheetRef = useRef<ComponentRef<typeof GorhomBottomSheet>>(null);
+  const sheetBackgroundColor = colorScheme === "dark" ? "#0A0B0D" : "#FFFFFF";
 
   const handleDismiss = useCallback(() => {
     onDismiss?.();
   }, [onDismiss]);
 
-  const renderBackdrop = useCallback<NonNullable<BottomSheetModalProps["backdropComponent"]>>(
+  const renderBackdrop = useCallback<
+    NonNullable<BottomSheetModalProps["backdropComponent"]>
+  >(
     (props) => {
       if (backdropComponent) {
         return backdropComponent(props);
@@ -73,7 +88,9 @@ export const BottomSheet = ({
     [backdropComponent],
   );
 
-  const renderHandle = useCallback<NonNullable<BottomSheetModalProps["handleComponent"]>>(
+  const renderHandle = useCallback<
+    NonNullable<BottomSheetModalProps["handleComponent"]>
+  >(
     (props) => {
       if (handleComponent) {
         return handleComponent(props);
@@ -82,7 +99,7 @@ export const BottomSheet = ({
       return (
         <BottomSheetHeader
           headerMode={headerMode}
-          handleSelectAndCloseOptions={() => bottomSheetRef.current?.dismiss()}
+          handleSelectAndCloseOptions={() => bottomSheetRef.current?.close()}
         >
           {titleElement}
         </BottomSheetHeader>
@@ -100,64 +117,76 @@ export const BottomSheet = ({
     [enableDynamicSizing, insets.bottom],
   );
 
-  useEffect(() => {
-    let backHandler: NativeEventSubscription | null = null;
-
-    if (visible) {
-      bottomSheetRef.current?.present();
-      /**
-       * Disable back button to prevent going back to the previous screen when the bottom sheet is visible
-       */
-      backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        () => true,
-      );
-    } else {
-      bottomSheetRef.current?.dismiss();
+  const resolvedSnapPoints = useMemo(() => {
+    if (snapPoints) {
+      return snapPoints;
     }
 
-    return () => {
-      backHandler?.remove();
-    };
-  }, [visible]);
+    return enableDynamicSizing ? undefined : FALLBACK_SNAP_POINTS;
+  }, [enableDynamicSizing, snapPoints]);
+
+  const handleRequestClose = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <BottomSheetModal
-      ref={bottomSheetRef}
-      topInset={topInset}
-      enableOverDrag={false}
-      backdropComponent={renderBackdrop}
-      handleComponent={renderHandle}
-      onDismiss={handleDismiss}
-      backgroundStyle={[
-        {
-          backgroundColor: sheetBackgroundColor,
-          borderTopLeftRadius: 36,
-          borderTopRightRadius: 36,
-        },
-        backgroundStyle,
-      ]}
-      keyboardBlurBehavior={keyboardBlurBehavior}
-      keyboardBehavior={keyboardBehavior}
-      android_keyboardInputMode={android_keyboardInputMode}
-      enableDynamicSizing={enableDynamicSizing}
-      {...rest}
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={handleRequestClose}
     >
-      {useScrollView ? (
-        <BottomSheetScrollView
-          contentContainerStyle={contentContainerStyle}
-          className={className}
+      <View style={styles.modalRoot}>
+        <GorhomBottomSheet
+          ref={bottomSheetRef}
+          topInset={topInset}
+          enableOverDrag={false}
+          enablePanDownToClose
+          backdropComponent={renderBackdrop}
+          handleComponent={renderHandle}
+          onClose={handleDismiss}
+          backgroundStyle={[
+            {
+              backgroundColor: sheetBackgroundColor,
+              borderTopLeftRadius: 36,
+              borderTopRightRadius: 36,
+            },
+            backgroundStyle,
+          ]}
+          keyboardBlurBehavior={keyboardBlurBehavior}
+          keyboardBehavior={keyboardBehavior}
+          android_keyboardInputMode={android_keyboardInputMode}
+          enableDynamicSizing={enableDynamicSizing}
+          index={index}
+          snapPoints={resolvedSnapPoints}
+          animateOnMount={animateOnMount}
+          {...rest}
         >
-          {children}
-        </BottomSheetScrollView>
-      ) : (
-        <BottomSheetView
-          style={contentContainerStyle}
-          className={className}
-        >
-          {children}
-        </BottomSheetView>
-      )}
-    </BottomSheetModal>
+          {useScrollView ? (
+            <BottomSheetScrollView
+              contentContainerStyle={contentContainerStyle}
+              className={className}
+            >
+              {children}
+            </BottomSheetScrollView>
+          ) : (
+            <BottomSheetView style={contentContainerStyle} className={className}>
+              {children}
+            </BottomSheetView>
+          )}
+        </GorhomBottomSheet>
+      </View>
+    </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  modalRoot: {
+    flex: 1,
+  },
+});

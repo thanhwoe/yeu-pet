@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Text } from "@/components/ui/Text";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { ThemeToggle } from "@/features/settings/components/ThemeToggle";
 import { useLogout } from "@/hooks/useLogout";
 
 export default function TabTwoScreen() {

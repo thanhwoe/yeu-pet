@@ -1,5 +1,3 @@
-import { withIconClassName } from "@/hocs/withIconClassName";
-import { X } from "phosphor-react-native";
 import React, {
   useCallback,
   useImperativeHandle,
@@ -30,8 +28,6 @@ import {
   ToastRef,
   ToastVariants,
 } from "./utils";
-
-const XIcon = withIconClassName(X);
 
 const TOAST_INIT_POSITION = -200;
 

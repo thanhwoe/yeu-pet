@@ -19,13 +19,15 @@ interface IProps {
 export const TimelineList = ({ pet }: IProps) => {
   const router = useRouter();
   const { data, isLoading } = useQuery({
-    queryKey: REMINDER_KEY.list({ pet: pet.pet_id }),
-    queryFn: () => getListReminderQuery({ pet: pet.pet_id, limit: 2 }),
+    queryKey: REMINDER_KEY.list({ petId: pet.id }),
+    queryFn: () => getListReminderQuery({ petId: pet.id, limit: 2 }),
     select: (data) =>
       (data?.data || [])
-        .flatMap((item) => item.data)
+        .flatMap((item) => item)
         .sort(
-          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+          (a, b) =>
+            new Date(b.scheduledAt).getTime() -
+            new Date(a.scheduledAt).getTime(),
         ),
   });
 
@@ -66,7 +68,10 @@ export const TimelineList = ({ pet }: IProps) => {
             />
           </View>
           <Text>Don&apos;t forget to add a reminder</Text>
-          <Button variant="secondary" onPress={() => router.push("/calendar")}>
+          <Button
+            variant="secondary"
+            onPress={() => router.push("/(tabs)/(reminder)")}
+          >
             Add reminder
           </Button>
         </View>
@@ -92,7 +97,7 @@ export const TimelineList = ({ pet }: IProps) => {
           >
             <View className="flex-row">
               <Text variant="caption2">
-                {date(reminder.time).format("l LT")}
+                {date(reminder.scheduledAt).format("l LT")}
               </Text>
             </View>
             <Text variant="callout" className="font-bold">
@@ -105,7 +110,7 @@ export const TimelineList = ({ pet }: IProps) => {
               variant="caption2"
               className="absolute top-4 right-4 text-text-secondary"
             >
-              {date(reminder.time).fromNow()}
+              {date(reminder.scheduledAt).fromNow()}
             </Text>
             <View className="absolute top-1/2 right-4 opacity-50">
               <ReminderIcons type={reminder.type} size={60} />

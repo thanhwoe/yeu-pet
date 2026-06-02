@@ -22,11 +22,12 @@
 - [x] Keep Expo Router files as route/layout shims where possible
 - [x] Add `features/` for domain hooks and orchestration
 - [x] Add `features/**/*` to NativeWind content scanning
-- [ ] Move feature orchestration from oversized screens into `features/*` incrementally
-- [ ] Keep `components/ui` for primitives only
-- [ ] Keep feature-specific components out of `components/ui`
-- [ ] Document code conventions for hooks, screens, services, and UI primitives
-- [ ] Audit imports for consistent `@/*` absolute paths
+- [x] Move feature orchestration from oversized screens into `features/*` incrementally
+- [x] Keep `components/ui` for primitives only
+- [x] Keep feature-specific components out of `components/ui`
+- [x] Document code conventions for hooks, screens, services, and UI primitives
+- [x] Audit imports for consistent `@/*` absolute paths
+- [x] Move `ThemeToggle` out of `components/ui` into `features/settings`
 
 ## Phase 3: Core Architecture Refactor
 
@@ -46,10 +47,10 @@
 - [x] Add `features/` to Tailwind/NativeWind scanning
 - [x] Re-check `theme/shadows.ts`
 - [x] Replace generic black shadow scale with warmer app-tinted shadows
-- [ ] Audit direct `shadowColor: "#000"` usage
-- [ ] Standardize shadow/elevation pairings for cards, floating actions, sheets, and modals
+- [x] Audit direct `shadowColor: "#000"` usage
+- [x] Standardize shadow/elevation pairings for cards, floating actions, sheets, and modals
 - [ ] Confirm dark-mode shadow behavior on device/simulator
-- [ ] Document design token usage for spacing, radius, color, shadow, and typography
+- [x] Document design token usage for spacing, radius, color, shadow, and typography
 
 ## Phase 5: Bottom Sheet Fix
 

@@ -1,6 +1,8 @@
+import "react-native-gesture-handler";
+import "react-native-reanimated";
+
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import "react-native-reanimated";
 
 import { BackHeader } from "@/components/Headers/BackHeader";
 import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";

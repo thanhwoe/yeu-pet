@@ -1,4 +1,8 @@
-import { IPetInfoForm, petInfoSchema } from "@/constants/validation";
+import {
+  IPetInfoForm,
+  IPetInfoFormInput,
+  petInfoSchema,
+} from "@/constants/validation";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { date } from "@/utils";
 import { calculateAnimalAge } from "@/utils/pet";
@@ -33,7 +37,7 @@ export const PetInfoForm = ({
     handleSubmit,
     watch,
     formState: { isDirty },
-  } = useForm<IPetInfoForm>({
+  } = useForm<IPetInfoFormInput, unknown, IPetInfoForm>({
     resolver: zodResolver(petInfoSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -56,12 +60,12 @@ export const PetInfoForm = ({
       className="px-26 gap-8 pb-safe-offset-8"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <AvatarInputController<IPetInfoForm>
+      <AvatarInputController<IPetInfoFormInput, IPetInfoForm>
         control={control}
         name="avatar"
         label="Upload avatar"
       />
-      <EnhancedInputController<IPetInfoForm>
+      <EnhancedInputController
         control={control}
         name="name"
         label="Name"
@@ -69,7 +73,7 @@ export const PetInfoForm = ({
       />
 
       <View className="flex-row gap-16">
-        <OptionInputController<IPetInfoForm>
+        <OptionInputController<IPetInfoFormInput, IPetInfoForm>
           control={control}
           name="gender"
           label="Gender"
@@ -80,7 +84,7 @@ export const PetInfoForm = ({
             { label: "Unknown", value: "unknown" },
           ]}
         />
-        <OptionInputController<IPetInfoForm>
+        <OptionInputController<IPetInfoFormInput, IPetInfoForm>
           control={control}
           name="species"
           label="Species"
@@ -96,21 +100,21 @@ export const PetInfoForm = ({
         />
       </View>
 
-      <EnhancedInputController<IPetInfoForm>
+      <EnhancedInputController
         control={control}
         name="breed"
         label="Breed"
         placeholder="Husky"
       />
 
-      <EnhancedInputController<IPetInfoForm>
+      <EnhancedInputController
         control={control}
         name="color"
         label="Fur Color"
         placeholder="Orange"
       />
 
-      <EnhancedUnitInputController<IPetInfoForm>
+      <EnhancedUnitInputController
         control={control}
         name="weight"
         label="Weight"
@@ -121,7 +125,7 @@ export const PetInfoForm = ({
           { label: "Pound", value: "lbs" },
         ]}
       />
-      <DateTimePickerController
+      <DateTimePickerController<IPetInfoFormInput, IPetInfoForm>
         name="birthdate"
         control={control}
         label="Birthdate"
@@ -131,7 +135,7 @@ export const PetInfoForm = ({
         supportText={age}
       />
 
-      <EnhancedInputController<IPetInfoForm>
+      <EnhancedInputController
         control={control}
         name="notes"
         label="Notes"

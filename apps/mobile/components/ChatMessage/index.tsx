@@ -36,7 +36,6 @@ export const ChatMessage = ({ message, onComplete }: IProps) => {
         >
           {isAssistant ? (
             <TypingMessage
-              role={message.role}
               value={message.content}
               isTyping={!message.typingCompleted}
               onComplete={() => onComplete?.(message.id)}

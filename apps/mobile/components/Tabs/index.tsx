@@ -1,3 +1,4 @@
+import { nativeShadows } from "@/theme/shadows";
 import { cn } from "@/utils";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -72,11 +73,7 @@ export const Tabs = ({
             position: "absolute",
             top: 6,
             left: 4,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
+            ...nativeShadows.floating,
           },
           animatedStyle,
         ]}

@@ -60,7 +60,7 @@ export const ProductDetailHeader = ({
       -1,
       false,
     );
-  }, []);
+  }, [translateX]);
 
   const { base, overlay } = useMemo(() => {
     const light: Record<

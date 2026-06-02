@@ -1,4 +1,7 @@
-import parsePhoneNumber, { isPossiblePhoneNumber } from "libphonenumber-js";
+import {
+  isPossiblePhoneNumber,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 import { useCallback, useState } from "react";
 import {
   Control,
@@ -47,7 +50,8 @@ export const PhoneInputController = <T extends FieldValues>({
 
       const phone = phoneCode + trim;
       if (isPossiblePhoneNumber(phone)) {
-        const phoneFormatted = parsePhoneNumber(phone)?.formatNational() || "";
+        const phoneFormatted =
+          parsePhoneNumberFromString(phone)?.formatNational() || "";
         setPhoneNumber(phoneFormatted);
       } else {
         setPhoneNumber(trim);

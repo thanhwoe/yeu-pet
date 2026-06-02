@@ -10,15 +10,19 @@ import { TextInputProps } from "react-native";
 import { InputField } from "../ui/InputField";
 import { UnitSelector } from "./UnitSelector";
 
-interface InputControllerProps<T extends FieldValues> extends TextInputProps {
+interface InputControllerProps<T extends FieldValues, TTransformedValues = T>
+  extends TextInputProps {
   label: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   options: { label: string; value: string }[];
 }
 
-export const UnitInputController = <T extends FieldValues>({
+export const UnitInputController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
@@ -26,7 +30,7 @@ export const UnitInputController = <T extends FieldValues>({
   options,
   onBlur,
   ...props
-}: InputControllerProps<T>) => {
+}: InputControllerProps<T, TTransformedValues>) => {
   const {
     field: { value: defaultValue, onChange, onBlur: handleBlur },
     fieldState: { error },

@@ -20,9 +20,7 @@ export const DonutChart = memo<IProps>(
           colorKey={"color"}
         >
           <Pie.Chart size={size} innerRadius={innerRadius} startAngle={-90}>
-            {({ slice }) => {
-              return <Pie.Slice />;
-            }}
+            {() => <Pie.Slice />}
           </Pie.Chart>
         </PolarChart>
       </View>

@@ -16,10 +16,10 @@ import { Body } from "../ui/Typography";
 
 const Camera = withIconClassName(CameraIcon);
 
-interface InputControllerProps<T extends FieldValues> {
+interface InputControllerProps<T extends FieldValues, TTransformedValues = T> {
   label: string;
   name: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
 }
 
@@ -55,12 +55,15 @@ const ImageField = ({
 
 const AvatarUploader = withUploadImage(ImageField);
 
-export const AvatarInputController = <T extends FieldValues>({
+export const AvatarInputController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   control,
   rules,
   label,
-}: InputControllerProps<T>) => {
+}: InputControllerProps<T, TTransformedValues>) => {
   const {
     field: { value: defaultValue, onChange, onBlur },
     fieldState: { error },

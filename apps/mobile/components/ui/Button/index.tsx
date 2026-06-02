@@ -39,6 +39,8 @@ export const Button = ({
       style={style}
       disabled={disabled || loading}
       className={wrapperClassName}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
       {...props}
     >
       {({ pressed }) => (

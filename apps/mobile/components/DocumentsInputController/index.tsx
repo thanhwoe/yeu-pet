@@ -18,17 +18,20 @@ type FileListItem =
   | { kind: "existing"; data: DefaultFileParam }
   | { kind: "new"; data: UploadFileParam };
 
-interface InputControllerProps<T extends FieldValues> {
+interface InputControllerProps<T extends FieldValues, TTransformedValues = T> {
   label?: string;
   name: Path<T>;
   existingName: Path<T>;
-  control: Control<T>;
+  control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   maxFiles?: number;
   maxSizeMB?: number;
 }
 
-export const DocumentsInputController = <T extends FieldValues>({
+export const DocumentsInputController = <
+  T extends FieldValues,
+  TTransformedValues = T,
+>({
   name,
   existingName,
   control,
@@ -36,7 +39,7 @@ export const DocumentsInputController = <T extends FieldValues>({
   label,
   maxFiles = DEFAULT_MAX_FILES,
   maxSizeMB = DEFAULT_MAX_SIZE_MB,
-}: InputControllerProps<T>) => {
+}: InputControllerProps<T, TTransformedValues>) => {
   const {
     field: { value: newFiles, onChange: onChangeNew, onBlur: onBlurNew },
     fieldState: { error },
@@ -66,7 +69,7 @@ export const DocumentsInputController = <T extends FieldValues>({
     const isDuplicate = localFiles.some(
       (f) => f.name === uploaded.name && f.uri === uploaded.uri,
     );
-    console.log(isDuplicate);
+
     if (isDuplicate) {
       Toast.error({ text: `${uploaded.name}: already added` });
       return;

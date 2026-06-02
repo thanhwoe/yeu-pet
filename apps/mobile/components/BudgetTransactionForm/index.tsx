@@ -33,7 +33,7 @@ export const BudgetTransactionForm = ({
 }: IProps) => {
   const { control, handleSubmit } = useForm<
     IBudgetTransactionFormInput,
-    any,
+    unknown,
     IBudgetTransactionFormOutput
   >({
     resolver: zodResolver(budgetTransactionSchema),
@@ -80,14 +80,20 @@ export const BudgetTransactionForm = ({
           return Number(numericValue).toLocaleString();
         }}
       />
-      <OptionInputController<any>
+      <OptionInputController<
+        IBudgetTransactionFormInput,
+        IBudgetTransactionFormOutput
+      >
         control={control}
         name="categoryId"
         label="Category"
         placeholder="Select category"
         options={categoryOptions}
       />
-      <DateTimePickerController<any>
+      <DateTimePickerController<
+        IBudgetTransactionFormInput,
+        IBudgetTransactionFormOutput
+      >
         name="date"
         control={control}
         label="Date"

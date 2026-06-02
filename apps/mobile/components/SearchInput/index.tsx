@@ -76,7 +76,7 @@ export const SearchInput = memo<IProps>(
     const handleClear = useCallback(() => {
       handleChange("");
       onClear?.();
-    }, []);
+    }, [handleChange, onClear]);
 
     const inputValue = controlledValue ?? value;
     const typing = focus && !!inputValue;

@@ -1,5 +1,5 @@
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@/constants/common";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Pressable, Modal as RNModal, StatusBar, View } from "react-native";
 import Animated, {
   runOnJS,
@@ -38,24 +38,27 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
-  // Calculate the center positions
-  const centerX = SCREEN_WIDTH / 2;
-  const centerY = SCREEN_HEIGHT / 2;
+  const animationFrame = useMemo(() => {
+    const animationSize = Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8);
+    const centerX = SCREEN_WIDTH / 2;
+    const centerY = SCREEN_HEIGHT / 2;
 
-  // Calculate initial position offset from thumbnail to center
-  const initialTranslateX =
-    thumbnailFrame.x + thumbnailFrame.width / 2 - centerX;
-  const initialTranslateY =
-    thumbnailFrame.y + thumbnailFrame.height / 2 - centerY;
+    return {
+      animationSize,
+      initialScale: thumbnailFrame.width / animationSize,
+      initialTranslateX:
+        thumbnailFrame.x + thumbnailFrame.width / 2 - centerX,
+      initialTranslateY:
+        thumbnailFrame.y + thumbnailFrame.height / 2 - centerY,
+    };
+  }, [thumbnailFrame]);
 
   useEffect(() => {
     if (visible) {
       // Set initial values
-      scale.value =
-        thumbnailFrame.width /
-        Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8);
-      translateX.value = initialTranslateX;
-      translateY.value = initialTranslateY;
+      scale.value = animationFrame.initialScale;
+      translateX.value = animationFrame.initialTranslateX;
+      translateY.value = animationFrame.initialTranslateY;
       opacity.value = 0;
       backdropOpacity.value = 0;
 
@@ -81,26 +84,23 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
       opacity.value = withTiming(1, { duration: 300 });
       backdropOpacity.value = withTiming(1, { duration: 300 });
     }
-  }, [visible]);
+  }, [animationFrame, backdropOpacity, opacity, scale, translateX, translateY, visible]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     // Animate back to thumbnail size and position
-    scale.value = withSpring(
-      thumbnailFrame.width / Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8),
-      {
-        damping: 20,
-        stiffness: 90,
-        mass: 1,
-      },
-    );
-
-    translateX.value = withSpring(initialTranslateX, {
+    scale.value = withSpring(animationFrame.initialScale, {
       damping: 20,
       stiffness: 90,
       mass: 1,
     });
 
-    translateY.value = withSpring(initialTranslateY, {
+    translateX.value = withSpring(animationFrame.initialTranslateX, {
+      damping: 20,
+      stiffness: 90,
+      mass: 1,
+    });
+
+    translateY.value = withSpring(animationFrame.initialTranslateY, {
       damping: 20,
       stiffness: 90,
       mass: 1,
@@ -111,7 +111,7 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
     });
 
     backdropOpacity.value = withTiming(0, { duration: 200 });
-  };
+  }, [animationFrame, backdropOpacity, onClose, opacity, scale, translateX, translateY]);
 
   const animatedImageStyle = useAnimatedStyle(() => ({
     transform: [
@@ -134,6 +134,7 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
       transparent
       statusBarTranslucent
       animationType="none"
+      onRequestClose={handleClose}
     >
       <View className="flex-1">
         <StatusBar
@@ -158,8 +159,8 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
             style={[
               animatedImageStyle,
               {
-                width: Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8),
-                height: Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8),
+                width: animationFrame.animationSize,
+                height: animationFrame.animationSize,
               },
             ]}
             className="justify-center items-center"

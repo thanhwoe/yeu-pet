@@ -1,7 +1,7 @@
 import { SCREEN_WIDTH } from "@/constants/common";
 import { IPet } from "@/interfaces";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FlatList, View } from "react-native";
 import { Button } from "../ui/Button";
 import { Image } from "../ui/Image";
@@ -19,14 +19,14 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
   const listRef = useRef<FlatList<IPet>>(null);
   const router = useRouter();
 
-  const renderItem = ({ item }: { item: IPet }) => {
+  const renderItem = useCallback(({ item }: { item: IPet }) => {
     return <TimelineList pet={item} />;
-  };
+  }, []);
 
   useEffect(() => {
     if (selectedPet && data.length > 0) {
       const targetIndex = data.findIndex(
-        (pet) => pet.pet_id === selectedPet.pet_id,
+        (pet) => pet.id === selectedPet.id,
       );
 
       if (targetIndex !== -1) {
@@ -75,16 +75,19 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
             />
           </View>
           <Text>Don&apos;t forget to add a reminder</Text>
-          <Button variant="secondary" onPress={() => router.push("/calendar")}>
+          <Button
+            variant="secondary"
+            onPress={() => router.push("/(tabs)/(reminder)")}
+          >
             Add reminder
           </Button>
         </View>
       </View>
     ),
-    [],
+    [router],
   );
 
-  const keyExtractor = (item: IPet) => item.pet_id;
+  const keyExtractor = (item: IPet) => item.id;
   if (isLoading) {
     return (
       <View>

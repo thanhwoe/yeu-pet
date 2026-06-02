@@ -160,7 +160,18 @@ const ExplosionIcon: React.FC<ExplosionIconProps> = ({
       opacity.value = 0;
       rotation.value = 0;
     }
-  }, [trigger, angle, delay, distance, onComplete]);
+  }, [
+    angle,
+    delay,
+    distance,
+    onComplete,
+    opacity,
+    rotation,
+    scale,
+    translateX,
+    translateY,
+    trigger,
+  ]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -244,7 +255,7 @@ export const LikeButton: React.FC<HeartExplosionButtonProps> = ({
     setTimeout(() => {
       setAnimatingHearts(true);
     }, 200);
-  }, [isPressed, onPress]);
+  }, [isPressed, onPress, scale]);
 
   const mainHeartStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

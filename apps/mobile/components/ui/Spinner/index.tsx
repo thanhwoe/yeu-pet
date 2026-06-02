@@ -29,7 +29,7 @@ export const Spinner = ({
       -1, // infinite repeats
       false, // don't reverse
     );
-  }, [duration]);
+  }, [duration, rotation]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
