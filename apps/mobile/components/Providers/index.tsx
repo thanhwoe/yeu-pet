@@ -16,10 +16,10 @@ import { AppLoader } from "../AppLoader";
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
     [
+      GestureHandlerProvider,
       SafeAreaProvider,
       QueryProvider,
       InitialProvider,
-      GestureHandlerProvider,
       BottomSheetModalProvider,
     ],
     children,

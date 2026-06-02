@@ -1,31 +1,16 @@
-import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
-import { StyleSheet, TouchableWithoutFeedback } from "react-native";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+} from "@gorhom/bottom-sheet";
 
-export const Backdrop = ({
-  animatedIndex,
-  onPress,
-}: BottomSheetBackdropProps & { onPress?: () => void }) => {
-  const fadeAnim = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      animatedIndex.value,
-      [-1, 0],
-      [0, 0.7],
-      Extrapolation.CLAMP
-    ),
-  }));
+export const Backdrop = (props: BottomSheetBackdropProps) => {
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
-      <Animated.View
-        style={[
-          { backgroundColor: "black", ...StyleSheet.absoluteFillObject },
-          fadeAnim,
-        ]}
-      />
-    </TouchableWithoutFeedback>
+    <BottomSheetBackdrop
+      {...props}
+      appearsOnIndex={0}
+      disappearsOnIndex={-1}
+      opacity={0.55}
+      pressBehavior="close"
+    />
   );
 };

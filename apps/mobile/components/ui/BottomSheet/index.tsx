@@ -4,18 +4,19 @@ import {
   BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { cssInterop } from "nativewind";
-import { PropsWithChildren, ReactNode, useEffect, useRef } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { BackHandler, NativeEventSubscription, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Backdrop } from "./Backdrop";
 import { BottomSheetHeader } from "./Header";
-
-const StyledBottomSheetModal = cssInterop(BottomSheetModal, {
-  backgroundClassName: {
-    target: "backgroundStyle",
-  },
-});
 
 export interface BottomSheetProps extends PropsWithChildren<BottomSheetModalProps> {
   visible: boolean;
@@ -39,10 +40,65 @@ export const BottomSheet = ({
   className,
   useScrollView = true,
   enableDynamicSizing = true,
+  backdropComponent,
+  handleComponent,
+  backgroundStyle,
+  topInset = 66,
+  keyboardBlurBehavior = "restore",
+  keyboardBehavior = Platform.select({
+    android: "fillParent",
+    ios: "extend",
+  }),
+  android_keyboardInputMode = "adjustResize",
   ...rest
 }: BottomSheetProps) => {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const sheetBackgroundColor =
+    colorScheme === "dark" ? "#0A0B0D" : "#FFFFFF";
+
+  const handleDismiss = useCallback(() => {
+    onDismiss?.();
+  }, [onDismiss]);
+
+  const renderBackdrop = useCallback<NonNullable<BottomSheetModalProps["backdropComponent"]>>(
+    (props) => {
+      if (backdropComponent) {
+        return backdropComponent(props);
+      }
+
+      return <Backdrop {...props} />;
+    },
+    [backdropComponent],
+  );
+
+  const renderHandle = useCallback<NonNullable<BottomSheetModalProps["handleComponent"]>>(
+    (props) => {
+      if (handleComponent) {
+        return handleComponent(props);
+      }
+
+      return (
+        <BottomSheetHeader
+          headerMode={headerMode}
+          handleSelectAndCloseOptions={() => bottomSheetRef.current?.dismiss()}
+        >
+          {titleElement}
+        </BottomSheetHeader>
+      );
+    },
+    [handleComponent, headerMode, titleElement],
+  );
+
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingTop: 16,
+      paddingBottom: insets.bottom || 16,
+      ...(!enableDynamicSizing && { flexGrow: 1 }),
+    }),
+    [enableDynamicSizing, insets.bottom],
+  );
 
   useEffect(() => {
     let backHandler: NativeEventSubscription | null = null;
@@ -66,57 +122,42 @@ export const BottomSheet = ({
   }, [visible]);
 
   return (
-    <StyledBottomSheetModal
+    <BottomSheetModal
       ref={bottomSheetRef}
-      topInset={66}
+      topInset={topInset}
       enableOverDrag={false}
-      backdropComponent={(ps) => (
-        <Backdrop {...ps} onPress={() => onDismiss?.()} />
-      )}
-      handleComponent={() => (
-        <BottomSheetHeader
-          headerMode={headerMode}
-          handleSelectAndCloseOptions={() => onDismiss?.()}
-        >
-          {titleElement}
-        </BottomSheetHeader>
-      )}
-      onDismiss={onDismiss}
-      snapPoints={undefined}
-      backgroundClassName="bg-background-foreground rounded-tl-36 rounded-tr-36"
-      keyboardBlurBehavior="restore"
-      keyboardBehavior={Platform.select({
-        android: "fillParent",
-        ios: "extend",
-      })}
-      android_keyboardInputMode="adjustResize"
+      backdropComponent={renderBackdrop}
+      handleComponent={renderHandle}
+      onDismiss={handleDismiss}
+      backgroundStyle={[
+        {
+          backgroundColor: sheetBackgroundColor,
+          borderTopLeftRadius: 36,
+          borderTopRightRadius: 36,
+        },
+        backgroundStyle,
+      ]}
+      keyboardBlurBehavior={keyboardBlurBehavior}
+      keyboardBehavior={keyboardBehavior}
+      android_keyboardInputMode={android_keyboardInputMode}
       enableDynamicSizing={enableDynamicSizing}
       {...rest}
     >
       {useScrollView ? (
         <BottomSheetScrollView
-          contentContainerStyle={{
-            paddingTop: 16,
-            paddingBottom: insets.bottom || 16,
-            ...(!enableDynamicSizing && { flexGrow: 1 }),
-          }}
-          // bounces={false}
+          contentContainerStyle={contentContainerStyle}
           className={className}
         >
           {children}
         </BottomSheetScrollView>
       ) : (
         <BottomSheetView
-          style={{
-            paddingTop: 16,
-            paddingBottom: insets.bottom || 16,
-            ...(!enableDynamicSizing && { flexGrow: 1 }),
-          }}
+          style={contentContainerStyle}
           className={className}
         >
           {children}
         </BottomSheetView>
       )}
-    </StyledBottomSheetModal>
+    </BottomSheetModal>
   );
 };

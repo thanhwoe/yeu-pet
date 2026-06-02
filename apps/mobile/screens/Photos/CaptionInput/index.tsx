@@ -1,9 +1,9 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { cva, type VariantProps } from "class-variance-authority";
 import { BlurView } from "expo-blur";
 import React, { useRef } from "react";
-import { TextInput, TextInputProps } from "react-native";
+import { TextInputProps } from "react-native";
 
 // Text input variants using class-variance-authority
 const textInputVariants = cva(
@@ -69,22 +69,8 @@ export const CaptionInput: React.FC<ScalableTextInputProps> = ({
   style,
   ...props
 }) => {
-  const textInputRef = useRef<TextInput>(null);
+  const textInputRef = useRef<any>(null);
   const { colorScheme } = useColorScheme();
-
-  const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
-
-  // Handle focus
-  const handleFocus = (e: any) => {
-    props.onFocus?.(e);
-    shouldHandleKeyboardEvents.value = true;
-  };
-
-  // Handle blur
-  const handleBlur = (e: any) => {
-    shouldHandleKeyboardEvents.value = false;
-    props.onBlur?.(e);
-  };
 
   return (
     <BlurView
@@ -95,7 +81,7 @@ export const CaptionInput: React.FC<ScalableTextInputProps> = ({
         className: containerClassName,
       })}
     >
-      <TextInput
+      <BottomSheetTextInput
         ref={textInputRef}
         className={textInputVariants({
           variant,
@@ -104,8 +90,6 @@ export const CaptionInput: React.FC<ScalableTextInputProps> = ({
           disabled,
           className,
         })}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
         editable={!disabled}
         autoFocus
         maxLength={30}

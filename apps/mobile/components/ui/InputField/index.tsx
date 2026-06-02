@@ -1,4 +1,10 @@
-import { forwardRef, useCallback, useState, type Ref } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useState,
+  type ElementType,
+  type Ref,
+} from "react";
 import {
   NativeSyntheticEvent,
   TextInput,
@@ -21,6 +27,7 @@ export interface InputFieldProps
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   inputClassName?: string;
+  inputComponent?: ElementType<TextInputProps>;
 }
 
 export const InputField = forwardRef(
@@ -39,11 +46,13 @@ export const InputField = forwardRef(
       onBlur,
       multiline,
       inputClassName,
+      inputComponent,
       ...props
     }: InputFieldProps,
     forwardedRef: Ref<TextInput>,
   ) => {
     const [focus, setFocus] = useState(false);
+    const InputComponent = (inputComponent ?? TextInput) as any;
 
     const handleFocus = useCallback(
       (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -84,10 +93,10 @@ export const InputField = forwardRef(
           )}
         >
           {prefix && <View>{prefix}</View>}
-          <TextInput
+          <InputComponent
             autoComplete="off"
             autoCorrect={false}
-            ref={forwardedRef}
+            ref={forwardedRef as any}
             className={cn(
               "flex-1 h-full text-text-primary placeholder:text-text-tertiary selection:text-text-secondary font-regular text-body2",
               {
