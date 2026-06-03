@@ -12,6 +12,7 @@ import Animated, {
 interface ZoomOutModalProps {
   visible: boolean;
   onClose: () => void;
+  presentation?: "zoom" | "fullscreen";
   thumbnailFrame?: {
     x: number;
     y: number;
@@ -24,6 +25,7 @@ interface ZoomOutModalProps {
 export const Modal: React.FC<ZoomOutModalProps> = ({
   visible,
   onClose,
+  presentation = "zoom",
   thumbnailFrame = {
     x: SCREEN_WIDTH / 2 - 50,
     y: SCREEN_HEIGHT / 2 - 50,
@@ -39,19 +41,27 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
   const translateY = useSharedValue(0);
 
   const animationFrame = useMemo(() => {
-    const animationSize = Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8);
+    const targetWidth =
+      presentation === "fullscreen"
+        ? SCREEN_WIDTH
+        : Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8);
+    const targetHeight =
+      presentation === "fullscreen"
+        ? SCREEN_HEIGHT
+        : Math.min(SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.8);
     const centerX = SCREEN_WIDTH / 2;
     const centerY = SCREEN_HEIGHT / 2;
 
     return {
-      animationSize,
-      initialScale: thumbnailFrame.width / animationSize,
+      targetWidth,
+      targetHeight,
+      initialScale: thumbnailFrame.width / targetWidth,
       initialTranslateX:
         thumbnailFrame.x + thumbnailFrame.width / 2 - centerX,
       initialTranslateY:
         thumbnailFrame.y + thumbnailFrame.height / 2 - centerY,
     };
-  }, [thumbnailFrame]);
+  }, [presentation, thumbnailFrame]);
 
   useEffect(() => {
     if (visible) {
@@ -159,8 +169,8 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
             style={[
               animatedImageStyle,
               {
-                width: animationFrame.animationSize,
-                height: animationFrame.animationSize,
+                width: animationFrame.targetWidth,
+                height: animationFrame.targetHeight,
               },
             ]}
             className="justify-center items-center"

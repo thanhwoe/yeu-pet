@@ -8,6 +8,12 @@ export interface IPhotoComment {
   replyCount: number;
   createdAt: string | null;
   updatedAt: string | null;
+  accounts: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string | null;
+  };
 }
 
 export interface IPhotoCommentForm {

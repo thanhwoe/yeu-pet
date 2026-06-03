@@ -81,7 +81,7 @@
 - [x] Map existing backend APIs to missing frontend features
 - [x] Create feature implementation plan
 - [x] Implement notifications UI
-- [ ] Implement photo comments UI
+- [x] Implement photo comments UI
 - [ ] Implement settings/preferences UI
 - [ ] Implement sitter browsing/profile UI
 - [ ] Implement sitter booking/review UI

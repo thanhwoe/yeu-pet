@@ -64,6 +64,7 @@ export const PhotoItem = memo(({ data, index, deleteAble }: PhotoItemProps) => {
         visible={showModal}
         onClose={closeModal}
         thumbnailFrame={thumbnailFrame}
+        presentation="fullscreen"
       >
         <PhotoView
           data={data}

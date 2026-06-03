@@ -1,5 +1,7 @@
 import {
   default as GorhomBottomSheet,
+  BottomSheetFooter as GorhomBottomSheetFooter,
+  BottomSheetFooterProps,
   BottomSheetModalProps,
   BottomSheetScrollView,
   BottomSheetView,
@@ -46,6 +48,7 @@ export const BottomSheet = ({
   onDismiss,
   className,
   useScrollView = true,
+  footer,
   enableDynamicSizing = true,
   backdropComponent,
   handleComponent,
@@ -111,10 +114,10 @@ export const BottomSheet = ({
   const contentContainerStyle = useMemo(
     () => ({
       paddingTop: 16,
-      paddingBottom: insets.bottom || 16,
-      ...(!enableDynamicSizing && { flexGrow: 1 }),
+      paddingBottom: footer ? 0 : insets.bottom || 16,
+      ...(!enableDynamicSizing && { flex: 1, flexGrow: 1 }),
     }),
-    [enableDynamicSizing, insets.bottom],
+    [enableDynamicSizing, footer, insets.bottom],
   );
 
   const resolvedSnapPoints = useMemo(() => {
@@ -128,6 +131,24 @@ export const BottomSheet = ({
   const handleRequestClose = useCallback(() => {
     bottomSheetRef.current?.close();
   }, []);
+
+  const renderFooter = useCallback(
+    (props: BottomSheetFooterProps) => {
+      if (!footer) {
+        return null;
+      }
+
+      return (
+        <GorhomBottomSheetFooter
+          {...props}
+          bottomInset={insets.bottom || 12}
+        >
+          {footer}
+        </GorhomBottomSheetFooter>
+      );
+    },
+    [footer, insets.bottom],
+  );
 
   if (!visible) {
     return null;
@@ -162,6 +183,7 @@ export const BottomSheet = ({
           keyboardBehavior={keyboardBehavior}
           android_keyboardInputMode={android_keyboardInputMode}
           enableDynamicSizing={enableDynamicSizing}
+          footerComponent={footer ? renderFooter : undefined}
           index={index}
           snapPoints={resolvedSnapPoints}
           animateOnMount={animateOnMount}

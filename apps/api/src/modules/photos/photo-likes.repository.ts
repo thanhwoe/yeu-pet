@@ -28,4 +28,48 @@ export class PhotoLikesRepository implements IPhotoLikesRepository {
       },
     });
   }
+
+  toggle(account_id: string, photo_id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const liked = await tx.photo_likes.findUnique({
+        where: {
+          photo_id_account_id: { photo_id, account_id },
+        },
+      });
+
+      if (liked) {
+        await tx.photo_likes.delete({
+          where: {
+            photo_id_account_id: { photo_id, account_id },
+          },
+        });
+      } else {
+        await tx.photo_likes.create({
+          data: {
+            account_id,
+            photo_id,
+          },
+        });
+      }
+
+      const likeCount = await tx.photo_likes.count({
+        where: {
+          photo_id,
+        },
+      });
+
+      const photo = await tx.photos.update({
+        where: { id: photo_id },
+        data: {
+          like_count: likeCount,
+          updated_at: new Date(),
+        },
+      });
+
+      return {
+        liked: !liked,
+        photo,
+      };
+    });
+  }
 }

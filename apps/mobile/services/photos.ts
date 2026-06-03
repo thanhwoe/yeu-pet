@@ -45,7 +45,7 @@ export const getListUserPhotosQuery = ({ limit, page }: IQuery) =>
   });
 
 export const toggleLikePhotoMutation = ({ id }: { id: string }) =>
-  APIs.post<{ data: IPhoto }>(API_ROUTES.TOGGLE_LIKE_PHOTO(id));
+  APIs.post<IPhoto>(API_ROUTES.TOGGLE_LIKE_PHOTO(id));
 
 export const getPhotoStatsQuery = ({ id }: { id: string }) =>
   APIs.get<IPhoto>(API_ROUTES.PHOTO_STATS(id));

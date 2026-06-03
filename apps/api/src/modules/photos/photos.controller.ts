@@ -67,7 +67,7 @@ export class PhotosController {
   }
 
   @Post(':id/like')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   toggleLike(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.photosService.toggleLike(user, id);
   }

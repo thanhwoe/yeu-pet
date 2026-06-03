@@ -4,6 +4,17 @@ import { photos_status } from '@app/generated/prisma/enums';
 import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
 import { Injectable } from '@nestjs/common';
 
+const PHOTO_ACCOUNT_INCLUDE = {
+  accounts: {
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      avatar_url: true,
+    },
+  },
+} as const;
+
 @Injectable()
 export class PhotosRepository implements IPhotosRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -39,17 +50,7 @@ export class PhotosRepository implements IPhotosRepository {
         skip: params?.skip,
         take: params?.take,
         orderBy: { created_at: 'desc' },
-
-        include: {
-          accounts: {
-            select: {
-              id: true,
-              first_name: true,
-              last_name: true,
-              avatar_url: true,
-            },
-          },
-        },
+        include: PHOTO_ACCOUNT_INCLUDE,
       }),
       this.prisma.photos.count({
         where: { status: photos_status.ready, is_private: false },
@@ -68,6 +69,7 @@ export class PhotosRepository implements IPhotosRepository {
         skip: params?.skip,
         take: params?.take,
         orderBy: { created_at: 'desc' },
+        include: PHOTO_ACCOUNT_INCLUDE,
       }),
       this.prisma.photos.count({
         where: {
@@ -87,15 +89,30 @@ export class PhotosRepository implements IPhotosRepository {
   }
   upsertPhotoView(account_id: string, photo_id: string) {
     return this.prisma.$transaction(async (tx) => {
-      await tx.photo_views.upsert({
+      const existingView = await tx.photo_views.findUnique({
         where: {
           photo_id_account_id: { photo_id, account_id },
         },
-        update: {
-          view_at: new Date(),
-          updated_at: new Date(),
-        },
-        create: {
+      });
+
+      if (existingView) {
+        await tx.photo_views.update({
+          where: {
+            photo_id_account_id: { photo_id, account_id },
+          },
+          data: {
+            view_at: new Date(),
+            updated_at: new Date(),
+          },
+        });
+
+        return tx.photos.findUniqueOrThrow({
+          where: { id: photo_id },
+        });
+      }
+
+      await tx.photo_views.create({
+        data: {
           photo_id,
           account_id,
         },

@@ -1,18 +1,32 @@
 export interface IPhoto {
   id: string;
-  account_id: string;
+  accountId?: string;
+  account_id?: string;
   caption: string;
   url: string;
-  is_public: boolean;
-  likes: number | null;
-  views: number | null;
-  created_at: string;
-  updated_at: string;
+  isPrivate?: boolean;
+  is_public?: boolean;
+  is_private?: boolean;
+  commentCount?: number | null;
+  comments?: number | null;
+  likeCount?: number | null;
+  likes?: number | null;
+  viewCount?: number | null;
+  views?: number | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
   accounts: {
-    last_name: string;
-    account_id: string;
-    avatar_url: string | null;
-    first_name: string;
+    id?: string;
+    last_name?: string;
+    lastName?: string;
+    account_id?: string;
+    accountId?: string;
+    avatar_url?: string | null;
+    avatarUrl?: string | null;
+    first_name?: string;
+    firstName?: string;
   };
   liked?: boolean;
 }

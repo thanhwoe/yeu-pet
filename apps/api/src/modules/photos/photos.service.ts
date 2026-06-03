@@ -7,7 +7,7 @@ import {
 import { CreatePhotoDto, type BooleanFormValue } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { accounts, photos_status } from '@app/generated/prisma/client';
+import { accounts, photos, photos_status } from '@app/generated/prisma/client';
 import { Observable } from 'rxjs';
 import { photoChannel, photoLastMessage, UploadEvent } from './photos.event';
 import { PaginationDto } from '../shared/dto/pagination.dto';
@@ -16,11 +16,21 @@ import { FILE_DELETE_JOBS } from '../file-workers/file-workers.job';
 import { IEventBusService } from '@app/interfaces/event-bus.interface';
 import { ICacheService } from '@app/interfaces/cache.interface';
 import { IPhotoLikesRepository } from '@app/interfaces/photo-likes-repository.interface';
-import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
+import {
+  IPhotosRepository,
+  PhotoWithAccount,
+} from '@app/interfaces/photos-repository.interface';
 import { assertOwnerOrAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
 
 const toBoolean = (value: BooleanFormValue): boolean =>
   value === true || value === 'true' || value === '1';
+
+type PhotoResponse = (photos | PhotoWithAccount) & {
+  comments: number;
+  liked?: boolean;
+  likes: number;
+  views: number;
+};
 
 @Injectable()
 export class PhotosService {
@@ -165,7 +175,12 @@ export class PhotosService {
       take: limit,
     });
 
-    return paginate(data, total, page, limit);
+    return paginate(
+      data.map((photo) => this.toPhotoResponse(photo)),
+      total,
+      page,
+      limit,
+    );
   }
 
   async findAllByUser(user: accounts, pagination: PaginationDto) {
@@ -178,7 +193,12 @@ export class PhotosService {
       account_id: user.id,
     });
 
-    return paginate(data, total, page, limit);
+    return paginate(
+      data.map((photo) => this.toPhotoResponse(photo)),
+      total,
+      page,
+      limit,
+    );
   }
 
   async findOne(user: accounts, id: string) {
@@ -192,22 +212,18 @@ export class PhotosService {
       photo.id,
     );
 
-    return {
-      ...updatedPhoto,
-      liked: Boolean(liked),
-    };
+    return this.toPhotoResponse(updatedPhoto, Boolean(liked));
   }
 
   async toggleLike(user: accounts, id: string) {
     await this.assertReadable(user, id);
 
-    const liked = await this.photoLikesRepository.findOne(user.id, id);
+    const { liked, photo } = await this.photoLikesRepository.toggle(
+      user.id,
+      id,
+    );
 
-    if (liked) {
-      await this.photoLikesRepository.delete(user.id, id);
-    } else {
-      await this.photoLikesRepository.create(user.id, id);
-    }
+    return this.toPhotoResponse(photo, liked);
   }
 
   async update(user: accounts, id: string, updatePhotoDto: UpdatePhotoDto) {
@@ -264,5 +280,18 @@ export class PhotosService {
     assertOwnerOrAdmin(user, record.account_id);
 
     return record;
+  }
+
+  private toPhotoResponse(
+    photo: photos | PhotoWithAccount,
+    liked?: boolean,
+  ): PhotoResponse {
+    return {
+      ...photo,
+      comments: photo.comment_count,
+      liked,
+      likes: photo.like_count,
+      views: photo.view_count,
+    };
   }
 }
