@@ -39,13 +39,6 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - Spas
 - Training
 - Doctor AI
-- VNPay / payments
-
-### Notes
-
-- Use `apps/mobile-capacitor` only as a documentation and architecture reference.
-- Do not treat Capacitor-specific implementation details as mandatory for Expo.
-- Keep the active mobile scope visible in README, route docs, and feature docs.
 
 ## 3. Directory Structure
 
@@ -106,14 +99,3 @@ Keep the docs aligned with the active Expo product.
 - Keep `components/` focused on reusable UI and feature composition.
 - If a new feature is added, document the feature domain and route behavior before or alongside the code.
 - If a feature is deferred, mark it clearly in docs rather than leaving it mixed into active scope.
-
-## 8. Migration Reference
-
-`apps/mobile-capacitor` contains useful documentation patterns, especially:
-
-- explicit scope boundaries
-- route grouping by domain
-- checklist-based progress tracking
-- API client/session normalization patterns
-
-Use those ideas to improve the Expo app docs and structure, but keep the Expo app as the source of truth for implementation.

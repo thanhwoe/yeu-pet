@@ -7,13 +7,11 @@ export const AgendaDate = ({
 }: {
   section: SectionListData<unknown>;
 }) => {
-  const title = typeof section.title === "string" ? section.title : "";
+  const title = typeof section?.title === "string" ? section.title : "";
 
   return (
     <View className="bg-background py-8">
-      <Body className="mb-2 text-text-link">
-        {date(title).format("LL")}
-      </Body>
+      <Body className="mb-2 text-text-link">{date(title).format("LL")}</Body>
     </View>
   );
 };

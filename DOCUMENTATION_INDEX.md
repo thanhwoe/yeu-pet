@@ -1,0 +1,15 @@
+# Documentation Index
+
+- [README.md](README.md)
+- [AGENT_TASK_PROMPT.md](AGENT_TASK_PROMPT.md)
+- [docs/00-agent-operating-guide.md](docs/00-agent-operating-guide.md)
+- [docs/01-product-brief.md](docs/01-product-brief.md)
+- [docs/02-phase1-feature-spec.md](docs/02-phase1-feature-spec.md)
+- [docs/03-database-redesign-plan.md](docs/03-database-redesign-plan.md)
+- [docs/04-backend-api-plan.md](docs/04-backend-api-plan.md)
+- [docs/05-mobile-fe-plan.md](docs/05-mobile-fe-plan.md)
+- [docs/06-subscriptions-entitlements.md](docs/06-subscriptions-entitlements.md)
+- [docs/07-doctor-ai-plan.md](docs/07-doctor-ai-plan.md)
+- [docs/08-sitter-booking-plan.md](docs/08-sitter-booking-plan.md)
+- [docs/09-testing-release-checklist.md](docs/09-testing-release-checklist.md)
+- [docs/10-admin-portal-roadmap.md](docs/10-admin-portal-roadmap.md)

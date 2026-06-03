@@ -20,18 +20,6 @@ The app provides the current user-facing mobile experience for:
 - sitter booking
 - subscription
 
-## Important notes
-
-- `apps/mobile-capacitor` is only a reference for migration ideas and documentation patterns.
-- The Expo app is the canonical mobile app for current users.
-- Keep deferred features clearly separated from the active product scope:
-  - store / commerce
-  - clinics
-  - spas
-  - training
-  - doctor AI
-  - VNPay / payments
-
 ## Tech stack
 
 - Expo SDK 53

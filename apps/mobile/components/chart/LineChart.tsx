@@ -6,6 +6,7 @@ import {
   useFont,
   vec,
 } from "@shopify/react-native-skia";
+import { isEmpty } from "lodash";
 import { useUnstableNativeVariable } from "nativewind";
 import * as React from "react";
 import { View } from "react-native";
@@ -20,6 +21,7 @@ interface LineChartProps {
 }
 
 export const LineChart = React.memo(({ data, isLoading }: LineChartProps) => {
+  // console.log({ data });
   const font = useFont(require("@/assets/fonts/Nunito-Regular.ttf"), 12);
   const { state, isActive } = useChartPressState({
     x: "",
@@ -34,7 +36,7 @@ export const LineChart = React.memo(({ data, isLoading }: LineChartProps) => {
     "--background-primary",
   ) as unknown as string;
 
-  if (isLoading && !data) {
+  if (isLoading && isEmpty(data)) {
     return (
       <Skeleton
         className="h-[300px] w-full"
