@@ -15,7 +15,8 @@ import { abbreviateNumber } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BlurView } from "expo-blur";
 import { TrashIcon } from "phosphor-react-native";
-import { TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { PHOTO_PREVIEW_SIZE } from "../util";
 
 interface IProps {
   data: IPhoto;
@@ -67,46 +68,83 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   });
 
   return (
-    <>
-      <View>
-        <View className="flex-row mb-3 items-center justify-between">
-          <View className="flex-row gap-3 items-center">
+    <View style={styles.container}>
+      <View className="mb-12 flex-row items-center justify-between">
+        <View className="flex-1 flex-row items-center gap-12 pr-12">
+          {data.accounts.avatar_url && (
             <Image
               source={{ uri: data.accounts.avatar_url || "" }}
-              className="size-8 rounded-full"
+              style={styles.avatar}
             />
-            <Text className="text-text-primary-inverse font-medium">
-              {data.accounts.first_name} {data.accounts.last_name}
-            </Text>
-          </View>
-          {deleteAble && (
-            <TouchableOpacity
-              onPress={() => deletePhoto({ id: data.id })}
-              disabled={isDeleting}
-            >
-              <DeleteIcon size={24} className="text-text-primary-inverse" />
-            </TouchableOpacity>
           )}
+          <Text
+            variant="subhead"
+            numberOfLines={1}
+            className="flex-1 font-medium text-text-primary-inverse"
+          >
+            {data.accounts.first_name} {data.accounts.last_name}
+          </Text>
         </View>
-        <Image source={{ uri: data.url }} className="size-72 rounded-lg" />
+        {deleteAble && (
+          <TouchableOpacity
+            accessibilityLabel="Delete photo"
+            accessibilityRole="button"
+            activeOpacity={0.82}
+            onPress={() => deletePhoto({ id: data.id })}
+            disabled={isDeleting}
+            className="h-40 w-40 items-center justify-center rounded-full bg-black/30"
+          >
+            <DeleteIcon size={22} className="text-white" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <View style={styles.photoFrame}>
+        <Image source={{ uri: data.url }} style={styles.photo} />
 
         {data.caption && (
           <BlurView
             experimentalBlurMethod="dimezisBlurView"
             tint={colorScheme}
-            className="absolute bottom-2 left-1/2 transform -translate-x-1/2 rounded-xl overflow-hidden py-1 px-2"
+            className="absolute bottom-12 left-12 right-12 overflow-hidden rounded-16 border-hairline border-line-primary-inverse/40 px-12 py-8"
           >
-            <Text className="text-text-primary-inverse">{data.caption}</Text>
+            <Text className="text-text-primary-inverse font-medium">
+              {data.caption}
+            </Text>
           </BlurView>
         )}
+      </View>
+
+      <View className="mt-20 items-center">
         <LikeButton
           disabled={isTogglingLike || isLoadingStats}
-          active={photoStats?.data?.liked}
-          className="self-center absolute -bottom-40"
+          active={photoStats?.liked}
+          className="self-center"
           onPress={() => toggleLikePhoto({ id: data.id })}
-          label={`${abbreviateNumber(photoStats?.data?.likes || 0)} Likes`}
+          label={`${abbreviateNumber(photoStats?.likes || 0)} Likes`}
         />
       </View>
-    </>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  avatar: {
+    borderRadius: 18,
+    height: 36,
+    width: 36,
+  },
+  container: {
+    width: PHOTO_PREVIEW_SIZE,
+  },
+  photo: {
+    height: "100%",
+    width: "100%",
+  },
+  photoFrame: {
+    borderRadius: 24,
+    height: PHOTO_PREVIEW_SIZE,
+    overflow: "hidden",
+    width: PHOTO_PREVIEW_SIZE,
+  },
+});

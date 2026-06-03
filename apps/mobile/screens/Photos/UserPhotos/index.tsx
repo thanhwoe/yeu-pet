@@ -1,9 +1,11 @@
+import { Spinner } from "@/components/ui/Spinner";
 import { PHOTOS_KEY } from "@/constants/query-keys";
 import { IPhoto } from "@/interfaces";
 import { getListUserPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { View } from "react-native";
 import { EmptyPhotos } from "../EmptyPhotos";
 import { PhotoItem } from "../PhotoItem";
 import { ITEM_WIDTH, LIMIT } from "../util";
@@ -53,9 +55,17 @@ export const UserPhotos = () => {
       renderItem={renderItem}
       estimatedItemSize={ITEM_WIDTH}
       ListEmptyComponent={<EmptyPhotos isLoading={isLoading} />}
+      ListFooterComponent={
+        isFetchingNextPage ? (
+          <View className="items-center py-20">
+            <Spinner size={22} />
+          </View>
+        ) : null
+      }
       showsVerticalScrollIndicator={false}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.4}
+      contentContainerStyle={{ paddingBottom: 112 }}
     />
   );
 };

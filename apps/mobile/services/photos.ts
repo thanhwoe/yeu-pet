@@ -48,7 +48,7 @@ export const toggleLikePhotoMutation = ({ id }: { id: string }) =>
   APIs.post<{ data: IPhoto }>(API_ROUTES.TOGGLE_LIKE_PHOTO(id));
 
 export const getPhotoStatsQuery = ({ id }: { id: string }) =>
-  APIs.get<{ data: IPhoto }>(API_ROUTES.PHOTO_STATS(id));
+  APIs.get<IPhoto>(API_ROUTES.PHOTO_STATS(id));
 
 export const deletePhotoMutation = ({ id }: { id: string }) =>
   APIs.delete<{ data: IPhoto }>(API_ROUTES.DELETE_PHOTO(id));

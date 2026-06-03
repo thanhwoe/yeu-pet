@@ -1,5 +1,6 @@
 import { Spinner } from "@/components/ui/Spinner";
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { nativeShadows } from "@/theme/shadows";
 import { cva } from "class-variance-authority";
 import { PaperPlaneTiltIcon } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
@@ -11,10 +12,10 @@ interface IProps {
   disabled?: boolean;
 }
 
-const variants = cva("p-3 bg-background-card rounded-full self-center", {
+const variants = cva("self-center bg-background-primary", {
   variants: {
     disabled: {
-      true: "opacity-50 bg-background-secondary",
+      true: "opacity-60 bg-background-secondary",
       false: "",
     },
   },
@@ -23,14 +24,21 @@ const variants = cva("p-3 bg-background-card rounded-full self-center", {
 export const SubmitButton = ({ onPress, disabled }: IProps) => {
   return (
     <TouchableOpacity
-      className={variants({ disabled })}
+      accessibilityLabel="Upload photo"
+      accessibilityRole="button"
+      activeOpacity={0.82}
+      className={variants({
+        disabled,
+        className: "h-56 w-56 items-center justify-center rounded-full p-0",
+      })}
       onPress={onPress}
       disabled={disabled}
+      style={nativeShadows.card}
     >
       {disabled ? (
-        <Spinner className="text-icon-foreground" />
+        <Spinner className="text-icon-primary-inverse" size={22} />
       ) : (
-        <Icon className="text-icon-foreground" weight="bold" />
+        <Icon size={24} className="text-icon-primary-inverse" weight="bold" />
       )}
     </TouchableOpacity>
   );

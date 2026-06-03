@@ -4,7 +4,13 @@ import { IPhoto } from "@/interfaces";
 import { memo, useCallback, useMemo, useState } from "react";
 import { ImageStyle, Pressable } from "react-native";
 import { PhotoView } from "../PhotoView";
-import { GAP, ITEM_WIDTH } from "../util";
+import {
+  GRID_COLUMNS,
+  GRID_GAP,
+  GRID_ITEM_RADIUS,
+  ITEM_WIDTH,
+  SCREEN_HORIZONTAL_PADDING,
+} from "../util";
 
 interface PhotoItemProps {
   data: IPhoto;
@@ -13,24 +19,23 @@ interface PhotoItemProps {
 }
 export const PhotoItem = memo(({ data, index, deleteAble }: PhotoItemProps) => {
   const [showModal, setShowModal] = useState(false);
-  const columnIndex = index % 3;
+  const columnIndex = index % GRID_COLUMNS;
 
   const thumbnailStyle = useMemo<ImageStyle>(
     () => ({
       height: ITEM_WIDTH,
       width: ITEM_WIDTH,
-      marginBottom: GAP,
-      marginLeft: columnIndex === 0 ? GAP : GAP / 2,
-      marginRight: columnIndex === 2 ? GAP : GAP / 2,
-      borderRadius: 10,
+      marginBottom: GRID_GAP,
+      marginRight: columnIndex === GRID_COLUMNS - 1 ? 0 : GRID_GAP,
+      borderRadius: GRID_ITEM_RADIUS,
     }),
     [columnIndex],
   );
 
   const thumbnailFrame = useMemo(
     () => ({
-      x: GAP + columnIndex * (ITEM_WIDTH + GAP),
-      y: GAP + Math.floor(index / 3) * (ITEM_WIDTH + GAP),
+      x: SCREEN_HORIZONTAL_PADDING + columnIndex * (ITEM_WIDTH + GRID_GAP),
+      y: Math.floor(index / GRID_COLUMNS) * (ITEM_WIDTH + GRID_GAP),
       width: ITEM_WIDTH,
       height: ITEM_WIDTH,
     }),
@@ -42,7 +47,12 @@ export const PhotoItem = memo(({ data, index, deleteAble }: PhotoItemProps) => {
 
   return (
     <>
-      <Pressable onPress={openModal}>
+      <Pressable
+        accessibilityLabel="Open photo"
+        accessibilityRole="button"
+        hitSlop={4}
+        onPress={openModal}
+      >
         <Image
           style={thumbnailStyle}
           source={{ uri: data.url }}
