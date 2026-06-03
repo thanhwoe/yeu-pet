@@ -27,6 +27,8 @@ export type AggregatePet_sitters = {
 }
 
 export type Pet_sittersAvgAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
   hourly_rate: runtime.Decimal | null
   daily_rate: runtime.Decimal | null
   max_concurrent_bookings: number | null
@@ -37,6 +39,8 @@ export type Pet_sittersAvgAggregateOutputType = {
 }
 
 export type Pet_sittersSumAggregateOutputType = {
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
   hourly_rate: runtime.Decimal | null
   daily_rate: runtime.Decimal | null
   max_concurrent_bookings: number | null
@@ -49,8 +53,16 @@ export type Pet_sittersSumAggregateOutputType = {
 export type Pet_sittersMinAggregateOutputType = {
   id: string | null
   account_id: string | null
+  display_name: string | null
   bio: string | null
   address: string | null
+  city: string | null
+  district: string | null
+  ward: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  experience: string | null
+  service_notes: string | null
   hourly_rate: runtime.Decimal | null
   daily_rate: runtime.Decimal | null
   max_concurrent_bookings: number | null
@@ -59,6 +71,7 @@ export type Pet_sittersMinAggregateOutputType = {
   avg_rating: runtime.Decimal | null
   total_reviews: number | null
   is_available: boolean | null
+  is_verified: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -66,8 +79,16 @@ export type Pet_sittersMinAggregateOutputType = {
 export type Pet_sittersMaxAggregateOutputType = {
   id: string | null
   account_id: string | null
+  display_name: string | null
   bio: string | null
   address: string | null
+  city: string | null
+  district: string | null
+  ward: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  experience: string | null
+  service_notes: string | null
   hourly_rate: runtime.Decimal | null
   daily_rate: runtime.Decimal | null
   max_concurrent_bookings: number | null
@@ -76,6 +97,7 @@ export type Pet_sittersMaxAggregateOutputType = {
   avg_rating: runtime.Decimal | null
   total_reviews: number | null
   is_available: boolean | null
+  is_verified: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -83,8 +105,16 @@ export type Pet_sittersMaxAggregateOutputType = {
 export type Pet_sittersCountAggregateOutputType = {
   id: number
   account_id: number
+  display_name: number
   bio: number
   address: number
+  city: number
+  district: number
+  ward: number
+  latitude: number
+  longitude: number
+  experience: number
+  service_notes: number
   hourly_rate: number
   daily_rate: number
   max_concurrent_bookings: number
@@ -93,6 +123,7 @@ export type Pet_sittersCountAggregateOutputType = {
   avg_rating: number
   total_reviews: number
   is_available: number
+  is_verified: number
   created_at: number
   updated_at: number
   _all: number
@@ -100,6 +131,8 @@ export type Pet_sittersCountAggregateOutputType = {
 
 
 export type Pet_sittersAvgAggregateInputType = {
+  latitude?: true
+  longitude?: true
   hourly_rate?: true
   daily_rate?: true
   max_concurrent_bookings?: true
@@ -110,6 +143,8 @@ export type Pet_sittersAvgAggregateInputType = {
 }
 
 export type Pet_sittersSumAggregateInputType = {
+  latitude?: true
+  longitude?: true
   hourly_rate?: true
   daily_rate?: true
   max_concurrent_bookings?: true
@@ -122,8 +157,16 @@ export type Pet_sittersSumAggregateInputType = {
 export type Pet_sittersMinAggregateInputType = {
   id?: true
   account_id?: true
+  display_name?: true
   bio?: true
   address?: true
+  city?: true
+  district?: true
+  ward?: true
+  latitude?: true
+  longitude?: true
+  experience?: true
+  service_notes?: true
   hourly_rate?: true
   daily_rate?: true
   max_concurrent_bookings?: true
@@ -132,6 +175,7 @@ export type Pet_sittersMinAggregateInputType = {
   avg_rating?: true
   total_reviews?: true
   is_available?: true
+  is_verified?: true
   created_at?: true
   updated_at?: true
 }
@@ -139,8 +183,16 @@ export type Pet_sittersMinAggregateInputType = {
 export type Pet_sittersMaxAggregateInputType = {
   id?: true
   account_id?: true
+  display_name?: true
   bio?: true
   address?: true
+  city?: true
+  district?: true
+  ward?: true
+  latitude?: true
+  longitude?: true
+  experience?: true
+  service_notes?: true
   hourly_rate?: true
   daily_rate?: true
   max_concurrent_bookings?: true
@@ -149,6 +201,7 @@ export type Pet_sittersMaxAggregateInputType = {
   avg_rating?: true
   total_reviews?: true
   is_available?: true
+  is_verified?: true
   created_at?: true
   updated_at?: true
 }
@@ -156,8 +209,16 @@ export type Pet_sittersMaxAggregateInputType = {
 export type Pet_sittersCountAggregateInputType = {
   id?: true
   account_id?: true
+  display_name?: true
   bio?: true
   address?: true
+  city?: true
+  district?: true
+  ward?: true
+  latitude?: true
+  longitude?: true
+  experience?: true
+  service_notes?: true
   hourly_rate?: true
   daily_rate?: true
   max_concurrent_bookings?: true
@@ -166,6 +227,7 @@ export type Pet_sittersCountAggregateInputType = {
   avg_rating?: true
   total_reviews?: true
   is_available?: true
+  is_verified?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -260,8 +322,16 @@ export type pet_sittersGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type Pet_sittersGroupByOutputType = {
   id: string
   account_id: string
+  display_name: string | null
   bio: string | null
   address: string
+  city: string | null
+  district: string | null
+  ward: string | null
+  latitude: runtime.Decimal | null
+  longitude: runtime.Decimal | null
+  experience: string | null
+  service_notes: string | null
   hourly_rate: runtime.Decimal
   daily_rate: runtime.Decimal
   max_concurrent_bookings: number
@@ -270,6 +340,7 @@ export type Pet_sittersGroupByOutputType = {
   avg_rating: runtime.Decimal
   total_reviews: number
   is_available: boolean
+  is_verified: boolean
   created_at: Date | null
   updated_at: Date | null
   _count: Pet_sittersCountAggregateOutputType | null
@@ -300,8 +371,16 @@ export type pet_sittersWhereInput = {
   NOT?: Prisma.pet_sittersWhereInput | Prisma.pet_sittersWhereInput[]
   id?: Prisma.UuidFilter<"pet_sitters"> | string
   account_id?: Prisma.UuidFilter<"pet_sitters"> | string
+  display_name?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   bio?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   address?: Prisma.StringFilter<"pet_sitters"> | string
+  city?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  district?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  ward?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  service_notes?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   hourly_rate?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFilter<"pet_sitters"> | number
@@ -310,6 +389,7 @@ export type pet_sittersWhereInput = {
   avg_rating?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFilter<"pet_sitters"> | number
   is_available?: Prisma.BoolFilter<"pet_sitters"> | boolean
+  is_verified?: Prisma.BoolFilter<"pet_sitters"> | boolean
   created_at?: Prisma.DateTimeNullableFilter<"pet_sitters"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"pet_sitters"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -320,8 +400,16 @@ export type pet_sittersWhereInput = {
 export type pet_sittersOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  display_name?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  district?: Prisma.SortOrderInput | Prisma.SortOrder
+  ward?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  experience?: Prisma.SortOrderInput | Prisma.SortOrder
+  service_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -330,6 +418,7 @@ export type pet_sittersOrderByWithRelationInput = {
   avg_rating?: Prisma.SortOrder
   total_reviews?: Prisma.SortOrder
   is_available?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
@@ -343,8 +432,16 @@ export type pet_sittersWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.pet_sittersWhereInput | Prisma.pet_sittersWhereInput[]
   OR?: Prisma.pet_sittersWhereInput[]
   NOT?: Prisma.pet_sittersWhereInput | Prisma.pet_sittersWhereInput[]
+  display_name?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   bio?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   address?: Prisma.StringFilter<"pet_sitters"> | string
+  city?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  district?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  ward?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  latitude?: Prisma.DecimalNullableFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
+  service_notes?: Prisma.StringNullableFilter<"pet_sitters"> | string | null
   hourly_rate?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFilter<"pet_sitters"> | number
@@ -353,6 +450,7 @@ export type pet_sittersWhereUniqueInput = Prisma.AtLeast<{
   avg_rating?: Prisma.DecimalFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFilter<"pet_sitters"> | number
   is_available?: Prisma.BoolFilter<"pet_sitters"> | boolean
+  is_verified?: Prisma.BoolFilter<"pet_sitters"> | boolean
   created_at?: Prisma.DateTimeNullableFilter<"pet_sitters"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"pet_sitters"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -363,8 +461,16 @@ export type pet_sittersWhereUniqueInput = Prisma.AtLeast<{
 export type pet_sittersOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  display_name?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  district?: Prisma.SortOrderInput | Prisma.SortOrder
+  ward?: Prisma.SortOrderInput | Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  experience?: Prisma.SortOrderInput | Prisma.SortOrder
+  service_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -373,6 +479,7 @@ export type pet_sittersOrderByWithAggregationInput = {
   avg_rating?: Prisma.SortOrder
   total_reviews?: Prisma.SortOrder
   is_available?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.pet_sittersCountOrderByAggregateInput
@@ -388,8 +495,16 @@ export type pet_sittersScalarWhereWithAggregatesInput = {
   NOT?: Prisma.pet_sittersScalarWhereWithAggregatesInput | Prisma.pet_sittersScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"pet_sitters"> | string
   account_id?: Prisma.UuidWithAggregatesFilter<"pet_sitters"> | string
+  display_name?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
   address?: Prisma.StringWithAggregatesFilter<"pet_sitters"> | string
+  city?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
+  district?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
+  ward?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
+  latitude?: Prisma.DecimalNullableWithAggregatesFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.DecimalNullableWithAggregatesFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
+  service_notes?: Prisma.StringNullableWithAggregatesFilter<"pet_sitters"> | string | null
   hourly_rate?: Prisma.DecimalWithAggregatesFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalWithAggregatesFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntWithAggregatesFilter<"pet_sitters"> | number
@@ -398,14 +513,23 @@ export type pet_sittersScalarWhereWithAggregatesInput = {
   avg_rating?: Prisma.DecimalWithAggregatesFilter<"pet_sitters"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntWithAggregatesFilter<"pet_sitters"> | number
   is_available?: Prisma.BoolWithAggregatesFilter<"pet_sitters"> | boolean
+  is_verified?: Prisma.BoolWithAggregatesFilter<"pet_sitters"> | boolean
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"pet_sitters"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"pet_sitters"> | Date | string | null
 }
 
 export type pet_sittersCreateInput = {
   id?: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -414,6 +538,7 @@ export type pet_sittersCreateInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPet_sittersInput
@@ -424,8 +549,16 @@ export type pet_sittersCreateInput = {
 export type pet_sittersUncheckedCreateInput = {
   id?: string
   account_id: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -434,6 +567,7 @@ export type pet_sittersUncheckedCreateInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutPet_sittersInput
@@ -442,8 +576,16 @@ export type pet_sittersUncheckedCreateInput = {
 
 export type pet_sittersUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -452,6 +594,7 @@ export type pet_sittersUpdateInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPet_sittersNestedInput
@@ -462,8 +605,16 @@ export type pet_sittersUpdateInput = {
 export type pet_sittersUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -472,6 +623,7 @@ export type pet_sittersUncheckedUpdateInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutPet_sittersNestedInput
@@ -481,8 +633,16 @@ export type pet_sittersUncheckedUpdateInput = {
 export type pet_sittersCreateManyInput = {
   id?: string
   account_id: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -491,14 +651,23 @@ export type pet_sittersCreateManyInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type pet_sittersUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -507,6 +676,7 @@ export type pet_sittersUpdateManyMutationInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -514,8 +684,16 @@ export type pet_sittersUpdateManyMutationInput = {
 export type pet_sittersUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -524,6 +702,7 @@ export type pet_sittersUncheckedUpdateManyInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -536,8 +715,16 @@ export type Pet_sittersNullableScalarRelationFilter = {
 export type pet_sittersCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  display_name?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  ward?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  service_notes?: Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -546,11 +733,14 @@ export type pet_sittersCountOrderByAggregateInput = {
   avg_rating?: Prisma.SortOrder
   total_reviews?: Prisma.SortOrder
   is_available?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type pet_sittersAvgOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -563,8 +753,16 @@ export type pet_sittersAvgOrderByAggregateInput = {
 export type pet_sittersMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  display_name?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  ward?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  service_notes?: Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -573,6 +771,7 @@ export type pet_sittersMaxOrderByAggregateInput = {
   avg_rating?: Prisma.SortOrder
   total_reviews?: Prisma.SortOrder
   is_available?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -580,8 +779,16 @@ export type pet_sittersMaxOrderByAggregateInput = {
 export type pet_sittersMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  display_name?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  ward?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  service_notes?: Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -590,11 +797,14 @@ export type pet_sittersMinOrderByAggregateInput = {
   avg_rating?: Prisma.SortOrder
   total_reviews?: Prisma.SortOrder
   is_available?: Prisma.SortOrder
+  is_verified?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type pet_sittersSumOrderByAggregateInput = {
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   hourly_rate?: Prisma.SortOrder
   daily_rate?: Prisma.SortOrder
   max_concurrent_bookings?: Prisma.SortOrder
@@ -671,8 +881,16 @@ export type pet_sittersUpdateOneRequiredWithoutSitter_reviewsNestedInput = {
 
 export type pet_sittersCreateWithoutAccountsInput = {
   id?: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -681,6 +899,7 @@ export type pet_sittersCreateWithoutAccountsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsCreateNestedManyWithoutPet_sittersInput
@@ -689,8 +908,16 @@ export type pet_sittersCreateWithoutAccountsInput = {
 
 export type pet_sittersUncheckedCreateWithoutAccountsInput = {
   id?: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -699,6 +926,7 @@ export type pet_sittersUncheckedCreateWithoutAccountsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutPet_sittersInput
@@ -723,8 +951,16 @@ export type pet_sittersUpdateToOneWithWhereWithoutAccountsInput = {
 
 export type pet_sittersUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -733,6 +969,7 @@ export type pet_sittersUpdateWithoutAccountsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUpdateManyWithoutPet_sittersNestedInput
@@ -741,8 +978,16 @@ export type pet_sittersUpdateWithoutAccountsInput = {
 
 export type pet_sittersUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -751,6 +996,7 @@ export type pet_sittersUncheckedUpdateWithoutAccountsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutPet_sittersNestedInput
@@ -759,8 +1005,16 @@ export type pet_sittersUncheckedUpdateWithoutAccountsInput = {
 
 export type pet_sittersCreateWithoutSitter_bookingsInput = {
   id?: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -769,6 +1023,7 @@ export type pet_sittersCreateWithoutSitter_bookingsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPet_sittersInput
@@ -778,8 +1033,16 @@ export type pet_sittersCreateWithoutSitter_bookingsInput = {
 export type pet_sittersUncheckedCreateWithoutSitter_bookingsInput = {
   id?: string
   account_id: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -788,6 +1051,7 @@ export type pet_sittersUncheckedCreateWithoutSitter_bookingsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   sitter_reviews?: Prisma.sitter_reviewsUncheckedCreateNestedManyWithoutPet_sittersInput
@@ -811,8 +1075,16 @@ export type pet_sittersUpdateToOneWithWhereWithoutSitter_bookingsInput = {
 
 export type pet_sittersUpdateWithoutSitter_bookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -821,6 +1093,7 @@ export type pet_sittersUpdateWithoutSitter_bookingsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPet_sittersNestedInput
@@ -830,8 +1103,16 @@ export type pet_sittersUpdateWithoutSitter_bookingsInput = {
 export type pet_sittersUncheckedUpdateWithoutSitter_bookingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -840,6 +1121,7 @@ export type pet_sittersUncheckedUpdateWithoutSitter_bookingsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_reviews?: Prisma.sitter_reviewsUncheckedUpdateManyWithoutPet_sittersNestedInput
@@ -847,8 +1129,16 @@ export type pet_sittersUncheckedUpdateWithoutSitter_bookingsInput = {
 
 export type pet_sittersCreateWithoutSitter_reviewsInput = {
   id?: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -857,6 +1147,7 @@ export type pet_sittersCreateWithoutSitter_reviewsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutPet_sittersInput
@@ -866,8 +1157,16 @@ export type pet_sittersCreateWithoutSitter_reviewsInput = {
 export type pet_sittersUncheckedCreateWithoutSitter_reviewsInput = {
   id?: string
   account_id: string
+  display_name?: string | null
   bio?: string | null
   address: string
+  city?: string | null
+  district?: string | null
+  ward?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: string | null
+  service_notes?: string | null
   hourly_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate: runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: number
@@ -876,6 +1175,7 @@ export type pet_sittersUncheckedCreateWithoutSitter_reviewsInput = {
   avg_rating?: runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: number
   is_available?: boolean
+  is_verified?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedCreateNestedManyWithoutPet_sittersInput
@@ -899,8 +1199,16 @@ export type pet_sittersUpdateToOneWithWhereWithoutSitter_reviewsInput = {
 
 export type pet_sittersUpdateWithoutSitter_reviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -909,6 +1217,7 @@ export type pet_sittersUpdateWithoutSitter_reviewsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPet_sittersNestedInput
@@ -918,8 +1227,16 @@ export type pet_sittersUpdateWithoutSitter_reviewsInput = {
 export type pet_sittersUncheckedUpdateWithoutSitter_reviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  display_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  service_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hourly_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   daily_rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   max_concurrent_bookings?: Prisma.IntFieldUpdateOperationsInput | number
@@ -928,6 +1245,7 @@ export type pet_sittersUncheckedUpdateWithoutSitter_reviewsInput = {
   avg_rating?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   total_reviews?: Prisma.IntFieldUpdateOperationsInput | number
   is_available?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUncheckedUpdateManyWithoutPet_sittersNestedInput
@@ -976,8 +1294,16 @@ export type Pet_sittersCountOutputTypeCountSitter_reviewsArgs<ExtArgs extends ru
 export type pet_sittersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  display_name?: boolean
   bio?: boolean
   address?: boolean
+  city?: boolean
+  district?: boolean
+  ward?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  experience?: boolean
+  service_notes?: boolean
   hourly_rate?: boolean
   daily_rate?: boolean
   max_concurrent_bookings?: boolean
@@ -986,6 +1312,7 @@ export type pet_sittersSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   avg_rating?: boolean
   total_reviews?: boolean
   is_available?: boolean
+  is_verified?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -997,8 +1324,16 @@ export type pet_sittersSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 export type pet_sittersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  display_name?: boolean
   bio?: boolean
   address?: boolean
+  city?: boolean
+  district?: boolean
+  ward?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  experience?: boolean
+  service_notes?: boolean
   hourly_rate?: boolean
   daily_rate?: boolean
   max_concurrent_bookings?: boolean
@@ -1007,6 +1342,7 @@ export type pet_sittersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   avg_rating?: boolean
   total_reviews?: boolean
   is_available?: boolean
+  is_verified?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -1015,8 +1351,16 @@ export type pet_sittersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 export type pet_sittersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  display_name?: boolean
   bio?: boolean
   address?: boolean
+  city?: boolean
+  district?: boolean
+  ward?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  experience?: boolean
+  service_notes?: boolean
   hourly_rate?: boolean
   daily_rate?: boolean
   max_concurrent_bookings?: boolean
@@ -1025,6 +1369,7 @@ export type pet_sittersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   avg_rating?: boolean
   total_reviews?: boolean
   is_available?: boolean
+  is_verified?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -1033,8 +1378,16 @@ export type pet_sittersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type pet_sittersSelectScalar = {
   id?: boolean
   account_id?: boolean
+  display_name?: boolean
   bio?: boolean
   address?: boolean
+  city?: boolean
+  district?: boolean
+  ward?: boolean
+  latitude?: boolean
+  longitude?: boolean
+  experience?: boolean
+  service_notes?: boolean
   hourly_rate?: boolean
   daily_rate?: boolean
   max_concurrent_bookings?: boolean
@@ -1043,11 +1396,12 @@ export type pet_sittersSelectScalar = {
   avg_rating?: boolean
   total_reviews?: boolean
   is_available?: boolean
+  is_verified?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type pet_sittersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "bio" | "address" | "hourly_rate" | "daily_rate" | "max_concurrent_bookings" | "active_bookings_count" | "completed_bookings_count" | "avg_rating" | "total_reviews" | "is_available" | "created_at" | "updated_at", ExtArgs["result"]["pet_sitters"]>
+export type pet_sittersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "display_name" | "bio" | "address" | "city" | "district" | "ward" | "latitude" | "longitude" | "experience" | "service_notes" | "hourly_rate" | "daily_rate" | "max_concurrent_bookings" | "active_bookings_count" | "completed_bookings_count" | "avg_rating" | "total_reviews" | "is_available" | "is_verified" | "created_at" | "updated_at", ExtArgs["result"]["pet_sitters"]>
 export type pet_sittersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   sitter_bookings?: boolean | Prisma.pet_sitters$sitter_bookingsArgs<ExtArgs>
@@ -1071,8 +1425,16 @@ export type $pet_sittersPayload<ExtArgs extends runtime.Types.Extensions.Interna
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     account_id: string
+    display_name: string | null
     bio: string | null
     address: string
+    city: string | null
+    district: string | null
+    ward: string | null
+    latitude: runtime.Decimal | null
+    longitude: runtime.Decimal | null
+    experience: string | null
+    service_notes: string | null
     hourly_rate: runtime.Decimal
     daily_rate: runtime.Decimal
     max_concurrent_bookings: number
@@ -1081,6 +1443,7 @@ export type $pet_sittersPayload<ExtArgs extends runtime.Types.Extensions.Interna
     avg_rating: runtime.Decimal
     total_reviews: number
     is_available: boolean
+    is_verified: boolean
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["pet_sitters"]>
@@ -1511,8 +1874,16 @@ export interface Prisma__pet_sittersClient<T, Null = never, ExtArgs extends runt
 export interface pet_sittersFieldRefs {
   readonly id: Prisma.FieldRef<"pet_sitters", 'String'>
   readonly account_id: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly display_name: Prisma.FieldRef<"pet_sitters", 'String'>
   readonly bio: Prisma.FieldRef<"pet_sitters", 'String'>
   readonly address: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly city: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly district: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly ward: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly latitude: Prisma.FieldRef<"pet_sitters", 'Decimal'>
+  readonly longitude: Prisma.FieldRef<"pet_sitters", 'Decimal'>
+  readonly experience: Prisma.FieldRef<"pet_sitters", 'String'>
+  readonly service_notes: Prisma.FieldRef<"pet_sitters", 'String'>
   readonly hourly_rate: Prisma.FieldRef<"pet_sitters", 'Decimal'>
   readonly daily_rate: Prisma.FieldRef<"pet_sitters", 'Decimal'>
   readonly max_concurrent_bookings: Prisma.FieldRef<"pet_sitters", 'Int'>
@@ -1521,6 +1892,7 @@ export interface pet_sittersFieldRefs {
   readonly avg_rating: Prisma.FieldRef<"pet_sitters", 'Decimal'>
   readonly total_reviews: Prisma.FieldRef<"pet_sitters", 'Int'>
   readonly is_available: Prisma.FieldRef<"pet_sitters", 'Boolean'>
+  readonly is_verified: Prisma.FieldRef<"pet_sitters", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"pet_sitters", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"pet_sitters", 'DateTime'>
 }

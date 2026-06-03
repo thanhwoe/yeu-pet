@@ -41,6 +41,7 @@ export type PhotosSumAggregateOutputType = {
 export type PhotosMinAggregateOutputType = {
   id: string | null
   account_id: string | null
+  pet_id: string | null
   url: string | null
   file_id: string | null
   thumbnail_url: string | null
@@ -50,6 +51,7 @@ export type PhotosMinAggregateOutputType = {
   view_count: number | null
   like_count: number | null
   comment_count: number | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -57,6 +59,7 @@ export type PhotosMinAggregateOutputType = {
 export type PhotosMaxAggregateOutputType = {
   id: string | null
   account_id: string | null
+  pet_id: string | null
   url: string | null
   file_id: string | null
   thumbnail_url: string | null
@@ -66,6 +69,7 @@ export type PhotosMaxAggregateOutputType = {
   view_count: number | null
   like_count: number | null
   comment_count: number | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -73,6 +77,7 @@ export type PhotosMaxAggregateOutputType = {
 export type PhotosCountAggregateOutputType = {
   id: number
   account_id: number
+  pet_id: number
   url: number
   file_id: number
   thumbnail_url: number
@@ -82,6 +87,7 @@ export type PhotosCountAggregateOutputType = {
   view_count: number
   like_count: number
   comment_count: number
+  deleted_at: number
   created_at: number
   updated_at: number
   _all: number
@@ -103,6 +109,7 @@ export type PhotosSumAggregateInputType = {
 export type PhotosMinAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   url?: true
   file_id?: true
   thumbnail_url?: true
@@ -112,6 +119,7 @@ export type PhotosMinAggregateInputType = {
   view_count?: true
   like_count?: true
   comment_count?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -119,6 +127,7 @@ export type PhotosMinAggregateInputType = {
 export type PhotosMaxAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   url?: true
   file_id?: true
   thumbnail_url?: true
@@ -128,6 +137,7 @@ export type PhotosMaxAggregateInputType = {
   view_count?: true
   like_count?: true
   comment_count?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -135,6 +145,7 @@ export type PhotosMaxAggregateInputType = {
 export type PhotosCountAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   url?: true
   file_id?: true
   thumbnail_url?: true
@@ -144,6 +155,7 @@ export type PhotosCountAggregateInputType = {
   view_count?: true
   like_count?: true
   comment_count?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -238,6 +250,7 @@ export type photosGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type PhotosGroupByOutputType = {
   id: string
   account_id: string
+  pet_id: string | null
   url: string | null
   file_id: string | null
   thumbnail_url: string | null
@@ -247,6 +260,7 @@ export type PhotosGroupByOutputType = {
   view_count: number
   like_count: number
   comment_count: number
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
   _count: PhotosCountAggregateOutputType | null
@@ -277,6 +291,7 @@ export type photosWhereInput = {
   NOT?: Prisma.photosWhereInput | Prisma.photosWhereInput[]
   id?: Prisma.UuidFilter<"photos"> | string
   account_id?: Prisma.UuidFilter<"photos"> | string
+  pet_id?: Prisma.UuidNullableFilter<"photos"> | string | null
   url?: Prisma.StringNullableFilter<"photos"> | string | null
   file_id?: Prisma.StringNullableFilter<"photos"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"photos"> | string | null
@@ -286,17 +301,20 @@ export type photosWhereInput = {
   view_count?: Prisma.IntFilter<"photos"> | number
   like_count?: Prisma.IntFilter<"photos"> | number
   comment_count?: Prisma.IntFilter<"photos"> | number
+  deleted_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   photo_comments?: Prisma.Photo_commentsListRelationFilter
   photo_likes?: Prisma.Photo_likesListRelationFilter
   photo_views?: Prisma.Photo_viewsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }
 
 export type photosOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -306,12 +324,14 @@ export type photosOrderByWithRelationInput = {
   view_count?: Prisma.SortOrder
   like_count?: Prisma.SortOrder
   comment_count?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   photo_comments?: Prisma.photo_commentsOrderByRelationAggregateInput
   photo_likes?: Prisma.photo_likesOrderByRelationAggregateInput
   photo_views?: Prisma.photo_viewsOrderByRelationAggregateInput
   accounts?: Prisma.accountsOrderByWithRelationInput
+  pets?: Prisma.petsOrderByWithRelationInput
 }
 
 export type photosWhereUniqueInput = Prisma.AtLeast<{
@@ -320,6 +340,7 @@ export type photosWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.photosWhereInput[]
   NOT?: Prisma.photosWhereInput | Prisma.photosWhereInput[]
   account_id?: Prisma.UuidFilter<"photos"> | string
+  pet_id?: Prisma.UuidNullableFilter<"photos"> | string | null
   url?: Prisma.StringNullableFilter<"photos"> | string | null
   file_id?: Prisma.StringNullableFilter<"photos"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"photos"> | string | null
@@ -329,17 +350,20 @@ export type photosWhereUniqueInput = Prisma.AtLeast<{
   view_count?: Prisma.IntFilter<"photos"> | number
   like_count?: Prisma.IntFilter<"photos"> | number
   comment_count?: Prisma.IntFilter<"photos"> | number
+  deleted_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   photo_comments?: Prisma.Photo_commentsListRelationFilter
   photo_likes?: Prisma.Photo_likesListRelationFilter
   photo_views?: Prisma.Photo_viewsListRelationFilter
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }, "id">
 
 export type photosOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -349,6 +373,7 @@ export type photosOrderByWithAggregationInput = {
   view_count?: Prisma.SortOrder
   like_count?: Prisma.SortOrder
   comment_count?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.photosCountOrderByAggregateInput
@@ -364,6 +389,7 @@ export type photosScalarWhereWithAggregatesInput = {
   NOT?: Prisma.photosScalarWhereWithAggregatesInput | Prisma.photosScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"photos"> | string
   account_id?: Prisma.UuidWithAggregatesFilter<"photos"> | string
+  pet_id?: Prisma.UuidNullableWithAggregatesFilter<"photos"> | string | null
   url?: Prisma.StringNullableWithAggregatesFilter<"photos"> | string | null
   file_id?: Prisma.StringNullableWithAggregatesFilter<"photos"> | string | null
   thumbnail_url?: Prisma.StringNullableWithAggregatesFilter<"photos"> | string | null
@@ -373,6 +399,7 @@ export type photosScalarWhereWithAggregatesInput = {
   view_count?: Prisma.IntWithAggregatesFilter<"photos"> | number
   like_count?: Prisma.IntWithAggregatesFilter<"photos"> | number
   comment_count?: Prisma.IntWithAggregatesFilter<"photos"> | number
+  deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"photos"> | Date | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"photos"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"photos"> | Date | string | null
 }
@@ -388,17 +415,20 @@ export type photosCreateInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhotosInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutPhotosInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutPhotosInput
   accounts: Prisma.accountsCreateNestedOneWithoutPhotosInput
+  pets?: Prisma.petsCreateNestedOneWithoutPhotosInput
 }
 
 export type photosUncheckedCreateInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -408,6 +438,7 @@ export type photosUncheckedCreateInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhotosInput
@@ -426,17 +457,20 @@ export type photosUpdateInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhotosNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutPhotosNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutPhotosNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhotosNestedInput
+  pets?: Prisma.petsUpdateOneWithoutPhotosNestedInput
 }
 
 export type photosUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -446,6 +480,7 @@ export type photosUncheckedUpdateInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput
@@ -456,6 +491,7 @@ export type photosUncheckedUpdateInput = {
 export type photosCreateManyInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -465,6 +501,7 @@ export type photosCreateManyInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -480,6 +517,7 @@ export type photosUpdateManyMutationInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -487,6 +525,7 @@ export type photosUpdateManyMutationInput = {
 export type photosUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -496,6 +535,7 @@ export type photosUncheckedUpdateManyInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -518,6 +558,7 @@ export type PhotosScalarRelationFilter = {
 export type photosCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
@@ -527,6 +568,7 @@ export type photosCountOrderByAggregateInput = {
   view_count?: Prisma.SortOrder
   like_count?: Prisma.SortOrder
   comment_count?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -540,6 +582,7 @@ export type photosAvgOrderByAggregateInput = {
 export type photosMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
@@ -549,6 +592,7 @@ export type photosMaxOrderByAggregateInput = {
   view_count?: Prisma.SortOrder
   like_count?: Prisma.SortOrder
   comment_count?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -556,6 +600,7 @@ export type photosMaxOrderByAggregateInput = {
 export type photosMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
@@ -565,6 +610,7 @@ export type photosMinOrderByAggregateInput = {
   view_count?: Prisma.SortOrder
   like_count?: Prisma.SortOrder
   comment_count?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -614,6 +660,48 @@ export type photosUncheckedUpdateManyWithoutAccountsNestedInput = {
   connect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
   update?: Prisma.photosUpdateWithWhereUniqueWithoutAccountsInput | Prisma.photosUpdateWithWhereUniqueWithoutAccountsInput[]
   updateMany?: Prisma.photosUpdateManyWithWhereWithoutAccountsInput | Prisma.photosUpdateManyWithWhereWithoutAccountsInput[]
+  deleteMany?: Prisma.photosScalarWhereInput | Prisma.photosScalarWhereInput[]
+}
+
+export type photosCreateNestedManyWithoutPetsInput = {
+  create?: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput> | Prisma.photosCreateWithoutPetsInput[] | Prisma.photosUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.photosCreateOrConnectWithoutPetsInput | Prisma.photosCreateOrConnectWithoutPetsInput[]
+  createMany?: Prisma.photosCreateManyPetsInputEnvelope
+  connect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+}
+
+export type photosUncheckedCreateNestedManyWithoutPetsInput = {
+  create?: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput> | Prisma.photosCreateWithoutPetsInput[] | Prisma.photosUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.photosCreateOrConnectWithoutPetsInput | Prisma.photosCreateOrConnectWithoutPetsInput[]
+  createMany?: Prisma.photosCreateManyPetsInputEnvelope
+  connect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+}
+
+export type photosUpdateManyWithoutPetsNestedInput = {
+  create?: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput> | Prisma.photosCreateWithoutPetsInput[] | Prisma.photosUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.photosCreateOrConnectWithoutPetsInput | Prisma.photosCreateOrConnectWithoutPetsInput[]
+  upsert?: Prisma.photosUpsertWithWhereUniqueWithoutPetsInput | Prisma.photosUpsertWithWhereUniqueWithoutPetsInput[]
+  createMany?: Prisma.photosCreateManyPetsInputEnvelope
+  set?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  disconnect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  delete?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  connect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  update?: Prisma.photosUpdateWithWhereUniqueWithoutPetsInput | Prisma.photosUpdateWithWhereUniqueWithoutPetsInput[]
+  updateMany?: Prisma.photosUpdateManyWithWhereWithoutPetsInput | Prisma.photosUpdateManyWithWhereWithoutPetsInput[]
+  deleteMany?: Prisma.photosScalarWhereInput | Prisma.photosScalarWhereInput[]
+}
+
+export type photosUncheckedUpdateManyWithoutPetsNestedInput = {
+  create?: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput> | Prisma.photosCreateWithoutPetsInput[] | Prisma.photosUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.photosCreateOrConnectWithoutPetsInput | Prisma.photosCreateOrConnectWithoutPetsInput[]
+  upsert?: Prisma.photosUpsertWithWhereUniqueWithoutPetsInput | Prisma.photosUpsertWithWhereUniqueWithoutPetsInput[]
+  createMany?: Prisma.photosCreateManyPetsInputEnvelope
+  set?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  disconnect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  delete?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  connect?: Prisma.photosWhereUniqueInput | Prisma.photosWhereUniqueInput[]
+  update?: Prisma.photosUpdateWithWhereUniqueWithoutPetsInput | Prisma.photosUpdateWithWhereUniqueWithoutPetsInput[]
+  updateMany?: Prisma.photosUpdateManyWithWhereWithoutPetsInput | Prisma.photosUpdateManyWithWhereWithoutPetsInput[]
   deleteMany?: Prisma.photosScalarWhereInput | Prisma.photosScalarWhereInput[]
 }
 
@@ -674,15 +762,18 @@ export type photosCreateWithoutAccountsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhotosInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutPhotosInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutPhotosInput
+  pets?: Prisma.petsCreateNestedOneWithoutPhotosInput
 }
 
 export type photosUncheckedCreateWithoutAccountsInput = {
   id?: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -692,6 +783,7 @@ export type photosUncheckedCreateWithoutAccountsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhotosInput
@@ -731,6 +823,7 @@ export type photosScalarWhereInput = {
   NOT?: Prisma.photosScalarWhereInput | Prisma.photosScalarWhereInput[]
   id?: Prisma.UuidFilter<"photos"> | string
   account_id?: Prisma.UuidFilter<"photos"> | string
+  pet_id?: Prisma.UuidNullableFilter<"photos"> | string | null
   url?: Prisma.StringNullableFilter<"photos"> | string | null
   file_id?: Prisma.StringNullableFilter<"photos"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"photos"> | string | null
@@ -740,8 +833,75 @@ export type photosScalarWhereInput = {
   view_count?: Prisma.IntFilter<"photos"> | number
   like_count?: Prisma.IntFilter<"photos"> | number
   comment_count?: Prisma.IntFilter<"photos"> | number
+  deleted_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"photos"> | Date | string | null
+}
+
+export type photosCreateWithoutPetsInput = {
+  id?: string
+  url?: string | null
+  file_id?: string | null
+  thumbnail_url?: string | null
+  caption?: string | null
+  is_private?: boolean
+  status?: $Enums.photos_status
+  view_count?: number
+  like_count?: number
+  comment_count?: number
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhotosInput
+  photo_likes?: Prisma.photo_likesCreateNestedManyWithoutPhotosInput
+  photo_views?: Prisma.photo_viewsCreateNestedManyWithoutPhotosInput
+  accounts: Prisma.accountsCreateNestedOneWithoutPhotosInput
+}
+
+export type photosUncheckedCreateWithoutPetsInput = {
+  id?: string
+  account_id: string
+  url?: string | null
+  file_id?: string | null
+  thumbnail_url?: string | null
+  caption?: string | null
+  is_private?: boolean
+  status?: $Enums.photos_status
+  view_count?: number
+  like_count?: number
+  comment_count?: number
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhotosInput
+  photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutPhotosInput
+  photo_views?: Prisma.photo_viewsUncheckedCreateNestedManyWithoutPhotosInput
+}
+
+export type photosCreateOrConnectWithoutPetsInput = {
+  where: Prisma.photosWhereUniqueInput
+  create: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput>
+}
+
+export type photosCreateManyPetsInputEnvelope = {
+  data: Prisma.photosCreateManyPetsInput | Prisma.photosCreateManyPetsInput[]
+  skipDuplicates?: boolean
+}
+
+export type photosUpsertWithWhereUniqueWithoutPetsInput = {
+  where: Prisma.photosWhereUniqueInput
+  update: Prisma.XOR<Prisma.photosUpdateWithoutPetsInput, Prisma.photosUncheckedUpdateWithoutPetsInput>
+  create: Prisma.XOR<Prisma.photosCreateWithoutPetsInput, Prisma.photosUncheckedCreateWithoutPetsInput>
+}
+
+export type photosUpdateWithWhereUniqueWithoutPetsInput = {
+  where: Prisma.photosWhereUniqueInput
+  data: Prisma.XOR<Prisma.photosUpdateWithoutPetsInput, Prisma.photosUncheckedUpdateWithoutPetsInput>
+}
+
+export type photosUpdateManyWithWhereWithoutPetsInput = {
+  where: Prisma.photosScalarWhereInput
+  data: Prisma.XOR<Prisma.photosUpdateManyMutationInput, Prisma.photosUncheckedUpdateManyWithoutPetsInput>
 }
 
 export type photosCreateWithoutPhoto_commentsInput = {
@@ -755,16 +915,19 @@ export type photosCreateWithoutPhoto_commentsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutPhotosInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutPhotosInput
   accounts: Prisma.accountsCreateNestedOneWithoutPhotosInput
+  pets?: Prisma.petsCreateNestedOneWithoutPhotosInput
 }
 
 export type photosUncheckedCreateWithoutPhoto_commentsInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -774,6 +937,7 @@ export type photosUncheckedCreateWithoutPhoto_commentsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_likes?: Prisma.photo_likesUncheckedCreateNestedManyWithoutPhotosInput
@@ -807,16 +971,19 @@ export type photosUpdateWithoutPhoto_commentsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_likes?: Prisma.photo_likesUpdateManyWithoutPhotosNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutPhotosNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhotosNestedInput
+  pets?: Prisma.petsUpdateOneWithoutPhotosNestedInput
 }
 
 export type photosUncheckedUpdateWithoutPhoto_commentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -826,6 +993,7 @@ export type photosUncheckedUpdateWithoutPhoto_commentsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutPhotosNestedInput
@@ -843,16 +1011,19 @@ export type photosCreateWithoutPhoto_likesInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhotosInput
   photo_views?: Prisma.photo_viewsCreateNestedManyWithoutPhotosInput
   accounts: Prisma.accountsCreateNestedOneWithoutPhotosInput
+  pets?: Prisma.petsCreateNestedOneWithoutPhotosInput
 }
 
 export type photosUncheckedCreateWithoutPhoto_likesInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -862,6 +1033,7 @@ export type photosUncheckedCreateWithoutPhoto_likesInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhotosInput
@@ -895,16 +1067,19 @@ export type photosUpdateWithoutPhoto_likesInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhotosNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutPhotosNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhotosNestedInput
+  pets?: Prisma.petsUpdateOneWithoutPhotosNestedInput
 }
 
 export type photosUncheckedUpdateWithoutPhoto_likesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -914,6 +1089,7 @@ export type photosUncheckedUpdateWithoutPhoto_likesInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput
@@ -931,16 +1107,19 @@ export type photosCreateWithoutPhoto_viewsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsCreateNestedManyWithoutPhotosInput
   photo_likes?: Prisma.photo_likesCreateNestedManyWithoutPhotosInput
   accounts: Prisma.accountsCreateNestedOneWithoutPhotosInput
+  pets?: Prisma.petsCreateNestedOneWithoutPhotosInput
 }
 
 export type photosUncheckedCreateWithoutPhoto_viewsInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -950,6 +1129,7 @@ export type photosUncheckedCreateWithoutPhoto_viewsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedCreateNestedManyWithoutPhotosInput
@@ -983,16 +1163,19 @@ export type photosUpdateWithoutPhoto_viewsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhotosNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutPhotosNestedInput
   accounts?: Prisma.accountsUpdateOneRequiredWithoutPhotosNestedInput
+  pets?: Prisma.petsUpdateOneWithoutPhotosNestedInput
 }
 
 export type photosUncheckedUpdateWithoutPhoto_viewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1002,6 +1185,7 @@ export type photosUncheckedUpdateWithoutPhoto_viewsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput
@@ -1010,6 +1194,7 @@ export type photosUncheckedUpdateWithoutPhoto_viewsInput = {
 
 export type photosCreateManyAccountsInput = {
   id?: string
+  pet_id?: string | null
   url?: string | null
   file_id?: string | null
   thumbnail_url?: string | null
@@ -1019,6 +1204,7 @@ export type photosCreateManyAccountsInput = {
   view_count?: number
   like_count?: number
   comment_count?: number
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -1034,15 +1220,18 @@ export type photosUpdateWithoutAccountsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhotosNestedInput
   photo_likes?: Prisma.photo_likesUpdateManyWithoutPhotosNestedInput
   photo_views?: Prisma.photo_viewsUpdateManyWithoutPhotosNestedInput
+  pets?: Prisma.petsUpdateOneWithoutPhotosNestedInput
 }
 
 export type photosUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1052,6 +1241,7 @@ export type photosUncheckedUpdateWithoutAccountsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput
@@ -1061,6 +1251,7 @@ export type photosUncheckedUpdateWithoutAccountsInput = {
 
 export type photosUncheckedUpdateManyWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1070,6 +1261,81 @@ export type photosUncheckedUpdateManyWithoutAccountsInput = {
   view_count?: Prisma.IntFieldUpdateOperationsInput | number
   like_count?: Prisma.IntFieldUpdateOperationsInput | number
   comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type photosCreateManyPetsInput = {
+  id?: string
+  account_id: string
+  url?: string | null
+  file_id?: string | null
+  thumbnail_url?: string | null
+  caption?: string | null
+  is_private?: boolean
+  status?: $Enums.photos_status
+  view_count?: number
+  like_count?: number
+  comment_count?: number
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type photosUpdateWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.Enumphotos_statusFieldUpdateOperationsInput | $Enums.photos_status
+  view_count?: Prisma.IntFieldUpdateOperationsInput | number
+  like_count?: Prisma.IntFieldUpdateOperationsInput | number
+  comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  photo_comments?: Prisma.photo_commentsUpdateManyWithoutPhotosNestedInput
+  photo_likes?: Prisma.photo_likesUpdateManyWithoutPhotosNestedInput
+  photo_views?: Prisma.photo_viewsUpdateManyWithoutPhotosNestedInput
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutPhotosNestedInput
+}
+
+export type photosUncheckedUpdateWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.Enumphotos_statusFieldUpdateOperationsInput | $Enums.photos_status
+  view_count?: Prisma.IntFieldUpdateOperationsInput | number
+  like_count?: Prisma.IntFieldUpdateOperationsInput | number
+  comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  photo_comments?: Prisma.photo_commentsUncheckedUpdateManyWithoutPhotosNestedInput
+  photo_likes?: Prisma.photo_likesUncheckedUpdateManyWithoutPhotosNestedInput
+  photo_views?: Prisma.photo_viewsUncheckedUpdateManyWithoutPhotosNestedInput
+}
+
+export type photosUncheckedUpdateManyWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_private?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.Enumphotos_statusFieldUpdateOperationsInput | $Enums.photos_status
+  view_count?: Prisma.IntFieldUpdateOperationsInput | number
+  like_count?: Prisma.IntFieldUpdateOperationsInput | number
+  comment_count?: Prisma.IntFieldUpdateOperationsInput | number
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1126,6 +1392,7 @@ export type PhotosCountOutputTypeCountPhoto_viewsArgs<ExtArgs extends runtime.Ty
 export type photosSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   url?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
@@ -1135,18 +1402,21 @@ export type photosSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   view_count?: boolean
   like_count?: boolean
   comment_count?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   photo_comments?: boolean | Prisma.photos$photo_commentsArgs<ExtArgs>
   photo_likes?: boolean | Prisma.photos$photo_likesArgs<ExtArgs>
   photo_views?: boolean | Prisma.photos$photo_viewsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
   _count?: boolean | Prisma.PhotosCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["photos"]>
 
 export type photosSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   url?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
@@ -1156,14 +1426,17 @@ export type photosSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   view_count?: boolean
   like_count?: boolean
   comment_count?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
 }, ExtArgs["result"]["photos"]>
 
 export type photosSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   url?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
@@ -1173,14 +1446,17 @@ export type photosSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   view_count?: boolean
   like_count?: boolean
   comment_count?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
 }, ExtArgs["result"]["photos"]>
 
 export type photosSelectScalar = {
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   url?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
@@ -1190,23 +1466,27 @@ export type photosSelectScalar = {
   view_count?: boolean
   like_count?: boolean
   comment_count?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type photosOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "url" | "file_id" | "thumbnail_url" | "caption" | "is_private" | "status" | "view_count" | "like_count" | "comment_count" | "created_at" | "updated_at", ExtArgs["result"]["photos"]>
+export type photosOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "pet_id" | "url" | "file_id" | "thumbnail_url" | "caption" | "is_private" | "status" | "view_count" | "like_count" | "comment_count" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["photos"]>
 export type photosInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   photo_comments?: boolean | Prisma.photos$photo_commentsArgs<ExtArgs>
   photo_likes?: boolean | Prisma.photos$photo_likesArgs<ExtArgs>
   photo_views?: boolean | Prisma.photos$photo_viewsArgs<ExtArgs>
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
   _count?: boolean | Prisma.PhotosCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type photosIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
 }
 export type photosIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.photos$petsArgs<ExtArgs>
 }
 
 export type $photosPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1216,10 +1496,12 @@ export type $photosPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     photo_likes: Prisma.$photo_likesPayload<ExtArgs>[]
     photo_views: Prisma.$photo_viewsPayload<ExtArgs>[]
     accounts: Prisma.$accountsPayload<ExtArgs>
+    pets: Prisma.$petsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     account_id: string
+    pet_id: string | null
     url: string | null
     file_id: string | null
     thumbnail_url: string | null
@@ -1229,6 +1511,7 @@ export type $photosPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     view_count: number
     like_count: number
     comment_count: number
+    deleted_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["photos"]>
@@ -1629,6 +1912,7 @@ export interface Prisma__photosClient<T, Null = never, ExtArgs extends runtime.T
   photo_likes<T extends Prisma.photos$photo_likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photos$photo_likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_likesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photo_views<T extends Prisma.photos$photo_viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photos$photo_viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$photo_viewsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  pets<T extends Prisma.photos$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.photos$petsArgs<ExtArgs>>): Prisma.Prisma__petsClient<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1660,6 +1944,7 @@ export interface Prisma__photosClient<T, Null = never, ExtArgs extends runtime.T
 export interface photosFieldRefs {
   readonly id: Prisma.FieldRef<"photos", 'String'>
   readonly account_id: Prisma.FieldRef<"photos", 'String'>
+  readonly pet_id: Prisma.FieldRef<"photos", 'String'>
   readonly url: Prisma.FieldRef<"photos", 'String'>
   readonly file_id: Prisma.FieldRef<"photos", 'String'>
   readonly thumbnail_url: Prisma.FieldRef<"photos", 'String'>
@@ -1669,6 +1954,7 @@ export interface photosFieldRefs {
   readonly view_count: Prisma.FieldRef<"photos", 'Int'>
   readonly like_count: Prisma.FieldRef<"photos", 'Int'>
   readonly comment_count: Prisma.FieldRef<"photos", 'Int'>
+  readonly deleted_at: Prisma.FieldRef<"photos", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"photos", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"photos", 'DateTime'>
 }
@@ -2141,6 +2427,25 @@ export type photos$photo_viewsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.Photo_viewsScalarFieldEnum | Prisma.Photo_viewsScalarFieldEnum[]
+}
+
+/**
+ * photos.pets
+ */
+export type photos$petsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the pets
+   */
+  select?: Prisma.petsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the pets
+   */
+  omit?: Prisma.petsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.petsInclude<ExtArgs> | null
+  where?: Prisma.petsWhereInput
 }
 
 /**

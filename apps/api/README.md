@@ -1,105 +1,88 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Yeu Pet API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS backend for the Yeu Pet mobile app.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This is the active backend for authentication, pet care data, reminders, medical records, budget tracking, photos, notifications, sitter booking, subscriptions, and future Pet Care AI.
 
-## Description
+## Tech Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- NestJS
+- Prisma
+- PostgreSQL / Supabase
+- Redis
+- BullMQ
+- Firebase Admin / Expo push integrations
+- JWT authentication
+- Cloudinary file upload
+
+## Project Scope
+
+The API should support the phase 1 product direction documented in `/docs`:
+
+- pet management
+- care reminders
+- medical records
+- pet budget
+- photos and memories
+- settings
+- subscription entitlements
+- sitter booking MVP
+- Pet Care AI through backend-only provider calls
+
+Do not call AI providers from the mobile app. Provider keys and model configuration belong in backend environment variables only.
 
 ## Database
 
-Database schema and migrations are managed in this codebase with Prisma.
+Database schema and migrations are managed with Prisma in `prisma/schema.prisma` and `prisma/migrations`.
 
-Read `DATABASE.md` before changing tables, indexes, constraints, triggers, or
-Supabase/PostgreSQL-specific SQL.
+Before changing tables, indexes, constraints, triggers, or Supabase/PostgreSQL-specific SQL, read:
 
-## Project setup
+1. `/docs/00-agent-operating-guide.md`
+2. `/docs/03-database-redesign-plan.md`
+3. `/docs/09-testing-release-checklist.md`
 
-```bash
-$ yarn install
-```
+Prefer additive, backward-compatible migrations when existing data may be present.
 
-## Compile and run the project
+## Useful Commands
 
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
-```
-
-## Run tests
+Run commands from the repository root unless noted otherwise.
 
 ```bash
-# unit tests
-$ yarn run test
+# Start API in development mode
+pnpm --filter @yeu-pet/api dev
 
-# e2e tests
-$ yarn run test:e2e
+# Build API
+pnpm --filter @yeu-pet/api build
 
-# test coverage
-$ yarn run test:cov
+# Lint API
+pnpm --filter @yeu-pet/api lint
+
+# Run unit tests
+pnpm --filter @yeu-pet/api test
+
+# Run e2e tests
+pnpm --filter @yeu-pet/api test:e2e
+
+# Generate Prisma client
+pnpm --filter @yeu-pet/api db:generate
+
+# Create a Prisma migration
+pnpm --filter @yeu-pet/api db:migrate <migration_name>
 ```
 
-## Deployment
+## Implementation Rules
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- Read account id from the authenticated request, never from user-controlled body fields.
+- Enforce ownership in services or repositories for every user-owned resource.
+- Keep subscription and usage limits centralized in the entitlement service.
+- Keep controllers thin: validate input, call services, return response DTOs.
+- Add pagination or explicit limits to list endpoints.
+- Keep AI safety disclaimers and urgent-case handling in backend logic.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Documentation To Read First
 
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. `/AGENT_TASK_PROMPT.md`
+2. `/docs/00-agent-operating-guide.md`
+3. `/docs/04-backend-api-plan.md`
+4. `/docs/06-subscriptions-entitlements.md`
+5. `/docs/07-doctor-ai-plan.md`

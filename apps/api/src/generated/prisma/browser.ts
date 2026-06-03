@@ -132,3 +132,48 @@ export type email_logs = Prisma.email_logsModel
  * 
  */
 export type email_suppressions = Prisma.email_suppressionsModel
+/**
+ * Model subscription_plans
+ * 
+ */
+export type subscription_plans = Prisma.subscription_plansModel
+/**
+ * Model user_subscriptions
+ * 
+ */
+export type user_subscriptions = Prisma.user_subscriptionsModel
+/**
+ * Model usage_counters
+ * 
+ */
+export type usage_counters = Prisma.usage_countersModel
+/**
+ * Model ai_conversations
+ * 
+ */
+export type ai_conversations = Prisma.ai_conversationsModel
+/**
+ * Model ai_messages
+ * 
+ */
+export type ai_messages = Prisma.ai_messagesModel
+/**
+ * Model ai_usage_logs
+ * 
+ */
+export type ai_usage_logs = Prisma.ai_usage_logsModel
+/**
+ * Model user_blocks
+ * 
+ */
+export type user_blocks = Prisma.user_blocksModel
+/**
+ * Model reports
+ * 
+ */
+export type reports = Prisma.reportsModel
+/**
+ * Model sitter_booking_messages
+ * 
+ */
+export type sitter_booking_messages = Prisma.sitter_booking_messagesModel

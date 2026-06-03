@@ -130,6 +130,13 @@ Use React Query for server data and cache management.
 - record details
 - records by pet
 
+### Pet Care AI
+
+- conversation list and chat UI when backend support is available
+- streaming responses through the API
+- quota/paywall states from subscription entitlements
+- no direct AI provider calls from the mobile app
+
 ### Sitter booking
 
 - sitter browsing
@@ -173,7 +180,6 @@ Use query keys consistently by feature domain so cache invalidation stays predic
 The app reads these environment values:
 
 - `EXPO_PUBLIC_API_URL`
-- `EXPO_PUBLIC_GEMINI_API_KEY`
 
 Default API URL behavior:
 
@@ -207,5 +213,6 @@ pnpm --filter @yeu-pet/mobile ios
 ## Maintenance rules
 
 - Keep the README aligned with the active product scope.
+- Keep AI provider keys and provider calls in the backend only.
 - Do not reintroduce deferred features into the main docs without product approval.
 - If new domains are added, document them here and in `AGENTS.md`.

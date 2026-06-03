@@ -20,8 +20,18 @@ export type remindersModel = runtime.Types.Result.DefaultSelection<Prisma.$remin
 
 export type AggregateReminders = {
   _count: RemindersCountAggregateOutputType | null
+  _avg: RemindersAvgAggregateOutputType | null
+  _sum: RemindersSumAggregateOutputType | null
   _min: RemindersMinAggregateOutputType | null
   _max: RemindersMaxAggregateOutputType | null
+}
+
+export type RemindersAvgAggregateOutputType = {
+  repeat_interval: number | null
+}
+
+export type RemindersSumAggregateOutputType = {
+  repeat_interval: number | null
 }
 
 export type RemindersMinAggregateOutputType = {
@@ -31,8 +41,17 @@ export type RemindersMinAggregateOutputType = {
   title: string | null
   description: string | null
   type: $Enums.reminder_type | null
+  custom_type: string | null
   status: $Enums.reminder_status | null
   scheduled_at: Date | null
+  timezone: string | null
+  repeat_frequency: $Enums.reminder_repeat_frequency | null
+  repeat_interval: number | null
+  repeat_until: Date | null
+  parent_reminder_id: string | null
+  notification_provider_id: string | null
+  completed_at: Date | null
+  cancelled_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -44,8 +63,17 @@ export type RemindersMaxAggregateOutputType = {
   title: string | null
   description: string | null
   type: $Enums.reminder_type | null
+  custom_type: string | null
   status: $Enums.reminder_status | null
   scheduled_at: Date | null
+  timezone: string | null
+  repeat_frequency: $Enums.reminder_repeat_frequency | null
+  repeat_interval: number | null
+  repeat_until: Date | null
+  parent_reminder_id: string | null
+  notification_provider_id: string | null
+  completed_at: Date | null
+  cancelled_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -57,13 +85,30 @@ export type RemindersCountAggregateOutputType = {
   title: number
   description: number
   type: number
+  custom_type: number
   status: number
   scheduled_at: number
+  timezone: number
+  repeat_frequency: number
+  repeat_interval: number
+  repeat_until: number
+  parent_reminder_id: number
+  notification_provider_id: number
+  completed_at: number
+  cancelled_at: number
   created_at: number
   updated_at: number
   _all: number
 }
 
+
+export type RemindersAvgAggregateInputType = {
+  repeat_interval?: true
+}
+
+export type RemindersSumAggregateInputType = {
+  repeat_interval?: true
+}
 
 export type RemindersMinAggregateInputType = {
   id?: true
@@ -72,8 +117,17 @@ export type RemindersMinAggregateInputType = {
   title?: true
   description?: true
   type?: true
+  custom_type?: true
   status?: true
   scheduled_at?: true
+  timezone?: true
+  repeat_frequency?: true
+  repeat_interval?: true
+  repeat_until?: true
+  parent_reminder_id?: true
+  notification_provider_id?: true
+  completed_at?: true
+  cancelled_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -85,8 +139,17 @@ export type RemindersMaxAggregateInputType = {
   title?: true
   description?: true
   type?: true
+  custom_type?: true
   status?: true
   scheduled_at?: true
+  timezone?: true
+  repeat_frequency?: true
+  repeat_interval?: true
+  repeat_until?: true
+  parent_reminder_id?: true
+  notification_provider_id?: true
+  completed_at?: true
+  cancelled_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -98,8 +161,17 @@ export type RemindersCountAggregateInputType = {
   title?: true
   description?: true
   type?: true
+  custom_type?: true
   status?: true
   scheduled_at?: true
+  timezone?: true
+  repeat_frequency?: true
+  repeat_interval?: true
+  repeat_until?: true
+  parent_reminder_id?: true
+  notification_provider_id?: true
+  completed_at?: true
+  cancelled_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -143,6 +215,18 @@ export type RemindersAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: RemindersAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: RemindersSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: RemindersMinAggregateInputType
@@ -173,6 +257,8 @@ export type remindersGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: RemindersCountAggregateInputType | true
+  _avg?: RemindersAvgAggregateInputType
+  _sum?: RemindersSumAggregateInputType
   _min?: RemindersMinAggregateInputType
   _max?: RemindersMaxAggregateInputType
 }
@@ -184,11 +270,22 @@ export type RemindersGroupByOutputType = {
   title: string
   description: string | null
   type: $Enums.reminder_type
+  custom_type: string | null
   status: $Enums.reminder_status
   scheduled_at: Date
+  timezone: string
+  repeat_frequency: $Enums.reminder_repeat_frequency
+  repeat_interval: number | null
+  repeat_until: Date | null
+  parent_reminder_id: string | null
+  notification_provider_id: string | null
+  completed_at: Date | null
+  cancelled_at: Date | null
   created_at: Date | null
   updated_at: Date | null
   _count: RemindersCountAggregateOutputType | null
+  _avg: RemindersAvgAggregateOutputType | null
+  _sum: RemindersSumAggregateOutputType | null
   _min: RemindersMinAggregateOutputType | null
   _max: RemindersMaxAggregateOutputType | null
 }
@@ -218,11 +315,22 @@ export type remindersWhereInput = {
   title?: Prisma.StringFilter<"reminders"> | string
   description?: Prisma.StringNullableFilter<"reminders"> | string | null
   type?: Prisma.Enumreminder_typeFilter<"reminders"> | $Enums.reminder_type
+  custom_type?: Prisma.StringNullableFilter<"reminders"> | string | null
   status?: Prisma.Enumreminder_statusFilter<"reminders"> | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFilter<"reminders"> | Date | string
+  timezone?: Prisma.StringFilter<"reminders"> | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFilter<"reminders"> | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.IntNullableFilter<"reminders"> | number | null
+  repeat_until?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  parent_reminder_id?: Prisma.UuidNullableFilter<"reminders"> | string | null
+  notification_provider_id?: Prisma.StringNullableFilter<"reminders"> | string | null
+  completed_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  cancelled_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  parent_reminder?: Prisma.XOR<Prisma.RemindersNullableScalarRelationFilter, Prisma.remindersWhereInput> | null
+  child_reminders?: Prisma.RemindersListRelationFilter
   pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }
 
@@ -233,11 +341,22 @@ export type remindersOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  custom_type?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   scheduled_at?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  repeat_frequency?: Prisma.SortOrder
+  repeat_interval?: Prisma.SortOrderInput | Prisma.SortOrder
+  repeat_until?: Prisma.SortOrderInput | Prisma.SortOrder
+  parent_reminder_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  notification_provider_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  completed_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
+  parent_reminder?: Prisma.remindersOrderByWithRelationInput
+  child_reminders?: Prisma.remindersOrderByRelationAggregateInput
   pets?: Prisma.petsOrderByWithRelationInput
 }
 
@@ -251,11 +370,22 @@ export type remindersWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"reminders"> | string
   description?: Prisma.StringNullableFilter<"reminders"> | string | null
   type?: Prisma.Enumreminder_typeFilter<"reminders"> | $Enums.reminder_type
+  custom_type?: Prisma.StringNullableFilter<"reminders"> | string | null
   status?: Prisma.Enumreminder_statusFilter<"reminders"> | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFilter<"reminders"> | Date | string
+  timezone?: Prisma.StringFilter<"reminders"> | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFilter<"reminders"> | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.IntNullableFilter<"reminders"> | number | null
+  repeat_until?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  parent_reminder_id?: Prisma.UuidNullableFilter<"reminders"> | string | null
+  notification_provider_id?: Prisma.StringNullableFilter<"reminders"> | string | null
+  completed_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  cancelled_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
+  parent_reminder?: Prisma.XOR<Prisma.RemindersNullableScalarRelationFilter, Prisma.remindersWhereInput> | null
+  child_reminders?: Prisma.RemindersListRelationFilter
   pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }, "id">
 
@@ -266,13 +396,24 @@ export type remindersOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  custom_type?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   scheduled_at?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  repeat_frequency?: Prisma.SortOrder
+  repeat_interval?: Prisma.SortOrderInput | Prisma.SortOrder
+  repeat_until?: Prisma.SortOrderInput | Prisma.SortOrder
+  parent_reminder_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  notification_provider_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  completed_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.remindersCountOrderByAggregateInput
+  _avg?: Prisma.remindersAvgOrderByAggregateInput
   _max?: Prisma.remindersMaxOrderByAggregateInput
   _min?: Prisma.remindersMinOrderByAggregateInput
+  _sum?: Prisma.remindersSumOrderByAggregateInput
 }
 
 export type remindersScalarWhereWithAggregatesInput = {
@@ -285,8 +426,17 @@ export type remindersScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"reminders"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"reminders"> | string | null
   type?: Prisma.Enumreminder_typeWithAggregatesFilter<"reminders"> | $Enums.reminder_type
+  custom_type?: Prisma.StringNullableWithAggregatesFilter<"reminders"> | string | null
   status?: Prisma.Enumreminder_statusWithAggregatesFilter<"reminders"> | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeWithAggregatesFilter<"reminders"> | Date | string
+  timezone?: Prisma.StringWithAggregatesFilter<"reminders"> | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyWithAggregatesFilter<"reminders"> | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.IntNullableWithAggregatesFilter<"reminders"> | number | null
+  repeat_until?: Prisma.DateTimeNullableWithAggregatesFilter<"reminders"> | Date | string | null
+  parent_reminder_id?: Prisma.UuidNullableWithAggregatesFilter<"reminders"> | string | null
+  notification_provider_id?: Prisma.StringNullableWithAggregatesFilter<"reminders"> | string | null
+  completed_at?: Prisma.DateTimeNullableWithAggregatesFilter<"reminders"> | Date | string | null
+  cancelled_at?: Prisma.DateTimeNullableWithAggregatesFilter<"reminders"> | Date | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"reminders"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"reminders"> | Date | string | null
 }
@@ -296,11 +446,21 @@ export type remindersCreateInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutRemindersInput
+  parent_reminder?: Prisma.remindersCreateNestedOneWithoutChild_remindersInput
+  child_reminders?: Prisma.remindersCreateNestedManyWithoutParent_reminderInput
   pets?: Prisma.petsCreateNestedOneWithoutRemindersInput
 }
 
@@ -311,10 +471,20 @@ export type remindersUncheckedCreateInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  child_reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutParent_reminderInput
 }
 
 export type remindersUpdateInput = {
@@ -322,11 +492,21 @@ export type remindersUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutRemindersNestedInput
+  parent_reminder?: Prisma.remindersUpdateOneWithoutChild_remindersNestedInput
+  child_reminders?: Prisma.remindersUpdateManyWithoutParent_reminderNestedInput
   pets?: Prisma.petsUpdateOneWithoutRemindersNestedInput
 }
 
@@ -337,10 +517,20 @@ export type remindersUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child_reminders?: Prisma.remindersUncheckedUpdateManyWithoutParent_reminderNestedInput
 }
 
 export type remindersCreateManyInput = {
@@ -350,8 +540,17 @@ export type remindersCreateManyInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -361,8 +560,16 @@ export type remindersUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -374,8 +581,17 @@ export type remindersUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -390,6 +606,11 @@ export type remindersOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type RemindersNullableScalarRelationFilter = {
+  is?: Prisma.remindersWhereInput | null
+  isNot?: Prisma.remindersWhereInput | null
+}
+
 export type remindersCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
@@ -397,10 +618,23 @@ export type remindersCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  custom_type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scheduled_at?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  repeat_frequency?: Prisma.SortOrder
+  repeat_interval?: Prisma.SortOrder
+  repeat_until?: Prisma.SortOrder
+  parent_reminder_id?: Prisma.SortOrder
+  notification_provider_id?: Prisma.SortOrder
+  completed_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type remindersAvgOrderByAggregateInput = {
+  repeat_interval?: Prisma.SortOrder
 }
 
 export type remindersMaxOrderByAggregateInput = {
@@ -410,8 +644,17 @@ export type remindersMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  custom_type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scheduled_at?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  repeat_frequency?: Prisma.SortOrder
+  repeat_interval?: Prisma.SortOrder
+  repeat_until?: Prisma.SortOrder
+  parent_reminder_id?: Prisma.SortOrder
+  notification_provider_id?: Prisma.SortOrder
+  completed_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -423,10 +666,23 @@ export type remindersMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  custom_type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   scheduled_at?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  repeat_frequency?: Prisma.SortOrder
+  repeat_interval?: Prisma.SortOrder
+  repeat_until?: Prisma.SortOrder
+  parent_reminder_id?: Prisma.SortOrder
+  notification_provider_id?: Prisma.SortOrder
+  completed_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type remindersSumOrderByAggregateInput = {
+  repeat_interval?: Prisma.SortOrder
 }
 
 export type remindersCreateNestedManyWithoutAccountsInput = {
@@ -513,6 +769,26 @@ export type remindersUncheckedUpdateManyWithoutPetsNestedInput = {
   deleteMany?: Prisma.remindersScalarWhereInput | Prisma.remindersScalarWhereInput[]
 }
 
+export type remindersCreateNestedOneWithoutChild_remindersInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutChild_remindersInput, Prisma.remindersUncheckedCreateWithoutChild_remindersInput>
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutChild_remindersInput
+  connect?: Prisma.remindersWhereUniqueInput
+}
+
+export type remindersCreateNestedManyWithoutParent_reminderInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput> | Prisma.remindersCreateWithoutParent_reminderInput[] | Prisma.remindersUncheckedCreateWithoutParent_reminderInput[]
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutParent_reminderInput | Prisma.remindersCreateOrConnectWithoutParent_reminderInput[]
+  createMany?: Prisma.remindersCreateManyParent_reminderInputEnvelope
+  connect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+}
+
+export type remindersUncheckedCreateNestedManyWithoutParent_reminderInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput> | Prisma.remindersCreateWithoutParent_reminderInput[] | Prisma.remindersUncheckedCreateWithoutParent_reminderInput[]
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutParent_reminderInput | Prisma.remindersCreateOrConnectWithoutParent_reminderInput[]
+  createMany?: Prisma.remindersCreateManyParent_reminderInputEnvelope
+  connect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+}
+
 export type Enumreminder_typeFieldUpdateOperationsInput = {
   set?: $Enums.reminder_type
 }
@@ -521,15 +797,67 @@ export type Enumreminder_statusFieldUpdateOperationsInput = {
   set?: $Enums.reminder_status
 }
 
+export type Enumreminder_repeat_frequencyFieldUpdateOperationsInput = {
+  set?: $Enums.reminder_repeat_frequency
+}
+
+export type remindersUpdateOneWithoutChild_remindersNestedInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutChild_remindersInput, Prisma.remindersUncheckedCreateWithoutChild_remindersInput>
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutChild_remindersInput
+  upsert?: Prisma.remindersUpsertWithoutChild_remindersInput
+  disconnect?: Prisma.remindersWhereInput | boolean
+  delete?: Prisma.remindersWhereInput | boolean
+  connect?: Prisma.remindersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.remindersUpdateToOneWithWhereWithoutChild_remindersInput, Prisma.remindersUpdateWithoutChild_remindersInput>, Prisma.remindersUncheckedUpdateWithoutChild_remindersInput>
+}
+
+export type remindersUpdateManyWithoutParent_reminderNestedInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput> | Prisma.remindersCreateWithoutParent_reminderInput[] | Prisma.remindersUncheckedCreateWithoutParent_reminderInput[]
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutParent_reminderInput | Prisma.remindersCreateOrConnectWithoutParent_reminderInput[]
+  upsert?: Prisma.remindersUpsertWithWhereUniqueWithoutParent_reminderInput | Prisma.remindersUpsertWithWhereUniqueWithoutParent_reminderInput[]
+  createMany?: Prisma.remindersCreateManyParent_reminderInputEnvelope
+  set?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  disconnect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  delete?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  connect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  update?: Prisma.remindersUpdateWithWhereUniqueWithoutParent_reminderInput | Prisma.remindersUpdateWithWhereUniqueWithoutParent_reminderInput[]
+  updateMany?: Prisma.remindersUpdateManyWithWhereWithoutParent_reminderInput | Prisma.remindersUpdateManyWithWhereWithoutParent_reminderInput[]
+  deleteMany?: Prisma.remindersScalarWhereInput | Prisma.remindersScalarWhereInput[]
+}
+
+export type remindersUncheckedUpdateManyWithoutParent_reminderNestedInput = {
+  create?: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput> | Prisma.remindersCreateWithoutParent_reminderInput[] | Prisma.remindersUncheckedCreateWithoutParent_reminderInput[]
+  connectOrCreate?: Prisma.remindersCreateOrConnectWithoutParent_reminderInput | Prisma.remindersCreateOrConnectWithoutParent_reminderInput[]
+  upsert?: Prisma.remindersUpsertWithWhereUniqueWithoutParent_reminderInput | Prisma.remindersUpsertWithWhereUniqueWithoutParent_reminderInput[]
+  createMany?: Prisma.remindersCreateManyParent_reminderInputEnvelope
+  set?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  disconnect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  delete?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  connect?: Prisma.remindersWhereUniqueInput | Prisma.remindersWhereUniqueInput[]
+  update?: Prisma.remindersUpdateWithWhereUniqueWithoutParent_reminderInput | Prisma.remindersUpdateWithWhereUniqueWithoutParent_reminderInput[]
+  updateMany?: Prisma.remindersUpdateManyWithWhereWithoutParent_reminderInput | Prisma.remindersUpdateManyWithWhereWithoutParent_reminderInput[]
+  deleteMany?: Prisma.remindersScalarWhereInput | Prisma.remindersScalarWhereInput[]
+}
+
 export type remindersCreateWithoutAccountsInput = {
   id?: string
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  parent_reminder?: Prisma.remindersCreateNestedOneWithoutChild_remindersInput
+  child_reminders?: Prisma.remindersCreateNestedManyWithoutParent_reminderInput
   pets?: Prisma.petsCreateNestedOneWithoutRemindersInput
 }
 
@@ -539,10 +867,20 @@ export type remindersUncheckedCreateWithoutAccountsInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  child_reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutParent_reminderInput
 }
 
 export type remindersCreateOrConnectWithoutAccountsInput = {
@@ -581,8 +919,17 @@ export type remindersScalarWhereInput = {
   title?: Prisma.StringFilter<"reminders"> | string
   description?: Prisma.StringNullableFilter<"reminders"> | string | null
   type?: Prisma.Enumreminder_typeFilter<"reminders"> | $Enums.reminder_type
+  custom_type?: Prisma.StringNullableFilter<"reminders"> | string | null
   status?: Prisma.Enumreminder_statusFilter<"reminders"> | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFilter<"reminders"> | Date | string
+  timezone?: Prisma.StringFilter<"reminders"> | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFilter<"reminders"> | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.IntNullableFilter<"reminders"> | number | null
+  repeat_until?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  parent_reminder_id?: Prisma.UuidNullableFilter<"reminders"> | string | null
+  notification_provider_id?: Prisma.StringNullableFilter<"reminders"> | string | null
+  completed_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
+  cancelled_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"reminders"> | Date | string | null
 }
@@ -592,11 +939,21 @@ export type remindersCreateWithoutPetsInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutRemindersInput
+  parent_reminder?: Prisma.remindersCreateNestedOneWithoutChild_remindersInput
+  child_reminders?: Prisma.remindersCreateNestedManyWithoutParent_reminderInput
 }
 
 export type remindersUncheckedCreateWithoutPetsInput = {
@@ -605,10 +962,20 @@ export type remindersUncheckedCreateWithoutPetsInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
+  child_reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutParent_reminderInput
 }
 
 export type remindersCreateOrConnectWithoutPetsInput = {
@@ -637,14 +1004,197 @@ export type remindersUpdateManyWithWhereWithoutPetsInput = {
   data: Prisma.XOR<Prisma.remindersUpdateManyMutationInput, Prisma.remindersUncheckedUpdateManyWithoutPetsInput>
 }
 
+export type remindersCreateWithoutChild_remindersInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.reminder_type
+  custom_type?: string | null
+  status?: $Enums.reminder_status
+  scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutRemindersInput
+  parent_reminder?: Prisma.remindersCreateNestedOneWithoutChild_remindersInput
+  pets?: Prisma.petsCreateNestedOneWithoutRemindersInput
+}
+
+export type remindersUncheckedCreateWithoutChild_remindersInput = {
+  id?: string
+  account_id: string
+  pet_id?: string | null
+  title: string
+  description?: string | null
+  type: $Enums.reminder_type
+  custom_type?: string | null
+  status?: $Enums.reminder_status
+  scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type remindersCreateOrConnectWithoutChild_remindersInput = {
+  where: Prisma.remindersWhereUniqueInput
+  create: Prisma.XOR<Prisma.remindersCreateWithoutChild_remindersInput, Prisma.remindersUncheckedCreateWithoutChild_remindersInput>
+}
+
+export type remindersCreateWithoutParent_reminderInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.reminder_type
+  custom_type?: string | null
+  status?: $Enums.reminder_status
+  scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutRemindersInput
+  child_reminders?: Prisma.remindersCreateNestedManyWithoutParent_reminderInput
+  pets?: Prisma.petsCreateNestedOneWithoutRemindersInput
+}
+
+export type remindersUncheckedCreateWithoutParent_reminderInput = {
+  id?: string
+  account_id: string
+  pet_id?: string | null
+  title: string
+  description?: string | null
+  type: $Enums.reminder_type
+  custom_type?: string | null
+  status?: $Enums.reminder_status
+  scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  child_reminders?: Prisma.remindersUncheckedCreateNestedManyWithoutParent_reminderInput
+}
+
+export type remindersCreateOrConnectWithoutParent_reminderInput = {
+  where: Prisma.remindersWhereUniqueInput
+  create: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput>
+}
+
+export type remindersCreateManyParent_reminderInputEnvelope = {
+  data: Prisma.remindersCreateManyParent_reminderInput | Prisma.remindersCreateManyParent_reminderInput[]
+  skipDuplicates?: boolean
+}
+
+export type remindersUpsertWithoutChild_remindersInput = {
+  update: Prisma.XOR<Prisma.remindersUpdateWithoutChild_remindersInput, Prisma.remindersUncheckedUpdateWithoutChild_remindersInput>
+  create: Prisma.XOR<Prisma.remindersCreateWithoutChild_remindersInput, Prisma.remindersUncheckedCreateWithoutChild_remindersInput>
+  where?: Prisma.remindersWhereInput
+}
+
+export type remindersUpdateToOneWithWhereWithoutChild_remindersInput = {
+  where?: Prisma.remindersWhereInput
+  data: Prisma.XOR<Prisma.remindersUpdateWithoutChild_remindersInput, Prisma.remindersUncheckedUpdateWithoutChild_remindersInput>
+}
+
+export type remindersUpdateWithoutChild_remindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
+  scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutRemindersNestedInput
+  parent_reminder?: Prisma.remindersUpdateOneWithoutChild_remindersNestedInput
+  pets?: Prisma.petsUpdateOneWithoutRemindersNestedInput
+}
+
+export type remindersUncheckedUpdateWithoutChild_remindersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
+  scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type remindersUpsertWithWhereUniqueWithoutParent_reminderInput = {
+  where: Prisma.remindersWhereUniqueInput
+  update: Prisma.XOR<Prisma.remindersUpdateWithoutParent_reminderInput, Prisma.remindersUncheckedUpdateWithoutParent_reminderInput>
+  create: Prisma.XOR<Prisma.remindersCreateWithoutParent_reminderInput, Prisma.remindersUncheckedCreateWithoutParent_reminderInput>
+}
+
+export type remindersUpdateWithWhereUniqueWithoutParent_reminderInput = {
+  where: Prisma.remindersWhereUniqueInput
+  data: Prisma.XOR<Prisma.remindersUpdateWithoutParent_reminderInput, Prisma.remindersUncheckedUpdateWithoutParent_reminderInput>
+}
+
+export type remindersUpdateManyWithWhereWithoutParent_reminderInput = {
+  where: Prisma.remindersScalarWhereInput
+  data: Prisma.XOR<Prisma.remindersUpdateManyMutationInput, Prisma.remindersUncheckedUpdateManyWithoutParent_reminderInput>
+}
+
 export type remindersCreateManyAccountsInput = {
   id?: string
   pet_id?: string | null
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -654,10 +1204,20 @@ export type remindersUpdateWithoutAccountsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder?: Prisma.remindersUpdateOneWithoutChild_remindersNestedInput
+  child_reminders?: Prisma.remindersUpdateManyWithoutParent_reminderNestedInput
   pets?: Prisma.petsUpdateOneWithoutRemindersNestedInput
 }
 
@@ -667,10 +1227,20 @@ export type remindersUncheckedUpdateWithoutAccountsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child_reminders?: Prisma.remindersUncheckedUpdateManyWithoutParent_reminderNestedInput
 }
 
 export type remindersUncheckedUpdateManyWithoutAccountsInput = {
@@ -679,8 +1249,17 @@ export type remindersUncheckedUpdateManyWithoutAccountsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -691,8 +1270,17 @@ export type remindersCreateManyPetsInput = {
   title: string
   description?: string | null
   type: $Enums.reminder_type
-  status: $Enums.reminder_status
+  custom_type?: string | null
+  status?: $Enums.reminder_status
   scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  parent_reminder_id?: string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -702,11 +1290,21 @@ export type remindersUpdateWithoutPetsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutRemindersNestedInput
+  parent_reminder?: Prisma.remindersUpdateOneWithoutChild_remindersNestedInput
+  child_reminders?: Prisma.remindersUpdateManyWithoutParent_reminderNestedInput
 }
 
 export type remindersUncheckedUpdateWithoutPetsInput = {
@@ -715,10 +1313,20 @@ export type remindersUncheckedUpdateWithoutPetsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child_reminders?: Prisma.remindersUncheckedUpdateManyWithoutParent_reminderNestedInput
 }
 
 export type remindersUncheckedUpdateManyWithoutPetsInput = {
@@ -727,12 +1335,136 @@ export type remindersUncheckedUpdateManyWithoutPetsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
   scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent_reminder_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type remindersCreateManyParent_reminderInput = {
+  id?: string
+  account_id: string
+  pet_id?: string | null
+  title: string
+  description?: string | null
+  type: $Enums.reminder_type
+  custom_type?: string | null
+  status?: $Enums.reminder_status
+  scheduled_at: Date | string
+  timezone?: string
+  repeat_frequency?: $Enums.reminder_repeat_frequency
+  repeat_interval?: number | null
+  repeat_until?: Date | string | null
+  notification_provider_id?: string | null
+  completed_at?: Date | string | null
+  cancelled_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type remindersUpdateWithoutParent_reminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
+  scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutRemindersNestedInput
+  child_reminders?: Prisma.remindersUpdateManyWithoutParent_reminderNestedInput
+  pets?: Prisma.petsUpdateOneWithoutRemindersNestedInput
+}
+
+export type remindersUncheckedUpdateWithoutParent_reminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
+  scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child_reminders?: Prisma.remindersUncheckedUpdateManyWithoutParent_reminderNestedInput
+}
+
+export type remindersUncheckedUpdateManyWithoutParent_reminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.Enumreminder_typeFieldUpdateOperationsInput | $Enums.reminder_type
+  custom_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumreminder_statusFieldUpdateOperationsInput | $Enums.reminder_status
+  scheduled_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  repeat_frequency?: Prisma.Enumreminder_repeat_frequencyFieldUpdateOperationsInput | $Enums.reminder_repeat_frequency
+  repeat_interval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  repeat_until?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notification_provider_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+
+/**
+ * Count Type RemindersCountOutputType
+ */
+
+export type RemindersCountOutputType = {
+  child_reminders: number
+}
+
+export type RemindersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  child_reminders?: boolean | RemindersCountOutputTypeCountChild_remindersArgs
+}
+
+/**
+ * RemindersCountOutputType without action
+ */
+export type RemindersCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RemindersCountOutputType
+   */
+  select?: Prisma.RemindersCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RemindersCountOutputType without action
+ */
+export type RemindersCountOutputTypeCountChild_remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.remindersWhereInput
+}
 
 
 export type remindersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -742,12 +1474,24 @@ export type remindersSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   title?: boolean
   description?: boolean
   type?: boolean
+  custom_type?: boolean
   status?: boolean
   scheduled_at?: boolean
+  timezone?: boolean
+  repeat_frequency?: boolean
+  repeat_interval?: boolean
+  repeat_until?: boolean
+  parent_reminder_id?: boolean
+  notification_provider_id?: boolean
+  completed_at?: boolean
+  cancelled_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
+  child_reminders?: boolean | Prisma.reminders$child_remindersArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
+  _count?: boolean | Prisma.RemindersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reminders"]>
 
 export type remindersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -757,11 +1501,21 @@ export type remindersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   description?: boolean
   type?: boolean
+  custom_type?: boolean
   status?: boolean
   scheduled_at?: boolean
+  timezone?: boolean
+  repeat_frequency?: boolean
+  repeat_interval?: boolean
+  repeat_until?: boolean
+  parent_reminder_id?: boolean
+  notification_provider_id?: boolean
+  completed_at?: boolean
+  cancelled_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
 }, ExtArgs["result"]["reminders"]>
 
@@ -772,11 +1526,21 @@ export type remindersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   title?: boolean
   description?: boolean
   type?: boolean
+  custom_type?: boolean
   status?: boolean
   scheduled_at?: boolean
+  timezone?: boolean
+  repeat_frequency?: boolean
+  repeat_interval?: boolean
+  repeat_until?: boolean
+  parent_reminder_id?: boolean
+  notification_provider_id?: boolean
+  completed_at?: boolean
+  cancelled_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
 }, ExtArgs["result"]["reminders"]>
 
@@ -787,23 +1551,37 @@ export type remindersSelectScalar = {
   title?: boolean
   description?: boolean
   type?: boolean
+  custom_type?: boolean
   status?: boolean
   scheduled_at?: boolean
+  timezone?: boolean
+  repeat_frequency?: boolean
+  repeat_interval?: boolean
+  repeat_until?: boolean
+  parent_reminder_id?: boolean
+  notification_provider_id?: boolean
+  completed_at?: boolean
+  cancelled_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type remindersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "pet_id" | "title" | "description" | "type" | "status" | "scheduled_at" | "created_at" | "updated_at", ExtArgs["result"]["reminders"]>
+export type remindersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "pet_id" | "title" | "description" | "type" | "custom_type" | "status" | "scheduled_at" | "timezone" | "repeat_frequency" | "repeat_interval" | "repeat_until" | "parent_reminder_id" | "notification_provider_id" | "completed_at" | "cancelled_at" | "created_at" | "updated_at", ExtArgs["result"]["reminders"]>
 export type remindersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
+  child_reminders?: boolean | Prisma.reminders$child_remindersArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
+  _count?: boolean | Prisma.RemindersCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type remindersIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
 }
 export type remindersIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
+  parent_reminder?: boolean | Prisma.reminders$parent_reminderArgs<ExtArgs>
   pets?: boolean | Prisma.reminders$petsArgs<ExtArgs>
 }
 
@@ -811,6 +1589,8 @@ export type $remindersPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "reminders"
   objects: {
     accounts: Prisma.$accountsPayload<ExtArgs>
+    parent_reminder: Prisma.$remindersPayload<ExtArgs> | null
+    child_reminders: Prisma.$remindersPayload<ExtArgs>[]
     pets: Prisma.$petsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -820,8 +1600,17 @@ export type $remindersPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     title: string
     description: string | null
     type: $Enums.reminder_type
+    custom_type: string | null
     status: $Enums.reminder_status
     scheduled_at: Date
+    timezone: string
+    repeat_frequency: $Enums.reminder_repeat_frequency
+    repeat_interval: number | null
+    repeat_until: Date | null
+    parent_reminder_id: string | null
+    notification_provider_id: string | null
+    completed_at: Date | null
+    cancelled_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["reminders"]>
@@ -1219,6 +2008,8 @@ readonly fields: remindersFieldRefs;
 export interface Prisma__remindersClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parent_reminder<T extends Prisma.reminders$parent_reminderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.reminders$parent_reminderArgs<ExtArgs>>): Prisma.Prisma__remindersClient<runtime.Types.Result.GetResult<Prisma.$remindersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  child_reminders<T extends Prisma.reminders$child_remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.reminders$child_remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$remindersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pets<T extends Prisma.reminders$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.reminders$petsArgs<ExtArgs>>): Prisma.Prisma__petsClient<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1255,8 +2046,17 @@ export interface remindersFieldRefs {
   readonly title: Prisma.FieldRef<"reminders", 'String'>
   readonly description: Prisma.FieldRef<"reminders", 'String'>
   readonly type: Prisma.FieldRef<"reminders", 'reminder_type'>
+  readonly custom_type: Prisma.FieldRef<"reminders", 'String'>
   readonly status: Prisma.FieldRef<"reminders", 'reminder_status'>
   readonly scheduled_at: Prisma.FieldRef<"reminders", 'DateTime'>
+  readonly timezone: Prisma.FieldRef<"reminders", 'String'>
+  readonly repeat_frequency: Prisma.FieldRef<"reminders", 'reminder_repeat_frequency'>
+  readonly repeat_interval: Prisma.FieldRef<"reminders", 'Int'>
+  readonly repeat_until: Prisma.FieldRef<"reminders", 'DateTime'>
+  readonly parent_reminder_id: Prisma.FieldRef<"reminders", 'String'>
+  readonly notification_provider_id: Prisma.FieldRef<"reminders", 'String'>
+  readonly completed_at: Prisma.FieldRef<"reminders", 'DateTime'>
+  readonly cancelled_at: Prisma.FieldRef<"reminders", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"reminders", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"reminders", 'DateTime'>
 }
@@ -1657,6 +2457,49 @@ export type remindersDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many reminders to delete.
    */
   limit?: number
+}
+
+/**
+ * reminders.parent_reminder
+ */
+export type reminders$parent_reminderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the reminders
+   */
+  select?: Prisma.remindersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the reminders
+   */
+  omit?: Prisma.remindersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.remindersInclude<ExtArgs> | null
+  where?: Prisma.remindersWhereInput
+}
+
+/**
+ * reminders.child_reminders
+ */
+export type reminders$child_remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the reminders
+   */
+  select?: Prisma.remindersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the reminders
+   */
+  omit?: Prisma.remindersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.remindersInclude<ExtArgs> | null
+  where?: Prisma.remindersWhereInput
+  orderBy?: Prisma.remindersOrderByWithRelationInput | Prisma.remindersOrderByWithRelationInput[]
+  cursor?: Prisma.remindersWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RemindersScalarFieldEnum | Prisma.RemindersScalarFieldEnum[]
 }
 
 /**

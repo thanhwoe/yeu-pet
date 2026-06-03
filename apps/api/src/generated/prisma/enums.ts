@@ -17,6 +17,28 @@ export const subscription_tier = {
 export type subscription_tier = (typeof subscription_tier)[keyof typeof subscription_tier]
 
 
+export const subscription_provider = {
+  manual: 'manual',
+  revenuecat: 'revenuecat',
+  apple: 'apple',
+  google: 'google'
+} as const
+
+export type subscription_provider = (typeof subscription_provider)[keyof typeof subscription_provider]
+
+
+export const subscription_status = {
+  free: 'free',
+  trialing: 'trialing',
+  active: 'active',
+  grace_period: 'grace_period',
+  expired: 'expired',
+  cancelled: 'cancelled'
+} as const
+
+export type subscription_status = (typeof subscription_status)[keyof typeof subscription_status]
+
+
 export const user_role = {
   user: 'user',
   admin: 'admin'
@@ -76,6 +98,8 @@ export type notifications_status = (typeof notifications_status)[keyof typeof no
 
 export const reminder_status = {
   pending: 'pending',
+  completed: 'completed',
+  skipped: 'skipped',
   sent: 'sent',
   cancelled: 'cancelled'
 } as const
@@ -110,6 +134,73 @@ export const attachment_status = {
 } as const
 
 export type attachment_status = (typeof attachment_status)[keyof typeof attachment_status]
+
+
+export const weight_unit = {
+  kg: 'kg',
+  lb: 'lb'
+} as const
+
+export type weight_unit = (typeof weight_unit)[keyof typeof weight_unit]
+
+
+export const reminder_repeat_frequency = {
+  none: 'none',
+  daily: 'daily',
+  weekly: 'weekly',
+  monthly: 'monthly',
+  yearly: 'yearly',
+  custom: 'custom'
+} as const
+
+export type reminder_repeat_frequency = (typeof reminder_repeat_frequency)[keyof typeof reminder_repeat_frequency]
+
+
+export const ai_message_role = {
+  user: 'user',
+  assistant: 'assistant',
+  system: 'system'
+} as const
+
+export type ai_message_role = (typeof ai_message_role)[keyof typeof ai_message_role]
+
+
+export const ai_conversation_status = {
+  active: 'active',
+  archived: 'archived',
+  deleted: 'deleted'
+} as const
+
+export type ai_conversation_status = (typeof ai_conversation_status)[keyof typeof ai_conversation_status]
+
+
+export const report_target_type = {
+  photo: 'photo',
+  comment: 'comment',
+  sitter: 'sitter',
+  user: 'user'
+} as const
+
+export type report_target_type = (typeof report_target_type)[keyof typeof report_target_type]
+
+
+export const report_status = {
+  pending: 'pending',
+  reviewed: 'reviewed',
+  resolved: 'resolved',
+  rejected: 'rejected'
+} as const
+
+export type report_status = (typeof report_status)[keyof typeof report_status]
+
+
+export const booking_message_type = {
+  text: 'text',
+  image: 'image',
+  system: 'system'
+} as const
+
+export type booking_message_type = (typeof booking_message_type)[keyof typeof booking_message_type]
 
 
 export const sitter_bookings_status = {

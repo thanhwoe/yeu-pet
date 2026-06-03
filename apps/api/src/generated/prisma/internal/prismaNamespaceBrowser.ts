@@ -73,7 +73,16 @@ export const ModelName = {
   sitter_bookings: 'sitter_bookings',
   sitter_reviews: 'sitter_reviews',
   email_logs: 'email_logs',
-  email_suppressions: 'email_suppressions'
+  email_suppressions: 'email_suppressions',
+  subscription_plans: 'subscription_plans',
+  user_subscriptions: 'user_subscriptions',
+  usage_counters: 'usage_counters',
+  ai_conversations: 'ai_conversations',
+  ai_messages: 'ai_messages',
+  ai_usage_logs: 'ai_usage_logs',
+  user_blocks: 'user_blocks',
+  reports: 'reports',
+  sitter_booking_messages: 'sitter_booking_messages'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -150,7 +159,8 @@ export const Medical_recordsScalarFieldEnum = {
   vet_name: 'vet_name',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  attachment_status: 'attachment_status'
+  attachment_status: 'attachment_status',
+  deleted_at: 'deleted_at'
 } as const
 
 export type Medical_recordsScalarFieldEnum = (typeof Medical_recordsScalarFieldEnum)[keyof typeof Medical_recordsScalarFieldEnum]
@@ -164,6 +174,8 @@ export const PetsScalarFieldEnum = {
   birthdate: 'birthdate',
   breed: 'breed',
   weight: 'weight',
+  weight_value: 'weight_value',
+  weight_unit: 'weight_unit',
   color: 'color',
   avatar_url: 'avatar_url',
   gender: 'gender',
@@ -171,7 +183,8 @@ export const PetsScalarFieldEnum = {
   notes: 'notes',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  avatar_id: 'avatar_id'
+  avatar_id: 'avatar_id',
+  deleted_at: 'deleted_at'
 } as const
 
 export type PetsScalarFieldEnum = (typeof PetsScalarFieldEnum)[keyof typeof PetsScalarFieldEnum]
@@ -185,7 +198,8 @@ export const Medical_attachmentsScalarFieldEnum = {
   created_at: 'created_at',
   updated_at: 'updated_at',
   file_id: 'file_id',
-  thumbnail_url: 'thumbnail_url'
+  thumbnail_url: 'thumbnail_url',
+  sort_order: 'sort_order'
 } as const
 
 export type Medical_attachmentsScalarFieldEnum = (typeof Medical_attachmentsScalarFieldEnum)[keyof typeof Medical_attachmentsScalarFieldEnum]
@@ -209,7 +223,12 @@ export type Account_devicesScalarFieldEnum = (typeof Account_devicesScalarFieldE
 export const Account_settingsScalarFieldEnum = {
   account_id: 'account_id',
   notification_enable: 'notification_enable',
+  reminder_notifications: 'reminder_notifications',
+  booking_notifications: 'booking_notifications',
+  social_notifications: 'social_notifications',
+  ai_notifications: 'ai_notifications',
   language: 'language',
+  theme: 'theme',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -242,8 +261,17 @@ export const RemindersScalarFieldEnum = {
   title: 'title',
   description: 'description',
   type: 'type',
+  custom_type: 'custom_type',
   status: 'status',
   scheduled_at: 'scheduled_at',
+  timezone: 'timezone',
+  repeat_frequency: 'repeat_frequency',
+  repeat_interval: 'repeat_interval',
+  repeat_until: 'repeat_until',
+  parent_reminder_id: 'parent_reminder_id',
+  notification_provider_id: 'notification_provider_id',
+  completed_at: 'completed_at',
+  cancelled_at: 'cancelled_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -272,6 +300,8 @@ export const Budget_categoriesScalarFieldEnum = {
   name: 'name',
   emoji: 'emoji',
   color: 'color',
+  is_default: 'is_default',
+  deleted_at: 'deleted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -282,10 +312,12 @@ export type Budget_categoriesScalarFieldEnum = (typeof Budget_categoriesScalarFi
 export const Budget_transactionsScalarFieldEnum = {
   id: 'id',
   account_id: 'account_id',
+  pet_id: 'pet_id',
   category_id: 'category_id',
   amount: 'amount',
   description: 'description',
   date: 'date',
+  deleted_at: 'deleted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -347,6 +379,7 @@ export type Photo_viewsScalarFieldEnum = (typeof Photo_viewsScalarFieldEnum)[key
 export const PhotosScalarFieldEnum = {
   id: 'id',
   account_id: 'account_id',
+  pet_id: 'pet_id',
   url: 'url',
   file_id: 'file_id',
   thumbnail_url: 'thumbnail_url',
@@ -356,6 +389,7 @@ export const PhotosScalarFieldEnum = {
   view_count: 'view_count',
   like_count: 'like_count',
   comment_count: 'comment_count',
+  deleted_at: 'deleted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -366,8 +400,16 @@ export type PhotosScalarFieldEnum = (typeof PhotosScalarFieldEnum)[keyof typeof 
 export const Pet_sittersScalarFieldEnum = {
   id: 'id',
   account_id: 'account_id',
+  display_name: 'display_name',
   bio: 'bio',
   address: 'address',
+  city: 'city',
+  district: 'district',
+  ward: 'ward',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  experience: 'experience',
+  service_notes: 'service_notes',
   hourly_rate: 'hourly_rate',
   daily_rate: 'daily_rate',
   max_concurrent_bookings: 'max_concurrent_bookings',
@@ -376,6 +418,7 @@ export const Pet_sittersScalarFieldEnum = {
   avg_rating: 'avg_rating',
   total_reviews: 'total_reviews',
   is_available: 'is_available',
+  is_verified: 'is_verified',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -399,6 +442,10 @@ export const Sitter_bookingsScalarFieldEnum = {
   cancelled_by: 'cancelled_by',
   cancelled_at: 'cancelled_at',
   cancel_reason: 'cancel_reason',
+  owner_notes: 'owner_notes',
+  sitter_notes: 'sitter_notes',
+  care_instructions: 'care_instructions',
+  payment_note: 'payment_note',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -444,6 +491,137 @@ export const Email_suppressionsScalarFieldEnum = {
 } as const
 
 export type Email_suppressionsScalarFieldEnum = (typeof Email_suppressionsScalarFieldEnum)[keyof typeof Email_suppressionsScalarFieldEnum]
+
+
+export const Subscription_plansScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  tier: 'tier',
+  price: 'price',
+  currency: 'currency',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Subscription_plansScalarFieldEnum = (typeof Subscription_plansScalarFieldEnum)[keyof typeof Subscription_plansScalarFieldEnum]
+
+
+export const User_subscriptionsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  plan_code: 'plan_code',
+  provider: 'provider',
+  provider_customer_id: 'provider_customer_id',
+  provider_original_id: 'provider_original_id',
+  status: 'status',
+  started_at: 'started_at',
+  expires_at: 'expires_at',
+  cancelled_at: 'cancelled_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type User_subscriptionsScalarFieldEnum = (typeof User_subscriptionsScalarFieldEnum)[keyof typeof User_subscriptionsScalarFieldEnum]
+
+
+export const Usage_countersScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  feature_key: 'feature_key',
+  period_key: 'period_key',
+  count: 'count',
+  reset_at: 'reset_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Usage_countersScalarFieldEnum = (typeof Usage_countersScalarFieldEnum)[keyof typeof Usage_countersScalarFieldEnum]
+
+
+export const Ai_conversationsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  pet_id: 'pet_id',
+  title: 'title',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Ai_conversationsScalarFieldEnum = (typeof Ai_conversationsScalarFieldEnum)[keyof typeof Ai_conversationsScalarFieldEnum]
+
+
+export const Ai_messagesScalarFieldEnum = {
+  id: 'id',
+  conversation_id: 'conversation_id',
+  account_id: 'account_id',
+  role: 'role',
+  content: 'content',
+  model: 'model',
+  provider: 'provider',
+  input_tokens: 'input_tokens',
+  output_tokens: 'output_tokens',
+  safety_flags: 'safety_flags',
+  created_at: 'created_at'
+} as const
+
+export type Ai_messagesScalarFieldEnum = (typeof Ai_messagesScalarFieldEnum)[keyof typeof Ai_messagesScalarFieldEnum]
+
+
+export const Ai_usage_logsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  conversation_id: 'conversation_id',
+  provider: 'provider',
+  model: 'model',
+  input_tokens: 'input_tokens',
+  output_tokens: 'output_tokens',
+  estimated_cost: 'estimated_cost',
+  created_at: 'created_at'
+} as const
+
+export type Ai_usage_logsScalarFieldEnum = (typeof Ai_usage_logsScalarFieldEnum)[keyof typeof Ai_usage_logsScalarFieldEnum]
+
+
+export const User_blocksScalarFieldEnum = {
+  id: 'id',
+  blocker_account_id: 'blocker_account_id',
+  blocked_account_id: 'blocked_account_id',
+  created_at: 'created_at'
+} as const
+
+export type User_blocksScalarFieldEnum = (typeof User_blocksScalarFieldEnum)[keyof typeof User_blocksScalarFieldEnum]
+
+
+export const ReportsScalarFieldEnum = {
+  id: 'id',
+  reporter_account_id: 'reporter_account_id',
+  target_type: 'target_type',
+  target_id: 'target_id',
+  reason: 'reason',
+  description: 'description',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ReportsScalarFieldEnum = (typeof ReportsScalarFieldEnum)[keyof typeof ReportsScalarFieldEnum]
+
+
+export const Sitter_booking_messagesScalarFieldEnum = {
+  id: 'id',
+  booking_id: 'booking_id',
+  sender_id: 'sender_id',
+  type: 'type',
+  content: 'content',
+  image_url: 'image_url',
+  read_at: 'read_at',
+  created_at: 'created_at'
+} as const
+
+export type Sitter_booking_messagesScalarFieldEnum = (typeof Sitter_booking_messagesScalarFieldEnum)[keyof typeof Sitter_booking_messagesScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -27,7 +27,12 @@ export type AggregateAccount_settings = {
 export type Account_settingsMinAggregateOutputType = {
   account_id: string | null
   notification_enable: boolean | null
+  reminder_notifications: boolean | null
+  booking_notifications: boolean | null
+  social_notifications: boolean | null
+  ai_notifications: boolean | null
   language: string | null
+  theme: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -35,7 +40,12 @@ export type Account_settingsMinAggregateOutputType = {
 export type Account_settingsMaxAggregateOutputType = {
   account_id: string | null
   notification_enable: boolean | null
+  reminder_notifications: boolean | null
+  booking_notifications: boolean | null
+  social_notifications: boolean | null
+  ai_notifications: boolean | null
   language: string | null
+  theme: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -43,7 +53,12 @@ export type Account_settingsMaxAggregateOutputType = {
 export type Account_settingsCountAggregateOutputType = {
   account_id: number
   notification_enable: number
+  reminder_notifications: number
+  booking_notifications: number
+  social_notifications: number
+  ai_notifications: number
   language: number
+  theme: number
   created_at: number
   updated_at: number
   _all: number
@@ -53,7 +68,12 @@ export type Account_settingsCountAggregateOutputType = {
 export type Account_settingsMinAggregateInputType = {
   account_id?: true
   notification_enable?: true
+  reminder_notifications?: true
+  booking_notifications?: true
+  social_notifications?: true
+  ai_notifications?: true
   language?: true
+  theme?: true
   created_at?: true
   updated_at?: true
 }
@@ -61,7 +81,12 @@ export type Account_settingsMinAggregateInputType = {
 export type Account_settingsMaxAggregateInputType = {
   account_id?: true
   notification_enable?: true
+  reminder_notifications?: true
+  booking_notifications?: true
+  social_notifications?: true
+  ai_notifications?: true
   language?: true
+  theme?: true
   created_at?: true
   updated_at?: true
 }
@@ -69,7 +94,12 @@ export type Account_settingsMaxAggregateInputType = {
 export type Account_settingsCountAggregateInputType = {
   account_id?: true
   notification_enable?: true
+  reminder_notifications?: true
+  booking_notifications?: true
+  social_notifications?: true
+  ai_notifications?: true
   language?: true
+  theme?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -150,7 +180,12 @@ export type account_settingsGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type Account_settingsGroupByOutputType = {
   account_id: string
   notification_enable: boolean
+  reminder_notifications: boolean
+  booking_notifications: boolean
+  social_notifications: boolean
+  ai_notifications: boolean
   language: string
+  theme: string
   created_at: Date | null
   updated_at: Date | null
   _count: Account_settingsCountAggregateOutputType | null
@@ -179,7 +214,12 @@ export type account_settingsWhereInput = {
   NOT?: Prisma.account_settingsWhereInput | Prisma.account_settingsWhereInput[]
   account_id?: Prisma.UuidFilter<"account_settings"> | string
   notification_enable?: Prisma.BoolFilter<"account_settings"> | boolean
+  reminder_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  booking_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  social_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  ai_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
   language?: Prisma.StringFilter<"account_settings"> | string
+  theme?: Prisma.StringFilter<"account_settings"> | string
   created_at?: Prisma.DateTimeNullableFilter<"account_settings"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_settings"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -188,7 +228,12 @@ export type account_settingsWhereInput = {
 export type account_settingsOrderByWithRelationInput = {
   account_id?: Prisma.SortOrder
   notification_enable?: Prisma.SortOrder
+  reminder_notifications?: Prisma.SortOrder
+  booking_notifications?: Prisma.SortOrder
+  social_notifications?: Prisma.SortOrder
+  ai_notifications?: Prisma.SortOrder
   language?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
@@ -200,7 +245,12 @@ export type account_settingsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.account_settingsWhereInput[]
   NOT?: Prisma.account_settingsWhereInput | Prisma.account_settingsWhereInput[]
   notification_enable?: Prisma.BoolFilter<"account_settings"> | boolean
+  reminder_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  booking_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  social_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
+  ai_notifications?: Prisma.BoolFilter<"account_settings"> | boolean
   language?: Prisma.StringFilter<"account_settings"> | string
+  theme?: Prisma.StringFilter<"account_settings"> | string
   created_at?: Prisma.DateTimeNullableFilter<"account_settings"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_settings"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -209,7 +259,12 @@ export type account_settingsWhereUniqueInput = Prisma.AtLeast<{
 export type account_settingsOrderByWithAggregationInput = {
   account_id?: Prisma.SortOrder
   notification_enable?: Prisma.SortOrder
+  reminder_notifications?: Prisma.SortOrder
+  booking_notifications?: Prisma.SortOrder
+  social_notifications?: Prisma.SortOrder
+  ai_notifications?: Prisma.SortOrder
   language?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.account_settingsCountOrderByAggregateInput
@@ -223,14 +278,24 @@ export type account_settingsScalarWhereWithAggregatesInput = {
   NOT?: Prisma.account_settingsScalarWhereWithAggregatesInput | Prisma.account_settingsScalarWhereWithAggregatesInput[]
   account_id?: Prisma.UuidWithAggregatesFilter<"account_settings"> | string
   notification_enable?: Prisma.BoolWithAggregatesFilter<"account_settings"> | boolean
+  reminder_notifications?: Prisma.BoolWithAggregatesFilter<"account_settings"> | boolean
+  booking_notifications?: Prisma.BoolWithAggregatesFilter<"account_settings"> | boolean
+  social_notifications?: Prisma.BoolWithAggregatesFilter<"account_settings"> | boolean
+  ai_notifications?: Prisma.BoolWithAggregatesFilter<"account_settings"> | boolean
   language?: Prisma.StringWithAggregatesFilter<"account_settings"> | string
+  theme?: Prisma.StringWithAggregatesFilter<"account_settings"> | string
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"account_settings"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"account_settings"> | Date | string | null
 }
 
 export type account_settingsCreateInput = {
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: string
+  theme?: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutAccount_settingsInput
@@ -239,14 +304,24 @@ export type account_settingsCreateInput = {
 export type account_settingsUncheckedCreateInput = {
   account_id: string
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: string
+  theme?: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type account_settingsUpdateInput = {
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutAccount_settingsNestedInput
@@ -255,7 +330,12 @@ export type account_settingsUpdateInput = {
 export type account_settingsUncheckedUpdateInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -263,14 +343,24 @@ export type account_settingsUncheckedUpdateInput = {
 export type account_settingsCreateManyInput = {
   account_id: string
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: string
+  theme?: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type account_settingsUpdateManyMutationInput = {
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -278,7 +368,12 @@ export type account_settingsUpdateManyMutationInput = {
 export type account_settingsUncheckedUpdateManyInput = {
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -291,7 +386,12 @@ export type Account_settingsNullableScalarRelationFilter = {
 export type account_settingsCountOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   notification_enable?: Prisma.SortOrder
+  reminder_notifications?: Prisma.SortOrder
+  booking_notifications?: Prisma.SortOrder
+  social_notifications?: Prisma.SortOrder
+  ai_notifications?: Prisma.SortOrder
   language?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -299,7 +399,12 @@ export type account_settingsCountOrderByAggregateInput = {
 export type account_settingsMaxOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   notification_enable?: Prisma.SortOrder
+  reminder_notifications?: Prisma.SortOrder
+  booking_notifications?: Prisma.SortOrder
+  social_notifications?: Prisma.SortOrder
+  ai_notifications?: Prisma.SortOrder
   language?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -307,7 +412,12 @@ export type account_settingsMaxOrderByAggregateInput = {
 export type account_settingsMinOrderByAggregateInput = {
   account_id?: Prisma.SortOrder
   notification_enable?: Prisma.SortOrder
+  reminder_notifications?: Prisma.SortOrder
+  booking_notifications?: Prisma.SortOrder
+  social_notifications?: Prisma.SortOrder
+  ai_notifications?: Prisma.SortOrder
   language?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -346,14 +456,24 @@ export type account_settingsUncheckedUpdateOneWithoutAccountsNestedInput = {
 
 export type account_settingsCreateWithoutAccountsInput = {
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: string
+  theme?: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
 
 export type account_settingsUncheckedCreateWithoutAccountsInput = {
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: string
+  theme?: string
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -376,14 +496,24 @@ export type account_settingsUpdateToOneWithWhereWithoutAccountsInput = {
 
 export type account_settingsUpdateWithoutAccountsInput = {
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type account_settingsUncheckedUpdateWithoutAccountsInput = {
   notification_enable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  reminder_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  booking_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ai_notifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   language?: Prisma.StringFieldUpdateOperationsInput | string
+  theme?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -393,7 +523,12 @@ export type account_settingsUncheckedUpdateWithoutAccountsInput = {
 export type account_settingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   account_id?: boolean
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: boolean
+  theme?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -402,7 +537,12 @@ export type account_settingsSelect<ExtArgs extends runtime.Types.Extensions.Inte
 export type account_settingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   account_id?: boolean
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: boolean
+  theme?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -411,7 +551,12 @@ export type account_settingsSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 export type account_settingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   account_id?: boolean
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: boolean
+  theme?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -420,12 +565,17 @@ export type account_settingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type account_settingsSelectScalar = {
   account_id?: boolean
   notification_enable?: boolean
+  reminder_notifications?: boolean
+  booking_notifications?: boolean
+  social_notifications?: boolean
+  ai_notifications?: boolean
   language?: boolean
+  theme?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type account_settingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"account_id" | "notification_enable" | "language" | "created_at" | "updated_at", ExtArgs["result"]["account_settings"]>
+export type account_settingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"account_id" | "notification_enable" | "reminder_notifications" | "booking_notifications" | "social_notifications" | "ai_notifications" | "language" | "theme" | "created_at" | "updated_at", ExtArgs["result"]["account_settings"]>
 export type account_settingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }
@@ -444,7 +594,12 @@ export type $account_settingsPayload<ExtArgs extends runtime.Types.Extensions.In
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     account_id: string
     notification_enable: boolean
+    reminder_notifications: boolean
+    booking_notifications: boolean
+    social_notifications: boolean
+    ai_notifications: boolean
     language: string
+    theme: string
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["account_settings"]>
@@ -873,7 +1028,12 @@ export interface Prisma__account_settingsClient<T, Null = never, ExtArgs extends
 export interface account_settingsFieldRefs {
   readonly account_id: Prisma.FieldRef<"account_settings", 'String'>
   readonly notification_enable: Prisma.FieldRef<"account_settings", 'Boolean'>
+  readonly reminder_notifications: Prisma.FieldRef<"account_settings", 'Boolean'>
+  readonly booking_notifications: Prisma.FieldRef<"account_settings", 'Boolean'>
+  readonly social_notifications: Prisma.FieldRef<"account_settings", 'Boolean'>
+  readonly ai_notifications: Prisma.FieldRef<"account_settings", 'Boolean'>
   readonly language: Prisma.FieldRef<"account_settings", 'String'>
+  readonly theme: Prisma.FieldRef<"account_settings", 'String'>
   readonly created_at: Prisma.FieldRef<"account_settings", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"account_settings", 'DateTime'>
 }

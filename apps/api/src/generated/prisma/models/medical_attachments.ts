@@ -20,8 +20,18 @@ export type medical_attachmentsModel = runtime.Types.Result.DefaultSelection<Pri
 
 export type AggregateMedical_attachments = {
   _count: Medical_attachmentsCountAggregateOutputType | null
+  _avg: Medical_attachmentsAvgAggregateOutputType | null
+  _sum: Medical_attachmentsSumAggregateOutputType | null
   _min: Medical_attachmentsMinAggregateOutputType | null
   _max: Medical_attachmentsMaxAggregateOutputType | null
+}
+
+export type Medical_attachmentsAvgAggregateOutputType = {
+  sort_order: number | null
+}
+
+export type Medical_attachmentsSumAggregateOutputType = {
+  sort_order: number | null
 }
 
 export type Medical_attachmentsMinAggregateOutputType = {
@@ -33,6 +43,7 @@ export type Medical_attachmentsMinAggregateOutputType = {
   updated_at: Date | null
   file_id: string | null
   thumbnail_url: string | null
+  sort_order: number | null
 }
 
 export type Medical_attachmentsMaxAggregateOutputType = {
@@ -44,6 +55,7 @@ export type Medical_attachmentsMaxAggregateOutputType = {
   updated_at: Date | null
   file_id: string | null
   thumbnail_url: string | null
+  sort_order: number | null
 }
 
 export type Medical_attachmentsCountAggregateOutputType = {
@@ -55,9 +67,18 @@ export type Medical_attachmentsCountAggregateOutputType = {
   updated_at: number
   file_id: number
   thumbnail_url: number
+  sort_order: number
   _all: number
 }
 
+
+export type Medical_attachmentsAvgAggregateInputType = {
+  sort_order?: true
+}
+
+export type Medical_attachmentsSumAggregateInputType = {
+  sort_order?: true
+}
 
 export type Medical_attachmentsMinAggregateInputType = {
   id?: true
@@ -68,6 +89,7 @@ export type Medical_attachmentsMinAggregateInputType = {
   updated_at?: true
   file_id?: true
   thumbnail_url?: true
+  sort_order?: true
 }
 
 export type Medical_attachmentsMaxAggregateInputType = {
@@ -79,6 +101,7 @@ export type Medical_attachmentsMaxAggregateInputType = {
   updated_at?: true
   file_id?: true
   thumbnail_url?: true
+  sort_order?: true
 }
 
 export type Medical_attachmentsCountAggregateInputType = {
@@ -90,6 +113,7 @@ export type Medical_attachmentsCountAggregateInputType = {
   updated_at?: true
   file_id?: true
   thumbnail_url?: true
+  sort_order?: true
   _all?: true
 }
 
@@ -131,6 +155,18 @@ export type Medical_attachmentsAggregateArgs<ExtArgs extends runtime.Types.Exten
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: Medical_attachmentsAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: Medical_attachmentsSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: Medical_attachmentsMinAggregateInputType
@@ -161,6 +197,8 @@ export type medical_attachmentsGroupByArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   _count?: Medical_attachmentsCountAggregateInputType | true
+  _avg?: Medical_attachmentsAvgAggregateInputType
+  _sum?: Medical_attachmentsSumAggregateInputType
   _min?: Medical_attachmentsMinAggregateInputType
   _max?: Medical_attachmentsMaxAggregateInputType
 }
@@ -174,7 +212,10 @@ export type Medical_attachmentsGroupByOutputType = {
   updated_at: Date | null
   file_id: string | null
   thumbnail_url: string | null
+  sort_order: number
   _count: Medical_attachmentsCountAggregateOutputType | null
+  _avg: Medical_attachmentsAvgAggregateOutputType | null
+  _sum: Medical_attachmentsSumAggregateOutputType | null
   _min: Medical_attachmentsMinAggregateOutputType | null
   _max: Medical_attachmentsMaxAggregateOutputType | null
 }
@@ -206,6 +247,7 @@ export type medical_attachmentsWhereInput = {
   updated_at?: Prisma.DateTimeNullableFilter<"medical_attachments"> | Date | string | null
   file_id?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
+  sort_order?: Prisma.IntFilter<"medical_attachments"> | number
   medical_records?: Prisma.XOR<Prisma.Medical_recordsScalarRelationFilter, Prisma.medical_recordsWhereInput>
 }
 
@@ -218,6 +260,7 @@ export type medical_attachmentsOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  sort_order?: Prisma.SortOrder
   medical_records?: Prisma.medical_recordsOrderByWithRelationInput
 }
 
@@ -233,6 +276,7 @@ export type medical_attachmentsWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeNullableFilter<"medical_attachments"> | Date | string | null
   file_id?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
+  sort_order?: Prisma.IntFilter<"medical_attachments"> | number
   medical_records?: Prisma.XOR<Prisma.Medical_recordsScalarRelationFilter, Prisma.medical_recordsWhereInput>
 }, "id">
 
@@ -245,9 +289,12 @@ export type medical_attachmentsOrderByWithAggregationInput = {
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  sort_order?: Prisma.SortOrder
   _count?: Prisma.medical_attachmentsCountOrderByAggregateInput
+  _avg?: Prisma.medical_attachmentsAvgOrderByAggregateInput
   _max?: Prisma.medical_attachmentsMaxOrderByAggregateInput
   _min?: Prisma.medical_attachmentsMinOrderByAggregateInput
+  _sum?: Prisma.medical_attachmentsSumOrderByAggregateInput
 }
 
 export type medical_attachmentsScalarWhereWithAggregatesInput = {
@@ -262,6 +309,7 @@ export type medical_attachmentsScalarWhereWithAggregatesInput = {
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"medical_attachments"> | Date | string | null
   file_id?: Prisma.StringNullableWithAggregatesFilter<"medical_attachments"> | string | null
   thumbnail_url?: Prisma.StringNullableWithAggregatesFilter<"medical_attachments"> | string | null
+  sort_order?: Prisma.IntWithAggregatesFilter<"medical_attachments"> | number
 }
 
 export type medical_attachmentsCreateInput = {
@@ -272,6 +320,7 @@ export type medical_attachmentsCreateInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
   medical_records: Prisma.medical_recordsCreateNestedOneWithoutMedical_attachmentsInput
 }
 
@@ -284,6 +333,7 @@ export type medical_attachmentsUncheckedCreateInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
 }
 
 export type medical_attachmentsUpdateInput = {
@@ -294,6 +344,7 @@ export type medical_attachmentsUpdateInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   medical_records?: Prisma.medical_recordsUpdateOneRequiredWithoutMedical_attachmentsNestedInput
 }
 
@@ -306,6 +357,7 @@ export type medical_attachmentsUncheckedUpdateInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type medical_attachmentsCreateManyInput = {
@@ -317,6 +369,7 @@ export type medical_attachmentsCreateManyInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
 }
 
 export type medical_attachmentsUpdateManyMutationInput = {
@@ -327,6 +380,7 @@ export type medical_attachmentsUpdateManyMutationInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type medical_attachmentsUncheckedUpdateManyInput = {
@@ -338,6 +392,7 @@ export type medical_attachmentsUncheckedUpdateManyInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type Medical_attachmentsListRelationFilter = {
@@ -359,6 +414,11 @@ export type medical_attachmentsCountOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
+  sort_order?: Prisma.SortOrder
+}
+
+export type medical_attachmentsAvgOrderByAggregateInput = {
+  sort_order?: Prisma.SortOrder
 }
 
 export type medical_attachmentsMaxOrderByAggregateInput = {
@@ -370,6 +430,7 @@ export type medical_attachmentsMaxOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
+  sort_order?: Prisma.SortOrder
 }
 
 export type medical_attachmentsMinOrderByAggregateInput = {
@@ -381,6 +442,11 @@ export type medical_attachmentsMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
   file_id?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
+  sort_order?: Prisma.SortOrder
+}
+
+export type medical_attachmentsSumOrderByAggregateInput = {
+  sort_order?: Prisma.SortOrder
 }
 
 export type medical_attachmentsCreateNestedManyWithoutMedical_recordsInput = {
@@ -425,6 +491,14 @@ export type medical_attachmentsUncheckedUpdateManyWithoutMedical_recordsNestedIn
   deleteMany?: Prisma.medical_attachmentsScalarWhereInput | Prisma.medical_attachmentsScalarWhereInput[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type medical_attachmentsCreateWithoutMedical_recordsInput = {
   id?: string
   deleted_at?: Date | string | null
@@ -433,6 +507,7 @@ export type medical_attachmentsCreateWithoutMedical_recordsInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
 }
 
 export type medical_attachmentsUncheckedCreateWithoutMedical_recordsInput = {
@@ -443,6 +518,7 @@ export type medical_attachmentsUncheckedCreateWithoutMedical_recordsInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
 }
 
 export type medical_attachmentsCreateOrConnectWithoutMedical_recordsInput = {
@@ -483,6 +559,7 @@ export type medical_attachmentsScalarWhereInput = {
   updated_at?: Prisma.DateTimeNullableFilter<"medical_attachments"> | Date | string | null
   file_id?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
   thumbnail_url?: Prisma.StringNullableFilter<"medical_attachments"> | string | null
+  sort_order?: Prisma.IntFilter<"medical_attachments"> | number
 }
 
 export type medical_attachmentsCreateManyMedical_recordsInput = {
@@ -493,6 +570,7 @@ export type medical_attachmentsCreateManyMedical_recordsInput = {
   updated_at?: Date | string | null
   file_id?: string | null
   thumbnail_url?: string | null
+  sort_order?: number
 }
 
 export type medical_attachmentsUpdateWithoutMedical_recordsInput = {
@@ -503,6 +581,7 @@ export type medical_attachmentsUpdateWithoutMedical_recordsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type medical_attachmentsUncheckedUpdateWithoutMedical_recordsInput = {
@@ -513,6 +592,7 @@ export type medical_attachmentsUncheckedUpdateWithoutMedical_recordsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type medical_attachmentsUncheckedUpdateManyWithoutMedical_recordsInput = {
@@ -523,6 +603,7 @@ export type medical_attachmentsUncheckedUpdateManyWithoutMedical_recordsInput = 
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   thumbnail_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -536,6 +617,7 @@ export type medical_attachmentsSelect<ExtArgs extends runtime.Types.Extensions.I
   updated_at?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
+  sort_order?: boolean
   medical_records?: boolean | Prisma.medical_recordsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medical_attachments"]>
 
@@ -548,6 +630,7 @@ export type medical_attachmentsSelectCreateManyAndReturn<ExtArgs extends runtime
   updated_at?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
+  sort_order?: boolean
   medical_records?: boolean | Prisma.medical_recordsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medical_attachments"]>
 
@@ -560,6 +643,7 @@ export type medical_attachmentsSelectUpdateManyAndReturn<ExtArgs extends runtime
   updated_at?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
+  sort_order?: boolean
   medical_records?: boolean | Prisma.medical_recordsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medical_attachments"]>
 
@@ -572,9 +656,10 @@ export type medical_attachmentsSelectScalar = {
   updated_at?: boolean
   file_id?: boolean
   thumbnail_url?: boolean
+  sort_order?: boolean
 }
 
-export type medical_attachmentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "medical_id" | "deleted_at" | "url" | "created_at" | "updated_at" | "file_id" | "thumbnail_url", ExtArgs["result"]["medical_attachments"]>
+export type medical_attachmentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "medical_id" | "deleted_at" | "url" | "created_at" | "updated_at" | "file_id" | "thumbnail_url" | "sort_order", ExtArgs["result"]["medical_attachments"]>
 export type medical_attachmentsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medical_records?: boolean | Prisma.medical_recordsDefaultArgs<ExtArgs>
 }
@@ -599,6 +684,7 @@ export type $medical_attachmentsPayload<ExtArgs extends runtime.Types.Extensions
     updated_at: Date | null
     file_id: string | null
     thumbnail_url: string | null
+    sort_order: number
   }, ExtArgs["result"]["medical_attachments"]>
   composites: {}
 }
@@ -1031,6 +1117,7 @@ export interface medical_attachmentsFieldRefs {
   readonly updated_at: Prisma.FieldRef<"medical_attachments", 'DateTime'>
   readonly file_id: Prisma.FieldRef<"medical_attachments", 'String'>
   readonly thumbnail_url: Prisma.FieldRef<"medical_attachments", 'String'>
+  readonly sort_order: Prisma.FieldRef<"medical_attachments", 'Int'>
 }
     
 

@@ -37,10 +37,12 @@ export type Budget_transactionsSumAggregateOutputType = {
 export type Budget_transactionsMinAggregateOutputType = {
   id: string | null
   account_id: string | null
+  pet_id: string | null
   category_id: string | null
   amount: runtime.Decimal | null
   description: string | null
   date: Date | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -48,10 +50,12 @@ export type Budget_transactionsMinAggregateOutputType = {
 export type Budget_transactionsMaxAggregateOutputType = {
   id: string | null
   account_id: string | null
+  pet_id: string | null
   category_id: string | null
   amount: runtime.Decimal | null
   description: string | null
   date: Date | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -59,10 +63,12 @@ export type Budget_transactionsMaxAggregateOutputType = {
 export type Budget_transactionsCountAggregateOutputType = {
   id: number
   account_id: number
+  pet_id: number
   category_id: number
   amount: number
   description: number
   date: number
+  deleted_at: number
   created_at: number
   updated_at: number
   _all: number
@@ -80,10 +86,12 @@ export type Budget_transactionsSumAggregateInputType = {
 export type Budget_transactionsMinAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   category_id?: true
   amount?: true
   description?: true
   date?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -91,10 +99,12 @@ export type Budget_transactionsMinAggregateInputType = {
 export type Budget_transactionsMaxAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   category_id?: true
   amount?: true
   description?: true
   date?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -102,10 +112,12 @@ export type Budget_transactionsMaxAggregateInputType = {
 export type Budget_transactionsCountAggregateInputType = {
   id?: true
   account_id?: true
+  pet_id?: true
   category_id?: true
   amount?: true
   description?: true
   date?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -200,10 +212,12 @@ export type budget_transactionsGroupByArgs<ExtArgs extends runtime.Types.Extensi
 export type Budget_transactionsGroupByOutputType = {
   id: string
   account_id: string
+  pet_id: string | null
   category_id: string
   amount: runtime.Decimal
   description: string | null
   date: Date
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
   _count: Budget_transactionsCountAggregateOutputType | null
@@ -234,27 +248,33 @@ export type budget_transactionsWhereInput = {
   NOT?: Prisma.budget_transactionsWhereInput | Prisma.budget_transactionsWhereInput[]
   id?: Prisma.UuidFilter<"budget_transactions"> | string
   account_id?: Prisma.UuidFilter<"budget_transactions"> | string
+  pet_id?: Prisma.UuidNullableFilter<"budget_transactions"> | string | null
   category_id?: Prisma.UuidFilter<"budget_transactions"> | string
   amount?: Prisma.DecimalFilter<"budget_transactions"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringNullableFilter<"budget_transactions"> | string | null
   date?: Prisma.DateTimeFilter<"budget_transactions"> | Date | string
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   budget_categories?: Prisma.XOR<Prisma.Budget_categoriesScalarRelationFilter, Prisma.budget_categoriesWhereInput>
+  pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }
 
 export type budget_transactionsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrderInput | Prisma.SortOrder
   category_id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   date?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
   budget_categories?: Prisma.budget_categoriesOrderByWithRelationInput
+  pets?: Prisma.petsOrderByWithRelationInput
 }
 
 export type budget_transactionsWhereUniqueInput = Prisma.AtLeast<{
@@ -263,23 +283,28 @@ export type budget_transactionsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.budget_transactionsWhereInput[]
   NOT?: Prisma.budget_transactionsWhereInput | Prisma.budget_transactionsWhereInput[]
   account_id?: Prisma.UuidFilter<"budget_transactions"> | string
+  pet_id?: Prisma.UuidNullableFilter<"budget_transactions"> | string | null
   category_id?: Prisma.UuidFilter<"budget_transactions"> | string
   amount?: Prisma.DecimalFilter<"budget_transactions"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringNullableFilter<"budget_transactions"> | string | null
   date?: Prisma.DateTimeFilter<"budget_transactions"> | Date | string
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   budget_categories?: Prisma.XOR<Prisma.Budget_categoriesScalarRelationFilter, Prisma.budget_categoriesWhereInput>
+  pets?: Prisma.XOR<Prisma.PetsNullableScalarRelationFilter, Prisma.petsWhereInput> | null
 }, "id">
 
 export type budget_transactionsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrderInput | Prisma.SortOrder
   category_id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   date?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.budget_transactionsCountOrderByAggregateInput
@@ -295,10 +320,12 @@ export type budget_transactionsScalarWhereWithAggregatesInput = {
   NOT?: Prisma.budget_transactionsScalarWhereWithAggregatesInput | Prisma.budget_transactionsScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"budget_transactions"> | string
   account_id?: Prisma.UuidWithAggregatesFilter<"budget_transactions"> | string
+  pet_id?: Prisma.UuidNullableWithAggregatesFilter<"budget_transactions"> | string | null
   category_id?: Prisma.UuidWithAggregatesFilter<"budget_transactions"> | string
   amount?: Prisma.DecimalWithAggregatesFilter<"budget_transactions"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringNullableWithAggregatesFilter<"budget_transactions"> | string | null
   date?: Prisma.DateTimeWithAggregatesFilter<"budget_transactions"> | Date | string
+  deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_transactions"> | Date | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_transactions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_transactions"> | Date | string | null
 }
@@ -308,19 +335,23 @@ export type budget_transactionsCreateInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutBudget_transactionsInput
   budget_categories: Prisma.budget_categoriesCreateNestedOneWithoutBudget_transactionsInput
+  pets?: Prisma.petsCreateNestedOneWithoutBudget_transactionsInput
 }
 
 export type budget_transactionsUncheckedCreateInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   category_id: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -330,19 +361,23 @@ export type budget_transactionsUpdateInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_transactionsNestedInput
   budget_categories?: Prisma.budget_categoriesUpdateOneRequiredWithoutBudget_transactionsNestedInput
+  pets?: Prisma.petsUpdateOneWithoutBudget_transactionsNestedInput
 }
 
 export type budget_transactionsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category_id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -350,10 +385,12 @@ export type budget_transactionsUncheckedUpdateInput = {
 export type budget_transactionsCreateManyInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   category_id: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -363,6 +400,7 @@ export type budget_transactionsUpdateManyMutationInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -370,10 +408,12 @@ export type budget_transactionsUpdateManyMutationInput = {
 export type budget_transactionsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category_id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -391,10 +431,12 @@ export type budget_transactionsOrderByRelationAggregateInput = {
 export type budget_transactionsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -406,10 +448,12 @@ export type budget_transactionsAvgOrderByAggregateInput = {
 export type budget_transactionsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -417,10 +461,12 @@ export type budget_transactionsMaxOrderByAggregateInput = {
 export type budget_transactionsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
+  pet_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   date?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -468,6 +514,48 @@ export type budget_transactionsUncheckedUpdateManyWithoutAccountsNestedInput = {
   connect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
   update?: Prisma.budget_transactionsUpdateWithWhereUniqueWithoutAccountsInput | Prisma.budget_transactionsUpdateWithWhereUniqueWithoutAccountsInput[]
   updateMany?: Prisma.budget_transactionsUpdateManyWithWhereWithoutAccountsInput | Prisma.budget_transactionsUpdateManyWithWhereWithoutAccountsInput[]
+  deleteMany?: Prisma.budget_transactionsScalarWhereInput | Prisma.budget_transactionsScalarWhereInput[]
+}
+
+export type budget_transactionsCreateNestedManyWithoutPetsInput = {
+  create?: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput> | Prisma.budget_transactionsCreateWithoutPetsInput[] | Prisma.budget_transactionsUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.budget_transactionsCreateOrConnectWithoutPetsInput | Prisma.budget_transactionsCreateOrConnectWithoutPetsInput[]
+  createMany?: Prisma.budget_transactionsCreateManyPetsInputEnvelope
+  connect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+}
+
+export type budget_transactionsUncheckedCreateNestedManyWithoutPetsInput = {
+  create?: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput> | Prisma.budget_transactionsCreateWithoutPetsInput[] | Prisma.budget_transactionsUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.budget_transactionsCreateOrConnectWithoutPetsInput | Prisma.budget_transactionsCreateOrConnectWithoutPetsInput[]
+  createMany?: Prisma.budget_transactionsCreateManyPetsInputEnvelope
+  connect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+}
+
+export type budget_transactionsUpdateManyWithoutPetsNestedInput = {
+  create?: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput> | Prisma.budget_transactionsCreateWithoutPetsInput[] | Prisma.budget_transactionsUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.budget_transactionsCreateOrConnectWithoutPetsInput | Prisma.budget_transactionsCreateOrConnectWithoutPetsInput[]
+  upsert?: Prisma.budget_transactionsUpsertWithWhereUniqueWithoutPetsInput | Prisma.budget_transactionsUpsertWithWhereUniqueWithoutPetsInput[]
+  createMany?: Prisma.budget_transactionsCreateManyPetsInputEnvelope
+  set?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  disconnect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  delete?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  connect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  update?: Prisma.budget_transactionsUpdateWithWhereUniqueWithoutPetsInput | Prisma.budget_transactionsUpdateWithWhereUniqueWithoutPetsInput[]
+  updateMany?: Prisma.budget_transactionsUpdateManyWithWhereWithoutPetsInput | Prisma.budget_transactionsUpdateManyWithWhereWithoutPetsInput[]
+  deleteMany?: Prisma.budget_transactionsScalarWhereInput | Prisma.budget_transactionsScalarWhereInput[]
+}
+
+export type budget_transactionsUncheckedUpdateManyWithoutPetsNestedInput = {
+  create?: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput> | Prisma.budget_transactionsCreateWithoutPetsInput[] | Prisma.budget_transactionsUncheckedCreateWithoutPetsInput[]
+  connectOrCreate?: Prisma.budget_transactionsCreateOrConnectWithoutPetsInput | Prisma.budget_transactionsCreateOrConnectWithoutPetsInput[]
+  upsert?: Prisma.budget_transactionsUpsertWithWhereUniqueWithoutPetsInput | Prisma.budget_transactionsUpsertWithWhereUniqueWithoutPetsInput[]
+  createMany?: Prisma.budget_transactionsCreateManyPetsInputEnvelope
+  set?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  disconnect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  delete?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  connect?: Prisma.budget_transactionsWhereUniqueInput | Prisma.budget_transactionsWhereUniqueInput[]
+  update?: Prisma.budget_transactionsUpdateWithWhereUniqueWithoutPetsInput | Prisma.budget_transactionsUpdateWithWhereUniqueWithoutPetsInput[]
+  updateMany?: Prisma.budget_transactionsUpdateManyWithWhereWithoutPetsInput | Prisma.budget_transactionsUpdateManyWithWhereWithoutPetsInput[]
   deleteMany?: Prisma.budget_transactionsScalarWhereInput | Prisma.budget_transactionsScalarWhereInput[]
 }
 
@@ -526,17 +614,21 @@ export type budget_transactionsCreateWithoutAccountsInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   budget_categories: Prisma.budget_categoriesCreateNestedOneWithoutBudget_transactionsInput
+  pets?: Prisma.petsCreateNestedOneWithoutBudget_transactionsInput
 }
 
 export type budget_transactionsUncheckedCreateWithoutAccountsInput = {
   id?: string
+  pet_id?: string | null
   category_id: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -573,12 +665,64 @@ export type budget_transactionsScalarWhereInput = {
   NOT?: Prisma.budget_transactionsScalarWhereInput | Prisma.budget_transactionsScalarWhereInput[]
   id?: Prisma.UuidFilter<"budget_transactions"> | string
   account_id?: Prisma.UuidFilter<"budget_transactions"> | string
+  pet_id?: Prisma.UuidNullableFilter<"budget_transactions"> | string | null
   category_id?: Prisma.UuidFilter<"budget_transactions"> | string
   amount?: Prisma.DecimalFilter<"budget_transactions"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringNullableFilter<"budget_transactions"> | string | null
   date?: Prisma.DateTimeFilter<"budget_transactions"> | Date | string
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_transactions"> | Date | string | null
+}
+
+export type budget_transactionsCreateWithoutPetsInput = {
+  id?: string
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: string | null
+  date: Date | string
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  accounts: Prisma.accountsCreateNestedOneWithoutBudget_transactionsInput
+  budget_categories: Prisma.budget_categoriesCreateNestedOneWithoutBudget_transactionsInput
+}
+
+export type budget_transactionsUncheckedCreateWithoutPetsInput = {
+  id?: string
+  account_id: string
+  category_id: string
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: string | null
+  date: Date | string
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type budget_transactionsCreateOrConnectWithoutPetsInput = {
+  where: Prisma.budget_transactionsWhereUniqueInput
+  create: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput>
+}
+
+export type budget_transactionsCreateManyPetsInputEnvelope = {
+  data: Prisma.budget_transactionsCreateManyPetsInput | Prisma.budget_transactionsCreateManyPetsInput[]
+  skipDuplicates?: boolean
+}
+
+export type budget_transactionsUpsertWithWhereUniqueWithoutPetsInput = {
+  where: Prisma.budget_transactionsWhereUniqueInput
+  update: Prisma.XOR<Prisma.budget_transactionsUpdateWithoutPetsInput, Prisma.budget_transactionsUncheckedUpdateWithoutPetsInput>
+  create: Prisma.XOR<Prisma.budget_transactionsCreateWithoutPetsInput, Prisma.budget_transactionsUncheckedCreateWithoutPetsInput>
+}
+
+export type budget_transactionsUpdateWithWhereUniqueWithoutPetsInput = {
+  where: Prisma.budget_transactionsWhereUniqueInput
+  data: Prisma.XOR<Prisma.budget_transactionsUpdateWithoutPetsInput, Prisma.budget_transactionsUncheckedUpdateWithoutPetsInput>
+}
+
+export type budget_transactionsUpdateManyWithWhereWithoutPetsInput = {
+  where: Prisma.budget_transactionsScalarWhereInput
+  data: Prisma.XOR<Prisma.budget_transactionsUpdateManyMutationInput, Prisma.budget_transactionsUncheckedUpdateManyWithoutPetsInput>
 }
 
 export type budget_transactionsCreateWithoutBudget_categoriesInput = {
@@ -586,17 +730,21 @@ export type budget_transactionsCreateWithoutBudget_categoriesInput = {
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutBudget_transactionsInput
+  pets?: Prisma.petsCreateNestedOneWithoutBudget_transactionsInput
 }
 
 export type budget_transactionsUncheckedCreateWithoutBudget_categoriesInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -629,10 +777,12 @@ export type budget_transactionsUpdateManyWithWhereWithoutBudget_categoriesInput 
 
 export type budget_transactionsCreateManyAccountsInput = {
   id?: string
+  pet_id?: string | null
   category_id: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -642,27 +792,81 @@ export type budget_transactionsUpdateWithoutAccountsInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget_categories?: Prisma.budget_categoriesUpdateOneRequiredWithoutBudget_transactionsNestedInput
+  pets?: Prisma.petsUpdateOneWithoutBudget_transactionsNestedInput
 }
 
 export type budget_transactionsUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category_id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type budget_transactionsUncheckedUpdateManyWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category_id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type budget_transactionsCreateManyPetsInput = {
+  id?: string
+  account_id: string
+  category_id: string
+  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: string | null
+  date: Date | string
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+}
+
+export type budget_transactionsUpdateWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_transactionsNestedInput
+  budget_categories?: Prisma.budget_categoriesUpdateOneRequiredWithoutBudget_transactionsNestedInput
+}
+
+export type budget_transactionsUncheckedUpdateWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type budget_transactionsUncheckedUpdateManyWithoutPetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  category_id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -670,9 +874,11 @@ export type budget_transactionsUncheckedUpdateManyWithoutAccountsInput = {
 export type budget_transactionsCreateManyBudget_categoriesInput = {
   id?: string
   account_id: string
+  pet_id?: string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: string | null
   date: Date | string
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -682,17 +888,21 @@ export type budget_transactionsUpdateWithoutBudget_categoriesInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_transactionsNestedInput
+  pets?: Prisma.petsUpdateOneWithoutBudget_transactionsNestedInput
 }
 
 export type budget_transactionsUncheckedUpdateWithoutBudget_categoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -700,9 +910,11 @@ export type budget_transactionsUncheckedUpdateWithoutBudget_categoriesInput = {
 export type budget_transactionsUncheckedUpdateManyWithoutBudget_categoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pet_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -712,65 +924,79 @@ export type budget_transactionsUncheckedUpdateManyWithoutBudget_categoriesInput 
 export type budget_transactionsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   category_id?: boolean
   amount?: boolean
   description?: boolean
   date?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }, ExtArgs["result"]["budget_transactions"]>
 
 export type budget_transactionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   category_id?: boolean
   amount?: boolean
   description?: boolean
   date?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }, ExtArgs["result"]["budget_transactions"]>
 
 export type budget_transactionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   category_id?: boolean
   amount?: boolean
   description?: boolean
   date?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }, ExtArgs["result"]["budget_transactions"]>
 
 export type budget_transactionsSelectScalar = {
   id?: boolean
   account_id?: boolean
+  pet_id?: boolean
   category_id?: boolean
   amount?: boolean
   description?: boolean
   date?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type budget_transactionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "category_id" | "amount" | "description" | "date" | "created_at" | "updated_at", ExtArgs["result"]["budget_transactions"]>
+export type budget_transactionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "pet_id" | "category_id" | "amount" | "description" | "date" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["budget_transactions"]>
 export type budget_transactionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }
 export type budget_transactionsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }
 export type budget_transactionsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_categories?: boolean | Prisma.budget_categoriesDefaultArgs<ExtArgs>
+  pets?: boolean | Prisma.budget_transactions$petsArgs<ExtArgs>
 }
 
 export type $budget_transactionsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -778,14 +1004,17 @@ export type $budget_transactionsPayload<ExtArgs extends runtime.Types.Extensions
   objects: {
     accounts: Prisma.$accountsPayload<ExtArgs>
     budget_categories: Prisma.$budget_categoriesPayload<ExtArgs>
+    pets: Prisma.$petsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     account_id: string
+    pet_id: string | null
     category_id: string
     amount: runtime.Decimal
     description: string | null
     date: Date
+    deleted_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["budget_transactions"]>
@@ -1184,6 +1413,7 @@ export interface Prisma__budget_transactionsClient<T, Null = never, ExtArgs exte
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.accountsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.accountsDefaultArgs<ExtArgs>>): Prisma.Prisma__accountsClient<runtime.Types.Result.GetResult<Prisma.$accountsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   budget_categories<T extends Prisma.budget_categoriesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.budget_categoriesDefaultArgs<ExtArgs>>): Prisma.Prisma__budget_categoriesClient<runtime.Types.Result.GetResult<Prisma.$budget_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  pets<T extends Prisma.budget_transactions$petsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.budget_transactions$petsArgs<ExtArgs>>): Prisma.Prisma__petsClient<runtime.Types.Result.GetResult<Prisma.$petsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1215,10 +1445,12 @@ export interface Prisma__budget_transactionsClient<T, Null = never, ExtArgs exte
 export interface budget_transactionsFieldRefs {
   readonly id: Prisma.FieldRef<"budget_transactions", 'String'>
   readonly account_id: Prisma.FieldRef<"budget_transactions", 'String'>
+  readonly pet_id: Prisma.FieldRef<"budget_transactions", 'String'>
   readonly category_id: Prisma.FieldRef<"budget_transactions", 'String'>
   readonly amount: Prisma.FieldRef<"budget_transactions", 'Decimal'>
   readonly description: Prisma.FieldRef<"budget_transactions", 'String'>
   readonly date: Prisma.FieldRef<"budget_transactions", 'DateTime'>
+  readonly deleted_at: Prisma.FieldRef<"budget_transactions", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"budget_transactions", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"budget_transactions", 'DateTime'>
 }
@@ -1619,6 +1851,25 @@ export type budget_transactionsDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many budget_transactions to delete.
    */
   limit?: number
+}
+
+/**
+ * budget_transactions.pets
+ */
+export type budget_transactions$petsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the pets
+   */
+  select?: Prisma.petsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the pets
+   */
+  omit?: Prisma.petsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.petsInclude<ExtArgs> | null
+  where?: Prisma.petsWhereInput
 }
 
 /**

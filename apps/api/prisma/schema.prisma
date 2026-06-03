@@ -9,25 +9,28 @@ datasource db {
 }
 
 model accounts {
-  id                        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                     String?               @unique @db.VarChar(255)
-  first_name                String?               @db.VarChar(255)
-  last_name                 String?               @db.VarChar(255)
-  password_hash             String                @db.VarChar(255)
-  phone                     String                @unique @db.VarChar(20)
+  id                        String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                     String?                   @unique @db.VarChar(255)
+  first_name                String?                   @db.VarChar(255)
+  last_name                 String?                   @db.VarChar(255)
+  password_hash             String                    @db.VarChar(255)
+  phone                     String                    @unique @db.VarChar(20)
   avatar_url                String?
-  role                      user_role             @default(user)
-  onboarding_completed      Boolean               @default(false)
-  subscription              subscription_tier     @default(free)
-  subscription_expires_at   DateTime?             @db.Timestamptz(6)
-  last_sign_in_at           DateTime?             @db.Timestamptz(6)
-  created_at                DateTime?             @default(now()) @db.Timestamptz(6)
-  updated_at                DateTime?             @default(now()) @db.Timestamptz(6)
-  is_active                 Boolean?              @default(true)
-  is_verified               Boolean?              @default(false)
+  role                      user_role                 @default(user)
+  onboarding_completed      Boolean                   @default(false)
+  subscription              subscription_tier         @default(free)
+  subscription_expires_at   DateTime?                 @db.Timestamptz(6)
+  last_sign_in_at           DateTime?                 @db.Timestamptz(6)
+  created_at                DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at                DateTime?                 @default(now()) @db.Timestamptz(6)
+  is_active                 Boolean?                  @default(true)
+  is_verified               Boolean?                  @default(false)
   avatar_id                 String?
   account_devices           account_devices[]
   account_settings          account_settings?
+  ai_conversations          ai_conversations[]
+  ai_messages               ai_messages[]
+  ai_usage_logs             ai_usage_logs[]
   budget_categories         budget_categories[]
   budget_transactions       budget_transactions[]
   budgets                   budgets[]
@@ -36,15 +39,21 @@ model accounts {
   otp_tokens                otp_tokens?
   pet_sitters               pet_sitters?
   pets                      pets[]
-  cancelled_sitter_bookings sitter_bookings[]     @relation("sitter_booking_cancelled_by")
+  cancelled_sitter_bookings sitter_bookings[]         @relation("sitter_booking_cancelled_by")
   photo_comments            photo_comments[]
   photo_likes               photo_likes[]
   photo_views               photo_views[]
   photos                    photos[]
   refresh_tokens            refresh_tokens[]
+  reports                   reports[]
   reminders                 reminders[]
+  sent_sitter_messages      sitter_booking_messages[]
   sitter_bookings           sitter_bookings[]
   sitter_reviews            sitter_reviews[]
+  usage_counters            usage_counters[]
+  user_blocks_blocked       user_blocks[]             @relation("user_blocks_blocked")
+  user_blocks_blocker       user_blocks[]             @relation("user_blocks_blocker")
+  user_subscriptions        user_subscriptions[]
 
   @@index([email], map: "idx_accounts_email")
   @@index([phone], map: "idx_accounts_phone")
@@ -87,33 +96,41 @@ model medical_records {
   created_at          DateTime?             @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
   attachment_status   attachment_status     @default(processing)
+  deleted_at          DateTime?             @db.Timestamptz(6)
   medical_attachments medical_attachments[]
   pets                pets                  @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_records_pet_id")
 
   @@index([id], map: "idx_medical_records")
   @@index([pet_id], map: "idx_medical_records_pet_id")
+  @@index([pet_id, date], map: "idx_medical_records_pet_date")
 }
 
 model pets {
-  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  account_id      String            @db.Uuid
-  name            String            @db.VarChar(100)
-  age             Int?              @db.SmallInt
-  birthdate       DateTime?         @db.Timestamptz(6)
-  breed           String?           @db.VarChar(100)
-  weight          String?           @db.VarChar(100)
-  color           String?           @db.VarChar(100)
-  avatar_url      String?
-  gender          gender_enum?      @default(unknown)
-  species         species_enum?     @default(other)
-  notes           String?
-  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime?         @default(now()) @db.Timestamptz(6)
-  avatar_id       String?
-  medical_records medical_records[]
-  accounts        accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pets_account_id")
-  reminders       reminders[]
-  sitter_bookings sitter_bookings[]
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id          String                @db.Uuid
+  name                String                @db.VarChar(100)
+  age                 Int?                  @db.SmallInt
+  birthdate           DateTime?             @db.Timestamptz(6)
+  breed               String?               @db.VarChar(100)
+  weight              String?               @db.VarChar(100)
+  weight_value        Decimal?              @db.Decimal(8, 2)
+  weight_unit         weight_unit?          @default(kg)
+  color               String?               @db.VarChar(100)
+  avatar_url          String?
+  gender              gender_enum?          @default(unknown)
+  species             species_enum?         @default(other)
+  notes               String?
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  avatar_id           String?
+  deleted_at          DateTime?             @db.Timestamptz(6)
+  ai_conversations    ai_conversations[]
+  budget_transactions budget_transactions[]
+  medical_records     medical_records[]
+  accounts            accounts              @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pets_account_id")
+  photos              photos[]
+  reminders           reminders[]
+  sitter_bookings     sitter_bookings[]
 
   @@index([id], map: "idx_pets")
   @@index([account_id], map: "idx_pets_account_id")
@@ -128,10 +145,12 @@ model medical_attachments {
   updated_at      DateTime?       @default(now()) @db.Timestamptz(6)
   file_id         String?
   thumbnail_url   String?
+  sort_order      Int             @default(0)
   medical_records medical_records @relation(fields: [medical_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_medical_attachments_medical_id")
 
   @@index([id], map: "idx_medical_attachments")
   @@index([medical_id], map: "idx_medical_attachments_medical_id")
+  @@index([medical_id, sort_order], map: "idx_medical_attachments_medical_sort")
 }
 
 model account_devices {
@@ -153,12 +172,17 @@ model account_devices {
 }
 
 model account_settings {
-  account_id          String    @id @db.Uuid
-  notification_enable Boolean   @default(true)
-  language            String    @default("vi") @db.VarChar(20)
-  created_at          DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime? @default(now()) @db.Timestamptz(6)
-  accounts            accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_settings_account_id")
+  account_id             String    @id @db.Uuid
+  notification_enable    Boolean   @default(true)
+  reminder_notifications Boolean   @default(true)
+  booking_notifications  Boolean   @default(true)
+  social_notifications   Boolean   @default(true)
+  ai_notifications       Boolean   @default(true)
+  language               String    @default("vi") @db.VarChar(20)
+  theme                  String    @default("system") @db.VarChar(20)
+  created_at             DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime? @default(now()) @db.Timestamptz(6)
+  accounts               accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_settings_account_id")
 
   @@index([account_id], map: "idx_account_settings")
 }
@@ -184,22 +208,36 @@ model notifications {
 }
 
 model reminders {
-  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  account_id   String          @db.Uuid
-  pet_id       String?         @db.Uuid
-  title        String          @db.VarChar(200)
-  description  String?         @db.VarChar(255)
-  type         reminder_type
-  status       reminder_status
-  scheduled_at DateTime        @db.Timestamptz(6)
-  created_at   DateTime?       @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime?       @default(now()) @db.Timestamptz(6)
-  accounts     accounts        @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_reminders_account_id")
-  pets         pets?           @relation(fields: [pet_id], references: [id], onUpdate: NoAction, map: "fk_reminders_pet_id")
+  id                       String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id               String                    @db.Uuid
+  pet_id                   String?                   @db.Uuid
+  title                    String                    @db.VarChar(200)
+  description              String?                   @db.VarChar(512)
+  type                     reminder_type
+  custom_type              String?                   @db.VarChar(80)
+  status                   reminder_status           @default(pending)
+  scheduled_at             DateTime                  @db.Timestamptz(6)
+  timezone                 String                    @default("Asia/Ho_Chi_Minh") @db.VarChar(64)
+  repeat_frequency         reminder_repeat_frequency @default(none)
+  repeat_interval          Int?                      @default(1)
+  repeat_until             DateTime?                 @db.Timestamptz(6)
+  parent_reminder_id       String?                   @db.Uuid
+  notification_provider_id String?                   @db.VarChar(255)
+  completed_at             DateTime?                 @db.Timestamptz(6)
+  cancelled_at             DateTime?                 @db.Timestamptz(6)
+  created_at               DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?                 @default(now()) @db.Timestamptz(6)
+  accounts                 accounts                  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_reminders_account_id")
+  parent_reminder          reminders?                @relation("reminder_recurrence", fields: [parent_reminder_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_reminders_parent_reminder_id")
+  child_reminders          reminders[]               @relation("reminder_recurrence")
+  pets                     pets?                     @relation(fields: [pet_id], references: [id], onUpdate: NoAction, map: "fk_reminders_pet_id")
 
   @@index([id], map: "idx_reminders")
   @@index([account_id], map: "idx_reminders_account_id")
   @@index([pet_id], map: "idx_reminders_pet_id")
+  @@index([account_id, scheduled_at], map: "idx_reminders_account_scheduled")
+  @@index([pet_id, scheduled_at], map: "idx_reminders_pet_scheduled")
+  @@index([account_id, status], map: "idx_reminders_account_status")
 }
 
 model notification_deliveries {
@@ -224,14 +262,17 @@ model notification_deliveries {
 model budget_categories {
   id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id          String                @db.Uuid
-  name                String                @unique @db.VarChar(50)
+  name                String                @db.VarChar(50)
   emoji               String?
   color               String?               @db.VarChar(50)
+  is_default          Boolean               @default(false)
+  deleted_at          DateTime?             @db.Timestamptz(6)
   created_at          DateTime?             @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
   accounts            accounts              @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_budget_categories_account_id")
   budget_transactions budget_transactions[]
 
+  @@unique([account_id, name], map: "budget_categories_account_id_name_key")
   @@index([id], map: "idx_budget_categories")
   @@index([name], map: "idx_budget_categories_name")
   @@index([account_id], map: "idx_budget_categories_account_id")
@@ -240,18 +281,24 @@ model budget_categories {
 model budget_transactions {
   id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id        String            @db.Uuid
+  pet_id            String?           @db.Uuid
   category_id       String            @db.Uuid
   amount            Decimal           @db.Decimal(12, 2)
   description       String?           @db.VarChar(512)
   date              DateTime          @db.Timestamptz(6)
+  deleted_at        DateTime?         @db.Timestamptz(6)
   created_at        DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
   accounts          accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_budget_transactions_account_id")
   budget_categories budget_categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_budget_transactions_category_id")
+  pets              pets?             @relation(fields: [pet_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_budget_transactions_pet_id")
 
   @@index([id], map: "idx_budget_transactions")
   @@index([account_id], map: "idx_budget_transactions_account_id")
   @@index([category_id], map: "idx_budget_transactions_category_id")
+  @@index([account_id, date], map: "idx_budget_transactions_account_date")
+  @@index([pet_id, date], map: "idx_budget_transactions_pet_date")
+  @@index([category_id, date], map: "idx_budget_transactions_category_date")
 }
 
 model budgets {
@@ -321,33 +368,46 @@ model photo_views {
 model photos {
   id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id     String           @db.Uuid
+  pet_id         String?          @db.Uuid
   url            String?
   file_id        String?
   thumbnail_url  String?
-  caption        String?          @db.VarChar(200)
+  caption        String?          @db.VarChar(300)
   is_private     Boolean          @default(false)
   status         photos_status    @default(pending)
   view_count     Int              @default(0)
   like_count     Int              @default(0)
   comment_count  Int              @default(0)
+  deleted_at     DateTime?        @db.Timestamptz(6)
   created_at     DateTime?        @default(now()) @db.Timestamptz(6)
   updated_at     DateTime?        @default(now()) @db.Timestamptz(6)
   photo_comments photo_comments[]
   photo_likes    photo_likes[]
   photo_views    photo_views[]
   accounts       accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_photos_account_id")
+  pets           pets?            @relation(fields: [pet_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_photos_pet_id")
 
   @@index([account_id], map: "idx_photos_account_id")
   @@index([created_at], map: "idx_photos_created_at")
   @@index([is_private], map: "idx_photos_is_private")
   @@index([status], map: "idx_photos_status")
+  @@index([pet_id, created_at], map: "idx_photos_pet_created")
+  @@index([is_private, status, created_at], map: "idx_photos_visibility_status_created")
 }
 
 model pet_sitters {
   id                       String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id               String            @unique @db.Uuid
+  display_name             String?           @db.VarChar(100)
   bio                      String?           @db.VarChar(200)
   address                  String            @db.VarChar(200)
+  city                     String?           @db.VarChar(100)
+  district                 String?           @db.VarChar(100)
+  ward                     String?           @db.VarChar(100)
+  latitude                 Decimal?          @db.Decimal(10, 7)
+  longitude                Decimal?          @db.Decimal(10, 7)
+  experience               String?
+  service_notes            String?
   hourly_rate              Decimal           @db.Decimal(12, 2)
   daily_rate               Decimal           @db.Decimal(12, 2)
   max_concurrent_bookings  Int               @default(3)
@@ -356,6 +416,7 @@ model pet_sitters {
   avg_rating               Decimal           @default(0) @db.Decimal(3, 2)
   total_reviews            Int               @default(0)
   is_available             Boolean           @default(true)
+  is_verified              Boolean           @default(false)
   created_at               DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at               DateTime?         @default(now()) @db.Timestamptz(6)
   accounts                 accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pet_sitters_account_id")
@@ -364,33 +425,40 @@ model pet_sitters {
 
   @@index([id], map: "idx_pet_sitters")
   @@index([account_id], map: "idx_pet_sitters_account_id")
+  @@index([city, district], map: "idx_pet_sitters_city_district")
+  @@index([is_available, avg_rating], map: "idx_pet_sitters_available_rating")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model sitter_bookings {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  account_id           String                 @db.Uuid
-  sitter_id            String                 @db.Uuid
-  pet_id               String                 @db.Uuid
-  idempotency_key      String?                @unique @db.VarChar(255)
-  type                 sitter_bookings_type
-  status               sitter_bookings_status @default(pending)
-  start_time           DateTime               @db.Timestamptz(6)
-  end_time             DateTime               @db.Timestamptz(6)
-  total_price          Decimal?               @db.Decimal(10, 2)
-  expires_at           DateTime?              @db.Timestamptz(6)
-  confirmed_at         DateTime?              @db.Timestamptz(6)
-  cancelled_by         String?                @db.Uuid
-  cancelled_at         DateTime?              @db.Timestamptz(6)
-  cancel_reason        String?
-  created_at           DateTime?              @default(now()) @db.Timestamptz(6)
-  updated_at           DateTime?              @default(now()) @db.Timestamptz(6)
-  accounts             accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_account_id")
-  cancelled_by_account accounts?              @relation("sitter_booking_cancelled_by", fields: [cancelled_by], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_sitter_bookings_cancelled_by")
-  pets                 pets                   @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_pet_id")
-  pet_sitters          pet_sitters            @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_sitter_id")
-  email_logs           email_logs[]
-  sitter_reviews       sitter_reviews?
+  id                      String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id              String                    @db.Uuid
+  sitter_id               String                    @db.Uuid
+  pet_id                  String                    @db.Uuid
+  idempotency_key         String?                   @unique @db.VarChar(255)
+  type                    sitter_bookings_type
+  status                  sitter_bookings_status    @default(pending)
+  start_time              DateTime                  @db.Timestamptz(6)
+  end_time                DateTime                  @db.Timestamptz(6)
+  total_price             Decimal?                  @db.Decimal(10, 2)
+  expires_at              DateTime?                 @db.Timestamptz(6)
+  confirmed_at            DateTime?                 @db.Timestamptz(6)
+  cancelled_by            String?                   @db.Uuid
+  cancelled_at            DateTime?                 @db.Timestamptz(6)
+  cancel_reason           String?
+  owner_notes             String?
+  sitter_notes            String?
+  care_instructions       String?
+  payment_note            String?                   @db.VarChar(255)
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  accounts                accounts                  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_account_id")
+  cancelled_by_account    accounts?                 @relation("sitter_booking_cancelled_by", fields: [cancelled_by], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_sitter_bookings_cancelled_by")
+  pets                    pets                      @relation(fields: [pet_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_pet_id")
+  pet_sitters             pet_sitters               @relation(fields: [sitter_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_bookings_sitter_id")
+  email_logs              email_logs[]
+  sitter_booking_messages sitter_booking_messages[]
+  sitter_reviews          sitter_reviews?
 
   @@index([account_id], map: "idx_sitter_bookings_account_id")
   @@index([sitter_id], map: "idx_sitter_bookings_sitter_id")
@@ -448,9 +516,170 @@ model email_suppressions {
   @@index([email], map: "idx_email_suppressions_email")
 }
 
+model subscription_plans {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code               String               @unique @db.VarChar(50)
+  name               String               @db.VarChar(100)
+  tier               subscription_tier
+  price              Decimal?             @db.Decimal(12, 2)
+  currency           String?              @db.VarChar(10)
+  is_active          Boolean              @default(true)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  user_subscriptions user_subscriptions[]
+}
+
+model user_subscriptions {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id           String                @db.Uuid
+  plan_code            String                @db.VarChar(50)
+  provider             subscription_provider @default(manual)
+  provider_customer_id String?               @db.VarChar(255)
+  provider_original_id String?               @db.VarChar(255)
+  status               subscription_status   @default(free)
+  started_at           DateTime?             @db.Timestamptz(6)
+  expires_at           DateTime?             @db.Timestamptz(6)
+  cancelled_at         DateTime?             @db.Timestamptz(6)
+  created_at           DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?             @default(now()) @db.Timestamptz(6)
+  accounts             accounts              @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_subscriptions_account_id")
+  subscription_plans   subscription_plans    @relation(fields: [plan_code], references: [code], onDelete: Restrict, onUpdate: NoAction, map: "fk_user_subscriptions_plan_code")
+
+  @@index([account_id, status], map: "idx_user_subscriptions_account_status")
+  @@index([provider_customer_id], map: "idx_user_subscriptions_provider_customer")
+}
+
+model usage_counters {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id  String    @db.Uuid
+  feature_key String    @db.VarChar(80)
+  period_key  String    @db.VarChar(40)
+  count       Int       @default(0)
+  reset_at    DateTime  @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  accounts    accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_usage_counters_account_id")
+
+  @@unique([account_id, feature_key, period_key], map: "usage_counters_account_feature_period_key")
+  @@index([account_id, feature_key], map: "idx_usage_counters_account_feature")
+}
+
+model ai_conversations {
+  id         String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id String                 @db.Uuid
+  pet_id     String?                @db.Uuid
+  title      String?                @db.VarChar(160)
+  status     ai_conversation_status @default(active)
+  created_at DateTime?              @default(now()) @db.Timestamptz(6)
+  updated_at DateTime?              @default(now()) @db.Timestamptz(6)
+  accounts   accounts               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_ai_conversations_account_id")
+  pets       pets?                  @relation(fields: [pet_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_ai_conversations_pet_id")
+  messages   ai_messages[]
+  usage_logs ai_usage_logs[]
+
+  @@index([account_id, updated_at], map: "idx_ai_conversations_account_updated")
+  @@index([pet_id, updated_at], map: "idx_ai_conversations_pet_updated")
+}
+
+model ai_messages {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  conversation_id  String           @db.Uuid
+  account_id       String           @db.Uuid
+  role             ai_message_role
+  content          String
+  model            String?          @db.VarChar(100)
+  provider         String?          @db.VarChar(50)
+  input_tokens     Int?
+  output_tokens    Int?
+  safety_flags     Json?
+  created_at       DateTime?        @default(now()) @db.Timestamptz(6)
+  accounts         accounts         @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_ai_messages_account_id")
+  ai_conversations ai_conversations @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_ai_messages_conversation_id")
+
+  @@index([conversation_id, created_at], map: "idx_ai_messages_conversation_created")
+  @@index([account_id, created_at], map: "idx_ai_messages_account_created")
+}
+
+model ai_usage_logs {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_id       String            @db.Uuid
+  conversation_id  String?           @db.Uuid
+  provider         String            @db.VarChar(50)
+  model            String            @db.VarChar(100)
+  input_tokens     Int               @default(0)
+  output_tokens    Int               @default(0)
+  estimated_cost   Decimal?          @db.Decimal(12, 6)
+  created_at       DateTime?         @default(now()) @db.Timestamptz(6)
+  accounts         accounts          @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_ai_usage_logs_account_id")
+  ai_conversations ai_conversations? @relation(fields: [conversation_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_ai_usage_logs_conversation_id")
+
+  @@index([account_id, created_at], map: "idx_ai_usage_logs_account_created")
+}
+
+model user_blocks {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  blocker_account_id String   @db.Uuid
+  blocked_account_id String   @db.Uuid
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  blocker_account    accounts @relation("user_blocks_blocker", fields: [blocker_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_blocks_blocker_account_id")
+  blocked_account    accounts @relation("user_blocks_blocked", fields: [blocked_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_blocks_blocked_account_id")
+
+  @@unique([blocker_account_id, blocked_account_id], map: "user_blocks_blocker_blocked_key")
+  @@index([blocked_account_id], map: "idx_user_blocks_blocked_account_id")
+}
+
+model reports {
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reporter_account_id String             @db.Uuid
+  target_type         report_target_type
+  target_id           String             @db.Uuid
+  reason              String             @db.VarChar(255)
+  description         String?
+  status              report_status      @default(pending)
+  created_at          DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?          @default(now()) @db.Timestamptz(6)
+  accounts            accounts           @relation(fields: [reporter_account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_reports_reporter_account_id")
+
+  @@index([target_type, target_id], map: "idx_reports_target")
+  @@index([reporter_account_id], map: "idx_reports_reporter_account_id")
+  @@index([status], map: "idx_reports_status")
+}
+
+model sitter_booking_messages {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  booking_id      String               @db.Uuid
+  sender_id       String               @db.Uuid
+  type            booking_message_type @default(text)
+  content         String?
+  image_url       String?
+  read_at         DateTime?            @db.Timestamptz(6)
+  created_at      DateTime?            @default(now()) @db.Timestamptz(6)
+  sitter_bookings sitter_bookings      @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_booking_messages_booking_id")
+  sender          accounts             @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sitter_booking_messages_sender_id")
+
+  @@index([booking_id, created_at], map: "idx_sitter_booking_messages_booking_created")
+  @@index([sender_id, created_at], map: "idx_sitter_booking_messages_sender_created")
+}
+
 enum subscription_tier {
   free
   premium
+}
+
+enum subscription_provider {
+  manual
+  revenuecat
+  apple
+  google
+}
+
+enum subscription_status {
+  free
+  trialing
+  active
+  grace_period
+  expired
+  cancelled
 }
 
 enum user_role {
@@ -494,6 +723,8 @@ enum notifications_status {
 
 enum reminder_status {
   pending
+  completed
+  skipped
   sent
   cancelled
 }
@@ -516,6 +747,52 @@ enum attachment_status {
   processing
   ready
   failed
+}
+
+enum weight_unit {
+  kg
+  lb
+}
+
+enum reminder_repeat_frequency {
+  none
+  daily
+  weekly
+  monthly
+  yearly
+  custom
+}
+
+enum ai_message_role {
+  user
+  assistant
+  system
+}
+
+enum ai_conversation_status {
+  active
+  archived
+  deleted
+}
+
+enum report_target_type {
+  photo
+  comment
+  sitter
+  user
+}
+
+enum report_status {
+  pending
+  reviewed
+  resolved
+  rejected
+}
+
+enum booking_message_type {
+  text
+  image
+  system
 }
 
 enum sitter_bookings_status {

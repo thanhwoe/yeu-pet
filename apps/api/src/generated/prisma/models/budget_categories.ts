@@ -30,6 +30,8 @@ export type Budget_categoriesMinAggregateOutputType = {
   name: string | null
   emoji: string | null
   color: string | null
+  is_default: boolean | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -40,6 +42,8 @@ export type Budget_categoriesMaxAggregateOutputType = {
   name: string | null
   emoji: string | null
   color: string | null
+  is_default: boolean | null
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -50,6 +54,8 @@ export type Budget_categoriesCountAggregateOutputType = {
   name: number
   emoji: number
   color: number
+  is_default: number
+  deleted_at: number
   created_at: number
   updated_at: number
   _all: number
@@ -62,6 +68,8 @@ export type Budget_categoriesMinAggregateInputType = {
   name?: true
   emoji?: true
   color?: true
+  is_default?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -72,6 +80,8 @@ export type Budget_categoriesMaxAggregateInputType = {
   name?: true
   emoji?: true
   color?: true
+  is_default?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -82,6 +92,8 @@ export type Budget_categoriesCountAggregateInputType = {
   name?: true
   emoji?: true
   color?: true
+  is_default?: true
+  deleted_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -165,6 +177,8 @@ export type Budget_categoriesGroupByOutputType = {
   name: string
   emoji: string | null
   color: string | null
+  is_default: boolean
+  deleted_at: Date | null
   created_at: Date | null
   updated_at: Date | null
   _count: Budget_categoriesCountAggregateOutputType | null
@@ -196,6 +210,8 @@ export type budget_categoriesWhereInput = {
   name?: Prisma.StringFilter<"budget_categories"> | string
   emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  is_default?: Prisma.BoolFilter<"budget_categories"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -208,6 +224,8 @@ export type budget_categoriesOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_default?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
@@ -216,18 +234,21 @@ export type budget_categoriesOrderByWithRelationInput = {
 
 export type budget_categoriesWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
+  account_id_name?: Prisma.budget_categoriesAccount_idNameCompoundUniqueInput
   AND?: Prisma.budget_categoriesWhereInput | Prisma.budget_categoriesWhereInput[]
   OR?: Prisma.budget_categoriesWhereInput[]
   NOT?: Prisma.budget_categoriesWhereInput | Prisma.budget_categoriesWhereInput[]
   account_id?: Prisma.UuidFilter<"budget_categories"> | string
+  name?: Prisma.StringFilter<"budget_categories"> | string
   emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  is_default?: Prisma.BoolFilter<"budget_categories"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
   budget_transactions?: Prisma.Budget_transactionsListRelationFilter
-}, "id" | "name">
+}, "id" | "account_id_name">
 
 export type budget_categoriesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -235,6 +256,8 @@ export type budget_categoriesOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_default?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.budget_categoriesCountOrderByAggregateInput
@@ -251,6 +274,8 @@ export type budget_categoriesScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"budget_categories"> | string
   emoji?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableWithAggregatesFilter<"budget_categories"> | string | null
+  is_default?: Prisma.BoolWithAggregatesFilter<"budget_categories"> | boolean
+  deleted_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_categories"> | Date | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"budget_categories"> | Date | string | null
 }
@@ -260,6 +285,8 @@ export type budget_categoriesCreateInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutBudget_categoriesInput
@@ -272,6 +299,8 @@ export type budget_categoriesUncheckedCreateInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutBudget_categoriesInput
@@ -282,6 +311,8 @@ export type budget_categoriesUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_categoriesNestedInput
@@ -294,6 +325,8 @@ export type budget_categoriesUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutBudget_categoriesNestedInput
@@ -305,6 +338,8 @@ export type budget_categoriesCreateManyInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -314,6 +349,8 @@ export type budget_categoriesUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -324,6 +361,8 @@ export type budget_categoriesUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -338,12 +377,19 @@ export type budget_categoriesOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type budget_categoriesAccount_idNameCompoundUniqueInput = {
+  account_id: string
+  name: string
+}
+
 export type budget_categoriesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -354,6 +400,8 @@ export type budget_categoriesMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -364,6 +412,8 @@ export type budget_categoriesMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  is_default?: Prisma.SortOrder
+  deleted_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -434,6 +484,8 @@ export type budget_categoriesCreateWithoutAccountsInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   budget_transactions?: Prisma.budget_transactionsCreateNestedManyWithoutBudget_categoriesInput
@@ -444,6 +496,8 @@ export type budget_categoriesUncheckedCreateWithoutAccountsInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   budget_transactions?: Prisma.budget_transactionsUncheckedCreateNestedManyWithoutBudget_categoriesInput
@@ -484,6 +538,8 @@ export type budget_categoriesScalarWhereInput = {
   name?: Prisma.StringFilter<"budget_categories"> | string
   emoji?: Prisma.StringNullableFilter<"budget_categories"> | string | null
   color?: Prisma.StringNullableFilter<"budget_categories"> | string | null
+  is_default?: Prisma.BoolFilter<"budget_categories"> | boolean
+  deleted_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"budget_categories"> | Date | string | null
 }
@@ -493,6 +549,8 @@ export type budget_categoriesCreateWithoutBudget_transactionsInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutBudget_categoriesInput
@@ -504,6 +562,8 @@ export type budget_categoriesUncheckedCreateWithoutBudget_transactionsInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -529,6 +589,8 @@ export type budget_categoriesUpdateWithoutBudget_transactionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutBudget_categoriesNestedInput
@@ -540,6 +602,8 @@ export type budget_categoriesUncheckedUpdateWithoutBudget_transactionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -549,6 +613,8 @@ export type budget_categoriesCreateManyAccountsInput = {
   name: string
   emoji?: string | null
   color?: string | null
+  is_default?: boolean
+  deleted_at?: Date | string | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -558,6 +624,8 @@ export type budget_categoriesUpdateWithoutAccountsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget_transactions?: Prisma.budget_transactionsUpdateManyWithoutBudget_categoriesNestedInput
@@ -568,6 +636,8 @@ export type budget_categoriesUncheckedUpdateWithoutAccountsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   budget_transactions?: Prisma.budget_transactionsUncheckedUpdateManyWithoutBudget_categoriesNestedInput
@@ -578,6 +648,8 @@ export type budget_categoriesUncheckedUpdateManyWithoutAccountsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_default?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -619,6 +691,8 @@ export type budget_categoriesSelect<ExtArgs extends runtime.Types.Extensions.Int
   name?: boolean
   emoji?: boolean
   color?: boolean
+  is_default?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -632,6 +706,8 @@ export type budget_categoriesSelectCreateManyAndReturn<ExtArgs extends runtime.T
   name?: boolean
   emoji?: boolean
   color?: boolean
+  is_default?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -643,6 +719,8 @@ export type budget_categoriesSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   name?: boolean
   emoji?: boolean
   color?: boolean
+  is_default?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -654,11 +732,13 @@ export type budget_categoriesSelectScalar = {
   name?: boolean
   emoji?: boolean
   color?: boolean
+  is_default?: boolean
+  deleted_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type budget_categoriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "name" | "emoji" | "color" | "created_at" | "updated_at", ExtArgs["result"]["budget_categories"]>
+export type budget_categoriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "name" | "emoji" | "color" | "is_default" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["budget_categories"]>
 export type budget_categoriesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   budget_transactions?: boolean | Prisma.budget_categories$budget_transactionsArgs<ExtArgs>
@@ -683,6 +763,8 @@ export type $budget_categoriesPayload<ExtArgs extends runtime.Types.Extensions.I
     name: string
     emoji: string | null
     color: string | null
+    is_default: boolean
+    deleted_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["budget_categories"]>
@@ -1115,6 +1197,8 @@ export interface budget_categoriesFieldRefs {
   readonly name: Prisma.FieldRef<"budget_categories", 'String'>
   readonly emoji: Prisma.FieldRef<"budget_categories", 'String'>
   readonly color: Prisma.FieldRef<"budget_categories", 'String'>
+  readonly is_default: Prisma.FieldRef<"budget_categories", 'Boolean'>
+  readonly deleted_at: Prisma.FieldRef<"budget_categories", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"budget_categories", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"budget_categories", 'DateTime'>
 }
