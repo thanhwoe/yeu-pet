@@ -19,7 +19,7 @@ import {
   TrashIcon,
   XIcon,
 } from "phosphor-react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PhotoCommentsSheet } from "../PhotoCommentsSheet";
@@ -51,23 +51,32 @@ const CloseIcon = withIconClassName(XIcon);
 const CommentIcon = withIconClassName(ChatCircleTextIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 const Heart = withIconClassName(HeartIcon);
+const LIKE_SYNC_DELAY_MS = 300;
 
 export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const [showComments, setShowComments] = useState(false);
-  const [localLiked, setLocalLiked] = useState(data.liked ?? false);
-  const [localLikes, setLocalLikes] = useState(
-    data.likes ?? data.likeCount ?? 0,
-  );
+  const initialLiked = data.liked ?? false;
+  const initialLikes = data.likes ?? data.likeCount ?? 0;
+  const [localLiked, setLocalLiked] = useState(initialLiked);
+  const [localLikes, setLocalLikes] = useState(initialLikes);
   const [localComments, setLocalComments] = useState(
     data.comments ?? data.commentCount ?? 0,
   );
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const photo = data as PhotoWithCamelAliases;
+  const desiredLikedRef = useRef(initialLiked);
+  const serverLikedRef = useRef(initialLiked);
+  const serverLikesRef = useRef(initialLikes);
+  const isSyncingLikeRef = useRef(false);
+  const likeSyncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const account = useMemo(
     () => ({
-      id: photo.accounts.id ?? photo.accounts.accountId ?? photo.accounts.account_id,
+      id:
+        photo.accounts.id ??
+        photo.accounts.accountId ??
+        photo.accounts.account_id,
       avatarUrl: photo.accounts.avatarUrl ?? photo.accounts.avatar_url,
       firstName: photo.accounts.firstName ?? photo.accounts.first_name,
       lastName: photo.accounts.lastName ?? photo.accounts.last_name,
@@ -76,7 +85,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   );
   const ownerId = photo.accountId ?? photo.account_id ?? account.id ?? "";
 
-  const { mutate: toggleLikePhoto, isPending: isTogglingLike } = useMutation({
+  const { mutate: toggleLikePhoto } = useMutation({
     mutationFn: toggleLikePhotoMutation,
   });
 
@@ -94,35 +103,60 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     },
   });
 
-  const { data: photoStats, isFetching: isLoadingStats } = useQuery({
+  const { data: photoStats } = useQuery({
     queryKey: PHOTOS_KEY.detail(data.id),
     queryFn: () => getPhotoStatsQuery({ id: data.id }),
   });
 
   useEffect(() => {
     if (photoStats) {
-      setLocalLiked(photoStats.liked ?? false);
-      setLocalLikes(photoStats.likes ?? photoStats.likeCount ?? 0);
+      const nextServerLiked = photoStats.liked ?? false;
+      const nextServerLikes = photoStats.likes ?? photoStats.likeCount ?? 0;
+
+      serverLikedRef.current = nextServerLiked;
+      serverLikesRef.current = nextServerLikes;
+
+      if (!isSyncingLikeRef.current) {
+        desiredLikedRef.current = nextServerLiked;
+        setLocalLiked(nextServerLiked);
+        setLocalLikes(nextServerLikes);
+      }
+
       setLocalComments(photoStats.comments ?? photoStats.commentCount ?? 0);
     }
   }, [photoStats]);
 
-  const handleToggleLike = useCallback(() => {
-    const previousLiked = localLiked;
-    const previousLikes = localLikes;
-    const nextLiked = !previousLiked;
+  const syncLikeToServer = useCallback(() => {
+    if (isSyncingLikeRef.current) {
+      return;
+    }
 
-    setLocalLiked(nextLiked);
-    setLocalLikes(Math.max(0, previousLikes + (nextLiked ? 1 : -1)));
+    if (desiredLikedRef.current === serverLikedRef.current) {
+      return;
+    }
 
+    isSyncingLikeRef.current = true;
     toggleLikePhoto(
       { id: data.id },
       {
         onSuccess(updatedPhoto) {
-          setLocalLiked(updatedPhoto.liked ?? nextLiked);
-          setLocalLikes(updatedPhoto.likes ?? updatedPhoto.likeCount ?? 0);
+          const serverLiked = updatedPhoto.liked ?? desiredLikedRef.current;
+          const serverLikes =
+            updatedPhoto.likes ??
+            updatedPhoto.likeCount ??
+            serverLikesRef.current;
+
+          serverLikedRef.current = serverLiked;
+          serverLikesRef.current = serverLikes;
+
+          if (desiredLikedRef.current === serverLiked) {
+            setLocalLiked(serverLiked);
+            setLocalLikes(serverLikes);
+          }
+
           setLocalComments(
-            updatedPhoto.comments ?? updatedPhoto.commentCount ?? localComments,
+            (current) =>
+              updatedPhoto.comments ?? updatedPhoto.commentCount ?? current,
           );
           queryClient.invalidateQueries({
             queryKey: PHOTOS_KEY.detail(data.id),
@@ -130,22 +164,54 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
           queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
         },
         onError(e: MutationError) {
-          setLocalLiked(previousLiked);
-          setLocalLikes(previousLikes);
+          desiredLikedRef.current = serverLikedRef.current;
+          setLocalLiked(serverLikedRef.current);
+          setLocalLikes(serverLikesRef.current);
           Toast.error({
             text: e.errors?.[0]?.message ?? "Failed to update photo like",
           });
         },
+        onSettled() {
+          isSyncingLikeRef.current = false;
+
+          if (desiredLikedRef.current !== serverLikedRef.current) {
+            syncLikeToServer();
+          }
+        },
       },
     );
-  }, [
-    data.id,
-    localComments,
-    localLiked,
-    localLikes,
-    queryClient,
-    toggleLikePhoto,
-  ]);
+  }, [data.id, queryClient, toggleLikePhoto]);
+
+  const scheduleLikeSync = useCallback(() => {
+    if (likeSyncTimerRef.current) {
+      clearTimeout(likeSyncTimerRef.current);
+    }
+
+    likeSyncTimerRef.current = setTimeout(() => {
+      likeSyncTimerRef.current = null;
+      syncLikeToServer();
+    }, LIKE_SYNC_DELAY_MS);
+  }, [syncLikeToServer]);
+
+  const handleToggleLike = useCallback(() => {
+    const nextLiked = !desiredLikedRef.current;
+    desiredLikedRef.current = nextLiked;
+
+    setLocalLiked(nextLiked);
+    setLocalLikes((current) =>
+      Math.max(0, current + (nextLiked ? 1 : -1)),
+    );
+    scheduleLikeSync();
+  }, [scheduleLikeSync]);
+
+  useEffect(
+    () => () => {
+      if (likeSyncTimerRef.current) {
+        clearTimeout(likeSyncTimerRef.current);
+      }
+    },
+    [],
+  );
 
   return (
     <View style={styles.container}>
@@ -179,7 +245,6 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
       >
         <ActionButton
           accessibilityLabel="Like photo"
-          disabled={isTogglingLike || isLoadingStats}
           icon={
             <Heart
               size={31}
@@ -193,9 +258,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
 
         <ActionButton
           accessibilityLabel="Open comments"
-          icon={
-            <CommentIcon size={31} weight="bold" className="text-white" />
-          }
+          icon={<CommentIcon size={31} weight="bold" className="text-white" />}
           label={abbreviateNumber(localComments)}
           onPress={() => setShowComments(true)}
         />
@@ -248,6 +311,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
         visible={showComments}
         photoId={data.id}
         photoOwnerId={ownerId}
+        onCommentCountChange={setLocalComments}
         onDismiss={() => setShowComments(false)}
       />
     </View>

@@ -1,3 +1,5 @@
+import { IPhoto } from "./photos";
+
 export interface IPhotoComment {
   id: string;
   accountId: string;
@@ -19,4 +21,10 @@ export interface IPhotoComment {
 export interface IPhotoCommentForm {
   content: string;
   parentId?: string;
+}
+
+export interface IPhotoCommentDeleteResult {
+  comment: IPhotoComment;
+  photo: IPhoto;
+  replyCount?: number;
 }

@@ -68,13 +68,16 @@ export class PhotoCommentsRepository implements IPhotoCommentsRepository {
   }
   delete(id: string) {
     return this.prisma.$transaction(async (tx) => {
+      const deletedAt = new Date();
       const comment = await tx.photo_comments.update({
         where: { id },
         data: {
-          deleted_at: new Date(),
-          updated_at: new Date(),
+          deleted_at: deletedAt,
+          updated_at: deletedAt,
         },
       });
+
+      let reply_count: number | undefined;
 
       if (comment.parent_id) {
         const replyCount = await tx.photo_comments.count({
@@ -91,6 +94,19 @@ export class PhotoCommentsRepository implements IPhotoCommentsRepository {
             updated_at: new Date(),
           },
         });
+
+        reply_count = replyCount;
+      } else {
+        await tx.photo_comments.updateMany({
+          where: {
+            parent_id: comment.id,
+            deleted_at: null,
+          },
+          data: {
+            deleted_at: deletedAt,
+            updated_at: deletedAt,
+          },
+        });
       }
 
       const commentCount = await tx.photo_comments.count({
@@ -100,7 +116,7 @@ export class PhotoCommentsRepository implements IPhotoCommentsRepository {
         },
       });
 
-      await tx.photos.update({
+      const photo = await tx.photos.update({
         where: { id: comment.photo_id },
         data: {
           comment_count: commentCount,
@@ -108,7 +124,11 @@ export class PhotoCommentsRepository implements IPhotoCommentsRepository {
         },
       });
 
-      return comment;
+      return {
+        comment,
+        photo,
+        reply_count,
+      };
     });
   }
   findAll(params?: { skip?: number; take?: number; photo_id: string }) {

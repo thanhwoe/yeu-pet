@@ -275,7 +275,7 @@ export const DetailCard = memo<IProps>(
           </View>
 
           {/* Detail rows */}
-          <View className="flex-row flex-wrap gap-10 mb-14">
+          <View className="flex-row flex-wrap gap-8 mb-14">
             <DetailItem
               label="Gender"
               value={pet.gender}

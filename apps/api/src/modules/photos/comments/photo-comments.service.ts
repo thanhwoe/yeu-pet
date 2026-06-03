@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePhotoCommentDto } from './dto/create-photo-comment.dto';
-import { accounts, photos_status } from '@app/generated/prisma/client';
+import { accounts, photos, photos_status } from '@app/generated/prisma/client';
 import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { Action } from '../../casl/casl.types';
@@ -98,7 +98,12 @@ export class PhotoCommentsService {
         'You do not have permission to delete this comment',
       );
     }
-    await this.photoCommentsRepository.delete(id);
+    const result = await this.photoCommentsRepository.delete(id);
+
+    return {
+      ...result,
+      photo: this.toPhotoCounterResponse(result.photo),
+    };
   }
 
   private async assertPhotoAbility(user: accounts, id: string) {
@@ -146,5 +151,14 @@ export class PhotoCommentsService {
     }
 
     return record;
+  }
+
+  private toPhotoCounterResponse(photo: photos) {
+    return {
+      ...photo,
+      comments: photo.comment_count,
+      likes: photo.like_count,
+      views: photo.view_count,
+    };
   }
 }

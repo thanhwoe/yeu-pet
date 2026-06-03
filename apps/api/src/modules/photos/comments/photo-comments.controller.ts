@@ -60,7 +60,7 @@ export class PhotoCommentsController {
   }
 
   @Delete(':cId')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   remove(
     @CurrentUser() user: accounts,
     @IdParam('cId') commentId: string,

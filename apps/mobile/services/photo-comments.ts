@@ -1,5 +1,10 @@
 import { API_ROUTES } from "@/constants/api-routes";
-import { IPhotoComment, IPhotoCommentForm, IPagination } from "@/interfaces";
+import {
+  IPhotoComment,
+  IPhotoCommentDeleteResult,
+  IPhotoCommentForm,
+  IPagination,
+} from "@/interfaces";
 import { parseQueryParams } from "@/utils";
 import { APIs } from "./api-helper";
 
@@ -45,4 +50,7 @@ export const deletePhotoCommentMutation = ({
 }: {
   photoId: string;
   commentId: string;
-}) => APIs.delete<void>(API_ROUTES.DELETE_PHOTO_COMMENT(photoId, commentId));
+}) =>
+  APIs.delete<IPhotoCommentDeleteResult>(
+    API_ROUTES.DELETE_PHOTO_COMMENT(photoId, commentId),
+  );
