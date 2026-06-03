@@ -7,19 +7,20 @@ import { APIs } from "./api-helper";
 export const uploadPhotoMutation = (payload: {
   image: ImagePickerAsset;
   caption: string;
-  isPublic: boolean;
+  isPrivate: boolean;
 }) => {
+  const fallbackFileName = payload.image.uri.split("/").pop() || "photo.jpg";
   const file = {
     uri: payload.image.uri,
-    type: payload.image.mimeType,
-    name: payload.image?.fileName,
+    type: payload.image.mimeType ?? "image/jpeg",
+    name: payload.image.fileName ?? fallbackFileName,
     size: payload.image.fileSize,
   };
 
   const formData = new FormData();
   formData.append("file", file as any);
-  formData.append("caption", payload.caption);
-  formData.append("isPublic", payload.isPublic.toString());
+  formData.append("caption", payload.caption.trim());
+  formData.append("isPrivate", String(payload.isPrivate));
 
   return APIs.post(API_ROUTES.UPLOAD_PHOTO, {
     data: formData,
@@ -32,13 +33,13 @@ interface IQuery {
   page: number;
 }
 export const getListSocialPhotosQuery = ({ limit, page }: IQuery) =>
-  APIs.get<{ data: IPhoto[]; metadata: IPagination }>(API_ROUTES.PHOTOS, {
+  APIs.get<IPagination<IPhoto>>(API_ROUTES.PHOTOS, {
     params: { limit, page },
     paramsSerializer: parseQueryParams,
   });
 
 export const getListUserPhotosQuery = ({ limit, page }: IQuery) =>
-  APIs.get<{ data: IPhoto[]; metadata: IPagination }>(API_ROUTES.USER_PHOTOS, {
+  APIs.get<IPagination<IPhoto>>(API_ROUTES.USER_PHOTOS, {
     params: { limit, page },
     paramsSerializer: parseQueryParams,
   });

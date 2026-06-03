@@ -13,7 +13,7 @@ The main maintainability issue is inconsistent feature ownership. Some routes ar
 ## Current Findings
 
 - Navigation is Expo Router based with root auth/onboarding guards and tab groups. Phase 2 corrected the bottom tabs to active product tabs: home, reminder, service, sitter, settings. The deferred `store` route remains mounted but hidden from the bottom tab.
-- `Providers` wraps the app with `GestureHandlerRootView` as the outer visual boundary, then `SafeAreaProvider`, React Query, initialization, and `BottomSheetModalProvider`.
+- `Providers` wraps the app with `GestureHandlerRootView` as the outer visual boundary, then `SafeAreaProvider`, React Query, and initialization. `BottomSheetModalProvider` is no longer required because the shared bottom sheet uses a React Native `Modal` layer with Gorhom's plain `BottomSheet`.
 - The Reanimated Babel plugin is present and last in the plugin list.
 - Bottom sheet usage is centralized through `components/ui/BottomSheet`. The reusable primitive now uses a React Native `Modal` layer with Gorhom's plain `BottomSheet`, content-height dynamic sizing by default, memoized backdrop/handle rendering, controlled visibility, safe-area padding, and keyboard defaults. Direct callers should omit `snapPoints` unless they need a fixed-height or full-screen sheet.
 - API access is centralized, but `APIHelper.checkExpiredToken` assumes `error.response` exists and refreshes without replaying the failed request.
@@ -104,7 +104,7 @@ Adopt `features/*` only where a domain needs multiple hooks/components and where
 
 ## Bottom Sheet Fix Strategy
 
-- Keep `GestureHandlerRootView` as the root visual provider boundary and `BottomSheetModalProvider` inside it.
+- Keep `GestureHandlerRootView` as the root visual provider boundary. Do not reintroduce `BottomSheetModalProvider` unless direct `BottomSheetModal` usage returns.
 - Keep the shared React Native `Modal` + Gorhom `BottomSheet` implementation so feature sheets do not depend on the `BottomSheetModal` portal/present path.
 - Keep dynamic content-height sizing by default; callers should pass explicit `snapPoints` only for fixed-height or full-screen sheets.
 - Keep backdrop, handle, content styles, and callbacks memoized.

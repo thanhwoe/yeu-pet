@@ -2,7 +2,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
 import { date } from "@/utils";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
@@ -20,7 +19,6 @@ export const Providers = ({ children }: Required<Children>) =>
       SafeAreaProvider,
       QueryProvider,
       InitialProvider,
-      BottomSheetModalProvider,
     ],
     children,
   );

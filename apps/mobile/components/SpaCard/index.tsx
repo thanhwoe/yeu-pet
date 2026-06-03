@@ -9,6 +9,7 @@ import {
   MapPinIcon,
   PhoneIcon as Phone,
 } from "phosphor-react-native";
+import { memo, useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
@@ -22,11 +23,17 @@ const LocationIcon = withIconClassName(MapPinIcon);
 interface ClinicCardProps {
   data: IClinic;
 }
-export const SpaCard = ({ data }: ClinicCardProps) => {
-  const hasPhone = data.phone ? isValidPhoneNumber(data.phone, "VN") : false;
-  const validPhone = hasPhone
-    ? parsePhoneNumberFromString(data.phone, "VN")?.formatNational()
-    : "";
+export const SpaCard = memo(({ data }: ClinicCardProps) => {
+  const validPhone = useMemo(() => {
+    if (!data.phone || !isValidPhoneNumber(data.phone, "VN")) {
+      return undefined;
+    }
+
+    return parsePhoneNumberFromString(data.phone, "VN")?.formatNational();
+  }, [data.phone]);
+
+  const handleSms = useCallback(() => sendSMS(validPhone), [validPhone]);
+  const handleCall = useCallback(() => makePhoneCall(validPhone), [validPhone]);
 
   return (
     <View className="rounded-2xl bg-white mb-3 p-3 gap-2">
@@ -60,17 +67,19 @@ export const SpaCard = ({ data }: ClinicCardProps) => {
         </Text>
       </View>
       <View className="flex-row gap-2">
-        <Button className="flex-1" onPress={() => sendSMS(validPhone)}>
+        <Button className="flex-1" onPress={handleSms}>
           Call
         </Button>
         <Button
           className="flex-1"
           variant="secondary"
-          onPress={() => makePhoneCall(validPhone)}
+          onPress={handleCall}
         >
           Chat
         </Button>
       </View>
     </View>
   );
-};
+});
+
+SpaCard.displayName = "SpaCard";

@@ -4,7 +4,8 @@ import { IMedicalRecord } from "@/interfaces";
 import { cn, date } from "@/utils";
 import { cva } from "class-variance-authority";
 import { DotsThreeVerticalIcon } from "phosphor-react-native";
-import { TouchableOpacity, View } from "react-native";
+import { memo, useCallback } from "react";
+import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 
 const MoreIcon = withIconClassName(DotsThreeVerticalIcon);
 
@@ -15,7 +16,7 @@ interface MedicalRecordListItemProps {
   className?: string;
 }
 
-export const MedicalRecordListItem = ({
+export const MedicalRecordListItem = memo(({
   record,
   onPress,
   onMorePress,
@@ -24,16 +25,26 @@ export const MedicalRecordListItem = ({
   const isProcessing = record.attachmentStatus === "processing";
   const isFailed = record.attachmentStatus === "failed";
 
+  const handlePress = useCallback(() => {
+    if (isProcessing || isFailed) return;
+    onPress?.();
+  }, [isFailed, isProcessing, onPress]);
+
+  const handleMorePress = useCallback(
+    (event: GestureResponderEvent) => {
+      event.stopPropagation();
+      onMorePress?.();
+    },
+    [onMorePress],
+  );
+
   return (
     <TouchableOpacity
       className={cn(
         "flex-row bg-background-card rounded-16 p-16 elevation-sm shadow-sm",
         className,
       )}
-      onPress={() => {
-        if (isProcessing || isFailed) return;
-        onPress?.();
-      }}
+      onPress={handlePress}
       activeOpacity={0.7}
       disabled={!onPress && !onMorePress}
     >
@@ -49,10 +60,7 @@ export const MedicalRecordListItem = ({
         <View className="flex-row items-center gap-8">
           <StatusChip status={record.attachmentStatus} />
           <TouchableOpacity
-            onPress={(event) => {
-              event.stopPropagation();
-              onMorePress?.();
-            }}
+            onPress={handleMorePress}
           >
             <MoreIcon size={24} className="text-icon-primary" weight="bold" />
           </TouchableOpacity>
@@ -60,7 +68,9 @@ export const MedicalRecordListItem = ({
       </View>
     </TouchableOpacity>
   );
-};
+});
+
+MedicalRecordListItem.displayName = "MedicalRecordListItem";
 
 const statusWrapperStyle = cva("px-12 py-6 rounded-18", {
   variants: {

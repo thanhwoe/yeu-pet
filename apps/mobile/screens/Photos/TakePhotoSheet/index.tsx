@@ -16,6 +16,13 @@ interface IProps {
   image?: ImagePickerAsset;
   onDismiss: () => void;
 }
+
+type MutationError = {
+  errors?: {
+    message: string;
+  }[];
+};
+
 export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const [checked, setChecked] = useState<boolean>(true);
   const [caption, setCaption] = useState<string>("");
@@ -23,21 +30,30 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
-    onSuccess(data) {
+    onSuccess() {
       Toast.success({ text: "Upload photo successfully" });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss();
     },
-    onError(e) {
-      Toast.error({ text: e.errors?.[0].message });
+    onError(e: MutationError) {
+      Toast.error({
+        text: e.errors?.[0]?.message ?? "Failed to upload photo",
+      });
     },
   });
 
   const handleSubmit = async () => {
+    const trimmedCaption = caption.trim();
+
+    if (!trimmedCaption) {
+      Toast.error({ text: "Please enter a caption" });
+      return;
+    }
+
     if (image) {
       await mutateAsync({
-        caption,
-        isPublic: checked,
+        caption: trimmedCaption,
+        isPrivate: !checked,
         image,
       });
     }

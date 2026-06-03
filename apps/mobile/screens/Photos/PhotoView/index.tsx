@@ -23,6 +23,12 @@ interface IProps {
   onDismiss?: () => void;
 }
 
+type MutationError = {
+  errors?: {
+    message: string;
+  }[];
+};
+
 const DeleteIcon = withIconClassName(TrashIcon);
 
 export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
@@ -34,8 +40,10 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.detail(data.id) });
     },
-    onError(e) {
-      Toast.error({ text: e.errors?.[0].message });
+    onError(e: MutationError) {
+      Toast.error({
+        text: e.errors?.[0]?.message ?? "Failed to update photo like",
+      });
     },
   });
 
@@ -46,8 +54,10 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss?.();
     },
-    onError(e) {
-      Toast.error({ text: e.errors?.[0].message });
+    onError(e: MutationError) {
+      Toast.error({
+        text: e.errors?.[0]?.message ?? "Failed to delete photo",
+      });
     },
   });
 

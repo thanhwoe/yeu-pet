@@ -7,12 +7,13 @@ import { LIST_CITY } from "@/constants/cities";
 import { CLINIC_KEY } from "@/constants/query-keys";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useDebounce } from "@/hooks/useDebounce";
+import { IClinic } from "@/interfaces";
 import { getListClinicQuery } from "@/services";
 import { cn } from "@/utils";
-import { FlashList } from "@shopify/flash-list";
+import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CaretDownIcon } from "phosphor-react-native";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
@@ -42,6 +43,38 @@ export function ListClinicScreen() {
     select: (data) => data?.pages.flatMap((item) => item.data) || [],
   });
 
+  const clinics = data ?? [];
+  const selectedCityLabel = useMemo(
+    () =>
+      selectedCity
+        ? LIST_CITY.find((item) => item.value === selectedCity)?.label
+        : undefined,
+    [selectedCity],
+  );
+
+  const openCityFilter = useCallback(() => setShowCityFilter(true), []);
+  const closeCityFilter = useCallback(() => setShowCityFilter(false), []);
+
+  const renderClinic = useCallback<ListRenderItem<IClinic>>(
+    ({ item }) => <ClinicCard data={item} />,
+    [],
+  );
+
+  const keyExtractor = useCallback((item: IClinic) => item.clinic_id, []);
+
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage]);
+
+  const listEmptyComponent = useMemo(
+    () => (
+      <Text className="text-center text-gray-500 mt-5">No clinics found</Text>
+    ),
+    [],
+  );
+
   return (
     <ScreenContainer className="!pt-0">
       <SearchInput
@@ -56,34 +89,29 @@ export function ListClinicScreen() {
             "border-line-selected": !!selectedCity,
           }
         )}
-        onPress={() => setShowCityFilter(true)}
+        onPress={openCityFilter}
       >
         <Text
           className={cn("", {
             "text-text-secondary": !selectedCity,
           })}
         >
-          {selectedCity
-            ? LIST_CITY.find((item) => item.value === selectedCity)?.label
-            : "City"}
+          {selectedCityLabel ?? "City"}
         </Text>
         <CaretDown size={20} />
       </TouchableOpacity>
       <FlashList
-        data={data}
-        ListEmptyComponent={() => (
-          <Text className="text-center text-gray-500 mt-5">
-            No clinics found
-          </Text>
-        )}
+        data={clinics}
+        keyExtractor={keyExtractor}
+        ListEmptyComponent={listEmptyComponent}
         showsVerticalScrollIndicator={false}
         estimatedItemSize={186}
-        renderItem={({ item }) => <ClinicCard data={item} />}
-        onEndReached={() => hasNextPage && fetchNextPage()}
+        renderItem={renderClinic}
+        onEndReached={handleEndReached}
       />
       <BottomSheet
         visible={showCityFilter}
-        onDismiss={() => setShowCityFilter(false)}
+        onDismiss={closeCityFilter}
         titleElement={<Text className="font-medium">Select City</Text>}
       >
         {LIST_CITY.map((item) => (

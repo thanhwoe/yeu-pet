@@ -4,7 +4,7 @@ import {
   MessageEvent,
   NotFoundException,
 } from '@nestjs/common';
-import { CreatePhotoDto } from './dto/create-photo.dto';
+import { CreatePhotoDto, type BooleanFormValue } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { accounts, photos_status } from '@app/generated/prisma/client';
@@ -18,6 +18,9 @@ import { ICacheService } from '@app/interfaces/cache.interface';
 import { IPhotoLikesRepository } from '@app/interfaces/photo-likes-repository.interface';
 import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
 import { assertOwnerOrAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
+
+const toBoolean = (value: BooleanFormValue): boolean =>
+  value === true || value === 'true' || value === '1';
 
 @Injectable()
 export class PhotosService {
@@ -40,7 +43,7 @@ export class PhotosService {
     const photo = await this.photosRepository.create({
       account_id: user.id,
       caption: createPhotoDto.caption,
-      is_private: createPhotoDto.isPrivate,
+      is_private: toBoolean(createPhotoDto.isPrivate),
       status: photos_status.pending,
     });
     await this.fileUploadService.addPhotoJob({
@@ -212,7 +215,9 @@ export class PhotosService {
 
     return this.photosRepository.update(id, {
       caption: updatePhotoDto.caption,
-      is_private: updatePhotoDto.isPrivate,
+      ...(updatePhotoDto.isPrivate === undefined
+        ? {}
+        : { is_private: toBoolean(updatePhotoDto.isPrivate) }),
     });
   }
 

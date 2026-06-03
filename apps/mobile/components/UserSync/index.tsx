@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
-import { Platform } from "react-native";
+import { InteractionManager, Platform } from "react-native";
 import { Toast } from "../Toast";
 
 export const UserSync = () => {
@@ -41,8 +41,14 @@ export const UserSync = () => {
       return;
     }
 
-    registerForPushNotificationsAsync().then((token) => {
-      if (token) {
+    let isActive = true;
+
+    const task = InteractionManager.runAfterInteractions(() => {
+      registerForPushNotificationsAsync().then((token) => {
+        if (!isActive || !token) {
+          return;
+        }
+
         mutateAsync({
           pushToken: token,
           platform: Platform.select({
@@ -53,7 +59,7 @@ export const UserSync = () => {
           deviceName: Device.deviceName ?? undefined,
           osVersion: Device.osVersion ?? undefined,
         });
-      }
+      });
     });
 
     const sub = Notifications.addPushTokenListener((newToken) => {
@@ -67,7 +73,11 @@ export const UserSync = () => {
       });
     });
 
-    return () => sub.remove();
+    return () => {
+      isActive = false;
+      task.cancel();
+      sub.remove();
+    };
   }, [isAuthenticated, mutateAsync]);
 
   useEffect(() => {

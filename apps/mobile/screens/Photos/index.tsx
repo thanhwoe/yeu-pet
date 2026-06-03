@@ -1,27 +1,47 @@
 import { Tabs } from "@/components/Tabs";
 import { useTakePhoto } from "@/hooks/useTakePhoto";
+import { useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { SocialPhotos } from "./SocialPhotos";
 import { TakePhotoSheet } from "./TakePhotoSheet";
 import { UserPhotos } from "./UserPhotos";
 
+const PHOTO_TABS = [
+  {
+    title: "Social Photos",
+    value: 0,
+  },
+  {
+    title: "My Photos",
+    value: 1,
+  },
+];
+
 export const PhotosScreen = () => {
   const { handleTakePhoto, image, clearImage } = useTakePhoto();
+  const [activeTab, setActiveTab] = useState(PHOTO_TABS[0].value);
 
-  const tabs = [
-    {
-      title: "Social Photos",
-      content: () => <SocialPhotos />,
-    },
-    {
-      title: "My Photos",
-      content: () => <UserPhotos />,
-    },
-  ];
+  const activeContent = useMemo(() => {
+    switch (activeTab) {
+      case 1:
+        return <UserPhotos />;
+      case 0:
+      default:
+        return <SocialPhotos />;
+    }
+  }, [activeTab]);
 
   return (
     <View className="flex-1 px-5 bg-background-screen pt-2">
-      <Tabs tabs={tabs} />
+      <Tabs
+        tabs={PHOTO_TABS}
+        active={activeTab}
+        onChange={setActiveTab}
+        size="large"
+        className="self-center mb-4"
+      />
+
+      <View className="flex-1">{activeContent}</View>
 
       <TouchableOpacity
         onPress={handleTakePhoto}

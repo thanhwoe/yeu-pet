@@ -12,6 +12,7 @@ import {
   PhoneIcon as Phone,
   PhoneCallIcon,
 } from "phosphor-react-native";
+import { memo, useCallback, useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Text } from "../ui/Text";
@@ -24,12 +25,19 @@ const LocationIcon = withIconClassName(MapPinIcon);
 interface ClinicCardProps {
   data: IClinic;
 }
-export const ClinicCard = ({ data }: ClinicCardProps) => {
-  const isOpen = checkIsOpening(data);
-  const hasPhone = data.phone ? isValidPhoneNumber(data.phone, "VN") : false;
-  const validPhone = hasPhone
-    ? parsePhoneNumberFromString(data.phone, "VN")?.formatNational()
-    : "";
+export const ClinicCard = memo(({ data }: ClinicCardProps) => {
+  const isOpen = useMemo(() => checkIsOpening(data), [data]);
+  const validPhone = useMemo(() => {
+    if (!data.phone || !isValidPhoneNumber(data.phone, "VN")) {
+      return undefined;
+    }
+
+    return parsePhoneNumberFromString(data.phone, "VN")?.formatNational();
+  }, [data.phone]);
+  const hasPhone = !!validPhone;
+
+  const handleSms = useCallback(() => sendSMS(validPhone), [validPhone]);
+  const handleCall = useCallback(() => makePhoneCall(validPhone), [validPhone]);
 
   return (
     <View className="mb-3 p-4 rounded-2xl bg-white gap-2">
@@ -71,13 +79,13 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
           {hasPhone && (
             <View className="flex-row gap-4">
               <TouchableOpacity
-                onPress={() => sendSMS(validPhone)}
+                onPress={handleSms}
                 className="bg-background-screen p-2 rounded-full"
               >
                 <ChatIcon size={20} className="text-icon-primary" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => makePhoneCall(validPhone)}
+                onPress={handleCall}
                 className="bg-background-screen p-2 rounded-full"
               >
                 <PhoneIcon size={20} className="text-icon-primary" />
@@ -94,4 +102,6 @@ export const ClinicCard = ({ data }: ClinicCardProps) => {
       </View>
     </View>
   );
-};
+});
+
+ClinicCard.displayName = "ClinicCard";

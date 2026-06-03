@@ -20,11 +20,83 @@ import { useLocalSearchParams } from "expo-router";
 import parsePhoneNumber from "libphonenumber-js";
 import { orderBy } from "lodash";
 import { TrashIcon } from "phosphor-react-native";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, FlatList, ListRenderItem, Pressable, View } from "react-native";
 import { AddressForm } from "./AddressForm";
 
 const DeleteIcon = withIconClassName(TrashIcon);
+
+type MutationError = {
+  errors?: {
+    message: string;
+  }[];
+};
+
+interface ShippingAddressItemProps {
+  item: IShippingAddress;
+  selected: boolean;
+  onSelect: (address: IShippingAddress) => void;
+  onDelete: (id: string) => void;
+}
+
+const ShippingAddressItem = memo(
+  ({ item, selected, onSelect, onDelete }: ShippingAddressItemProps) => {
+    const phoneNumber = useMemo(
+      () => parsePhoneNumber(item.phone)?.formatNational(),
+      [item.phone],
+    );
+
+    const handleSelect = useCallback(() => {
+      onSelect(item);
+    }, [item, onSelect]);
+
+    const handleDelete = useCallback(() => {
+      onDelete(item.id);
+    }, [item.id, onDelete]);
+
+    return (
+      <Pressable
+        className={cn(
+          "py-2 px-3 rounded-xl border-line-secondary flex-row gap-3 border bg-background-card-info",
+          { "border-line-selected": selected },
+        )}
+        onPress={handleSelect}
+      >
+        <Checkbox pointerEvents="none" size="small" checked={selected} />
+        <View className="flex-1">
+          <Text className="font-bold" variant="body2" numberOfLines={1}>
+            {item.full_name}
+          </Text>
+          <Text variant="body2">{phoneNumber}</Text>
+          <Text
+            variant="body2"
+            className="text-text-secondary"
+            numberOfLines={2}
+          >
+            {item.address}
+          </Text>
+        </View>
+        {item.is_default ? (
+          <View className="bg-background-secondary self-start px-2 rounded-xl">
+            <Text variant="footnote" className="text-text-primary-inverse">
+              Default
+            </Text>
+          </View>
+        ) : (
+          <Pressable onPress={handleDelete}>
+            <DeleteIcon
+              size={18}
+              weight="bold"
+              className="text-icon-secondary"
+            />
+          </Pressable>
+        )}
+      </Pressable>
+    );
+  },
+);
+
+ShippingAddressItem.displayName = "ShippingAddressItem";
 
 export const ShippingAddressScreen = () => {
   const queryClient = useQueryClient();
@@ -47,10 +119,12 @@ export const ShippingAddressScreen = () => {
   const { mutateAsync: createShippingAddress, isPending: creating } =
     useMutation({
       mutationFn: createShippingAddressMutation,
-      onError: (e) => {
-        Toast.error({ text: e.errors?.[0].message });
+      onError: (e: MutationError) => {
+        Toast.error({
+          text: e.errors?.[0]?.message ?? "Failed to add shipping address",
+        });
       },
-      onSuccess: (res) => {
+      onSuccess: () => {
         setOpenBottomSheet(false);
         queryClient.invalidateQueries({
           queryKey: SHIPPING_ADDRESS_KEY.list(),
@@ -64,10 +138,12 @@ export const ShippingAddressScreen = () => {
   const { mutateAsync: deleteShippingAddress, isPending: deleting } =
     useMutation({
       mutationFn: deleteShippingAddressMutation,
-      onError: (e) => {
-        Toast.error({ text: e.errors?.[0].message });
+      onError: (e: MutationError) => {
+        Toast.error({
+          text: e.errors?.[0]?.message ?? "Failed to delete shipping address",
+        });
       },
-      onSuccess: (res) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: SHIPPING_ADDRESS_KEY.list(),
         });
@@ -77,7 +153,10 @@ export const ShippingAddressScreen = () => {
       },
     });
 
-  const handleDelete = (id: string) => {
+  const closeBottomSheet = useCallback(() => setOpenBottomSheet(false), []);
+  const openBottomSheetForm = useCallback(() => setOpenBottomSheet(true), []);
+
+  const handleDelete = useCallback((id: string) => {
     Alert.alert(
       "Delete shipping address",
       "Are you sure you want to remove this address?",
@@ -95,54 +174,27 @@ export const ShippingAddressScreen = () => {
         },
       ]
     );
-  };
+  }, [clearShippingAddress, deleteShippingAddress, shippingAddress?.id]);
 
-  const renderItem: ListRenderItem<IShippingAddress> = ({ item }) => {
-    const selected = shippingAddress?.id
-      ? shippingAddress?.id === item.id
-      : item.is_default;
-    return (
-      <Pressable
-        className={cn(
-          "py-2 px-3 rounded-xl border-line-secondary flex-row gap-3 border bg-background-card-info",
-          { "border-line-selected": selected }
-        )}
-        onPress={() => setShippingAddress(item)}
-      >
-        <Checkbox pointerEvents="none" size="small" checked={selected} />
-        <View className="flex-1">
-          <Text className="font-bold" variant="body2" numberOfLines={1}>
-            {item.full_name}
-          </Text>
-          <Text variant="body2">
-            {parsePhoneNumber(item.phone)?.formatNational()}
-          </Text>
-          <Text
-            variant="body2"
-            className="text-text-secondary"
-            numberOfLines={2}
-          >
-            {item.address}
-          </Text>
-        </View>
-        {item.is_default ? (
-          <View className="bg-background-secondary self-start px-2 rounded-xl">
-            <Text variant="footnote" className="text-text-primary-inverse">
-              Default
-            </Text>
-          </View>
-        ) : (
-          <Pressable onPress={() => handleDelete(item.id)}>
-            <DeleteIcon
-              size={18}
-              weight="bold"
-              className="text-icon-secondary"
-            />
-          </Pressable>
-        )}
-      </Pressable>
-    );
-  };
+  const renderItem = useCallback<ListRenderItem<IShippingAddress>>(
+    ({ item }) => {
+      const selected = shippingAddress?.id
+        ? shippingAddress.id === item.id
+        : item.is_default;
+
+      return (
+        <ShippingAddressItem
+          item={item}
+          selected={selected}
+          onSelect={setShippingAddress}
+          onDelete={handleDelete}
+        />
+      );
+    },
+    [handleDelete, setShippingAddress, shippingAddress?.id],
+  );
+
+  const keyExtractor = useCallback((item: IShippingAddress) => item.id, []);
 
   const listEmptyComponent = useMemo(() => {
     if (isLoading) {
@@ -172,18 +224,18 @@ export const ShippingAddressScreen = () => {
         data={sortedShippingAddresses}
         contentContainerClassName="gap-2"
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         ListEmptyComponent={listEmptyComponent}
       />
       <View className="-mx-5 px-5 pt-3 pb-safe-or-4 bg-background-screen">
-        <Button onPress={() => setOpenBottomSheet(true)} loading={deleting}>
+        <Button onPress={openBottomSheetForm} loading={deleting}>
           Add new address
         </Button>
       </View>
       <BottomSheet
         keyboardBehavior="interactive"
         visible={openBottomSheet}
-        onDismiss={() => setOpenBottomSheet(false)}
+        onDismiss={closeBottomSheet}
         titleElement={<Text className="font-medium">Add new address</Text>}
       >
         <AddressForm onSubmit={createShippingAddress} loading={creating} />

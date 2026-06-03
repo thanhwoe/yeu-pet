@@ -37,12 +37,12 @@ export const API_ROUTES = {
   BUDGET_STATISTIC_MONTHLY: "/budgets/statistics/monthly",
   BUDGET_STATISTIC_YEARLY: "/budgets/statistics/yearly",
 
-  UPLOAD_PHOTO: "/photos/upload",
+  UPLOAD_PHOTO: "/photos",
   PHOTOS: "/photos",
-  USER_PHOTOS: "/photos/user",
+  USER_PHOTOS: "/photos/me",
   TOGGLE_LIKE_PHOTO: (id: string) => `/photos/${id}/like`,
-  DELETE_PHOTO: (id: string) => `/photos/${id}/delete`,
-  PHOTO_STATS: (id: string) => `/photos/${id}/stats`,
+  DELETE_PHOTO: (id: string) => `/photos/${id}`,
+  PHOTO_STATS: (id: string) => `/photos/${id}`,
   PHOTO_COMMENTS: (photoId: string) => `/photos/${photoId}/comments`,
   PHOTO_COMMENT_REPLIES: (photoId: string, commentId: string) =>
     `/photos/${photoId}/comments/${commentId}/replies`,

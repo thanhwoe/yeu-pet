@@ -67,14 +67,14 @@
 
 ## Phase 6: Performance Optimization
 
-- [ ] Optimize heavy screens
-- [ ] Optimize FlatList/FlashList usage
-- [ ] Memoize expensive renders where needed
+- [x] Optimize heavy screens
+- [x] Optimize FlatList/FlashList usage
+- [x] Memoize expensive renders where needed
 - [ ] Remove unnecessary state
-- [ ] Avoid inline heavy callbacks where needed
-- [ ] Optimize images
-- [ ] Check app startup performance
-- [ ] Check bottom sheet and modal render cost
+- [x] Avoid inline heavy callbacks where needed
+- [x] Optimize images
+- [x] Check app startup performance
+- [x] Check bottom sheet and modal render cost
 
 ## Phase 7: UI Implementation for Existing APIs
 

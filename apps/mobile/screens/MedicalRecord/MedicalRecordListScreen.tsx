@@ -21,8 +21,8 @@ import {
 } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { TrashIcon } from "phosphor-react-native";
-import { useEffect, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FlatList, ListRenderItem, View } from "react-native";
 import { MedicalRecordListItem } from "./MedicalRecordListItem";
 
 const DeleteIcon = withIconClassName(TrashIcon);
@@ -94,17 +94,97 @@ export const MedicalRecordListScreen = () => {
     },
   });
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (selectedRecord?.id) {
       deleteMedicalRecord(selectedRecord.id);
     }
-  };
+  }, [deleteMedicalRecord, selectedRecord?.id]);
+
+  const closeRecordOptions = useCallback(() => setSelectedRecord(null), []);
+  const closeDeletePopup = useCallback(() => setOpenDeletePopup(false), []);
+  const openDeletePopupAction = useCallback(() => setOpenDeletePopup(true), []);
+
+  const keyExtractor = useCallback((item: IMedicalRecord) => item.id, []);
+
+  const renderItem = useCallback<ListRenderItem<IMedicalRecord>>(
+    ({ item }) => (
+      <MedicalRecordListItem
+        record={item}
+        onPress={() => {
+          router.push({
+            pathname: "/medical-record/[id]",
+            params: { id: item.id },
+          });
+        }}
+        onMorePress={() => setSelectedRecord(item)}
+      />
+    ),
+    [router],
+  );
+
+  const listEmptyComponent = useMemo(
+    () =>
+      isLoading ? (
+        <View className="gap-12">
+          <Skeleton
+            className="h-80"
+            backgroundClassName="bg-background-primary"
+          />
+          <Skeleton
+            className="h-80"
+            backgroundClassName="bg-background-primary"
+          />
+          <Skeleton
+            className="h-80"
+            backgroundClassName="bg-background-primary"
+          />
+        </View>
+      ) : (
+        <Body center>No medical records yet</Body>
+      ),
+    [isLoading],
+  );
+
+  const listFooterComponent = useMemo(
+    () => (isFetchingNextPage ? <Spinner /> : null),
+    [isFetchingNextPage],
+  );
+
+  const handleEndReached = useCallback(() => {
+    if (isLoading || isFetchingNextPage || !hasNextPage) return;
+    if (!records.length) return;
+    fetchNextPage();
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    records.length,
+  ]);
+
+  const optionsData = useMemo(
+    () => [
+      {
+        label: "Delete",
+        value: selectedRecord,
+        onPress: openDeletePopupAction,
+        icon: (
+          <DeleteIcon
+            size={24}
+            weight="fill"
+            className="text-icon-negative"
+          />
+        ),
+      },
+    ],
+    [openDeletePopupAction, selectedRecord],
+  );
 
   return (
     <ScreenContainer className="px-0">
       <FlatList
         data={records}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         contentContainerClassName="px-20 pt-20 pb-safe gap-12"
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -114,73 +194,22 @@ export const MedicalRecordListScreen = () => {
             colorClassName="text-text-primary"
           />
         }
-        renderItem={({ item }) => (
-          <MedicalRecordListItem
-            record={item}
-            onPress={() => {
-              router.push({
-                pathname: "/medical-record/[id]",
-                params: { id: item.id },
-              });
-            }}
-            onMorePress={() => setSelectedRecord(item)}
-          />
-        )}
-        ListEmptyComponent={
-          isLoading ? (
-            <View className="gap-12">
-              <Skeleton
-                className="h-80"
-                backgroundClassName="bg-background-primary"
-              />
-              <Skeleton
-                className="h-80"
-                backgroundClassName="bg-background-primary"
-              />
-              <Skeleton
-                className="h-80"
-                backgroundClassName="bg-background-primary"
-              />
-            </View>
-          ) : (
-            <Body center>No medical records yet</Body>
-          )
-        }
-        ListFooterComponent={isFetchingNextPage ? <Spinner /> : null}
-        onEndReached={() => {
-          if (isLoading || isFetchingNextPage || !hasNextPage) return;
-          if (!records.length) return;
-          fetchNextPage();
-        }}
+        renderItem={renderItem}
+        ListEmptyComponent={listEmptyComponent}
+        ListFooterComponent={listFooterComponent}
+        onEndReached={handleEndReached}
         onEndReachedThreshold={0.2}
       />
 
       <BottomSheet
         visible={!!selectedRecord}
-        onDismiss={() => setSelectedRecord(null)}
+        onDismiss={closeRecordOptions}
       >
-        <Options
-          data={[
-            {
-              label: "Delete",
-              value: selectedRecord,
-              onPress: () => {
-                setOpenDeletePopup(true);
-              },
-              icon: (
-                <DeleteIcon
-                  size={24}
-                  weight="fill"
-                  className="text-icon-negative"
-                />
-              ),
-            },
-          ]}
-        />
+        <Options data={optionsData} />
       </BottomSheet>
       <Popup
         visible={openDeletePopup}
-        onCancel={() => setOpenDeletePopup(false)}
+        onCancel={closeDeletePopup}
         onConfirm={handleDelete}
         title="Remove medical record"
         description="Are you sure you want to remove this medical record?"
