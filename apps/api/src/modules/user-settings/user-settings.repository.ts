@@ -22,6 +22,7 @@ export class UserSettingsRepository implements IUserSettingsRepository {
       },
       create: {
         account_id: id,
+        ...data,
       },
       update: {
         updated_at: new Date(),

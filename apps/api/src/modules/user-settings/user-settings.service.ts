@@ -21,7 +21,12 @@ export class UserSettingsService {
   async upsert(user: accounts, updateUserSettingDto: UpdateUserSettingDto) {
     return this.userSettingsRepository.upsert(user.id, {
       notification_enable: updateUserSettingDto?.notificationEnable,
+      reminder_notifications: updateUserSettingDto.reminderNotifications,
+      booking_notifications: updateUserSettingDto.bookingNotifications,
+      social_notifications: updateUserSettingDto.socialNotifications,
+      ai_notifications: updateUserSettingDto.aiNotifications,
       language: updateUserSettingDto.language,
+      theme: updateUserSettingDto.theme,
     });
   }
 }

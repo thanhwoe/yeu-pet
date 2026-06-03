@@ -1,8 +1,16 @@
-import { subscription_tier } from '@app/generated/prisma/client';
+import {
+  accounts,
+  subscription_status,
+  subscription_tier,
+} from '@app/generated/prisma/client';
 import { timingSafeEqual } from 'crypto';
+import dayjs from 'dayjs';
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -12,6 +20,10 @@ import {
   RevenueCatWebhookPayload,
   RevenueCatWebhookResult,
 } from './revenuecat-webhook.interface';
+import {
+  SUBSCRIPTION_FEATURE_KEYS,
+  SUBSCRIPTION_LIMITS,
+} from './subscription-limits';
 import { SubscriptionRepository } from './subscription.repository';
 
 interface SubscriptionUpdate {
@@ -25,6 +37,15 @@ type ParsedRevenueCatWebhookEvent = RevenueCatWebhookEvent & {
   type: string;
 };
 
+export interface EntitlementUsage {
+  pets: number;
+  activeReminders: number;
+  medicalRecords: number;
+  budgetTransactionsThisMonth: number;
+  photos: number;
+  aiMessagesThisMonth: number;
+}
+
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -34,6 +55,109 @@ export class SubscriptionService {
     private readonly subscriptionRepository: SubscriptionRepository,
     private readonly configService: ConfigService,
   ) {}
+
+  async getCurrentPlan(accountId: string) {
+    const account =
+      await this.subscriptionRepository.findAccountById(accountId);
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    const subscription =
+      await this.subscriptionRepository.findLatestUserSubscription(accountId);
+
+    const status = this.resolveStatus(account, subscription?.status);
+    const tier =
+      status === subscription_status.active ||
+      status === subscription_status.trialing ||
+      status === subscription_status.grace_period
+        ? subscription_tier.premium
+        : subscription_tier.free;
+
+    return {
+      tier,
+      status,
+      expiresAt:
+        subscription?.expires_at ?? account.subscription_expires_at ?? null,
+      planCode:
+        subscription?.plan_code ??
+        (tier === subscription_tier.premium ? 'premium_monthly' : 'free'),
+    };
+  }
+
+  async getEntitlements(accountId: string) {
+    const plan = await this.getCurrentPlan(accountId);
+    const usage = await this.getUsage(accountId);
+    const limits = SUBSCRIPTION_LIMITS[plan.tier];
+
+    return {
+      ...plan,
+      limits,
+      usage,
+    };
+  }
+
+  async mockUpgrade(accountId: string) {
+    this.assertMockSubscriptionAllowed();
+    await this.subscriptionRepository.setManualSubscription(
+      accountId,
+      subscription_tier.premium,
+    );
+    return this.getEntitlements(accountId);
+  }
+
+  async mockDowngrade(accountId: string) {
+    this.assertMockSubscriptionAllowed();
+    await this.subscriptionRepository.setManualSubscription(
+      accountId,
+      subscription_tier.free,
+    );
+    return this.getEntitlements(accountId);
+  }
+
+  async assertCanCreatePet(accountId: string): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+    const limit = entitlements.limits.maxPets;
+
+    if (limit >= 0 && entitlements.usage.pets >= limit) {
+      throw new HttpException(
+        {
+          message: 'Free plan pet limit reached',
+          feature: 'pets',
+          limit,
+          usage: entitlements.usage.pets,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
+  async assertCanUseAi(accountId: string): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+    const limit = entitlements.limits.aiMessagesPerMonth;
+
+    if (limit >= 0 && entitlements.usage.aiMessagesThisMonth >= limit) {
+      throw new HttpException(
+        {
+          message: 'AI monthly quota reached',
+          feature: SUBSCRIPTION_FEATURE_KEYS.aiMessages,
+          limit,
+          usage: entitlements.usage.aiMessagesThisMonth,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
+  async incrementUsage(accountId: string, featureKey: string): Promise<number> {
+    const now = dayjs();
+    return this.subscriptionRepository.incrementUsage(
+      accountId,
+      featureKey,
+      now.format('YYYY-MM'),
+      now.endOf('month').toDate(),
+    );
+  }
 
   async handleRevenueCatWebhook(
     payload: RevenueCatWebhookPayload,
@@ -82,6 +206,84 @@ export class SubscriptionService {
       eventType: event.type,
       processed: true,
     };
+  }
+
+  private async getUsage(accountId: string): Promise<EntitlementUsage> {
+    const now = dayjs();
+    const monthStart = now.startOf('month').toDate();
+    const monthEnd = now.endOf('month').toDate();
+    const periodKey = now.format('YYYY-MM');
+
+    const [
+      pets,
+      activeReminders,
+      medicalRecords,
+      budgetTransactionsThisMonth,
+      photos,
+      aiMessagesUsage,
+    ] = await Promise.all([
+      this.subscriptionRepository.countPets(accountId),
+      this.subscriptionRepository.countActiveReminders(accountId),
+      this.subscriptionRepository.countMedicalRecords(accountId),
+      this.subscriptionRepository.countBudgetTransactionsThisMonth(
+        accountId,
+        monthStart,
+        monthEnd,
+      ),
+      this.subscriptionRepository.countPhotos(accountId),
+      this.subscriptionRepository.getUsageCount(
+        accountId,
+        SUBSCRIPTION_FEATURE_KEYS.aiMessages,
+        periodKey,
+      ),
+    ]);
+
+    return {
+      pets,
+      activeReminders,
+      medicalRecords,
+      budgetTransactionsThisMonth,
+      photos,
+      aiMessagesThisMonth: aiMessagesUsage?.count ?? 0,
+    };
+  }
+
+  private resolveStatus(
+    account: accounts,
+    subscriptionStatus?: subscription_status,
+  ): subscription_status {
+    if (subscriptionStatus) {
+      if (
+        subscriptionStatus === subscription_status.active &&
+        account.subscription_expires_at &&
+        account.subscription_expires_at.getTime() <= Date.now()
+      ) {
+        return subscription_status.expired;
+      }
+
+      return subscriptionStatus;
+    }
+
+    if (
+      account.subscription === subscription_tier.premium &&
+      (!account.subscription_expires_at ||
+        account.subscription_expires_at.getTime() > Date.now())
+    ) {
+      return subscription_status.active;
+    }
+
+    return subscription_status.free;
+  }
+
+  private assertMockSubscriptionAllowed(): void {
+    const environment =
+      this.configService.get<string>('NODE_ENV') ?? 'development';
+
+    if (environment === 'production') {
+      throw new BadRequestException(
+        'Mock subscription endpoints are disabled in production',
+      );
+    }
   }
 
   private assertAuthorized(authorizationHeader?: string): void {

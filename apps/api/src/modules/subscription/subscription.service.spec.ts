@@ -1,6 +1,6 @@
 import { subscription_tier } from '@app/generated/prisma/client';
 import { ConfigService } from '@nestjs/config';
-import { UnauthorizedException } from '@nestjs/common';
+import { HttpException, UnauthorizedException } from '@nestjs/common';
 import { SubscriptionRepository } from './subscription.repository';
 import { SubscriptionService } from './subscription.service';
 
@@ -10,12 +10,16 @@ const createRepository = () =>
   ({
     findAccountByRevenueCatUserIds: jest.fn(),
     updateSubscription: jest.fn(),
-  }) as jest.Mocked<
-    Pick<
-      SubscriptionRepository,
-      'findAccountByRevenueCatUserIds' | 'updateSubscription'
-    >
-  >;
+    findAccountById: jest.fn(),
+    findLatestUserSubscription: jest.fn(),
+    countPets: jest.fn(),
+    countActiveReminders: jest.fn(),
+    countMedicalRecords: jest.fn(),
+    countBudgetTransactionsThisMonth: jest.fn(),
+    countPhotos: jest.fn(),
+    getUsageCount: jest.fn(),
+    setManualSubscription: jest.fn(),
+  }) as jest.Mocked<Pick<SubscriptionRepository, keyof SubscriptionRepository>>;
 
 const createService = (
   repository: ReturnType<typeof createRepository>,
@@ -49,6 +53,64 @@ describe('SubscriptionService', () => {
   beforeEach(() => {
     repository = createRepository();
     service = createService(repository);
+  });
+
+  const mockUsage = ({
+    pets = 1,
+    activeReminders = 2,
+    medicalRecords = 3,
+    budgetTransactionsThisMonth = 4,
+    photos = 5,
+    aiMessagesThisMonth = 1,
+  } = {}) => {
+    repository.countPets.mockResolvedValue(pets);
+    repository.countActiveReminders.mockResolvedValue(activeReminders);
+    repository.countMedicalRecords.mockResolvedValue(medicalRecords);
+    repository.countBudgetTransactionsThisMonth.mockResolvedValue(
+      budgetTransactionsThisMonth,
+    );
+    repository.countPhotos.mockResolvedValue(photos);
+    repository.getUsageCount.mockResolvedValue({
+      count: aiMessagesThisMonth,
+    });
+  };
+
+  it('returns free entitlements with current usage', async () => {
+    repository.findAccountById.mockResolvedValue({
+      id: accountId,
+      subscription: subscription_tier.free,
+      subscription_expires_at: null,
+    } as never);
+    repository.findLatestUserSubscription.mockResolvedValue(null);
+    mockUsage();
+
+    await expect(service.getEntitlements(accountId)).resolves.toMatchObject({
+      tier: 'free',
+      status: 'free',
+      planCode: 'free',
+      limits: {
+        maxPets: 2,
+        aiMessagesPerMonth: 5,
+      },
+      usage: {
+        pets: 1,
+        aiMessagesThisMonth: 1,
+      },
+    });
+  });
+
+  it('blocks pet creation when the free pet limit is reached', async () => {
+    repository.findAccountById.mockResolvedValue({
+      id: accountId,
+      subscription: subscription_tier.free,
+      subscription_expires_at: null,
+    } as never);
+    repository.findLatestUserSubscription.mockResolvedValue(null);
+    mockUsage({ pets: 2 });
+
+    await expect(service.assertCanCreatePet(accountId)).rejects.toMatchObject({
+      status: 429,
+    } satisfies Partial<HttpException>);
   });
 
   it('rejects webhooks with an invalid authorization header', async () => {

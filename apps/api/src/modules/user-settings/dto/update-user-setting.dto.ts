@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional } from 'class-validator';
 
 export class UpdateUserSettingDto {
   @IsOptional()
@@ -6,6 +6,26 @@ export class UpdateUserSettingDto {
   notificationEnable?: boolean;
 
   @IsOptional()
-  @IsString()
+  @IsBoolean()
+  reminderNotifications?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  bookingNotifications?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  socialNotifications?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  aiNotifications?: boolean;
+
+  @IsOptional()
+  @IsIn(['vi', 'en'])
   language?: string;
+
+  @IsOptional()
+  @IsIn(['system', 'light', 'dark'])
+  theme?: string;
 }

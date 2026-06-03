@@ -12,6 +12,7 @@ import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { assertOwnerOrAdmin } from '@app/utils/ownership';
+import { SubscriptionService } from '../subscription/subscription.service';
 
 @Injectable()
 export class PetsService {
@@ -19,12 +20,15 @@ export class PetsService {
     @Inject(IPetsRepository)
     private readonly petsRepository: IPetsRepository,
     private readonly fileUploadService: FileUploadService,
+    private readonly subscriptionService: SubscriptionService,
   ) {}
   async create(
     userId: string,
     createPetDto: CreatePetDto,
     avatarFile?: Express.Multer.File,
   ) {
+    await this.subscriptionService.assertCanCreatePet(userId);
+
     const pet = await this.petsRepository.create({
       name: createPetDto.name,
       account_id: userId,

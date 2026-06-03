@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Put } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Put } from '@nestjs/common';
 import { UserSettingsService } from './user-settings.service';
 import { UpdateUserSettingDto } from './dto/update-user-setting.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
@@ -15,6 +15,14 @@ export class UserSettingsController {
 
   @Put()
   update(
+    @CurrentUser() user: accounts,
+    @Body() updateUserSettingDto: UpdateUserSettingDto,
+  ) {
+    return this.userSettingsService.upsert(user, updateUserSettingDto);
+  }
+
+  @Patch()
+  patch(
     @CurrentUser() user: accounts,
     @Body() updateUserSettingDto: UpdateUserSettingDto,
   ) {

@@ -2,23 +2,54 @@ import { Public } from '@app/decorators/public.decorator';
 import {
   Body,
   Controller,
+  Get,
   Headers,
   HttpCode,
   HttpStatus,
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from '@app/decorators/current-user.decorator';
+import type { accounts } from '@app/generated/prisma/client';
 import { RevenueCatWebhookResult } from './revenuecat-webhook.interface';
 import type { RevenueCatWebhookPayload } from './revenuecat-webhook.interface';
 import { SubscriptionService } from './subscription.service';
 
 @ApiTags('Subscription')
-@Controller('subscription')
+@Controller()
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 
+  @Get('subscriptions/me')
+  @HttpCode(HttpStatus.OK)
+  findMine(@CurrentUser() user: accounts) {
+    return this.subscriptionService.getEntitlements(user.id);
+  }
+
+  @Get('subscriptions/entitlements')
+  @HttpCode(HttpStatus.OK)
+  getEntitlements(@CurrentUser() user: accounts) {
+    return this.subscriptionService.getEntitlements(user.id);
+  }
+
+  @Post('subscriptions/mock-upgrade')
+  @HttpCode(HttpStatus.OK)
+  mockUpgrade(@CurrentUser() user: accounts) {
+    return this.subscriptionService.mockUpgrade(user.id);
+  }
+
+  @Post('subscriptions/mock-downgrade')
+  @HttpCode(HttpStatus.OK)
+  mockDowngrade(@CurrentUser() user: accounts) {
+    return this.subscriptionService.mockDowngrade(user.id);
+  }
+
   @Public()
-  @Post('webhook')
+  @Post([
+    'subscription/webhook',
+    'subscriptions/webhook',
+    'subscriptions/webhooks/revenuecat',
+  ])
   @HttpCode(HttpStatus.OK)
   handleRevenueCatWebhook(
     @Headers('authorization') authorizationHeader: string | undefined,
