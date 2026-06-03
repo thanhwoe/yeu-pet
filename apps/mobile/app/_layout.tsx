@@ -96,6 +96,13 @@ const RootNavigation = () => {
           }}
         />
         <Stack.Screen
+          name="notifications"
+          options={{
+            header: BackHeader,
+            title: "Notifications",
+          }}
+        />
+        <Stack.Screen
           name="doctor-ai"
           options={{
             header: BackHeader,
