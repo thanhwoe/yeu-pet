@@ -86,6 +86,30 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Preserve comment/reply soft delete and delete permission for comment owner, photo owner, and admin.
 - [x] Add tests for photo comment replies, nested reply rejection, and photo-owner delete.
 
+## Fifth Implementation Slice
+
+- [x] Add `POST /sitters/me` profile creation route while preserving `POST /sitters/register`.
+- [x] Add `PATCH /sitters/me` current-profile update route.
+- [x] Add structured sitter profile fields: display name, city, district, ward, coordinates, experience, service notes, and max concurrent bookings.
+- [x] Add sitter search filters for city, district, min rating, and max price.
+- [x] Preserve one sitter profile per account.
+- [x] Add tests for sitter profile creation, duplicate prevention, search filters, and current-profile update.
+
+## Sixth Implementation Slice
+
+- [x] Add `GET /sitter-bookings/me?role=owner|sitter&status=...`.
+- [x] Add mobile-facing POST status action routes:
+  - [x] `POST /sitter-bookings/:id/accept`
+  - [x] `POST /sitter-bookings/:id/reject`
+  - [x] `POST /sitter-bookings/:id/cancel`
+  - [x] `POST /sitter-bookings/:id/complete`
+- [x] Preserve existing PATCH status action compatibility routes.
+- [x] Add `POST /sitter-bookings/:id/review`.
+- [x] Add external payment metadata to booking responses.
+- [x] Add owner notes, sitter notes, care instructions, and payment note handling on booking create.
+- [x] Add participant-only booking message list/create routes.
+- [x] Add tests for booking `/me` role dispatch, payment metadata, and booking messages.
+
 ## Phase 1 API Work
 
 - [ ] Account/profile endpoints aligned with `/me` plan.
@@ -96,9 +120,9 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
 - [x] Photos support `/photos/social`, `/photos/me`, visibility filters, `petId`, report endpoint, like/unlike routes, and soft delete.
 - [x] Photo comments support create, replies, soft delete, and owner/photo-owner permissions.
-- [ ] Sitter profile supports `/sitters/me`, location filters, new profile fields, and one profile per account.
-- [ ] Sitter booking supports `/sitter-bookings/me`, accept/reject/cancel/complete/review routes, participant-only detail, and external payment copy in response where relevant.
-- [ ] Sitter booking messages support participant-only list/create.
+- [x] Sitter profile supports `/sitters/me`, location filters, new profile fields, and one profile per account.
+- [x] Sitter booking supports `/sitter-bookings/me`, accept/reject/cancel/complete/review routes, participant-only detail, and external payment copy in response where relevant.
+- [x] Sitter booking messages support participant-only list/create.
 - [ ] Pet Care AI supports conversations, messages, streaming, quota, safety guard, and backend-only provider adapter.
 - [ ] Reports/blocking prepared for social and sitter trust flows.
 

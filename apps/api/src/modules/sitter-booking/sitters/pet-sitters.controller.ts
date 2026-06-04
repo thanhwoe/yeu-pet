@@ -21,6 +21,15 @@ import { IdParam } from '@app/decorators/id-param.decorator';
 export class PetSittersController {
   constructor(private readonly petSittersService: PetSittersService) {}
 
+  @Post('me')
+  @HttpCode(HttpStatus.CREATED)
+  createMe(
+    @CurrentUser() user: accounts,
+    @Body() createPetSitterDto: CreatePetSitterDto,
+  ) {
+    return this.petSittersService.create(user, createPetSitterDto);
+  }
+
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   create(
@@ -35,14 +44,33 @@ export class PetSittersController {
   findAll(
     @PaginationQuery() pagination: PaginationDto,
     @Query('address') address?: string,
+    @Query('city') city?: string,
+    @Query('district') district?: string,
+    @Query('minRating') minRating?: string,
+    @Query('maxPrice') maxPrice?: string,
   ) {
-    return this.petSittersService.findAll(pagination, address);
+    return this.petSittersService.findAll(pagination, {
+      address,
+      city,
+      district,
+      minRating,
+      maxPrice,
+    });
   }
 
   @Get('/me')
   @HttpCode(HttpStatus.OK)
   findMe(@CurrentUser() user: accounts) {
     return this.petSittersService.findMe(user);
+  }
+
+  @Patch('/me')
+  @HttpCode(HttpStatus.OK)
+  updateMe(
+    @CurrentUser() user: accounts,
+    @Body() updatePetSitterDto: UpdatePetSitterDto,
+  ) {
+    return this.petSittersService.updateMe(user, updatePetSitterDto);
   }
 
   @Get(':id')

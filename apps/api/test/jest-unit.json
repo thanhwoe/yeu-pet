@@ -19,6 +19,8 @@
     "<rootDir>/src/modules/budget/budgets/**/*.spec.ts",
     "<rootDir>/src/modules/budget/transactions/**/*.spec.ts",
     "<rootDir>/src/modules/sitter-booking/bookings/sitter-bookings.service.spec.ts",
+    "<rootDir>/src/modules/sitter-booking/bookings/messages/**/*.spec.ts",
+    "<rootDir>/src/modules/sitter-booking/sitters/**/*.spec.ts",
     "<rootDir>/src/modules/budget/categories/budget-categories.service.spec.ts"
   ],
   "transform": {

@@ -9,8 +9,23 @@ export const IPetSittersRepository = Symbol('IPetSittersRepository');
 
 export type PetSittersCreate = Pick<
   pet_sitters,
-  'account_id' | 'bio' | 'address' | 'hourly_rate' | 'daily_rate'
->;
+  'account_id' | 'address' | 'hourly_rate' | 'daily_rate'
+> &
+  Partial<
+    Pick<
+      pet_sitters,
+      | 'display_name'
+      | 'bio'
+      | 'city'
+      | 'district'
+      | 'ward'
+      | 'latitude'
+      | 'longitude'
+      | 'experience'
+      | 'service_notes'
+      | 'max_concurrent_bookings'
+    >
+  >;
 
 type PetSitterClient = pet_sitters & {
   accounts: Pick<accounts, 'avatar_url' | 'first_name' | 'last_name'>;
@@ -25,6 +40,10 @@ export interface IPetSittersRepository {
     skip?: number;
     take?: number;
     address?: string;
+    city?: string;
+    district?: string;
+    minRating?: number;
+    maxPrice?: number;
   }): Promise<[PetSitterClient[], number]>;
   lock(
     tx: Omit<PrismaClient, ITXClientDenyList>,

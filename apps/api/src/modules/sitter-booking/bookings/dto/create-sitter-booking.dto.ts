@@ -4,6 +4,7 @@ import {
   IsDateString,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
   MaxLength,
@@ -36,4 +37,16 @@ export class CreateSitterBookingDto {
   @IsNotEmpty()
   @IsAfterField('startTime')
   endTime: string;
+
+  @IsOptional()
+  @IsString()
+  ownerNotes?: string;
+
+  @IsOptional()
+  @IsString()
+  sitterNotes?: string;
+
+  @IsOptional()
+  @IsString()
+  careInstructions?: string;
 }

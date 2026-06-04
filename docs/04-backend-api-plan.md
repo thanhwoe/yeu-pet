@@ -293,6 +293,13 @@ Important service rules:
 - Owner cannot book themselves.
 - Search should support area and availability later.
 
+Implementation note:
+
+- Current NestJS implementation supports `page`/`limit` pagination.
+- `POST /sitters/me`, `GET /sitters/me`, and `PATCH /sitters/me` manage the current user's sitter profile.
+- `POST /sitters/register` remains available as a compatibility route.
+- Search supports `address`, `city`, `district`, `minRating`, and `maxPrice`.
+
 ### 4.11 Sitter Booking
 
 ```txt
@@ -315,6 +322,14 @@ Important service rules:
 - Status transition must be enforced.
 - Review only after completed booking and only once.
 - Payment is outside app in phase 1.
+
+Implementation note:
+
+- Current NestJS implementation supports `page`/`limit` pagination.
+- `GET /sitter-bookings/me` dispatches by `role=owner|sitter`.
+- POST action routes are implemented for mobile, with existing PATCH routes kept for compatibility.
+- Booking responses include `payment.inApp=false` and an external payment note.
+- Booking messages are list/create only and require booking participant access.
 
 ## 5. Entitlement service
 

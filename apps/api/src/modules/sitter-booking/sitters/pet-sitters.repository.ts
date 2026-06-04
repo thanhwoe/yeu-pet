@@ -26,13 +26,39 @@ export class PetSittersRepository implements IPetSittersRepository {
       },
     });
   }
-  findAll(params?: { skip?: number; take?: number; address?: string }) {
+  findAll(params?: {
+    skip?: number;
+    take?: number;
+    address?: string;
+    city?: string;
+    district?: string;
+    minRating?: number;
+    maxPrice?: number;
+  }) {
+    const address = params?.address?.trim();
+    const city = params?.city?.trim();
+    const district = params?.district?.trim();
+
     const where: pet_sittersWhereInput = {
       is_available: true,
-      address: {
-        contains: params?.address?.trim(),
-        mode: 'insensitive',
-      },
+      ...(address
+        ? { address: { contains: address, mode: 'insensitive' } }
+        : {}),
+      ...(city ? { city: { contains: city, mode: 'insensitive' } } : {}),
+      ...(district
+        ? { district: { contains: district, mode: 'insensitive' } }
+        : {}),
+      ...(params?.minRating === undefined
+        ? {}
+        : { avg_rating: { gte: params.minRating } }),
+      ...(params?.maxPrice === undefined
+        ? {}
+        : {
+            OR: [
+              { hourly_rate: { lte: params.maxPrice } },
+              { daily_rate: { lte: params.maxPrice } },
+            ],
+          }),
     };
     return this.prisma.$transaction([
       this.prisma.pet_sitters.findMany({

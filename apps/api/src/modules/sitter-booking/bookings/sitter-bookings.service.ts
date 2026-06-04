@@ -39,6 +39,15 @@ import {
 import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
 
 const BOOKING_HOLD_MINUTES = 15;
+const EXTERNAL_PAYMENT_NOTE =
+  'Payment is handled outside YeuPet in Phase 1. Coordinate directly with the sitter.';
+
+type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> = T & {
+  payment: {
+    inApp: false;
+    note: string;
+  };
+};
 
 @Injectable()
 export class SitterBookingsService {
@@ -66,7 +75,7 @@ export class SitterBookingsService {
       );
 
     if (existingBooking) {
-      return existingBooking;
+      return this.toBookingResponse(existingBooking);
     }
 
     const sitter = await this.petSittersRepository.findById(
@@ -169,6 +178,10 @@ export class SitterBookingsService {
           start_time: startTime,
           end_time: endTime,
           expires_at: expiresAt,
+          owner_notes: createSitterBookingDto.ownerNotes,
+          sitter_notes: createSitterBookingDto.sitterNotes,
+          care_instructions: createSitterBookingDto.careInstructions,
+          payment_note: EXTERNAL_PAYMENT_NOTE,
           total_price: this.calculatePrice(
             sitter,
             createSitterBookingDto.type,
@@ -199,7 +212,7 @@ export class SitterBookingsService {
       });
     }
 
-    return result.booking;
+    return this.toBookingResponse(result.booking);
   }
 
   private async handleIdempotentCreateConflict(
@@ -302,7 +315,9 @@ export class SitterBookingsService {
         );
       }
 
-      return this.sitterBookingsRepository.confirmInTx(tx, id);
+      return this.toBookingResponse(
+        await this.sitterBookingsRepository.confirmInTx(tx, id),
+      );
     });
   }
 
@@ -312,9 +327,11 @@ export class SitterBookingsService {
       throw new BadRequestException('Only PENDING bookings can be reject');
     }
 
-    return this.sitterBookingsRepository.update(id, {
-      status: sitter_bookings_status.rejected,
-    });
+    return this.toBookingResponse(
+      await this.sitterBookingsRepository.update(id, {
+        status: sitter_bookings_status.rejected,
+      }),
+    );
   }
 
   async complete(user: accounts, id: string) {
@@ -328,9 +345,11 @@ export class SitterBookingsService {
       );
     }
 
-    return this.sitterBookingsRepository.update(id, {
-      status: sitter_bookings_status.completed,
-    });
+    return this.toBookingResponse(
+      await this.sitterBookingsRepository.update(id, {
+        status: sitter_bookings_status.completed,
+      }),
+    );
   }
 
   async cancel(user: accounts, id: string, dto: CancelSitterBookingDto) {
@@ -359,7 +378,9 @@ export class SitterBookingsService {
       );
     }
 
-    return this.sitterBookingsRepository.cancel(id, user.id, dto.reason);
+    return this.toBookingResponse(
+      await this.sitterBookingsRepository.cancel(id, user.id, dto.reason),
+    );
   }
 
   async findAll(
@@ -377,7 +398,12 @@ export class SitterBookingsService {
       status,
     });
 
-    return paginate(data, total, page, limit);
+    return paginate(
+      data.map((booking) => this.toBookingResponse(booking)),
+      total,
+      page,
+      limit,
+    );
   }
 
   async findAllBySitter(
@@ -399,7 +425,29 @@ export class SitterBookingsService {
       status,
     });
 
-    return paginate(data, total, page, limit);
+    return paginate(
+      data.map((booking) => this.toBookingResponse(booking)),
+      total,
+      page,
+      limit,
+    );
+  }
+
+  async findAllMe(
+    user: accounts,
+    pagination: PaginationDto,
+    role: string | undefined,
+    status?: sitter_bookings_status,
+  ) {
+    if (!role || role === 'owner') {
+      return this.findAll(user, pagination, status);
+    }
+
+    if (role === 'sitter') {
+      return this.findAllBySitter(user, pagination, status);
+    }
+
+    throw new BadRequestException('role must be one of: owner, sitter');
   }
 
   async findOne(user: accounts, id: string) {
@@ -416,7 +464,7 @@ export class SitterBookingsService {
         'You do not have permission to view this booking',
       );
     }
-    return booking;
+    return this.toBookingResponse(booking);
   }
 
   active() {
@@ -520,5 +568,17 @@ export class SitterBookingsService {
     }
 
     return null;
+  }
+
+  private toBookingResponse<T extends sitter_bookings>(
+    booking: T,
+  ): SitterBookingResponse<T> {
+    return {
+      ...booking,
+      payment: {
+        inApp: false,
+        note: booking.payment_note ?? EXTERNAL_PAYMENT_NOTE,
+      },
+    };
   }
 }

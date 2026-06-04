@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -11,6 +12,14 @@ import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
 import { assertOwnerOrAdmin } from '@app/utils/ownership';
+
+export interface PetSitterSearchFilters {
+  address?: string;
+  city?: string;
+  district?: string;
+  minRating?: string;
+  maxPrice?: string;
+}
 
 @Injectable()
 export class PetSittersService {
@@ -27,21 +36,37 @@ export class PetSittersService {
 
     return this.petSittersRepository.create({
       account_id: user.id,
+      display_name: createPetSitterDto.displayName,
       address: createPetSitterDto.address,
       bio: createPetSitterDto.bio,
+      city: createPetSitterDto.city,
+      district: createPetSitterDto.district,
+      ward: createPetSitterDto.ward,
+      latitude: createPetSitterDto.latitude,
+      longitude: createPetSitterDto.longitude,
+      experience: createPetSitterDto.experience,
+      service_notes: createPetSitterDto.serviceNotes,
       daily_rate: createPetSitterDto.dailyRate,
       hourly_rate: createPetSitterDto.hourlyRate,
+      max_concurrent_bookings: createPetSitterDto.maxConcurrentBookings,
     });
   }
 
-  async findAll(pagination: PaginationDto, address?: string) {
+  async findAll(
+    pagination: PaginationDto,
+    filters: PetSitterSearchFilters = {},
+  ) {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.petSittersRepository.findAll({
       skip,
       take: limit,
-      address,
+      address: filters.address,
+      city: filters.city,
+      district: filters.district,
+      minRating: this.parseOptionalNumber(filters.minRating, 'minRating'),
+      maxPrice: this.parseOptionalNumber(filters.maxPrice, 'maxPrice'),
     });
 
     return paginate(data, total, page, limit);
@@ -60,12 +85,27 @@ export class PetSittersService {
     await this.assertOwner(user, id);
 
     return this.petSittersRepository.update(id, {
+      display_name: updatePetSitterDto.displayName,
       address: updatePetSitterDto.address,
       bio: updatePetSitterDto.bio,
+      city: updatePetSitterDto.city,
+      district: updatePetSitterDto.district,
+      ward: updatePetSitterDto.ward,
+      latitude: updatePetSitterDto.latitude,
+      longitude: updatePetSitterDto.longitude,
+      experience: updatePetSitterDto.experience,
+      service_notes: updatePetSitterDto.serviceNotes,
       hourly_rate: updatePetSitterDto.hourlyRate,
       daily_rate: updatePetSitterDto.dailyRate,
+      max_concurrent_bookings: updatePetSitterDto.maxConcurrentBookings,
       is_available: updatePetSitterDto.isAvailable,
     });
+  }
+
+  async updateMe(user: accounts, updatePetSitterDto: UpdatePetSitterDto) {
+    const sitter = await this.findMe(user);
+
+    return this.update(user, sitter.id, updatePetSitterDto);
   }
 
   async findMe(user: accounts) {
@@ -92,5 +132,18 @@ export class PetSittersService {
     assertOwnerOrAdmin(user, record.account_id);
 
     return record;
+  }
+
+  private parseOptionalNumber(value: string | undefined, name: string) {
+    if (value === undefined || value.trim() === '') {
+      return undefined;
+    }
+
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) {
+      throw new BadRequestException(`${name} must be a number`);
+    }
+
+    return parsed;
   }
 }

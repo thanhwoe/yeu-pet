@@ -164,7 +164,12 @@ describe('SitterBookingsService', () => {
 
     const result = await service.create(user, dto);
 
-    expect(result).toBe(booking);
+    expect(result).toMatchObject({
+      id: booking.id,
+      payment: {
+        inApp: false,
+      },
+    });
     expect(sitterBookingsRepository.runSerializable.mock.calls).toHaveLength(0);
     expect(eventBus.publish.mock.calls).toHaveLength(0);
   });
@@ -172,7 +177,13 @@ describe('SitterBookingsService', () => {
   it('creates a pending hold under a sitter row lock and publishes a domain event', async () => {
     const result = await service.create(user, dto);
 
-    expect(result).toBe(booking);
+    expect(result).toMatchObject({
+      id: booking.id,
+      payment: {
+        inApp: false,
+        note: expect.stringContaining('outside YeuPet') as string,
+      },
+    });
     expect(petSittersRepository.lock.mock.calls).toEqual([[{}, sitterId]]);
     expect(
       sitterBookingsRepository.countHeldOverlappingInTx.mock.calls[0].slice(
@@ -184,8 +195,10 @@ describe('SitterBookingsService', () => {
     expect(createData.expires_at).toBeInstanceOf(Date);
     expect(createData).toMatchObject({
       idempotency_key: dto.idempotencyKey,
+      owner_notes: undefined,
       status: sitter_bookings_status.pending,
     });
+    expect(String(createData.payment_note)).toContain('outside YeuPet');
     expect(eventBus.publish.mock.calls).toEqual([
       [
         SITTER_BOOKING_EVENT_CHANNELS.BOOKING_CREATED,
@@ -296,5 +309,41 @@ describe('SitterBookingsService', () => {
 
     expect(result).toEqual({ count: 0 });
     expect(eventBus.publish.mock.calls).toHaveLength(0);
+  });
+
+  it('lists current user bookings by owner or sitter role', async () => {
+    sitterBookingsRepository.findAllByUser.mockResolvedValue([
+      [booking as never],
+      1,
+    ]);
+    sitterBookingsRepository.findAllBySitter.mockResolvedValue([
+      [booking as never],
+      1,
+    ]);
+    petSittersRepository.findByUser.mockResolvedValue({
+      id: sitterId,
+    } as never);
+
+    await service.findAllMe(user, { page: 1, limit: 10 }, 'owner');
+    await service.findAllMe(
+      { id: sitterAccountId } as accounts,
+      { page: 1, limit: 10 },
+      'sitter',
+    );
+
+    expect(sitterBookingsRepository.findAllByUser.mock.calls).toEqual([
+      [
+        expect.objectContaining({
+          account_id: accountId,
+        }),
+      ],
+    ]);
+    expect(sitterBookingsRepository.findAllBySitter.mock.calls).toEqual([
+      [
+        expect.objectContaining({
+          sitter_id: sitterId,
+        }),
+      ],
+    ]);
   });
 });

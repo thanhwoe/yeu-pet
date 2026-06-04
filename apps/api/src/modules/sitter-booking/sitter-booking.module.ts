@@ -14,12 +14,17 @@ import { PetSittersService } from './sitters/pet-sitters.service';
 import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
 import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
 import { ISitterReviewsRepository } from '@app/interfaces/sitter-reviews-repository.interface';
+import { ISitterBookingMessagesRepository } from '@app/interfaces/sitter-booking-messages-repository.interface';
+import { SitterBookingMessagesController } from './bookings/messages/sitter-booking-messages.controller';
+import { SitterBookingMessagesRepository } from './bookings/messages/sitter-booking-messages.repository';
+import { SitterBookingMessagesService } from './bookings/messages/sitter-booking-messages.service';
 
 @Module({
   imports: [CaslModule, PetsModule],
   controllers: [
     PetSittersController,
     SitterBookingsController,
+    SitterBookingMessagesController,
     SitterReviewsController,
   ],
   providers: [
@@ -32,6 +37,12 @@ import { ISitterReviewsRepository } from '@app/interfaces/sitter-reviews-reposit
       useExisting: SitterBookingsRepository,
     },
     SitterBookingsService,
+    SitterBookingMessagesRepository,
+    {
+      provide: ISitterBookingMessagesRepository,
+      useExisting: SitterBookingMessagesRepository,
+    },
+    SitterBookingMessagesService,
     ActiveBookingsTask,
     SitterReviewsRepository,
     { provide: ISitterReviewsRepository, useExisting: SitterReviewsRepository },
