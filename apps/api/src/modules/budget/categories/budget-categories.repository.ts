@@ -23,8 +23,12 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
     });
   }
   async delete(id: string) {
-    return this.prisma.budget_categories.delete({
+    return this.prisma.budget_categories.update({
       where: { id },
+      data: {
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      },
     });
   }
   async findAll(params?: {
@@ -34,6 +38,7 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
   }) {
     const where: budget_categoriesWhereInput = {
       account_id: params?.account_id,
+      deleted_at: null,
     };
 
     return this.prisma.$transaction([
@@ -47,12 +52,15 @@ export class BudgetCategoriesRepository implements IBudgetCategoriesRepository {
     ]);
   }
   async findById(id: string) {
-    return this.prisma.budget_categories.findUnique({ where: { id } });
+    return this.prisma.budget_categories.findFirst({
+      where: { id, deleted_at: null },
+    });
   }
   findManyByIds(ids: string[]) {
     return this.prisma.budget_categories.findMany({
       where: {
         id: { in: ids },
+        deleted_at: null,
       },
     });
   }

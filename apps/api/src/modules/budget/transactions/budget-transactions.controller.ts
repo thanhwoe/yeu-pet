@@ -55,12 +55,18 @@ export class BudgetTransactionsController {
     month?: number,
     @Query('year', new NumberRangePipe(1970, 3000, 'year'))
     year?: number,
+    @Query('categoryId')
+    categoryId?: string,
+    @Query('petId')
+    petId?: string,
   ) {
     return this.budgetTransactionsService.findAll(
       user,
       pagination,
       month,
       year,
+      categoryId,
+      petId,
     );
   }
 

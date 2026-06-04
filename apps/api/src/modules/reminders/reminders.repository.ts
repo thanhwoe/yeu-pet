@@ -1,5 +1,5 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
-import { reminder_status } from '@app/generated/prisma/client';
+import { reminder_status, reminder_type } from '@app/generated/prisma/client';
 import {
   remindersCreateInput,
   remindersUpdateInput,
@@ -40,13 +40,17 @@ export class RemindersRepository implements IRemindersRepository {
     skip?: number;
     take?: number;
     account_id: string;
+    pet_id?: string;
     status?: reminder_status;
+    type?: reminder_type;
     startDate: Date;
     endDate: Date;
   }) {
     const where: remindersWhereInput = {
       account_id: params?.account_id,
+      pet_id: params?.pet_id,
       status: params?.status,
+      type: params?.type,
       scheduled_at: {
         gte: params?.startDate,
         lte: params?.endDate,

@@ -16,7 +16,11 @@ import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
-import { type accounts, reminder_status } from '@app/generated/prisma/client';
+import {
+  type accounts,
+  reminder_status,
+  reminder_type,
+} from '@app/generated/prisma/client';
 import { PoliciesGuard } from '@app/guards/policy.guard';
 import { CheckPolicies } from '@app/decorators/policy.decorator';
 import { Action } from '../casl/casl.types';
@@ -62,14 +66,39 @@ export class RemindersController {
     year: number,
     @Query('status', new AllowValuesPipe(reminder_status))
     status?: reminder_status,
+    @Query('type', new AllowValuesPipe(reminder_type))
+    type?: reminder_type,
+    @Query('petId')
+    petId?: string,
+    @Query('from')
+    from?: string,
+    @Query('to')
+    to?: string,
   ) {
-    return this.remindersService.findAll(
-      user.id,
-      pagination,
+    return this.remindersService.findAll(user.id, pagination, {
       month,
       year,
       status,
-    );
+      type,
+      petId,
+      from,
+      to,
+    });
+  }
+
+  @Get('upcoming')
+  @Cacheable(30)
+  @HttpCode(HttpStatus.OK)
+  findUpcoming(
+    @CurrentUser() user: accounts,
+    @Query(
+      'limit',
+      new DefaultValuePipe(5),
+      new NumberRangePipe(1, 20, 'limit'),
+    )
+    limit: number,
+  ) {
+    return this.remindersService.findUpcoming(user.id, limit);
   }
 
   @Get(':id')
@@ -95,5 +124,26 @@ export class RemindersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.remindersService.remove(user, id);
+  }
+
+  @Post(':id/complete')
+  @CacheEvict()
+  @HttpCode(HttpStatus.OK)
+  complete(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.remindersService.complete(user, id);
+  }
+
+  @Post(':id/skip')
+  @CacheEvict()
+  @HttpCode(HttpStatus.OK)
+  skip(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.remindersService.skip(user, id);
+  }
+
+  @Post(':id/cancel')
+  @CacheEvict()
+  @HttpCode(HttpStatus.OK)
+  cancel(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.remindersService.cancel(user, id);
   }
 }

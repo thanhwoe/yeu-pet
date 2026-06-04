@@ -1,5 +1,6 @@
 import {
   accounts,
+  reminder_repeat_frequency,
   subscription_status,
   subscription_tier,
 } from '@app/generated/prisma/client';
@@ -132,6 +133,61 @@ export class SubscriptionService {
     }
   }
 
+  async assertCanCreateReminder(
+    accountId: string,
+    input: { repeatFrequency?: reminder_repeat_frequency },
+  ): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+
+    if (
+      input.repeatFrequency &&
+      input.repeatFrequency !== reminder_repeat_frequency.none &&
+      !entitlements.limits.recurringReminders
+    ) {
+      throw new HttpException(
+        {
+          message: 'Recurring reminders require Premium',
+          feature: 'recurringReminders',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    const limit = entitlements.limits.maxActiveReminders;
+
+    if (limit >= 0 && entitlements.usage.activeReminders >= limit) {
+      throw new HttpException(
+        {
+          message: 'Free plan active reminder limit reached',
+          feature: 'reminders',
+          limit,
+          usage: entitlements.usage.activeReminders,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
+  async assertCanCreateBudgetTransaction(
+    accountId: string,
+    date: Date,
+  ): Promise<void> {
+    const entitlements = await this.getEntitlementsForMonth(accountId, date);
+    const limit = entitlements.limits.maxBudgetTransactionsPerMonth;
+
+    if (limit >= 0 && entitlements.usage.budgetTransactionsThisMonth >= limit) {
+      throw new HttpException(
+        {
+          message: 'Free plan monthly budget transaction limit reached',
+          feature: 'budgetTransactions',
+          limit,
+          usage: entitlements.usage.budgetTransactionsThisMonth,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
   async assertCanUseAi(accountId: string): Promise<void> {
     const entitlements = await this.getEntitlements(accountId);
     const limit = entitlements.limits.aiMessagesPerMonth;
@@ -210,9 +266,29 @@ export class SubscriptionService {
 
   private async getUsage(accountId: string): Promise<EntitlementUsage> {
     const now = dayjs();
-    const monthStart = now.startOf('month').toDate();
-    const monthEnd = now.endOf('month').toDate();
-    const periodKey = now.format('YYYY-MM');
+    return this.getUsageForMonth(accountId, now.toDate());
+  }
+
+  private async getEntitlementsForMonth(accountId: string, date: Date) {
+    const plan = await this.getCurrentPlan(accountId);
+    const usage = await this.getUsageForMonth(accountId, date);
+    const limits = SUBSCRIPTION_LIMITS[plan.tier];
+
+    return {
+      ...plan,
+      limits,
+      usage,
+    };
+  }
+
+  private async getUsageForMonth(
+    accountId: string,
+    date: Date,
+  ): Promise<EntitlementUsage> {
+    const month = dayjs(date);
+    const monthStart = month.startOf('month').toDate();
+    const monthEnd = month.endOf('month').toDate();
+    const periodKey = month.format('YYYY-MM');
 
     const [
       pets,

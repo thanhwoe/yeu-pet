@@ -17,6 +17,10 @@ export class CreateBudgetTransactionDto {
   @IsNotEmpty()
   categoryId: string;
 
+  @IsOptional()
+  @IsUUID()
+  petId?: string;
+
   @IsString()
   @IsOptional()
   description: string;

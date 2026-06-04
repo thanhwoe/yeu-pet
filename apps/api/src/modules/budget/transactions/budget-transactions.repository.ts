@@ -26,19 +26,28 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
     });
   }
   async delete(id: string) {
-    return this.prisma.budget_transactions.delete({
+    return this.prisma.budget_transactions.update({
       where: { id },
+      data: {
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      },
     });
   }
   async findAll(params?: {
     skip?: number;
     take?: number;
     account_id: string;
+    category_id?: string;
+    pet_id?: string;
     startDate?: Date;
     endDate?: Date;
   }) {
     const where: budget_transactionsWhereInput = {
       account_id: params?.account_id,
+      category_id: params?.category_id,
+      pet_id: params?.pet_id,
+      deleted_at: null,
       date: {
         gte: params?.startDate,
         lte: params?.endDate,
@@ -57,13 +66,16 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
     ]);
   }
   async findById(id: string) {
-    return this.prisma.budget_transactions.findUnique({ where: { id } });
+    return this.prisma.budget_transactions.findFirst({
+      where: { id, deleted_at: null },
+    });
   }
 
   async sum(params: { account_id: string; start_date: Date; end_date: Date }) {
     const result = await this.prisma.budget_transactions.aggregate({
       where: {
         account_id: params.account_id,
+        deleted_at: null,
         date: {
           gte: params.start_date,
           lte: params.end_date,
@@ -87,6 +99,7 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
       by: ['category_id'],
       where: {
         account_id: params.account_id,
+        deleted_at: null,
         date: {
           gte: params.start_date,
           lte: params.end_date,
@@ -106,6 +119,7 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
     return this.prisma.budget_transactions.findMany({
       where: {
         account_id: params.account_id,
+        deleted_at: null,
         date: {
           gte: params.start_date,
           lte: params.end_date,
@@ -123,8 +137,16 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
       budget_categories: {
         select: {
           id: true,
+          name: true,
           emoji: true,
           color: true,
+        },
+      },
+      pets: {
+        select: {
+          id: true,
+          name: true,
+          avatar_url: true,
         },
       },
     };

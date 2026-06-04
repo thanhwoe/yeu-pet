@@ -13,9 +13,11 @@ import { BudgetsService } from './budgets/budgets.service';
 import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
 import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
 import { IBudgetsRepository } from '@app/interfaces/budgets-repository.interface';
+import { PetsModule } from '../pets/pets.module';
+import { SubscriptionModule } from '../subscription/subscription.module';
 
 @Module({
-  imports: [SharedModule, CaslModule],
+  imports: [SharedModule, CaslModule, PetsModule, SubscriptionModule],
   controllers: [
     BudgetCategoriesController,
     BudgetTransactionsController,

@@ -39,12 +39,30 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Update settings DTO/service for new settings fields.
 - [x] Add tests for entitlement response and pet limit enforcement.
 
+## Second Implementation Slice
+
+- [x] Add reminder entitlement checks for active and recurring reminders.
+- [x] Make reminder `petId` optional with ownership validation when provided.
+- [x] Persist reminder timezone and recurrence fields.
+- [x] Add reminder filters for `from`, `to`, `petId`, `type`, and `status`.
+- [x] Add `GET /reminders/upcoming`.
+- [x] Add reminder status actions:
+  - [x] `POST /reminders/:id/complete`
+  - [x] `POST /reminders/:id/skip`
+  - [x] `POST /reminders/:id/cancel`
+- [x] Add budget transaction `petId` support.
+- [x] Validate budget category ownership before transaction create/update/filter.
+- [x] Validate pet ownership before transaction create/update/filter.
+- [x] Enforce monthly budget transaction limit.
+- [x] Soft-delete budget categories and transactions.
+- [x] Add tests for reminder and budget transaction service behavior.
+
 ## Phase 1 API Work
 
 - [ ] Account/profile endpoints aligned with `/me` plan.
 - [x] Settings supports notification toggles, language, and theme.
 - [ ] Pets support numeric weight fields and entitlement limit.
-- [ ] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.
+- [x] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.
 - [ ] Medical records enforce pet ownership, record limits, image limits, attachment sort order, and soft delete.
 - [ ] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
 - [ ] Photos support `/photos/social`, `/photos/me`, visibility filters, `petId`, report endpoint, like/unlike routes, and soft delete.
