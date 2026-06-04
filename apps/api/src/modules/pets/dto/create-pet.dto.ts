@@ -1,4 +1,10 @@
-import { gender_enum, species_enum } from '@app/generated/prisma/enums';
+import {
+  gender_enum,
+  species_enum,
+  weight_unit,
+} from '@app/generated/prisma/enums';
+import { IsDecimal } from '@app/decorators/is-decimal.decorator';
+import { Decimal } from '@prisma/client/runtime/client';
 import {
   IsDateString,
   IsEnum,
@@ -28,6 +34,14 @@ export class CreatePetDto {
   @IsOptional()
   @IsString()
   weight: string;
+
+  @IsOptional()
+  @IsDecimal()
+  weightValue?: Decimal;
+
+  @IsOptional()
+  @IsEnum(weight_unit)
+  weightUnit?: weight_unit;
 
   @IsOptional()
   @IsString()

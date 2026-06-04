@@ -167,6 +167,11 @@ Important service rules:
 - Delete/archive with confirmation on FE.
 - Do not return other users' pets.
 
+Implementation note:
+
+- Current NestJS implementation accepts avatar uploads on `POST /pets` and `PATCH /pets/:id` multipart requests.
+- Numeric pet weight is supported through `weightValue` and `weightUnit`, while legacy string `weight` is kept temporarily for mobile compatibility.
+
 ### 4.5 Reminders
 
 ```txt
@@ -283,6 +288,14 @@ Important service rules:
 - Stream response to FE.
 - Save user and assistant messages.
 - Add safety disclaimer and urgent-case guard.
+
+Implementation note:
+
+- Current NestJS implementation stores conversations/messages in Prisma AI tables.
+- `POST /ai/conversations/:id/messages/stream` emits SSE events after backend generation and persistence.
+- Provider calls are isolated in `AiProviderService`; set `AI_PROVIDER=openai` or `AI_PROVIDER=gemini` to switch providers. If the selected provider key is missing, the backend returns a safe fallback response.
+- Pet context requires Premium and pet ownership.
+- Medical-record context is included for Premium users when a pet context conversation has recent records.
 
 ### 4.10 Sitter Profiles
 

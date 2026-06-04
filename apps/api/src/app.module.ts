@@ -14,6 +14,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import { TrackInterceptor } from './interceptors/track.interceptor';
+import { AiModule } from './modules/ai/ai.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { CaslModule } from './modules/casl/casl.module';
@@ -69,6 +70,7 @@ import { UsersModule } from './modules/users/users.module';
     PhotosModule,
     SitterBookingModule,
     SubscriptionModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [

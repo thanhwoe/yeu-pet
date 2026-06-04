@@ -15,6 +15,7 @@ import { HttpCacheInterceptor } from './interceptors/http-cache.interceptor';
 import { TrackInterceptor } from './interceptors/track.interceptor';
 import { AppModule } from './app.module';
 import { AppController } from './app.controller';
+import { AiModule } from './modules/ai/ai.module';
 import { AuthController } from './modules/auth/auth.controller';
 import { CaslAbilityFactory } from './modules/casl/casl-ability.factory';
 import { Action } from './modules/casl/casl.types';
@@ -29,6 +30,9 @@ import { SitterBookingModule } from './modules/sitter-booking/sitter-booking.mod
 import { SubscriptionController } from './modules/subscription/subscription.controller';
 import { UsersModule } from './modules/users/users.module';
 import { user_role } from './generated/prisma/client';
+import { IAiConversationsRepository } from './interfaces/ai-conversations-repository.interface';
+import { IAiMessagesRepository } from './interfaces/ai-messages-repository.interface';
+import { IAiUsageLogsRepository } from './interfaces/ai-usage-logs-repository.interface';
 import { IBudgetCategoriesRepository } from './interfaces/budget-categories-repository.interface';
 import { IBudgetTransactionsRepository } from './interfaces/budget-transactions-repository.interface';
 import { IBudgetsRepository } from './interfaces/budgets-repository.interface';
@@ -192,6 +196,13 @@ describe('App architecture wiring', () => {
         IPetSittersRepository,
         ISitterBookingsRepository,
         ISitterReviewsRepository,
+      ]),
+    );
+    expect(providerTokens(AiModule)).toEqual(
+      expect.arrayContaining([
+        IAiConversationsRepository,
+        IAiMessagesRepository,
+        IAiUsageLogsRepository,
       ]),
     );
   });

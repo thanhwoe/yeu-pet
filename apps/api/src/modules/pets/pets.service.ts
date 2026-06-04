@@ -42,6 +42,8 @@ export class PetsService {
       notes: createPetDto.notes,
       species: createPetDto.species,
       weight: createPetDto.weight,
+      weight_value: createPetDto.weightValue,
+      weight_unit: createPetDto.weightUnit,
     });
 
     if (avatarFile) {
@@ -112,7 +114,8 @@ export class PetsService {
       notes: updatePetDto.notes,
       species: updatePetDto.species,
       weight: updatePetDto.weight,
-      avatar_url: null,
+      weight_value: updatePetDto.weightValue,
+      weight_unit: updatePetDto.weightUnit,
     });
   }
 

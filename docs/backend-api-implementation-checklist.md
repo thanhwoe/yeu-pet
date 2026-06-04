@@ -120,11 +120,36 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Prevent public profile reads from returning password hashes.
 - [x] Add tests for profile update, duplicate email protection, avatar upload queueing, and avatar removal cleanup.
 
+## Eighth Implementation Slice
+
+- [x] Add pet DTO support for `weightValue` and `weightUnit`.
+- [x] Map numeric pet weight fields to `weight_value` and `weight_unit`.
+- [x] Preserve legacy string `weight` field for mobile compatibility.
+- [x] Preserve existing pet avatar URL on text-only pet updates.
+- [x] Add tests for numeric weight create/update mapping and avatar preservation.
+
+## Ninth Implementation Slice
+
+- [x] Add AI conversations module, controller, service, and repositories.
+- [x] Add `GET /ai/conversations`.
+- [x] Add `POST /ai/conversations`.
+- [x] Add `GET /ai/conversations/:id/messages`.
+- [x] Add `POST /ai/conversations/:id/messages/stream`.
+- [x] Add `DELETE /ai/conversations/:id`.
+- [x] Persist user and assistant messages.
+- [x] Enforce AI monthly quota through subscription usage counters.
+- [x] Enforce Premium-only pet context.
+- [x] Include Premium medical-record context when available.
+- [x] Add urgent-case safety guard and no-diagnosis disclaimer.
+- [x] Keep AI provider calls backend-only through `AiProviderService`.
+- [x] Support switching backend AI provider between OpenAI and Google Gemini.
+- [x] Add tests for AI pet context, safety response, provider context, usage logging, and quota increment.
+
 ## Phase 1 API Work
 
 - [x] Account/profile endpoints aligned with `/me` plan.
 - [x] Settings supports notification toggles, language, and theme.
-- [ ] Pets support numeric weight fields and entitlement limit.
+- [x] Pets support numeric weight fields and entitlement limit.
 - [x] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.
 - [x] Medical records enforce pet ownership, record limits, image limits, attachment sort order, and soft delete.
 - [x] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
@@ -133,7 +158,7 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Sitter profile supports `/sitters/me`, location filters, new profile fields, and one profile per account.
 - [x] Sitter booking supports `/sitter-bookings/me`, accept/reject/cancel/complete/review routes, participant-only detail, and external payment copy in response where relevant.
 - [x] Sitter booking messages support participant-only list/create.
-- [ ] Pet Care AI supports conversations, messages, streaming, quota, safety guard, and backend-only provider adapter.
+- [x] Pet Care AI supports conversations, messages, streaming, quota, safety guard, and backend-only provider adapter.
 - [ ] Reports/blocking prepared for social and sitter trust flows.
 
 ## Verification
@@ -141,5 +166,3 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] `pnpm --filter @yeu-pet/api lint:check`
 - [x] `pnpm --filter @yeu-pet/api test`
 - [x] `pnpm --filter @yeu-pet/api build`
-- [x] `pnpm --filter @yeu-pet/api exec prisma validate`
-- [x] `pnpm --filter @yeu-pet/api exec prisma migrate status`
