@@ -21,13 +21,13 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - Most list responses use `paginate(...)`, but response shapes are not globally wrapped.
 - File upload work is queued through `FileUploadService`.
 - Reminder push delivery uses Firebase Admin through `NotificationsService`.
-- Existing subscription module updates legacy `accounts.subscription`; it does not yet use the new subscription tables or entitlement response shape.
+- Subscription service now resolves current plan, entitlement limits, and usage from the redesigned subscription tables while keeping legacy account fields in sync.
 
 ## First Implementation Slice
 
 - [x] Add centralized subscription limits.
 - [x] Refactor subscription repository/service around `subscription_plans`, `user_subscriptions`, and `usage_counters`.
-- [ ] Add subscription endpoints:
+- [x] Add subscription endpoints:
   - [x] `GET /subscriptions/me`
   - [x] `GET /subscriptions/entitlements`
   - [x] `POST /subscriptions/mock-upgrade`
@@ -71,6 +71,21 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Preserve attachment sort order for generated attachments.
 - [x] Add tests for budget aggregate pet filters and medical record limits.
 
+## Fourth Implementation Slice
+
+- [x] Add `petId` support to photo create/update with ownership checks.
+- [x] Enforce photo upload entitlement limit.
+- [x] Add `/photos/social` public feed alias.
+- [x] Add `visibility` filters to `/photos/me`.
+- [x] Soft-delete photos and filter deleted photos from reads/lists.
+- [x] Add idempotent like/unlike routes.
+- [x] Preserve toggle-like compatibility route.
+- [x] Add photo report endpoint backed by `reports`.
+- [x] Add tests for photo pet ownership, entitlement, report, unlike, and private visibility guards.
+- [x] Add explicit `POST /photos/:id/comments/:commentId/replies` route.
+- [x] Preserve comment/reply soft delete and delete permission for comment owner, photo owner, and admin.
+- [x] Add tests for photo comment replies, nested reply rejection, and photo-owner delete.
+
 ## Phase 1 API Work
 
 - [ ] Account/profile endpoints aligned with `/me` plan.
@@ -79,8 +94,8 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.
 - [x] Medical records enforce pet ownership, record limits, image limits, attachment sort order, and soft delete.
 - [x] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
-- [ ] Photos support `/photos/social`, `/photos/me`, visibility filters, `petId`, report endpoint, like/unlike routes, and soft delete.
-- [ ] Photo comments support create, replies, soft delete, and owner/photo-owner permissions.
+- [x] Photos support `/photos/social`, `/photos/me`, visibility filters, `petId`, report endpoint, like/unlike routes, and soft delete.
+- [x] Photo comments support create, replies, soft delete, and owner/photo-owner permissions.
 - [ ] Sitter profile supports `/sitters/me`, location filters, new profile fields, and one profile per account.
 - [ ] Sitter booking supports `/sitter-bookings/me`, accept/reject/cancel/complete/review routes, participant-only detail, and external payment copy in response where relevant.
 - [ ] Sitter booking messages support participant-only list/create.

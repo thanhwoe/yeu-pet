@@ -41,8 +41,20 @@ export class PhotoCommentsService {
     return this.photoCommentsRepository.create({
       account_id: user.id,
       content: createPhotoCommentDto.content,
-      parent_id: createPhotoCommentDto.parentId,
+      parent_id: createPhotoCommentDto.parentId ?? null,
       photo_id: photoId,
+    });
+  }
+
+  reply(
+    user: accounts,
+    photoId: string,
+    commentId: string,
+    createPhotoCommentDto: CreatePhotoCommentDto,
+  ) {
+    return this.create(user, photoId, {
+      content: createPhotoCommentDto.content,
+      parentId: commentId,
     });
   }
 

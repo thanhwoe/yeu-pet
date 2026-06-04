@@ -251,6 +251,13 @@ Important service rules:
 - Soft delete comments.
 - Optional petId must be owned by account.
 
+Implementation note:
+
+- Current NestJS implementation uses existing `page`/`limit` pagination DTOs.
+- `POST /photos/:id/like` and `DELETE /photos/:id/like` are idempotent.
+- `POST /photos/:id/toggle-like` remains available as a compatibility route.
+- Photo upload is limited by subscription entitlements.
+
 ### 4.9 Doctor AI / Pet Care AI
 
 ```txt
@@ -375,7 +382,7 @@ Used by:
 - [ ] Refactor reminders module.
 - [ ] Refactor medical records module.
 - [ ] Refactor budget module.
-- [ ] Refactor photos module.
+- [x] Refactor photos module.
 - [ ] Implement settings module.
 - [ ] Implement subscriptions module.
 - [ ] Implement AI module with streaming.

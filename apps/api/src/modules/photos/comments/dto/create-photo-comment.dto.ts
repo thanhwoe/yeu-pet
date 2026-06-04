@@ -7,5 +7,5 @@ export class CreatePhotoCommentDto {
 
   @IsUUID()
   @IsOptional()
-  parentId: string;
+  parentId?: string;
 }

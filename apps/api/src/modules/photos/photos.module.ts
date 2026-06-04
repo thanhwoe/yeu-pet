@@ -11,9 +11,11 @@ import { PhotoCommentsService } from './comments/photo-comments.service';
 import { IPhotoCommentsRepository } from '@app/interfaces/photo-comments-repository.interface';
 import { IPhotoLikesRepository } from '@app/interfaces/photo-likes-repository.interface';
 import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
+import { PetsModule } from '../pets/pets.module';
+import { SubscriptionModule } from '../subscription/subscription.module';
 
 @Module({
-  imports: [SharedModule, CaslModule],
+  imports: [SharedModule, CaslModule, PetsModule, SubscriptionModule],
   controllers: [PhotosController, PhotoCommentsController],
   providers: [
     PhotosService,

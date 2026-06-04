@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export type BooleanFormValue = boolean | 'true' | 'false' | '1' | '0';
 
@@ -25,6 +31,10 @@ export class CreatePhotoDto {
   @IsString()
   @IsNotEmpty()
   caption: string;
+
+  @IsOptional()
+  @IsUUID()
+  petId?: string;
 
   @Transform(({ value }: { value: unknown }) =>
     transformBooleanFormValue(value),

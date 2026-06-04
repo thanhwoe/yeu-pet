@@ -185,6 +185,23 @@ export class SubscriptionService {
     }
   }
 
+  async assertCanUploadPhoto(accountId: string): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+    const limit = entitlements.limits.maxPhotos;
+
+    if (limit >= 0 && entitlements.usage.photos >= limit) {
+      throw new HttpException(
+        {
+          message: 'Free plan photo limit reached',
+          feature: 'photos',
+          limit,
+          usage: entitlements.usage.photos,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
   async assertCanUploadMedicalImages(
     accountId: string,
     count: number,

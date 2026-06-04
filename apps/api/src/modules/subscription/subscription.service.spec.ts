@@ -113,6 +113,22 @@ describe('SubscriptionService', () => {
     } satisfies Partial<HttpException>);
   });
 
+  it('blocks photo uploads when the free photo limit is reached', async () => {
+    repository.findAccountById.mockResolvedValue({
+      id: accountId,
+      subscription: subscription_tier.free,
+      subscription_expires_at: null,
+    } as never);
+    repository.findLatestUserSubscription.mockResolvedValue(null);
+    mockUsage({ photos: 20 });
+
+    await expect(service.assertCanUploadPhoto(accountId)).rejects.toMatchObject(
+      {
+        status: 429,
+      } satisfies Partial<HttpException>,
+    );
+  });
+
   it('rejects webhooks with an invalid authorization header', async () => {
     await expect(
       service.handleRevenueCatWebhook(createPayload(), 'wrong-secret'),

@@ -9,10 +9,12 @@ import {
   Sse,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
+import { ReportPhotoDto } from './dto/report-photo.dto';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -51,13 +53,20 @@ export class PhotosController {
     return this.photosService.findAll(pagination);
   }
 
+  @Get('social')
+  @HttpCode(HttpStatus.OK)
+  findSocial(@PaginationQuery() pagination: PaginationDto) {
+    return this.photosService.findAll(pagination);
+  }
+
   @Get('me')
   @HttpCode(HttpStatus.OK)
   findAllByUser(
     @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
+    @Query('visibility') visibility?: string,
   ) {
-    return this.photosService.findAllByUser(user, pagination);
+    return this.photosService.findAllByUser(user, pagination, visibility);
   }
 
   @Get(':id')
@@ -68,8 +77,30 @@ export class PhotosController {
 
   @Post(':id/like')
   @HttpCode(HttpStatus.OK)
+  like(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.photosService.like(user, id);
+  }
+
+  @Delete(':id/like')
+  @HttpCode(HttpStatus.OK)
+  unlike(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.photosService.unlike(user, id);
+  }
+
+  @Post(':id/toggle-like')
+  @HttpCode(HttpStatus.OK)
   toggleLike(@CurrentUser() user: accounts, @IdParam() id: string) {
     return this.photosService.toggleLike(user, id);
+  }
+
+  @Post(':id/report')
+  @HttpCode(HttpStatus.CREATED)
+  report(
+    @CurrentUser() user: accounts,
+    @IdParam() id: string,
+    @Body() reportPhotoDto: ReportPhotoDto,
+  ) {
+    return this.photosService.report(user, id, reportPhotoDto);
   }
 
   @Patch(':id')

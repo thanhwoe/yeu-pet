@@ -43,6 +43,22 @@ export class PhotoCommentsController {
     return this.photoCommentsService.findAll(user, photoId, pagination);
   }
 
+  @Post(':cId/replies')
+  @HttpCode(HttpStatus.CREATED)
+  reply(
+    @CurrentUser() user: accounts,
+    @IdParam() photoId: string,
+    @IdParam('cId') commentId: string,
+    @Body() createPhotoCommentDto: CreatePhotoCommentDto,
+  ) {
+    return this.photoCommentsService.reply(
+      user,
+      photoId,
+      commentId,
+      createPhotoCommentDto,
+    );
+  }
+
   @Get(':cId/replies')
   @HttpCode(HttpStatus.OK)
   findAllReplies(

@@ -1,6 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { photos } from '@app/generated/prisma/client';
-import { photos_status } from '@app/generated/prisma/enums';
+import { photos_status, report_target_type } from '@app/generated/prisma/enums';
 import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -13,6 +13,13 @@ const PHOTO_ACCOUNT_INCLUDE = {
       avatar_url: true,
     },
   },
+  pets: {
+    select: {
+      id: true,
+      name: true,
+      avatar_url: true,
+    },
+  },
 } as const;
 
 @Injectable()
@@ -20,7 +27,10 @@ export class PhotosRepository implements IPhotosRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   create(
-    data: Pick<photos, 'account_id' | 'caption' | 'is_private' | 'status'>,
+    data: Pick<
+      photos,
+      'account_id' | 'caption' | 'is_private' | 'pet_id' | 'status'
+    >,
   ) {
     return this.prisma.photos.create({
       data,
@@ -36,8 +46,12 @@ export class PhotosRepository implements IPhotosRepository {
     });
   }
   delete(id: string) {
-    return this.prisma.photos.delete({
+    return this.prisma.photos.update({
       where: { id },
+      data: {
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      },
     });
   }
   findAllPublic(params?: { skip?: number; take?: number }) {
@@ -46,6 +60,7 @@ export class PhotosRepository implements IPhotosRepository {
         where: {
           status: photos_status.ready,
           is_private: false,
+          deleted_at: null,
         },
         skip: params?.skip,
         take: params?.take,
@@ -53,15 +68,33 @@ export class PhotosRepository implements IPhotosRepository {
         include: PHOTO_ACCOUNT_INCLUDE,
       }),
       this.prisma.photos.count({
-        where: { status: photos_status.ready, is_private: false },
+        where: {
+          status: photos_status.ready,
+          is_private: false,
+          deleted_at: null,
+        },
       }),
     ]);
   }
-  findAllByUser(params?: { skip?: number; take?: number; account_id: string }) {
+  findAllByUser(params?: {
+    skip?: number;
+    take?: number;
+    account_id: string;
+    visibility?: 'all' | 'public' | 'private';
+  }) {
+    const visibilityWhere =
+      params?.visibility === 'public'
+        ? { is_private: false }
+        : params?.visibility === 'private'
+          ? { is_private: true }
+          : {};
+
     return this.prisma.$transaction([
       this.prisma.photos.findMany({
         where: {
           account_id: params?.account_id,
+          deleted_at: null,
+          ...visibilityWhere,
           status: {
             not: photos_status.failed,
           },
@@ -74,7 +107,8 @@ export class PhotosRepository implements IPhotosRepository {
       this.prisma.photos.count({
         where: {
           account_id: params?.account_id,
-
+          deleted_at: null,
+          ...visibilityWhere,
           status: {
             not: photos_status.failed,
           },
@@ -83,8 +117,24 @@ export class PhotosRepository implements IPhotosRepository {
     ]);
   }
   findById(id: string) {
-    return this.prisma.photos.findUnique({
-      where: { id },
+    return this.prisma.photos.findFirst({
+      where: { id, deleted_at: null },
+    });
+  }
+  report(params: {
+    reporter_account_id: string;
+    photo_id: string;
+    reason: string;
+    description?: string;
+  }) {
+    return this.prisma.reports.create({
+      data: {
+        reporter_account_id: params.reporter_account_id,
+        target_type: report_target_type.photo,
+        target_id: params.photo_id,
+        reason: params.reason,
+        description: params.description,
+      },
     });
   }
   upsertPhotoView(account_id: string, photo_id: string) {
@@ -106,8 +156,8 @@ export class PhotosRepository implements IPhotosRepository {
           },
         });
 
-        return tx.photos.findUniqueOrThrow({
-          where: { id: photo_id },
+        return tx.photos.findFirstOrThrow({
+          where: { id: photo_id, deleted_at: null },
         });
       }
 

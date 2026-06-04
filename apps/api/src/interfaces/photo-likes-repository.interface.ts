@@ -4,8 +4,14 @@ export const IPhotoLikesRepository = Symbol('IPhotoLikesRepository');
 
 export interface IPhotoLikesRepository {
   findOne(account_id: string, photo_id: string): Promise<photo_likes | null>;
-  create(account_id: string, photo_id: string): Promise<photo_likes>;
-  delete(account_id: string, photo_id: string): Promise<photo_likes>;
+  like(
+    account_id: string,
+    photo_id: string,
+  ): Promise<{ liked: boolean; photo: photos }>;
+  unlike(
+    account_id: string,
+    photo_id: string,
+  ): Promise<{ liked: boolean; photo: photos }>;
   toggle(
     account_id: string,
     photo_id: string,

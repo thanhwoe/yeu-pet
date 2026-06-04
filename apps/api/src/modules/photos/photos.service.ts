@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   MessageEvent,
@@ -6,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { CreatePhotoDto, type BooleanFormValue } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
+import { ReportPhotoDto } from './dto/report-photo.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { accounts, photos, photos_status } from '@app/generated/prisma/client';
 import { Observable } from 'rxjs';
@@ -21,6 +23,8 @@ import {
   PhotoWithAccount,
 } from '@app/interfaces/photos-repository.interface';
 import { assertOwnerOrAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
+import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
+import { SubscriptionService } from '../subscription/subscription.service';
 
 const toBoolean = (value: BooleanFormValue): boolean =>
   value === true || value === 'true' || value === '1';
@@ -39,6 +43,9 @@ export class PhotosService {
     private readonly photosRepository: IPhotosRepository,
     @Inject(IPhotoLikesRepository)
     private readonly photoLikesRepository: IPhotoLikesRepository,
+    @Inject(IPetsRepository)
+    private readonly petsRepository: IPetsRepository,
+    private readonly subscriptionService: SubscriptionService,
     private readonly fileUploadService: FileUploadService,
     @Inject(IEventBusService)
     private readonly eventBusService: IEventBusService,
@@ -50,10 +57,14 @@ export class PhotosService {
     createPhotoDto: CreatePhotoDto,
     file: Express.Multer.File,
   ) {
+    await this.assertPetOwner(user, createPhotoDto.petId);
+    await this.subscriptionService.assertCanUploadPhoto(user.id);
+
     const photo = await this.photosRepository.create({
       account_id: user.id,
       caption: createPhotoDto.caption,
       is_private: toBoolean(createPhotoDto.isPrivate),
+      pet_id: createPhotoDto.petId ?? null,
       status: photos_status.pending,
     });
     await this.fileUploadService.addPhotoJob({
@@ -183,7 +194,11 @@ export class PhotosService {
     );
   }
 
-  async findAllByUser(user: accounts, pagination: PaginationDto) {
+  async findAllByUser(
+    user: accounts,
+    pagination: PaginationDto,
+    visibility?: string,
+  ) {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
@@ -191,6 +206,7 @@ export class PhotosService {
       skip,
       take: limit,
       account_id: user.id,
+      visibility: this.normalizeVisibility(visibility),
     });
 
     return paginate(
@@ -226,11 +242,50 @@ export class PhotosService {
     return this.toPhotoResponse(photo, liked);
   }
 
+  async like(user: accounts, id: string) {
+    await this.assertReadable(user, id);
+
+    const { liked, photo } = await this.photoLikesRepository.like(user.id, id);
+
+    return this.toPhotoResponse(photo, liked);
+  }
+
+  async unlike(user: accounts, id: string) {
+    await this.assertReadable(user, id);
+
+    const { liked, photo } = await this.photoLikesRepository.unlike(
+      user.id,
+      id,
+    );
+
+    return this.toPhotoResponse(photo, liked);
+  }
+
+  async report(user: accounts, id: string, reportPhotoDto: ReportPhotoDto) {
+    await this.assertReadable(user, id);
+
+    const report = await this.photosRepository.report({
+      reporter_account_id: user.id,
+      photo_id: id,
+      reason: reportPhotoDto.reason,
+      description: reportPhotoDto.description,
+    });
+
+    return {
+      reported: true,
+      report,
+    };
+  }
+
   async update(user: accounts, id: string, updatePhotoDto: UpdatePhotoDto) {
     await this.assertOwner(user, id);
+    await this.assertPetOwner(user, updatePhotoDto.petId);
 
     return this.photosRepository.update(id, {
       caption: updatePhotoDto.caption,
+      ...(updatePhotoDto.petId === undefined
+        ? {}
+        : { pet_id: updatePhotoDto.petId }),
       ...(updatePhotoDto.isPrivate === undefined
         ? {}
         : { is_private: toBoolean(updatePhotoDto.isPrivate) }),
@@ -253,7 +308,7 @@ export class PhotosService {
   private async findAvailablePhoto(id: string) {
     const record = await this.photosRepository.findById(id);
 
-    if (!record) {
+    if (!record || record.deleted_at) {
       throw new NotFoundException(`Photo with ID ${id} not found`);
     }
 
@@ -262,6 +317,37 @@ export class PhotosService {
     }
 
     return record;
+  }
+
+  private async assertPetOwner(user: accounts, petId?: string): Promise<void> {
+    if (!petId) {
+      return;
+    }
+
+    const pet = await this.petsRepository.findByUser(user.id, petId);
+    if (!pet) {
+      throw new NotFoundException(`Pet with ID ${petId} not found`);
+    }
+  }
+
+  private normalizeVisibility(
+    visibility?: string,
+  ): 'all' | 'public' | 'private' {
+    if (!visibility) {
+      return 'all';
+    }
+
+    if (
+      visibility === 'all' ||
+      visibility === 'public' ||
+      visibility === 'private'
+    ) {
+      return visibility;
+    }
+
+    throw new BadRequestException(
+      'visibility must be one of: all, public, private',
+    );
   }
 
   private async assertReadable(user: accounts, id: string) {

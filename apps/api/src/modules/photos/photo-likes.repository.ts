@@ -6,21 +6,6 @@ import { Injectable } from '@nestjs/common';
 export class PhotoLikesRepository implements IPhotoLikesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(account_id: string, photo_id: string) {
-    return this.prisma.photo_likes.create({
-      data: {
-        account_id,
-        photo_id,
-      },
-    });
-  }
-  delete(account_id: string, photo_id: string) {
-    return this.prisma.photo_likes.delete({
-      where: {
-        photo_id_account_id: { photo_id, account_id },
-      },
-    });
-  }
   findOne(account_id: string, photo_id: string) {
     return this.prisma.photo_likes.findUnique({
       where: {
@@ -29,25 +14,40 @@ export class PhotoLikesRepository implements IPhotoLikesRepository {
     });
   }
 
-  toggle(account_id: string, photo_id: string) {
+  like(account_id: string, photo_id: string) {
+    return this.setLiked(account_id, photo_id, true);
+  }
+
+  unlike(account_id: string, photo_id: string) {
+    return this.setLiked(account_id, photo_id, false);
+  }
+
+  async toggle(account_id: string, photo_id: string) {
+    const existingLike = await this.findOne(account_id, photo_id);
+    return this.setLiked(account_id, photo_id, !existingLike);
+  }
+
+  private setLiked(account_id: string, photo_id: string, shouldLike: boolean) {
     return this.prisma.$transaction(async (tx) => {
-      const liked = await tx.photo_likes.findUnique({
+      const existingLike = await tx.photo_likes.findUnique({
         where: {
           photo_id_account_id: { photo_id, account_id },
         },
       });
 
-      if (liked) {
-        await tx.photo_likes.delete({
-          where: {
-            photo_id_account_id: { photo_id, account_id },
-          },
-        });
-      } else {
+      if (shouldLike && !existingLike) {
         await tx.photo_likes.create({
           data: {
             account_id,
             photo_id,
+          },
+        });
+      }
+
+      if (!shouldLike && existingLike) {
+        await tx.photo_likes.delete({
+          where: {
+            photo_id_account_id: { photo_id, account_id },
           },
         });
       }
@@ -67,7 +67,7 @@ export class PhotoLikesRepository implements IPhotoLikesRepository {
       });
 
       return {
-        liked: !liked,
+        liked: shouldLike,
         photo,
       };
     });
