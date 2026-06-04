@@ -3,6 +3,21 @@ import { accounts } from '@app/generated/prisma/client';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { PrismaService } from '@app/database/prisma/prisma.service';
 
+const ACCOUNT_PUBLIC_SELECT = {
+  id: true,
+  email: true,
+  first_name: true,
+  last_name: true,
+  phone: true,
+  onboarding_completed: true,
+  avatar_url: true,
+  role: true,
+  subscription: true,
+  subscription_expires_at: true,
+  is_active: true,
+  is_verified: true,
+} as const;
+
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   private readonly logger = new Logger(UsersRepository.name);
@@ -12,6 +27,7 @@ export class UsersRepository implements IUsersRepository {
   async findById(id: string) {
     return this.prisma.accounts.findUnique({
       where: { id },
+      select: ACCOUNT_PUBLIC_SELECT,
     });
   }
 
@@ -53,19 +69,7 @@ export class UsersRepository implements IUsersRepository {
   async update(id: string, data: Partial<accounts>) {
     return this.prisma.accounts.update({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        first_name: true,
-        last_name: true,
-        phone: true,
-        onboarding_completed: true,
-        avatar_url: true,
-        role: true,
-        subscription: true,
-        subscription_expires_at: true,
-        is_verified: true,
-      },
+      select: ACCOUNT_PUBLIC_SELECT,
       data,
     });
   }

@@ -102,6 +102,13 @@ POST   /me/avatar
 DELETE /me/avatar
 ```
 
+Implementation note:
+
+- Root `/me` routes are implemented in `UsersModule`.
+- Existing `/users/me` routes remain available for compatibility.
+- Public profile reads do not include `password_hash`.
+- Avatar upload is queued; avatar delete clears account avatar fields and queues file deletion when needed.
+
 ### 4.2 Settings
 
 ```txt

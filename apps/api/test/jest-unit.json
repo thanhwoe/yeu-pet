@@ -12,6 +12,7 @@
     "<rootDir>/src/modules/shared/email/**/*.spec.ts",
     "<rootDir>/src/modules/shared/queue/**/*.spec.ts",
     "<rootDir>/src/modules/subscription/**/*.spec.ts",
+    "<rootDir>/src/modules/users/**/*.spec.ts",
     "<rootDir>/src/modules/pets/**/*.spec.ts",
     "<rootDir>/src/modules/photos/**/*.spec.ts",
     "<rootDir>/src/modules/reminders/**/*.spec.ts",

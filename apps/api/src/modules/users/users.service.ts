@@ -20,7 +20,10 @@ import {
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { OtpService } from '../shared/otp/otp.service';
-import { FILE_UPLOAD_JOBS } from '../file-workers/file-workers.job';
+import {
+  FILE_DELETE_JOBS,
+  FILE_UPLOAD_JOBS,
+} from '../file-workers/file-workers.job';
 
 @Injectable()
 export class UsersService {
@@ -244,6 +247,46 @@ export class UsersService {
       last_name: updateProfileDto.lastName,
       email: updateProfileDto.email,
     });
+  }
+
+  async uploadAvatar(userId: string, avatarFile: Express.Multer.File) {
+    const user = await this.getUser({ id: userId });
+
+    await this.fileUploadService.addUploadJob({
+      jobName: FILE_UPLOAD_JOBS.USER_AVATAR,
+      files: [
+        {
+          file: avatarFile,
+          id: user.avatar_id,
+          folder: `users/${userId}`,
+        },
+      ],
+      itemId: userId,
+      userId,
+    });
+
+    return {
+      queued: true,
+      profile: await this.findById(userId),
+    };
+  }
+
+  async deleteAvatar(userId: string) {
+    const user = await this.getUser({ id: userId });
+
+    const profile = await this.usersRepository.update(userId, {
+      avatar_id: null,
+      avatar_url: null,
+    });
+
+    if (user.avatar_id) {
+      await this.fileUploadService.addDeleteJob({
+        ids: [user.avatar_id],
+        jobName: FILE_DELETE_JOBS.USER_AVATAR,
+      });
+    }
+
+    return profile;
   }
 
   private async getUser({

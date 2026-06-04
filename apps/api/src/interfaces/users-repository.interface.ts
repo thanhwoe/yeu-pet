@@ -8,6 +8,7 @@ type AccountPublic = Pick<
   | 'email'
   | 'first_name'
   | 'last_name'
+  | 'is_active'
   | 'is_verified'
   | 'avatar_url'
   | 'onboarding_completed'
@@ -24,7 +25,7 @@ export interface IUsersRepository {
   existsByEmail(email: string): Promise<boolean>;
   existsByPhone(phone: string): Promise<boolean>;
   findAccount(id: string): Promise<accounts | null>;
-  findById(id: string): Promise<accounts | null>;
+  findById(id: string): Promise<AccountPublic | null>;
   findAll(params?: any): Promise<accounts[]>;
   create(data: any): Promise<accounts>;
   update(id: string, data: Partial<accounts>): Promise<AccountPublic>;

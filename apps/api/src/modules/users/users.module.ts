@@ -4,9 +4,10 @@ import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { SharedModule } from '../shared/shared.module';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
+import { MeController } from './me.controller';
 
 @Module({
-  controllers: [UsersController],
+  controllers: [UsersController, MeController],
   providers: [
     UsersService,
     UsersRepository,

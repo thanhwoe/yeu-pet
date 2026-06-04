@@ -110,9 +110,19 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Add participant-only booking message list/create routes.
 - [x] Add tests for booking `/me` role dispatch, payment metadata, and booking messages.
 
+## Seventh Implementation Slice
+
+- [x] Add root `GET /me` profile endpoint.
+- [x] Add root `PATCH /me` profile update endpoint.
+- [x] Add `POST /me/avatar` avatar upload endpoint.
+- [x] Add `DELETE /me/avatar` avatar removal endpoint.
+- [x] Preserve existing `/users/me` compatibility routes.
+- [x] Prevent public profile reads from returning password hashes.
+- [x] Add tests for profile update, duplicate email protection, avatar upload queueing, and avatar removal cleanup.
+
 ## Phase 1 API Work
 
-- [ ] Account/profile endpoints aligned with `/me` plan.
+- [x] Account/profile endpoints aligned with `/me` plan.
 - [x] Settings supports notification toggles, language, and theme.
 - [ ] Pets support numeric weight fields and entitlement limit.
 - [x] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.

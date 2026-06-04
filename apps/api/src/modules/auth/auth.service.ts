@@ -14,6 +14,8 @@ import { RegisterDto } from './dto/register.dto';
 import dayjs from 'dayjs';
 import crypto from 'node:crypto';
 
+type TokenAccount = Pick<accounts, 'id' | 'email' | 'phone' | 'role'>;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -153,7 +155,7 @@ export class AuthService {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  private async generateTokens(user: accounts) {
+  private async generateTokens(user: TokenAccount) {
     const payload: IJwtPayload = {
       email: user.email,
       phone: user.phone,
