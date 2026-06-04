@@ -39,14 +39,19 @@ export class MedicalRecordsRepository implements IMedicalRecordsRepository {
   }
 
   async delete(id: string) {
-    return this.prisma.medical_records.delete({
+    return this.prisma.medical_records.update({
       where: { id },
+      data: {
+        deleted_at: new Date(),
+        updated_at: new Date(),
+      },
     });
   }
 
   async findAll(params?: { skip?: number; take?: number; pet_id: string }) {
     const where: medical_recordsWhereInput = {
       pet_id: params?.pet_id,
+      deleted_at: null,
     };
 
     return this.prisma.$transaction([
@@ -61,11 +66,12 @@ export class MedicalRecordsRepository implements IMedicalRecordsRepository {
   }
 
   async findById(id: string) {
-    return this.prisma.medical_records.findUnique({
-      where: { id },
+    return this.prisma.medical_records.findFirst({
+      where: { id, deleted_at: null },
       include: {
         medical_attachments: {
           where: { deleted_at: null },
+          orderBy: { sort_order: 'asc' },
         },
       },
     });
@@ -77,11 +83,21 @@ export class MedicalRecordsRepository implements IMedicalRecordsRepository {
       file_id: string;
       url: string;
       thumbnail_url: string;
+      sort_order?: number;
     }[],
   ) {
     return this.prisma.$transaction(async (tx) => {
+      const existingCount = await tx.medical_attachments.count({
+        where: {
+          medical_id: data[0].medical_id,
+          deleted_at: null,
+        },
+      });
       const attachments = await tx.medical_attachments.createMany({
-        data,
+        data: data.map((attachment, index) => ({
+          ...attachment,
+          sort_order: attachment.sort_order ?? existingCount + index,
+        })),
       });
 
       await tx.medical_records.update({

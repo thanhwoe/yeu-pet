@@ -9,6 +9,7 @@ export const IBudgetTransactionsRepository = Symbol(
 export interface IBudgetTransactionsRepository extends IBaseRepository<budget_transactions> {
   sum(params: {
     account_id: string;
+    pet_id?: string;
     start_date: Date;
     end_date: Date;
   }): Promise<{
@@ -18,6 +19,7 @@ export interface IBudgetTransactionsRepository extends IBaseRepository<budget_tr
 
   sumGroupByCategory(params: {
     account_id: string;
+    pet_id?: string;
     start_date: Date;
     end_date: Date;
   }): Promise<
@@ -32,6 +34,7 @@ export interface IBudgetTransactionsRepository extends IBaseRepository<budget_tr
 
   findAllByDate(params: {
     account_id: string;
+    pet_id?: string;
     start_date: Date;
     end_date: Date;
   }): Promise<{ date: Date; amount: Decimal }[]>;

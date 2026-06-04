@@ -12,6 +12,7 @@ import { Decimal } from '@prisma/client/runtime/client';
 import { IBudgetCategoriesRepository } from '@app/interfaces/budget-categories-repository.interface';
 import { IBudgetTransactionsRepository } from '@app/interfaces/budget-transactions-repository.interface';
 import { IBudgetsRepository } from '@app/interfaces/budgets-repository.interface';
+import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 
 @Injectable()
 export class BudgetsService {
@@ -22,6 +23,8 @@ export class BudgetsService {
     private readonly budgetTransactionsRepository: IBudgetTransactionsRepository,
     @Inject(IBudgetCategoriesRepository)
     private readonly budgetCategoriesRepository: IBudgetCategoriesRepository,
+    @Inject(IPetsRepository)
+    private readonly petsRepository: IPetsRepository,
   ) {}
   async create(user: accounts, createBudgetDto: CreateBudgetDto) {
     const existing = await this.budgetsRepository.findUnique({
@@ -43,7 +46,11 @@ export class BudgetsService {
     });
   }
 
-  async findOne(user: accounts, month: number, year: number) {
+  async findOne(user: accounts, month: number, year: number, petId?: string) {
+    if (petId) {
+      await this.assertPetOwner(user.id, petId);
+    }
+
     let budget = await this.budgetsRepository.findUnique({
       account_id: user.id,
       month,
@@ -66,6 +73,7 @@ export class BudgetsService {
 
     const { amount } = await this.budgetTransactionsRepository.sum({
       account_id: user.id,
+      pet_id: petId,
       start_date: start,
       end_date: end,
     });
@@ -104,7 +112,16 @@ export class BudgetsService {
     });
   }
 
-  async getMonthlyStatistics(user: accounts, month: number, year: number) {
+  async getMonthlyStatistics(
+    user: accounts,
+    month: number,
+    year: number,
+    petId?: string,
+  ) {
+    if (petId) {
+      await this.assertPetOwner(user.id, petId);
+    }
+
     const time = dayjs()
       .year(year)
       .month(month - 1);
@@ -113,6 +130,7 @@ export class BudgetsService {
 
     const { amount, count } = await this.budgetTransactionsRepository.sum({
       account_id: user.id,
+      pet_id: petId,
       start_date: start,
       end_date: end,
     });
@@ -122,12 +140,14 @@ export class BudgetsService {
     const spendingByCategory = await this.getSpendingByCategory({
       user,
       endDate: end,
+      petId,
       startDate: start,
       totalSpent,
     });
 
     const transactions = await this.budgetTransactionsRepository.findAllByDate({
       account_id: user.id,
+      pet_id: petId,
       end_date: end,
       start_date: start,
     });
@@ -145,6 +165,7 @@ export class BudgetsService {
 
     return {
       period: { month, year },
+      pet_id: petId,
       summary: {
         total_spent: totalSpent,
         transaction_count: count,
@@ -154,19 +175,25 @@ export class BudgetsService {
     };
   }
 
-  async getYearlyStatistics(user: accounts, year: number) {
+  async getYearlyStatistics(user: accounts, year: number, petId?: string) {
+    if (petId) {
+      await this.assertPetOwner(user.id, petId);
+    }
+
     const time = dayjs().year(year);
     const start = time.startOf('year').toDate();
     const end = time.endOf('year').toDate();
 
     const { amount, count } = await this.budgetTransactionsRepository.sum({
       account_id: user.id,
+      pet_id: petId,
       start_date: start,
       end_date: end,
     });
 
     const transactions = await this.budgetTransactionsRepository.findAllByDate({
       account_id: user.id,
+      pet_id: petId,
       end_date: end,
       start_date: start,
     });
@@ -188,6 +215,7 @@ export class BudgetsService {
 
     const spendingByCategory = await this.getSpendingByCategory({
       endDate: end,
+      petId,
       startDate: start,
       totalSpent,
       user,
@@ -195,6 +223,7 @@ export class BudgetsService {
 
     return {
       period: { year },
+      pet_id: petId,
       summary: {
         total_spent: totalSpent,
         transaction_count: count,
@@ -207,12 +236,14 @@ export class BudgetsService {
   private async getSpendingByCategory(payload: {
     user: accounts;
     endDate: Date;
+    petId?: string;
     startDate: Date;
     totalSpent: number;
   }) {
     const transactionAmountsByCategory =
       await this.budgetTransactionsRepository.sumGroupByCategory({
         account_id: payload.user.id,
+        pet_id: payload.petId,
         end_date: payload.endDate,
         start_date: payload.startDate,
       });
@@ -235,5 +266,17 @@ export class BudgetsService {
       .sort((a, b) => b.total - a.total);
 
     return spendingByCategory;
+  }
+
+  private async assertPetOwner(userId: string, petId: string) {
+    const pet = await this.petsRepository.findByUser(userId, petId);
+
+    if (!pet) {
+      throw new NotFoundException(
+        `Pet with ID ${petId} not found or does not belong to you`,
+      );
+    }
+
+    return pet;
   }
 }

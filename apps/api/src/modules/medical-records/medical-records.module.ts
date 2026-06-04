@@ -7,9 +7,10 @@ import { CleanupAttachmentsTask } from './tasks/cleanup-attachments.task';
 import { CaslModule } from '../casl/casl.module';
 import { PetsModule } from '../pets/pets.module';
 import { IMedicalRecordsRepository } from '@app/interfaces/medical-records-repository.interface';
+import { SubscriptionModule } from '../subscription/subscription.module';
 
 @Module({
-  imports: [SharedModule, CaslModule, PetsModule],
+  imports: [SharedModule, CaslModule, PetsModule, SubscriptionModule],
   controllers: [MedicalRecordsController],
   providers: [
     MedicalRecordsService,

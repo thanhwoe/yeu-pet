@@ -48,8 +48,10 @@ export class BudgetsController {
       new NumberRangePipe(1970, 3000, 'year'),
     )
     year: number,
+    @Query('petId')
+    petId?: string,
   ) {
-    return this.budgetsService.findOne(user, month, year);
+    return this.budgetsService.findOne(user, month, year, petId);
   }
 
   @Patch()
@@ -79,8 +81,10 @@ export class BudgetsController {
       new NumberRangePipe(1970, 3000, 'year'),
     )
     year: number,
+    @Query('petId')
+    petId?: string,
   ) {
-    return this.budgetsService.getMonthlyStatistics(user, month, year);
+    return this.budgetsService.getMonthlyStatistics(user, month, year, petId);
   }
 
   @Get('statistics/yearly')
@@ -94,7 +98,9 @@ export class BudgetsController {
       new NumberRangePipe(1970, 3000, 'year'),
     )
     year: number,
+    @Query('petId')
+    petId?: string,
   ) {
-    return this.budgetsService.getYearlyStatistics(user, year);
+    return this.budgetsService.getYearlyStatistics(user, year, petId);
   }
 }

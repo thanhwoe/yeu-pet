@@ -16,6 +16,7 @@ export interface IMedicalRecordsRepository {
       file_id: string;
       url: string;
       thumbnail_url: string;
+      sort_order?: number;
     }[],
   ): Promise<BatchPayload>;
   deleteAttachments(ids: string[]): Promise<BatchPayload>;

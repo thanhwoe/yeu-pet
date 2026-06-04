@@ -71,10 +71,16 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
     });
   }
 
-  async sum(params: { account_id: string; start_date: Date; end_date: Date }) {
+  async sum(params: {
+    account_id: string;
+    pet_id?: string;
+    start_date: Date;
+    end_date: Date;
+  }) {
     const result = await this.prisma.budget_transactions.aggregate({
       where: {
         account_id: params.account_id,
+        pet_id: params.pet_id,
         deleted_at: null,
         date: {
           gte: params.start_date,
@@ -92,6 +98,7 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
   }
   async sumGroupByCategory(params: {
     account_id: string;
+    pet_id?: string;
     start_date: Date;
     end_date: Date;
   }) {
@@ -99,6 +106,7 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
       by: ['category_id'],
       where: {
         account_id: params.account_id,
+        pet_id: params.pet_id,
         deleted_at: null,
         date: {
           gte: params.start_date,
@@ -113,12 +121,14 @@ export class BudgetTransactionsRepository implements IBudgetTransactionsReposito
   }
   findAllByDate(params: {
     account_id: string;
+    pet_id?: string;
     start_date: Date;
     end_date: Date;
   }) {
     return this.prisma.budget_transactions.findMany({
       where: {
         account_id: params.account_id,
+        pet_id: params.pet_id,
         deleted_at: null,
         date: {
           gte: params.start_date,

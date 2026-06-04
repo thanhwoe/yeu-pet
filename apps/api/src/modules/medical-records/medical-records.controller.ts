@@ -34,10 +34,15 @@ export class MedicalRecordsController {
   @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
   @UseInterceptors(FilesInterceptor('attachments', 5))
   create(
+    @CurrentUser() user: accounts,
     @Body() createMedicalRecordDto: CreateMedicalRecordDto,
     @FilesUploaded() files?: Express.Multer.File[],
   ) {
-    return this.medicalRecordsService.create(createMedicalRecordDto, files);
+    return this.medicalRecordsService.create(
+      user,
+      createMedicalRecordDto,
+      files,
+    );
   }
 
   @Get('pets/:id/medical-records')

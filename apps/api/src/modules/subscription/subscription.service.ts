@@ -168,6 +168,43 @@ export class SubscriptionService {
     }
   }
 
+  async assertCanCreateMedicalRecord(accountId: string): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+    const limit = entitlements.limits.maxMedicalRecords;
+
+    if (limit >= 0 && entitlements.usage.medicalRecords >= limit) {
+      throw new HttpException(
+        {
+          message: 'Free plan medical record limit reached',
+          feature: 'medicalRecords',
+          limit,
+          usage: entitlements.usage.medicalRecords,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
+  async assertCanUploadMedicalImages(
+    accountId: string,
+    count: number,
+  ): Promise<void> {
+    const entitlements = await this.getEntitlements(accountId);
+    const limit = entitlements.limits.maxImagesPerMedicalRecord;
+
+    if (limit >= 0 && count > limit) {
+      throw new HttpException(
+        {
+          message: 'Medical image limit reached',
+          feature: 'medicalAttachments',
+          limit,
+          usage: count,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
   async assertCanCreateBudgetTransaction(
     accountId: string,
     date: Date,

@@ -57,14 +57,28 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Soft-delete budget categories and transactions.
 - [x] Add tests for reminder and budget transaction service behavior.
 
+## Third Implementation Slice
+
+- [x] Add `petId` filter support to budget monthly summary.
+- [x] Add `petId` filter support to budget monthly statistics.
+- [x] Add `petId` filter support to budget yearly statistics.
+- [x] Validate pet ownership before pet-scoped budget aggregate queries.
+- [x] Add medical record ownership checks on create.
+- [x] Enforce medical record count entitlement.
+- [x] Enforce medical image-per-record entitlement on create/update.
+- [x] Soft-delete medical records.
+- [x] Filter deleted medical records from lists and detail lookups.
+- [x] Preserve attachment sort order for generated attachments.
+- [x] Add tests for budget aggregate pet filters and medical record limits.
+
 ## Phase 1 API Work
 
 - [ ] Account/profile endpoints aligned with `/me` plan.
 - [x] Settings supports notification toggles, language, and theme.
 - [ ] Pets support numeric weight fields and entitlement limit.
 - [x] Reminders support optional pet, date range filters, timezone, recurrence, complete/skip/cancel actions, and active reminder limits.
-- [ ] Medical records enforce pet ownership, record limits, image limits, attachment sort order, and soft delete.
-- [ ] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
+- [x] Medical records enforce pet ownership, record limits, image limits, attachment sort order, and soft delete.
+- [x] Budget supports `petId`, category ownership, monthly transaction limits, summaries/charts, and account-scoped category uniqueness.
 - [ ] Photos support `/photos/social`, `/photos/me`, visibility filters, `petId`, report endpoint, like/unlike routes, and soft delete.
 - [ ] Photo comments support create, replies, soft delete, and owner/photo-owner permissions.
 - [ ] Sitter profile supports `/sitters/me`, location filters, new profile fields, and one profile per account.

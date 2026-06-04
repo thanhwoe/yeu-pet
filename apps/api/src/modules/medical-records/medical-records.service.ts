@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
@@ -18,6 +13,7 @@ import { paginate } from '@app/utils/pagination';
 import { IMedicalRecordsRepository } from '@app/interfaces/medical-records-repository.interface';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { assertOwnerOrAdmin } from '@app/utils/ownership';
+import { SubscriptionService } from '../subscription/subscription.service';
 
 @Injectable()
 export class MedicalRecordsService {
@@ -27,13 +23,24 @@ export class MedicalRecordsService {
     @Inject(IPetsRepository)
     private readonly petsRepository: IPetsRepository,
     private readonly fileUploadService: FileUploadService,
+    private readonly subscriptionService: SubscriptionService,
   ) {}
   async create(
+    user: accounts,
     createMedicalRecordDto: CreateMedicalRecordDto,
     files?: Express.Multer.File[],
   ) {
+    await this.assertPetOwner(user, createMedicalRecordDto.petId);
+    await this.subscriptionService.assertCanCreateMedicalRecord(user.id);
+    await this.subscriptionService.assertCanUploadMedicalImages(
+      user.id,
+      files?.length ?? 0,
+    );
+
     const medical = await this.medicalRecordsRepository.create({
-      date: dayjs(createMedicalRecordDto.date).toDate(),
+      date: createMedicalRecordDto.date
+        ? dayjs(createMedicalRecordDto.date).toDate()
+        : null,
       description: createMedicalRecordDto.description,
       pet_id: createMedicalRecordDto.petId,
       record_type: createMedicalRecordDto.recordType,
@@ -96,6 +103,9 @@ export class MedicalRecordsService {
     files?: Express.Multer.File[],
   ) {
     const medical = await this.assertMedicalRecordOwner(user, id);
+    if (updateMedicalRecordDto.petId) {
+      await this.assertPetOwner(user, updateMedicalRecordDto.petId);
+    }
 
     const keepIds =
       updateMedicalRecordDto.attachmentIds ??
@@ -105,11 +115,10 @@ export class MedicalRecordsService {
       keepIds.includes(i.id),
     ).length;
 
-    if (totalAttachmentsKept + (files?.length ?? 0) > 5) {
-      throw new BadRequestException(
-        `Maximum 5 attachments allowed. You currently have ${totalAttachmentsKept} and are adding ${files?.length ?? 0}.`,
-      );
-    }
+    await this.subscriptionService.assertCanUploadMedicalImages(
+      user.id,
+      totalAttachmentsKept + (files?.length ?? 0),
+    );
 
     const attachmentRemovedIds = medical.medical_attachments
       .filter((i) => !keepIds.includes(i.id))
@@ -134,11 +143,13 @@ export class MedicalRecordsService {
     }
 
     return this.medicalRecordsRepository.update(id, {
-      pets: {
-        connect: {
-          id: updateMedicalRecordDto.petId,
-        },
-      },
+      pets: updateMedicalRecordDto.petId
+        ? {
+            connect: {
+              id: updateMedicalRecordDto.petId,
+            },
+          }
+        : undefined,
       date: updateMedicalRecordDto.date
         ? dayjs(updateMedicalRecordDto.date).toDate()
         : undefined,
@@ -199,5 +210,17 @@ export class MedicalRecordsService {
     assertOwnerOrAdmin(user, pet.account_id);
 
     return record;
+  }
+
+  private async assertPetOwner(user: accounts, petId: string) {
+    const pet = await this.petsRepository.findById(petId);
+
+    if (!pet) {
+      throw new NotFoundException(`Pet with ID ${petId} not found`);
+    }
+
+    assertOwnerOrAdmin(user, pet.account_id);
+
+    return pet;
   }
 }
