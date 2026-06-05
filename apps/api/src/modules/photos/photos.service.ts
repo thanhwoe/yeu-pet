@@ -177,13 +177,14 @@ export class PhotosService {
     });
   }
 
-  async findAll(pagination: PaginationDto) {
+  async findAll(user: accounts, pagination: PaginationDto) {
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.photosRepository.findAllPublic({
       skip,
       take: limit,
+      viewer_account_id: user.id,
     });
 
     return paginate(

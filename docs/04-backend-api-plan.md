@@ -269,6 +269,7 @@ Implementation note:
 - `POST /photos/:id/like` and `DELETE /photos/:id/like` are idempotent.
 - `POST /photos/:id/toggle-like` remains available as a compatibility route.
 - Photo upload is limited by subscription entitlements.
+- Social feed excludes accounts the viewer blocked, and accounts that blocked the viewer.
 
 ### 4.9 Doctor AI / Pet Care AI
 
@@ -350,6 +351,24 @@ Implementation note:
 - POST action routes are implemented for mobile, with existing PATCH routes kept for compatibility.
 - Booking responses include `payment.inApp=false` and an external payment note.
 - Booking messages are list/create only and require booking participant access.
+- Sitter discovery excludes accounts the viewer blocked, and accounts that blocked the viewer.
+
+### 4.11 Reports / Blocking
+
+```txt
+POST   /reports
+GET    /reports/me
+GET    /blocks/me
+POST   /blocks/:id
+DELETE /blocks/:id
+```
+
+Important service rules:
+
+- `POST /reports` accepts `targetType=photo|comment|sitter|user`, validates the target exists, and rejects self-reports.
+- `POST /photos/:id/report` remains available as a photo-specific compatibility route.
+- Blocking is idempotent and rejects self-blocks.
+- Blocked relationships affect social photo feed and sitter discovery in both directions.
 
 ## 5. Entitlement service
 

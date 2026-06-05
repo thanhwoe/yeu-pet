@@ -34,6 +34,7 @@ export class PetSittersRepository implements IPetSittersRepository {
     district?: string;
     minRating?: number;
     maxPrice?: number;
+    viewer_account_id?: string;
   }) {
     const address = params?.address?.trim();
     const city = params?.city?.trim();
@@ -59,6 +60,7 @@ export class PetSittersRepository implements IPetSittersRepository {
               { daily_rate: { lte: params.maxPrice } },
             ],
           }),
+      ...this.blockedAccountWhere(params?.viewer_account_id),
     };
     return this.prisma.$transaction([
       this.prisma.pet_sitters.findMany({
@@ -97,5 +99,30 @@ export class PetSittersRepository implements IPetSittersRepository {
       id: sitter_id,
       columns: ['id', 'account_id', 'is_available', 'max_concurrent_bookings'],
     });
+  }
+
+  private blockedAccountWhere(viewerAccountId?: string) {
+    if (!viewerAccountId) {
+      return {};
+    }
+
+    return {
+      NOT: [
+        {
+          accounts: {
+            user_blocks_blocker: {
+              some: { blocked_account_id: viewerAccountId },
+            },
+          },
+        },
+        {
+          accounts: {
+            user_blocks_blocked: {
+              some: { blocker_account_id: viewerAccountId },
+            },
+          },
+        },
+      ],
+    };
   }
 }

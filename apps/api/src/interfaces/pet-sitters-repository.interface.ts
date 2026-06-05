@@ -44,6 +44,7 @@ export interface IPetSittersRepository {
     district?: string;
     minRating?: number;
     maxPrice?: number;
+    viewer_account_id?: string;
   }): Promise<[PetSitterClient[], number]>;
   lock(
     tx: Omit<PrismaClient, ITXClientDenyList>,

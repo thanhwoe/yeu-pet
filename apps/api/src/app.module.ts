@@ -20,6 +20,7 @@ import { BudgetModule } from './modules/budget/budget.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { FiledWorkersModule } from './modules/file-workers/file-workers.module';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
+import { ModerationModule } from './modules/moderation/moderation.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PetsModule } from './modules/pets/pets.module';
 import { PhotosModule } from './modules/photos/photos.module';
@@ -62,6 +63,7 @@ import { UsersModule } from './modules/users/users.module';
     PetsModule,
     CaslModule,
     MedicalRecordsModule,
+    ModerationModule,
     UserDevicesModule,
     RemindersModule,
     NotificationsModule,

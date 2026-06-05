@@ -53,6 +53,7 @@ export class PetSittersService {
   }
 
   async findAll(
+    user: accounts,
     pagination: PaginationDto,
     filters: PetSitterSearchFilters = {},
   ) {
@@ -67,6 +68,7 @@ export class PetSittersService {
       district: filters.district,
       minRating: this.parseOptionalNumber(filters.minRating, 'minRating'),
       maxPrice: this.parseOptionalNumber(filters.maxPrice, 'maxPrice'),
+      viewer_account_id: user.id,
     });
 
     return paginate(data, total, page, limit);

@@ -49,14 +49,20 @@ export class PhotosController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@PaginationQuery() pagination: PaginationDto) {
-    return this.photosService.findAll(pagination);
+  findAll(
+    @CurrentUser() user: accounts,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.photosService.findAll(user, pagination);
   }
 
   @Get('social')
   @HttpCode(HttpStatus.OK)
-  findSocial(@PaginationQuery() pagination: PaginationDto) {
-    return this.photosService.findAll(pagination);
+  findSocial(
+    @CurrentUser() user: accounts,
+    @PaginationQuery() pagination: PaginationDto,
+  ) {
+    return this.photosService.findAll(user, pagination);
   }
 
   @Get('me')

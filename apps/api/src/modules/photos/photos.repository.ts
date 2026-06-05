@@ -54,13 +54,20 @@ export class PhotosRepository implements IPhotosRepository {
       },
     });
   }
-  findAllPublic(params?: { skip?: number; take?: number }) {
+  findAllPublic(params?: {
+    skip?: number;
+    take?: number;
+    viewer_account_id?: string;
+  }) {
+    const blockedWhere = this.blockedAccountWhere(params?.viewer_account_id);
+
     return this.prisma.$transaction([
       this.prisma.photos.findMany({
         where: {
           status: photos_status.ready,
           is_private: false,
           deleted_at: null,
+          ...blockedWhere,
         },
         skip: params?.skip,
         take: params?.take,
@@ -72,6 +79,7 @@ export class PhotosRepository implements IPhotosRepository {
           status: photos_status.ready,
           is_private: false,
           deleted_at: null,
+          ...blockedWhere,
         },
       }),
     ]);
@@ -175,5 +183,30 @@ export class PhotosRepository implements IPhotosRepository {
         },
       });
     });
+  }
+
+  private blockedAccountWhere(viewerAccountId?: string) {
+    if (!viewerAccountId) {
+      return {};
+    }
+
+    return {
+      NOT: [
+        {
+          accounts: {
+            user_blocks_blocker: {
+              some: { blocked_account_id: viewerAccountId },
+            },
+          },
+        },
+        {
+          accounts: {
+            user_blocks_blocked: {
+              some: { blocker_account_id: viewerAccountId },
+            },
+          },
+        },
+      ],
+    };
   }
 }

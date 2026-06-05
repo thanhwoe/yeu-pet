@@ -42,6 +42,7 @@ export class PetSittersController {
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll(
+    @CurrentUser() user: accounts,
     @PaginationQuery() pagination: PaginationDto,
     @Query('address') address?: string,
     @Query('city') city?: string,
@@ -49,7 +50,7 @@ export class PetSittersController {
     @Query('minRating') minRating?: string,
     @Query('maxPrice') maxPrice?: string,
   ) {
-    return this.petSittersService.findAll(pagination, {
+    return this.petSittersService.findAll(user, pagination, {
       address,
       city,
       district,

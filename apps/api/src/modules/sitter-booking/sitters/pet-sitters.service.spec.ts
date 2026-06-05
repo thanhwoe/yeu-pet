@@ -77,6 +77,7 @@ describe('PetSittersService', () => {
     petSittersRepository.findAll.mockResolvedValue([[], 0]);
 
     await service.findAll(
+      { id: 'account-1' } as never,
       { page: 1, limit: 20 },
       {
         city: 'Ho Chi Minh City',
@@ -94,12 +95,17 @@ describe('PetSittersService', () => {
       district: 'District 1',
       maxPrice: 100000,
       minRating: 4.5,
+      viewer_account_id: 'account-1',
     });
   });
 
   it('rejects invalid numeric search filters', async () => {
     await expect(
-      service.findAll({ page: 1, limit: 10 }, { minRating: 'great' }),
+      service.findAll(
+        { id: 'account-1' } as never,
+        { page: 1, limit: 10 },
+        { minRating: 'great' },
+      ),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 

@@ -22,6 +22,7 @@ import { Action } from './modules/casl/casl.types';
 import { BudgetModule } from './modules/budget/budget.module';
 import { MedicalRecordsController } from './modules/medical-records/medical-records.controller';
 import { MedicalRecordsModule } from './modules/medical-records/medical-records.module';
+import { ModerationModule } from './modules/moderation/moderation.module';
 import { PetsController } from './modules/pets/pets.controller';
 import { PetsModule } from './modules/pets/pets.module';
 import { PhotosModule } from './modules/photos/photos.module';
@@ -37,6 +38,7 @@ import { IBudgetCategoriesRepository } from './interfaces/budget-categories-repo
 import { IBudgetTransactionsRepository } from './interfaces/budget-transactions-repository.interface';
 import { IBudgetsRepository } from './interfaces/budgets-repository.interface';
 import { IMedicalRecordsRepository } from './interfaces/medical-records-repository.interface';
+import { IModerationRepository } from './interfaces/moderation-repository.interface';
 import { IPetSittersRepository } from './interfaces/pet-sitters-repository.interface';
 import { IPetsRepository } from './interfaces/pets-repository.interface';
 import { IPhotoCommentsRepository } from './interfaces/photo-comments-repository.interface';
@@ -205,5 +207,6 @@ describe('App architecture wiring', () => {
         IAiUsageLogsRepository,
       ]),
     );
+    expect(providerTokens(ModerationModule)).toContain(IModerationRepository);
   });
 });

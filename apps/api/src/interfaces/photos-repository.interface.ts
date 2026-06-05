@@ -26,6 +26,7 @@ export interface IPhotosRepository {
   findAllPublic(params?: {
     skip?: number;
     take?: number;
+    viewer_account_id?: string;
   }): Promise<[PhotoWithAccount[], number]>;
   report(params: {
     reporter_account_id: string;

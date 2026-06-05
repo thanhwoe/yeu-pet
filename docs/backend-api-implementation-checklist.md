@@ -159,7 +159,11 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Sitter booking supports `/sitter-bookings/me`, accept/reject/cancel/complete/review routes, participant-only detail, and external payment copy in response where relevant.
 - [x] Sitter booking messages support participant-only list/create.
 - [x] Pet Care AI supports conversations, messages, streaming, quota, safety guard, and backend-only provider adapter.
-- [ ] Reports/blocking prepared for social and sitter trust flows.
+- [x] Reports/blocking prepared for social and sitter trust flows.
+  - [x] Add generic `POST /reports` for photo/comment/sitter/user targets.
+  - [x] Add `GET /reports/me`.
+  - [x] Add `GET /blocks/me`, `POST /blocks/:id`, and `DELETE /blocks/:id`.
+  - [x] Hide blocked/blocking accounts from social photo feed and sitter discovery.
 
 ## Verification
 
