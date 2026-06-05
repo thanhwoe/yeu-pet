@@ -21,6 +21,7 @@ interface IProps {
   onSubmit: (data: IPetInfoForm) => Promise<void>;
   isSubmitting?: boolean;
   defaultValues?: IPetInfoForm;
+  disabled?: boolean;
 }
 
 const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
@@ -31,6 +32,7 @@ export const PetInfoForm = ({
   onSubmit,
   defaultValues,
   isSubmitting,
+  disabled,
 }: IProps) => {
   const {
     control,
@@ -145,7 +147,7 @@ export const PetInfoForm = ({
 
       <Button
         wrapperClassName="mt-12"
-        disabled={!isDirty}
+        disabled={!isDirty || disabled}
         onPress={() => handleSubmit(onSubmit)()}
         loading={isSubmitting}
       >

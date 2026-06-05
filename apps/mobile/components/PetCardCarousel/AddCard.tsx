@@ -1,5 +1,6 @@
 import { PET_KEY } from "@/constants/query-keys";
 import { IPetInfoForm } from "@/constants/validation";
+import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPagination, IPet } from "@/interfaces";
 import { createPetMutation } from "@/services";
@@ -14,6 +15,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { PetInfoForm } from "../PetInfoForm";
+import { PaywallNotice } from "../PaywallNotice";
 import { Toast } from "../Toast";
 import { BottomSheet } from "../ui/BottomSheet";
 import { Body } from "../ui/Typography";
@@ -30,6 +32,9 @@ export const AddCard = ({
   scrollX: SharedValue<number>;
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const { entitlements, getLimitState, isUpgrading, upgrade } =
+    useEntitlements();
+  const petLimit = getLimitState("maxPets");
 
   const zoomStyle = useAnimatedStyle(() => {
     const inputRange = [
@@ -80,6 +85,13 @@ export const AddCard = ({
   });
 
   const handleSubmit = async (data: IPetInfoForm) => {
+    if (!petLimit.allowed) {
+      Toast.error({
+        text: `Free plan supports ${petLimit.limit} pets. Upgrade to add more.`,
+      });
+      return;
+    }
+
     mutateAsync(data);
   };
 
@@ -131,7 +143,21 @@ export const AddCard = ({
         onDismiss={() => setShowForm(false)}
         titleElement={<Body weight="semiBold">Add your pet</Body>}
       >
-        <PetInfoForm onSubmit={handleSubmit} isSubmitting={isPending} />
+        <View className="gap-16">
+          {!petLimit.allowed && (
+            <PaywallNotice
+              title="Pet limit reached"
+              description={`You have ${entitlements?.usage.pets ?? petLimit.usage} of ${petLimit.limit} pets. Upgrade to Premium to add more pets.`}
+              loading={isUpgrading}
+              onAction={() => upgrade()}
+            />
+          )}
+          <PetInfoForm
+            onSubmit={handleSubmit}
+            isSubmitting={isPending}
+            disabled={!petLimit.allowed}
+          />
+        </View>
       </BottomSheet>
     </>
   );

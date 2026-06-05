@@ -3,6 +3,7 @@ import {
   IMedicalRecordForm,
   medicalRecordSchema,
 } from "@/constants/validation";
+import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { getListPetQuery } from "@/services";
 import { date } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +18,7 @@ import { InputController } from "../InputController";
 import { OptionInputController } from "../OptionInputController";
 import { PetPickerController } from "../PetPickerController";
 import { Button } from "../ui/Button";
+import { PaywallNotice } from "../PaywallNotice";
 
 const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
 
@@ -46,6 +48,13 @@ export const MedicalRecordForm = ({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
+  const { entitlements, getLimitState, isUpgrading, upgrade } =
+    useEntitlements();
+  const recordLimit = getLimitState("maxMedicalRecords");
+  const maxFiles =
+    entitlements?.limits.maxMedicalImagesPerRecord ??
+    getLimitState("maxMedicalImagesPerRecord").limit ??
+    5;
 
   const handleSubmitForm = (data: IMedicalRecordForm) => {
     onSubmit(data);
@@ -125,12 +134,23 @@ export const MedicalRecordForm = ({
         name="attachments"
         existingName="attachmentIds"
         label="Medical files"
+        maxFiles={maxFiles}
       />
+
+      {!recordLimit.allowed && !defaultValues && (
+        <PaywallNotice
+          compact
+          title="Medical record limit reached"
+          description={`You have ${entitlements?.usage.medicalRecords ?? recordLimit.usage} of ${recordLimit.limit} medical records.`}
+          loading={isUpgrading}
+          onAction={() => upgrade()}
+        />
+      )}
 
       <Button
         onPress={() => handleSubmit(handleSubmitForm)()}
         className="mt-16"
-        disabled={!isDirty}
+        disabled={!isDirty || (!recordLimit.allowed && !defaultValues)}
         loading={loading}
       >
         {!!defaultValues ? "Update Medical Record" : "Create Medical Record"}

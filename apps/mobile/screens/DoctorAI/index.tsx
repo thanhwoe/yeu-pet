@@ -1,7 +1,9 @@
 import { ChatMessage } from "@/components/ChatMessage";
 import { LoadingMessage } from "@/components/LoadingMessage";
+import { PaywallNotice } from "@/components/PaywallNotice";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
+import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IChatMessage } from "@/interfaces";
 import { useChatStore, useUserInfoStore } from "@/stores";
@@ -21,8 +23,15 @@ export const DoctorAIScreen = () => {
   const flatListRef = useRef<FlatList>(null);
   const { messages, sendMessage, markTypingComplete, loading } = useChatStore();
   const userInfo = useUserInfoStore.use.user();
+  const { entitlements, getLimitState, isPremium, isUpgrading, upgrade } =
+    useEntitlements();
+  const aiLimit = getLimitState("aiMessagesPerMonth");
 
   const handleSendMessage = async (message: string) => {
+    if (!aiLimit.allowed) {
+      return;
+    }
+
     try {
       await sendMessage(message);
     } catch (e) {
@@ -67,6 +76,25 @@ export const DoctorAIScreen = () => {
 
   return (
     <View className="flex-1 bg-background-screen px-5 pb-safe-or-2">
+      {!isPremium && (
+        <View className="pb-12">
+          <PaywallNotice
+            compact
+            title={
+              aiLimit.allowed
+                ? "Limited AI quota"
+                : "AI message limit reached"
+            }
+            description={
+              aiLimit.allowed
+                ? `${aiLimit.remaining ?? 0} of ${aiLimit.limit ?? entitlements?.limits.aiMessagesPerMonth ?? 0} free AI messages remaining this month. Premium unlocks pet context and medical history.`
+                : `You have used ${entitlements?.usage.aiMessagesThisMonth ?? aiLimit.usage} of ${aiLimit.limit} free AI messages this month.`
+            }
+            loading={isUpgrading}
+            onAction={() => upgrade()}
+          />
+        </View>
+      )}
       <FlatList
         ref={flatListRef}
         className="flex-1"
@@ -78,7 +106,7 @@ export const DoctorAIScreen = () => {
         keyExtractor={(item, index) => String(item) + String(index)}
         ListEmptyComponent={renderListEmptyComponent}
       />
-      <MessageInput onSubmit={handleSendMessage} />
+      <MessageInput onSubmit={handleSendMessage} disabled={!aiLimit.allowed} />
     </View>
   );
 };
@@ -87,8 +115,9 @@ const SendIcon = withIconClassName(PaperPlaneTiltIcon);
 
 interface MessageInputProps {
   onSubmit: (message: string) => void;
+  disabled?: boolean;
 }
-const MessageInput = ({ onSubmit }: MessageInputProps) => {
+const MessageInput = ({ onSubmit, disabled }: MessageInputProps) => {
   const [value, setValue] = useState("");
   const headerHeight = useHeaderHeight();
   const { messages, loading } = useChatStore();
@@ -112,7 +141,7 @@ const MessageInput = ({ onSubmit }: MessageInputProps) => {
             onChangeText={setValue}
             autoCorrect={false}
             textAlignVertical="top"
-            editable={!loading || !isGeneratingMessage}
+            editable={!disabled && (!loading || !isGeneratingMessage)}
           />
         </View>
         <TouchableOpacity
@@ -120,7 +149,7 @@ const MessageInput = ({ onSubmit }: MessageInputProps) => {
             onSubmit(value);
             setValue("");
           }}
-          disabled={loading || isGeneratingMessage}
+          disabled={disabled || loading || isGeneratingMessage}
           className="self-end mb-1 items-center justify-center p-2 rounded-full bg-background-secondary"
         >
           <SendIcon className="text-icon-foreground" />

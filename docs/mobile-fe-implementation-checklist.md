@@ -41,7 +41,7 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 ## Duplicate / Legacy API Usage To Remove
 
 - [x] Remove direct Gemini client and dependency.
-- [ ] Avoid compatibility routes in new FE code:
+- [x] Avoid compatibility routes in new FE code:
   - [x] `/users/me`
   - [x] `PUT /settings`
   - [x] `GET /photos`
@@ -54,9 +54,9 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 
 - [ ] Auth/account/profile/onboarding aligned with `/me` and canonical auth utilities.
 - [x] Settings supports notification toggles, language, and theme using `PATCH /settings`.
-- [ ] Subscription/entitlement APIs and paywall gating are implemented.
+- [x] Subscription/entitlement APIs and paywall gating are implemented for Phase 1 quota surfaces.
   - [x] Add subscription/entitlement service functions.
-  - [ ] Wire entitlement queries into screens/paywalls.
+  - [x] Wire entitlement queries into pet creation, photo upload, medical record creation, AI chat, and settings subscription summary.
 - [ ] Pet Management service and screens use canonical `/pets` APIs.
 - [ ] Reminders expose filters, upcoming, and status actions.
 - [x] Medical Records use pet-scoped create and attachment add/remove routes.

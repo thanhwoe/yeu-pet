@@ -12,6 +12,6 @@ import { UserBlocksController } from './user-blocks.controller';
     { provide: IModerationRepository, useExisting: ModerationRepository },
     ModerationService,
   ],
-  exports: [ModerationRepository, IModerationRepository],
+  exports: [ModerationRepository, IModerationRepository, ModerationService],
 })
 export class ModerationModule {}

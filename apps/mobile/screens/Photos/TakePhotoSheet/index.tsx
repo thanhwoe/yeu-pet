@@ -3,6 +3,7 @@ import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { PHOTOS_KEY } from "@/constants/query-keys";
+import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { uploadPhotoMutation } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,6 +12,7 @@ import { XIcon } from "phosphor-react-native";
 import { useCallback, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { CaptionInput } from "../CaptionInput";
+import { PaywallNotice } from "@/components/PaywallNotice";
 import { SubmitButton } from "../SubmitButton";
 import { PHOTO_COMPOSER_PREVIEW_SIZE } from "../util";
 
@@ -32,6 +34,9 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const [checked, setChecked] = useState<boolean>(true);
   const [caption, setCaption] = useState<string>("");
   const queryClient = useQueryClient();
+  const { entitlements, getLimitState, isUpgrading, upgrade } =
+    useEntitlements();
+  const photoLimit = getLimitState("maxPhotoUploads");
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
@@ -77,6 +82,13 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   );
 
   const handleSubmit = async () => {
+    if (!photoLimit.allowed) {
+      Toast.error({
+        text: `Free plan supports ${photoLimit.limit} photo uploads. Upgrade to continue.`,
+      });
+      return;
+    }
+
     const trimmedCaption = caption.trim();
 
     if (!trimmedCaption) {
@@ -101,6 +113,15 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
       handleComponent={renderSheetHeader}
     >
       <View className="items-center gap-16 px-20 pb-8">
+        {!photoLimit.allowed && (
+          <PaywallNotice
+            compact
+            title="Photo upload limit reached"
+            description={`You have uploaded ${entitlements?.usage.photos ?? photoLimit.usage} of ${photoLimit.limit} photos.`}
+            loading={isUpgrading}
+            onAction={() => upgrade()}
+          />
+        )}
         <View style={styles.previewFrame}>
           <Image source={{ uri: image?.uri }} style={styles.previewImage} />
           <CaptionInput
@@ -110,7 +131,10 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
           />
         </View>
         <View className="w-full flex-row items-center justify-center gap-16">
-          <SubmitButton onPress={handleSubmit} disabled={isPending} />
+          <SubmitButton
+            onPress={handleSubmit}
+            disabled={isPending || !photoLimit.allowed}
+          />
           <TouchableOpacity
             accessibilityLabel="Toggle photo public visibility"
             accessibilityRole="button"
