@@ -21,7 +21,12 @@ export type ReminderType =
   | "vaccination"
   | "medication";
 
-export type ReminderStatus = "pending" | "sent" | "cancelled";
+export type ReminderStatus =
+  | "pending"
+  | "completed"
+  | "skipped"
+  | "sent"
+  | "cancelled";
 
 export interface GroupedReminder {
   title: string; // 'YYYY-MM-DD'

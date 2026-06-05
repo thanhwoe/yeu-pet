@@ -19,7 +19,11 @@ export const API_ROUTES = {
   MUTATE_PET: (id: string) => `/pets/${id}`,
 
   REMINDERS: "/reminders",
+  UPCOMING_REMINDERS: "/reminders/upcoming",
   MUTATE_REMINDER: (id: string) => `/reminders/${id}`,
+  COMPLETE_REMINDER: (id: string) => `/reminders/${id}/complete`,
+  SKIP_REMINDER: (id: string) => `/reminders/${id}/skip`,
+  CANCEL_REMINDER: (id: string) => `/reminders/${id}/cancel`,
 
   SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
   LIST_CLINIC: "/clinic",

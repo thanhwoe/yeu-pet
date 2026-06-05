@@ -1,46 +1,46 @@
 import { Popup } from "@/components/Popup";
 import { RefreshControl } from "@/components/RefreshControl";
 import { Skeleton } from "@/components/Skeleton";
-import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Options } from "@/components/ui/Options";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body } from "@/components/ui/Typography";
-import { MEDICAL_RECORDS_KEY } from "@/constants/query-keys";
+import { MedicalRecordListItem } from "@/features/medical-records/components/MedicalRecordListItem";
+import { useMedicalRecordPetList } from "@/features/medical-records/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IMedicalRecord } from "@/interfaces";
-import {
-  deleteMedicalRecordMutation,
-  getMedicalRecordsByPetIdQuery,
-} from "@/services";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { TrashIcon } from "phosphor-react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { FlatList, ListRenderItem, View } from "react-native";
-import { MedicalRecordListItem } from "./MedicalRecordListItem";
 
 const DeleteIcon = withIconClassName(TrashIcon);
-const PAGE_SIZE = 20;
 
 export const MedicalRecordListScreen = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const queryClient = useQueryClient();
   const { petId, petName } = useLocalSearchParams<{
     petId: string;
     petName?: string;
   }>();
-
-  const [selectedRecord, setSelectedRecord] = useState<IMedicalRecord | null>(
-    null,
-  );
-  const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  const {
+    hasNextPage,
+    isDeletingMedicalRecord,
+    isFetchingNextPage,
+    isLoading,
+    isRefetching,
+    openDeletePopup,
+    records,
+    selectedRecord,
+    fetchNextPage,
+    handleCloseDeletePopup,
+    handleCloseRecordOptions,
+    handleDelete,
+    handleOpenDeletePopup,
+    handleSelectRecord,
+    refetch,
+  } = useMedicalRecordPetList(petId);
 
   useEffect(() => {
     if (!petName) return;
@@ -49,60 +49,6 @@ export const MedicalRecordListScreen = () => {
       title: `${petName} Records`,
     });
   }, [navigation, petName]);
-
-  const {
-    data,
-    isLoading,
-    isRefetching,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-  } = useInfiniteQuery({
-    queryKey: MEDICAL_RECORDS_KEY.list({ petId, limit: PAGE_SIZE }),
-    queryFn: ({ pageParam }) =>
-      getMedicalRecordsByPetIdQuery({
-        petId,
-        page: pageParam,
-        limit: PAGE_SIZE,
-      }),
-    enabled: !!petId,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      if (!lastPage.meta.hasNextPage) return undefined;
-      return lastPage.meta.page + 1;
-    },
-  });
-
-  const records = useMemo(
-    () => data?.pages.flatMap((page) => page.data) ?? [],
-    [data],
-  );
-
-  const {
-    mutateAsync: deleteMedicalRecord,
-    isPending: isDeletingMedicalRecord,
-  } = useMutation({
-    mutationFn: deleteMedicalRecordMutation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: MEDICAL_RECORDS_KEY.lists() });
-      setOpenDeletePopup(false);
-      setSelectedRecord(null);
-    },
-    onError: (error) => {
-      Toast.error({ text: error.message });
-    },
-  });
-
-  const handleDelete = useCallback(() => {
-    if (selectedRecord?.id) {
-      deleteMedicalRecord(selectedRecord.id);
-    }
-  }, [deleteMedicalRecord, selectedRecord?.id]);
-
-  const closeRecordOptions = useCallback(() => setSelectedRecord(null), []);
-  const closeDeletePopup = useCallback(() => setOpenDeletePopup(false), []);
-  const openDeletePopupAction = useCallback(() => setOpenDeletePopup(true), []);
 
   const keyExtractor = useCallback((item: IMedicalRecord) => item.id, []);
 
@@ -116,10 +62,10 @@ export const MedicalRecordListScreen = () => {
             params: { id: item.id },
           });
         }}
-        onMorePress={() => setSelectedRecord(item)}
+        onMorePress={() => handleSelectRecord(item)}
       />
     ),
-    [router],
+    [handleSelectRecord, router],
   );
 
   const listEmptyComponent = useMemo(
@@ -167,7 +113,7 @@ export const MedicalRecordListScreen = () => {
       {
         label: "Delete",
         value: selectedRecord,
-        onPress: openDeletePopupAction,
+        onPress: handleOpenDeletePopup,
         icon: (
           <DeleteIcon
             size={24}
@@ -177,7 +123,7 @@ export const MedicalRecordListScreen = () => {
         ),
       },
     ],
-    [openDeletePopupAction, selectedRecord],
+    [handleOpenDeletePopup, selectedRecord],
   );
 
   return (
@@ -203,13 +149,13 @@ export const MedicalRecordListScreen = () => {
 
       <BottomSheet
         visible={!!selectedRecord}
-        onDismiss={closeRecordOptions}
+        onDismiss={handleCloseRecordOptions}
       >
         <Options data={optionsData} />
       </BottomSheet>
       <Popup
         visible={openDeletePopup}
-        onCancel={closeDeletePopup}
+        onCancel={handleCloseDeletePopup}
         onConfirm={handleDelete}
         title="Remove medical record"
         description="Are you sure you want to remove this medical record?"

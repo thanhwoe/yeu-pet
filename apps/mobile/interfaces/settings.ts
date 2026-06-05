@@ -5,7 +5,7 @@ export interface IUserSettings {
   bookingNotifications: boolean;
   socialNotifications: boolean;
   aiNotifications: boolean;
-  language: string;
+  language: "vi" | "en";
   theme: "system" | "light" | "dark";
   createdAt: string | null;
   updatedAt: string | null;
@@ -17,6 +17,6 @@ export interface IUserSettingsForm {
   bookingNotifications?: boolean;
   socialNotifications?: boolean;
   aiNotifications?: boolean;
-  language?: string;
+  language?: "vi" | "en";
   theme?: "system" | "light" | "dark";
 }

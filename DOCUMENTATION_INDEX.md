@@ -15,4 +15,6 @@
 - [docs/10-admin-portal-roadmap.md](docs/10-admin-portal-roadmap.md)
 - [docs/11-database-implementation-checklist.md](docs/11-database-implementation-checklist.md)
 - [docs/12-mobile-api-contract.md](docs/12-mobile-api-contract.md)
+- [docs/13-mobile-ui-ux-skills-guide.md](docs/13-mobile-ui-ux-skills-guide.md)
 - [docs/backend-api-implementation-checklist.md](docs/backend-api-implementation-checklist.md)
+- [docs/mobile-fe-implementation-checklist.md](docs/mobile-fe-implementation-checklist.md)

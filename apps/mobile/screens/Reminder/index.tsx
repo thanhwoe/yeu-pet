@@ -1,4 +1,4 @@
-import { ReminderCalendar } from "@/components/ReminderCalendar";
+import { ReminderCalendar } from "@/features/reminders/components/ReminderCalendar";
 import { View } from "react-native";
 
 export function ReminderScreen() {

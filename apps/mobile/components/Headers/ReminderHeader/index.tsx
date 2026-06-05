@@ -1,50 +1,22 @@
-import { ReminderForm } from "@/components/ReminderForm";
-import { Toast } from "@/components/Toast";
+import { ReminderForm } from "@/features/reminders/components/ReminderForm";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Body, Heading } from "@/components/ui/Typography";
-import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
-import { IReminderForm } from "@/constants/validation";
+import { useCreateReminderSheet } from "@/features/reminders/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { createReminderMutation, getListPetQuery } from "@/services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "phosphor-react-native";
-import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 const AddIcon = withIconClassName(PlusIcon);
 
 export const ReminderHeader = () => {
-  const [openForm, setOpenForm] = useState(false);
+  const {
+    isCreating,
+    openForm,
+    handleCloseForm,
+    handleCreateReminder,
+    handleOpenForm,
+  } = useCreateReminderSheet();
 
-  const queryClient = useQueryClient();
-
-  const { data: petData } = useQuery({
-    queryKey: PET_KEY.list(),
-    queryFn: getListPetQuery,
-  });
-
-  const { mutateAsync: createReminder } = useMutation({
-    mutationFn: createReminderMutation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
-      setOpenForm(false);
-    },
-    onError: (e) => {
-      Toast.error({ text: e.message });
-    },
-  });
-
-  const handleCreateReminder = async (data: IReminderForm) => {
-    createReminder(data);
-  };
-
-  const handleOpenForm = () => {
-    if (petData?.data.length) {
-      setOpenForm(true);
-    } else {
-      Toast.warn({ text: "Please add pet first" });
-    }
-  };
   return (
     <>
       <View className="flex-row items-center justify-between px-20 pt-safe bg-background">
@@ -60,11 +32,11 @@ export const ReminderHeader = () => {
       </View>
       <BottomSheet
         visible={openForm}
-        onDismiss={() => setOpenForm(false)}
+        onDismiss={handleCloseForm}
         useScrollView
         titleElement={<Body weight="semiBold">Create Reminder</Body>}
       >
-        <ReminderForm onSubmit={handleCreateReminder} />
+        <ReminderForm onSubmit={handleCreateReminder} loading={isCreating} />
         <View />
       </BottomSheet>
     </>

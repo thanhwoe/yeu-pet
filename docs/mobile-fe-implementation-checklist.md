@@ -54,28 +54,54 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 
 - [ ] Auth/account/profile/onboarding aligned with `/me` and canonical auth utilities.
 - [x] Settings supports notification toggles, language, and theme using `PATCH /settings`.
+  - [x] Settings route is a thin Expo Router shim.
+  - [x] Settings screen has loading/error/retry states for settings data.
+  - [x] Settings shows subscription usage from entitlements.
+  - [ ] Profile edit, support/legal rows, and production subscription action remain.
 - [x] Subscription/entitlement APIs and paywall gating are implemented for Phase 1 quota surfaces.
   - [x] Add subscription/entitlement service functions.
   - [x] Wire entitlement queries into pet creation, photo upload, medical record creation, AI chat, and settings subscription summary.
 - [ ] Pet Management service and screens use canonical `/pets` APIs.
-- [ ] Reminders expose filters, upcoming, and status actions.
+  - [x] Pet carousel and pet info form source moved under `features/pets/components`; old component exports removed.
+  - [x] Pet create/update sends canonical `weightValue` and `weightUnit` alongside temporary legacy `weight`.
+  - [x] Pet detail card displays canonical weight fields when returned.
+  - [x] Pet detail card avoids `Invalid Date` for missing or malformed birthdates.
+- [x] Reminders expose filters, upcoming, and status actions.
+  - [x] Reminder calendar, form, and icon source moved under `features/reminders/components`; old component exports removed.
+  - [x] Reminder calendar query/mutation orchestration moved into `features/reminders/hooks.ts`.
+  - [x] Reminder create sheet orchestration moved from `Headers/ReminderHeader` into `features/reminders/hooks.ts`.
+  - [x] Reminder calendar supports status, type, and pet filters.
+  - [x] Home uses canonical `GET /reminders/upcoming`.
+  - [x] Pending reminder rows expose complete, skip, and cancel actions.
 - [x] Medical Records use pet-scoped create and attachment add/remove routes.
+  - [x] Medical record form and pet timeline source moved under `features/medical-records/components`; old component exports removed.
+  - [x] Medical record container, list item, and type chip moved under `features/medical-records/components`.
+  - [x] Main medical record list/create/delete orchestration moved into `features/medical-records/hooks.ts`.
+  - [x] Per-pet medical record list/delete and detail edit/delete orchestration moved into `features/medical-records/hooks.ts`.
+  - [x] Collapsible medical record preview query moved into `features/medical-records/hooks.ts`.
 - [ ] Budget screens use `/budgets`, `/budgets/statistics/*`, categories, and transactions.
+  - [x] Budget forms, transaction list, category statistic, and chart components moved under `features/budget/components`; old component exports removed.
 - [x] Photos Social uses `/photos/social`, `/photos/me`, explicit like/unlike, comments/replies, and reports.
 - [x] Sitter profile/search uses canonical sitter routes.
 - [x] Sitter bookings use `/sitter-bookings/me` and POST status actions.
 - [x] Sitter booking messages use HTTP list/create routes.
 - [x] Pet Care AI uses backend conversation/message streaming APIs only.
 - [x] Notifications/devices use `/devices` and `/notifications`.
-- [ ] Home aggregation uses existing pet/upcoming reminder/budget APIs.
+- [x] Home aggregation uses existing pet/upcoming reminder/budget APIs.
+  - [x] Home pet, upcoming reminder, and monthly budget sections expose loading, empty/error recovery, and pull-to-refresh behavior.
 
 ## UI / UX Tasks
 
+- [ ] Apply `.codex/skills/pet-mobile-ui-ux-design/SKILL.md` before mobile UI design decisions.
+- [ ] Apply `.codex/skills/react-native-expo-ui-implementation/SKILL.md` during React Native + Expo UI implementation.
+- [ ] Apply `.codex/skills/mobile-ui-review-checklist/SKILL.md` before marking UI tasks complete.
 - [ ] Loading states for major screens.
 - [ ] Empty states for major screens.
 - [ ] Error states and retry actions.
+  - [x] Settings has loading/error/retry states.
 - [ ] Pull-to-refresh where useful.
 - [ ] Mutation pending states.
+  - [x] Settings disables/pends setting updates and subscription mock actions.
 - [ ] Confirm delete dialogs.
 - [ ] Toast/snackbar or inline mutation feedback.
 - [ ] Safe area and keyboard handling.

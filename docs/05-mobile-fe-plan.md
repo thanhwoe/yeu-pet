@@ -6,6 +6,8 @@ Refactor `apps/mobile` so phase 1 features are stable, consistent, and connected
 
 The app should feel like a real product, not a demo. Prioritize navigation clarity, form stability, bottom sheet stability, empty states, and consistent API/data state handling.
 
+All future mobile UI tasks must use the project-local skills described in `docs/13-mobile-ui-ux-skills-guide.md`. Apply `pet-mobile-ui-ux-design` before design decisions, `react-native-expo-ui-implementation` while coding, and `mobile-ui-review-checklist` before marking UI work complete.
+
 ## 2. Navigation proposal
 
 Bottom tabs:

@@ -29,6 +29,8 @@ export const REMINDER_KEY = {
   lists: () => [...REMINDER_KEY.all, "list"] as const,
   list: (params?: IQueryParams) =>
     [...REMINDER_KEY.lists(), { params }] as const,
+  upcoming: (params?: IQueryParams) =>
+    [...REMINDER_KEY.all, "upcoming", { params }] as const,
   details: () => [...REMINDER_KEY.all, "detail"] as const,
   detail: (id?: number) => [...REMINDER_KEY.details(), id] as const,
 };

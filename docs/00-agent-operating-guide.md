@@ -80,6 +80,10 @@ Important backend concerns:
 
 ## 7. Mobile quality rules
 
+- For mobile UI tasks, use the project-local skills in `.codex/skills`:
+  - `pet-mobile-ui-ux-design` before design or UX decisions.
+  - `react-native-expo-ui-implementation` while coding React Native + Expo UI.
+  - `mobile-ui-review-checklist` before marking the task complete.
 - Keep navigation clear.
 - Bottom sheets should be stable and reusable.
 - Forms should use reusable field components and validation.
@@ -88,6 +92,7 @@ Important backend concerns:
 - Empty/loading/error states are required.
 - Destructive actions need confirmation.
 - Premium feature gates should be clear and not frustrating.
+- The mobile app should feel warm, friendly, trustworthy, clean, and practical; it should not look like an admin dashboard.
 
 ## 8. Done criteria
 

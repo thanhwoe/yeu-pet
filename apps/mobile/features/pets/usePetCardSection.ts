@@ -3,6 +3,7 @@ import { PET_KEY } from "@/constants/query-keys";
 import { IPetInfoForm } from "@/constants/validation";
 import { IPagination, IPet } from "@/interfaces";
 import { deletePetMutation, updatePetMutation } from "@/services";
+import { formatPetWeight } from "@/utils/pet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 
@@ -88,7 +89,7 @@ export const usePetCardSection = () => {
       species: petEdit.species,
       birthdate: petEdit.birthdate,
       breed: petEdit.breed,
-      weight: petEdit.weight,
+      weight: formatPetWeight(petEdit),
       notes: petEdit.notes,
     } as IPetInfoForm;
   }, [petEdit]);

@@ -1,24 +1,16 @@
 import { ImageGallery, ImageGalleryRef } from "@/components/ImageGallery";
-import { MedicalRecordForm } from "@/components/MedicalRecordForm";
 import { Popup } from "@/components/Popup";
-import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Image } from "@/components/ui/Image";
 import { Options } from "@/components/ui/Options";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Body, Heading } from "@/components/ui/Typography";
-import { MEDICAL_RECORDS_KEY } from "@/constants/query-keys";
-import { IMedicalRecordForm } from "@/constants/validation";
+import { MedicalRecordForm } from "@/features/medical-records/components/MedicalRecordForm";
+import { MedicalRecordType } from "@/features/medical-records/components/MedicalRecordType";
+import { useMedicalRecordDetail } from "@/features/medical-records/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import {
-  deleteMedicalRecordMutation,
-  getMedicalRecordDetailQuery,
-  updateMedicalRecordMutation,
-} from "@/services";
 import { cn, date, shortID } from "@/utils";
 import { saveImageToGallery } from "@/utils/image";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
   DotsThreeIcon,
@@ -27,9 +19,8 @@ import {
   PencilSimpleIcon,
   TrashIcon,
 } from "phosphor-react-native";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { TouchableOpacity, View } from "react-native";
-import { MedicalRecordType } from "./MedicalRecordType";
 
 const ViewIcon = withIconClassName(EyeIcon);
 const DownloadIcon = withIconClassName(DownloadSimpleIcon);
@@ -38,88 +29,44 @@ const EditIcon = withIconClassName(PencilSimpleIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 
 export const MedicalRecordDetailScreen = () => {
-  const [openOptions, setOpenOptions] = useState(false);
-  const [openEditForm, setOpenEditForm] = useState(false);
-  const [openDeletePopup, setOpenDeletePopup] = useState(false);
-
   const navigation = useNavigation();
-  const queryClient = useQueryClient();
-
   const galleryRef = useRef<ImageGalleryRef>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
-
-  const { data, isLoading } = useQuery({
-    queryKey: MEDICAL_RECORDS_KEY.detail(id),
-    queryFn: () => getMedicalRecordDetailQuery(id),
-    enabled: !!id,
-  });
-
   const {
-    mutateAsync: updateMedicalRecord,
-    isPending: isUpdatingMedicalRecord,
-  } = useMutation({
-    mutationFn: updateMedicalRecordMutation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: MEDICAL_RECORDS_KEY.lists() });
-      queryClient.invalidateQueries({
-        queryKey: MEDICAL_RECORDS_KEY.detail(id),
-      });
-      setOpenEditForm(false);
-      setOpenOptions(false);
-    },
-    onError: (error) => {
-      Toast.error({ text: error.message });
-    },
+    data,
+    defaultValues,
+    isDeletingMedicalRecord,
+    isLoading,
+    isUpdatingMedicalRecord,
+    openDeletePopup,
+    openEditForm,
+    openOptions,
+    recordImages,
+    handleCloseDeletePopup,
+    handleCloseEditForm,
+    handleCloseOptions,
+    handleDelete,
+    handleOpenDeletePopup,
+    handleOpenEditForm,
+    handleOpenOptions,
+    handleUpdateMedicalRecord,
+  } = useMedicalRecordDetail({
+    id,
+    onDeleted: () => navigation.goBack(),
   });
-
-  const {
-    mutateAsync: deleteMedicalRecord,
-    isPending: isDeletingMedicalRecord,
-  } = useMutation({
-    mutationFn: deleteMedicalRecordMutation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: MEDICAL_RECORDS_KEY.lists() });
-
-      setOpenDeletePopup(false);
-      setOpenOptions(false);
-      navigation.goBack();
-    },
-    onError: (error) => {
-      Toast.error({ text: error.message });
-    },
-  });
-
-  const handleDelete = () => {
-    if (data?.id) {
-      deleteMedicalRecord(data.id);
-    }
-  };
-  const handleUpdateMedicalRecord = async (payload: IMedicalRecordForm) => {
-    if (data?.id) {
-      updateMedicalRecord({
-        id: data.id,
-        ...payload,
-      });
-    }
-  };
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
-          onPress={() => setOpenOptions(true)}
+          onPress={handleOpenOptions}
         >
           <OptionsIcon className="text-icon-primary" weight="bold" />
         </TouchableOpacity>
       ),
     });
-  }, []);
-
-  const recordImages = useMemo(
-    () => data?.medicalAttachments.map((attachment) => attachment.url) ?? [],
-    [data],
-  );
+  }, [handleOpenOptions, navigation]);
 
   if (!data || isLoading) {
     return null;
@@ -211,24 +158,20 @@ export const MedicalRecordDetailScreen = () => {
 
       <BottomSheet
         visible={!!openOptions}
-        onDismiss={() => setOpenOptions(false)}
+        onDismiss={handleCloseOptions}
       >
         <Options
           data={[
             {
               label: "Edit",
               value: data,
-              onPress: () => {
-                setOpenEditForm(true);
-              },
+              onPress: handleOpenEditForm,
               icon: <EditIcon size={24} className="text-icon-primary" />,
             },
             {
               label: "Delete",
               value: data,
-              onPress: () => {
-                setOpenDeletePopup(true);
-              },
+              onPress: handleOpenDeletePopup,
               icon: (
                 <DeleteIcon
                   size={24}
@@ -244,35 +187,18 @@ export const MedicalRecordDetailScreen = () => {
         useScrollView
         visible={openEditForm}
         titleElement={<Body weight="semiBold">Edit medical record</Body>}
-        onDismiss={() => {
-          setOpenEditForm(false);
-        }}
+        onDismiss={handleCloseEditForm}
       >
         <MedicalRecordForm
           onSubmit={handleUpdateMedicalRecord}
           loading={isUpdatingMedicalRecord}
-          {...(data && {
-            defaultValues: {
-              petId: data.petId,
-              recordType: data.recordType,
-              title: data.title,
-              date: dayjs(data.date).toDate(),
-              description: data.description ?? "",
-              vetClinic: data.vetClinic ?? "",
-              vetName: data.vetName ?? "",
-              attachmentIds: data.medicalAttachments.map((attachment) => ({
-                id: attachment.id,
-                url: attachment.thumbnailUrl,
-                name: `Attachment ${shortID(attachment.id)}`,
-              })),
-            },
-          })}
+          defaultValues={defaultValues}
         />
       </BottomSheet>
 
       <Popup
         visible={!!openDeletePopup}
-        onCancel={() => setOpenDeletePopup(false)}
+        onCancel={handleCloseDeletePopup}
         onConfirm={handleDelete}
         title="Remove medical record"
         description="Are you sure you want to remove this medical record?"

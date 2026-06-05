@@ -1,6 +1,3 @@
-import { BudgetCategoryForm } from "@/components/BudgetCategoryForm";
-import { BudgetTransaction } from "@/components/BudgetTransaction";
-import { BudgetTransactionForm } from "@/components/BudgetTransactionForm";
 import { MonthYear, MonthYearPicker } from "@/components/MonthYearPicker";
 import {
   CURRENT_MONTH,
@@ -22,6 +19,9 @@ import {
   IBudgetCategoryForm,
   IBudgetTransactionForm,
 } from "@/constants/validation";
+import { BudgetCategoryForm } from "@/features/budget/components/BudgetCategoryForm";
+import { BudgetTransaction } from "@/features/budget/components/BudgetTransaction";
+import { BudgetTransactionForm } from "@/features/budget/components/BudgetTransactionForm";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import {
   createBudgetCategoryMutation,

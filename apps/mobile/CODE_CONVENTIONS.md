@@ -1,6 +1,8 @@
 # Mobile Code Conventions
 
-These conventions keep the Expo app incremental, predictable, and aligned with `mobile-app-ui-design`.
+These conventions keep the Expo app incremental, predictable, and aligned with the project-local UI/UX skills in `../../.codex/skills`.
+
+For mobile UI tasks, use `pet-mobile-ui-ux-design` before design decisions, `react-native-expo-ui-implementation` while coding, and `mobile-ui-review-checklist` before marking the task complete. See `../../docs/13-mobile-ui-ux-skills-guide.md`.
 
 ## Folder Ownership
 

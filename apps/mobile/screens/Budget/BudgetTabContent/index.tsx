@@ -1,5 +1,5 @@
-import { BudgetCategoryStatistic } from "@/components/BudgetCategoryStatistic";
-import { BarChart, LineChart } from "@/components/chart";
+import { BudgetCategoryStatistic } from "@/features/budget/components/BudgetCategoryStatistic";
+import { BarChart, LineChart } from "@/features/budget/components/chart";
 import { Body, Heading } from "@/components/ui/Typography";
 import { withLoading } from "@/hocs/withLoading";
 import {

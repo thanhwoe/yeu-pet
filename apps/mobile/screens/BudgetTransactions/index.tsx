@@ -1,5 +1,3 @@
-import { BudgetTransaction } from "@/components/BudgetTransaction";
-import { BudgetTransactionForm } from "@/components/BudgetTransactionForm";
 import { Popup } from "@/components/Popup";
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
@@ -12,6 +10,8 @@ import {
   BUDGET_TRANSACTION_KEY,
 } from "@/constants/query-keys";
 import { IBudgetTransactionForm } from "@/constants/validation";
+import { BudgetTransaction } from "@/features/budget/components/BudgetTransaction";
+import { BudgetTransactionForm } from "@/features/budget/components/BudgetTransactionForm";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IBudgetTransaction } from "@/interfaces";
 import {

@@ -1,8 +1,8 @@
-import { BudgetCategoryForm } from "@/components/BudgetCategoryForm";
 import { Skeleton } from "@/components/Skeleton";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { StateView } from "@/components/ui/StateView";
+import { BudgetCategoryForm } from "@/features/budget/components/BudgetCategoryForm";
 import { useBudgetCategories } from "@/features/budget/useBudgetCategories";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useNavigation } from "expo-router";

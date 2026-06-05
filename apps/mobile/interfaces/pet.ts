@@ -5,6 +5,8 @@ export interface IPet {
   birthdate: string | null;
   breed: string | null;
   weight: string | null;
+  weightValue: number | string | null;
+  weightUnit: "kg" | "lb" | null;
   color: string | null;
   avatarUrl: string | null;
   gender: string;

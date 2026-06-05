@@ -56,6 +56,7 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 
 ## 4. Coding Conventions
 
+- **Project UI/UX Skills:** For mobile UI work, use `.codex/skills/pet-mobile-ui-ux-design/SKILL.md` before design decisions, `.codex/skills/react-native-expo-ui-implementation/SKILL.md` while implementing, and `.codex/skills/mobile-ui-review-checklist/SKILL.md` before completion. See `../../docs/13-mobile-ui-ux-skills-guide.md`.
 - **UI Components:** Use `class-variance-authority` (`cva`) for UI primitives in `components/ui`. Keep `styles.ts` containing the CVA logic separate from the `index.tsx` component logic.
 - **Styling Strategy:** Use tailwind classes via the `className` prop. Strictly respect the custom theme variables and color palettes defined in `tailwind.config.js` and `theme/`.
 - **API Interaction:** Always use the initialized `APIs` instance (`APIs.get()`, `APIs.post()`, etc.) exported from `services/api-helper.ts`. Responses are automatically transformed to camelCase keys via Axios interceptors.

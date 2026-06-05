@@ -1,5 +1,13 @@
 import dayjs from "dayjs";
 
+export type PetWeightUnit = "kg" | "lb";
+
+interface PetWeightFields {
+  weight?: string | null;
+  weightValue?: number | string | null;
+  weightUnit?: PetWeightUnit | "lbs" | null;
+}
+
 const HUMAN_YEAR_RATIO: Record<string, number> = {
   dog: 7,
   cat: 4,
@@ -32,4 +40,58 @@ export function calculateAnimalAge(
   const humanYears = Math.round((totalMonths / 12) * ratio);
 
   return { years, months, days, humanYears };
+}
+
+export function normalizePetWeightUnit(
+  unit?: string | null,
+): PetWeightUnit | undefined {
+  if (unit === "kg" || unit === "lb") {
+    return unit;
+  }
+
+  if (unit === "lbs") {
+    return "lb";
+  }
+
+  return undefined;
+}
+
+export function parsePetWeight(weight?: string | null):
+  | {
+      weightValue: number;
+      weightUnit: PetWeightUnit;
+    }
+  | undefined {
+  if (!weight) {
+    return undefined;
+  }
+
+  const [rawValue, rawUnit] = weight.trim().split(/\s+/);
+  const weightValue = Number(rawValue?.replace(",", "."));
+  const weightUnit = normalizePetWeightUnit(rawUnit);
+
+  if (!Number.isFinite(weightValue) || !weightUnit) {
+    return undefined;
+  }
+
+  return {
+    weightValue,
+    weightUnit,
+  };
+}
+
+export function formatPetWeight({
+  weight,
+  weightUnit,
+  weightValue,
+}: PetWeightFields): string {
+  if (weightValue !== null && weightValue !== undefined && weightUnit) {
+    const normalizedUnit = normalizePetWeightUnit(weightUnit);
+
+    if (normalizedUnit) {
+      return `${weightValue} ${normalizedUnit}`;
+    }
+  }
+
+  return weight ?? "";
 }

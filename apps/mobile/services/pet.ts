@@ -1,8 +1,24 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { IPetInfoForm } from "@/constants/validation";
 import { IPagination, IPet } from "@/interfaces";
+import { parsePetWeight } from "@/utils/pet";
 import dayjs from "dayjs";
 import { APIs } from "./api-helper";
+
+const appendWeightFields = (formData: FormData, weight?: string | null) => {
+  if (weight) {
+    formData.append("weight", weight);
+  }
+
+  const parsedWeight = parsePetWeight(weight);
+
+  if (!parsedWeight) {
+    return;
+  }
+
+  formData.append("weightValue", String(parsedWeight.weightValue));
+  formData.append("weightUnit", parsedWeight.weightUnit);
+};
 
 export const createPetMutation = (params: IPetInfoForm) => {
   const formData = new FormData();
@@ -17,9 +33,7 @@ export const createPetMutation = (params: IPetInfoForm) => {
   if (params.breed) {
     formData.append("breed", params.breed);
   }
-  if (params.weight) {
-    formData.append("weight", params.weight);
-  }
+  appendWeightFields(formData, params.weight);
   if (params.notes) {
     formData.append("notes", params.notes);
   }
@@ -54,7 +68,11 @@ export const updatePetMutation = ({
   formData.append("species", params.species);
 
   formData.append("breed", params.breed ?? "");
-  formData.append("weight", params.weight ?? "");
+  if (params.weight) {
+    appendWeightFields(formData, params.weight);
+  } else {
+    formData.append("weight", "");
+  }
   formData.append("notes", params.notes ?? "");
 
   if (params.birthdate) {

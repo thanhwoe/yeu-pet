@@ -1,8 +1,8 @@
-import { PetCardCarousel } from "@/components/PetCardCarousel";
-import { PetInfoForm } from "@/components/PetInfoForm";
 import { Popup } from "@/components/Popup";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Body } from "@/components/ui/Typography";
+import { PetCardCarousel } from "@/features/pets/components/PetCardCarousel";
+import { PetInfoForm } from "@/features/pets/components/PetInfoForm";
 import { usePetCardSection } from "@/features/pets/usePetCardSection";
 
 export const PetCardSection = () => {
