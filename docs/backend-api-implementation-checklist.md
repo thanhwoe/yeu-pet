@@ -114,6 +114,7 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 
 - [x] Add root `GET /me` profile endpoint.
 - [x] Add root `PATCH /me` profile update endpoint.
+- [x] Add root `DELETE /me` account deactivation endpoint.
 - [x] Add `POST /me/avatar` avatar upload endpoint.
 - [x] Add `DELETE /me/avatar` avatar removal endpoint.
 - [x] Preserve existing `/users/me` compatibility routes.
@@ -127,6 +128,16 @@ This checklist tracks the Phase 1 backend refactor against `docs/04-backend-api-
 - [x] Preserve legacy string `weight` field for mobile compatibility.
 - [x] Preserve existing pet avatar URL on text-only pet updates.
 - [x] Add tests for numeric weight create/update mapping and avatar preservation.
+
+## Finalization Slice
+
+- [x] Audit implemented controller endpoints.
+- [x] Identify canonical mobile-facing endpoints.
+- [x] Document compatibility routes to avoid in new FE work.
+- [x] Add canonical `POST /pets/:id/medical-records` create route.
+- [x] Add medical attachment add/remove routes.
+- [x] Refactor photo-specific reports through shared moderation service.
+- [x] Add `docs/12-mobile-api-contract.md` as the FE integration contract.
 
 ## Ninth Implementation Slice
 

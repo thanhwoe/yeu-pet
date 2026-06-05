@@ -98,6 +98,7 @@ Use clear errors:
 ```txt
 GET    /me
 PATCH  /me
+DELETE /me
 POST   /me/avatar
 DELETE /me/avatar
 ```
@@ -106,6 +107,7 @@ Implementation note:
 
 - Root `/me` routes are implemented in `UsersModule`.
 - Existing `/users/me` routes remain available for compatibility.
+- `DELETE /me` is the canonical mobile account deactivation route; `/users/me` remains available for compatibility.
 - Public profile reads do not include `password_hash`.
 - Avatar upload is queued; avatar delete clears account avatar fields and queues file deletion when needed.
 
@@ -216,18 +218,19 @@ Important service rules:
 ### 4.7 Budget
 
 ```txt
-GET    /budget/summary?month=&year=&petId=
-GET    /budget/charts?month=&year=&petId=
-GET    /budget/budgets?month=&year=
-PUT    /budget/budgets
-GET    /budget/transactions?month=&year=&categoryId=&petId=
-POST   /budget/transactions
-PATCH  /budget/transactions/:id
-DELETE /budget/transactions/:id
-GET    /budget/categories
-POST   /budget/categories
-PATCH  /budget/categories/:id
-DELETE /budget/categories/:id
+GET    /budgets?month=&year=&petId=
+POST   /budgets
+PATCH  /budgets
+GET    /budgets/statistics/monthly?month=&year=&petId=
+GET    /budgets/statistics/yearly?year=&petId=
+GET    /budgets/transactions?month=&year=&categoryId=&petId=
+POST   /budgets/transactions
+PATCH  /budgets/transactions/:id
+DELETE /budgets/transactions/:id
+GET    /budgets/categories
+POST   /budgets/categories
+PATCH  /budgets/categories/:id
+DELETE /budgets/categories/:id
 ```
 
 Important service rules:
@@ -428,18 +431,18 @@ Used by:
 
 ## 8. Backend implementation checklist
 
-- [ ] Create/verify common auth guard.
-- [ ] Create current account decorator.
-- [ ] Create pagination DTO.
-- [ ] Create entitlement service.
-- [ ] Refactor pets module.
-- [ ] Refactor reminders module.
-- [ ] Refactor medical records module.
-- [ ] Refactor budget module.
+- [x] Create/verify common auth guard.
+- [x] Create current account decorator.
+- [x] Create pagination DTO.
+- [x] Create entitlement service.
+- [x] Refactor pets module.
+- [x] Refactor reminders module.
+- [x] Refactor medical records module.
+- [x] Refactor budget module.
 - [x] Refactor photos module.
-- [ ] Implement settings module.
-- [ ] Implement subscriptions module.
-- [ ] Implement AI module with streaming.
-- [ ] Implement sitter booking FE-support APIs.
-- [ ] Add tests for business rules.
-- [ ] Add API documentation or endpoint checklist.
+- [x] Implement settings module.
+- [x] Implement subscriptions module.
+- [x] Implement AI module with streaming.
+- [x] Implement sitter booking FE-support APIs.
+- [x] Add tests for business rules.
+- [x] Add API documentation or endpoint checklist.

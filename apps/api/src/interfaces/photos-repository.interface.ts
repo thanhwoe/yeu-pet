@@ -1,4 +1,4 @@
-import { accounts, pets, photos, reports } from '@app/generated/prisma/client';
+import { accounts, pets, photos } from '@app/generated/prisma/client';
 
 export const IPhotosRepository = Symbol('IPhotosRepository');
 
@@ -28,11 +28,5 @@ export interface IPhotosRepository {
     take?: number;
     viewer_account_id?: string;
   }): Promise<[PhotoWithAccount[], number]>;
-  report(params: {
-    reporter_account_id: string;
-    photo_id: string;
-    reason: string;
-    description?: string;
-  }): Promise<reports>;
   upsertPhotoView(account_id: string, photo_id: string): Promise<photos>;
 }

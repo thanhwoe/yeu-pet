@@ -11,6 +11,7 @@ import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   const usersRepository = {
+    delete: jest.fn(),
     existsByEmail: jest.fn(),
     findAccount: jest.fn(),
     findById: jest.fn(),
@@ -124,5 +125,18 @@ describe('UsersService', () => {
       ids: ['old-avatar'],
       jobName: FILE_DELETE_JOBS.USER_AVATAR,
     });
+  });
+
+  it('deactivates an account after password confirmation', async () => {
+    usersRepository.findAccount.mockResolvedValue({
+      id: 'account-1',
+      is_active: true,
+      password_hash:
+        '$2b$10$/JvMnDPVgbzT9MaxlEp3Num64usBICywAdHAR0AdQGm2CwGu4BbC6',
+    });
+
+    await service.deactivateAccount('account-1', 'password123');
+
+    expect(usersRepository.delete).toHaveBeenCalledWith('account-1');
   });
 });

@@ -1,6 +1,6 @@
 import { PrismaService } from '@app/database/prisma/prisma.service';
 import { photos } from '@app/generated/prisma/client';
-import { photos_status, report_target_type } from '@app/generated/prisma/enums';
+import { photos_status } from '@app/generated/prisma/enums';
 import { IPhotosRepository } from '@app/interfaces/photos-repository.interface';
 import { Injectable } from '@nestjs/common';
 
@@ -127,22 +127,6 @@ export class PhotosRepository implements IPhotosRepository {
   findById(id: string) {
     return this.prisma.photos.findFirst({
       where: { id, deleted_at: null },
-    });
-  }
-  report(params: {
-    reporter_account_id: string;
-    photo_id: string;
-    reason: string;
-    description?: string;
-  }) {
-    return this.prisma.reports.create({
-      data: {
-        reporter_account_id: params.reporter_account_id,
-        target_type: report_target_type.photo,
-        target_id: params.photo_id,
-        reason: params.reason,
-        description: params.description,
-      },
     });
   }
   upsertPhotoView(account_id: string, photo_id: string) {

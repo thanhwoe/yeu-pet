@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { MedicalRecordsService } from './medical-records.service';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
+import { CreatePetMedicalRecordDto } from './dto/create-pet-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesUploaded } from '@app/decorators/files-uploaded.decorator';
@@ -41,6 +42,25 @@ export class MedicalRecordsController {
     return this.medicalRecordsService.create(
       user,
       createMedicalRecordDto,
+      files,
+    );
+  }
+
+  @Post('pets/:id/medical-records')
+  @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
+  @UseInterceptors(FilesInterceptor('attachments', 5))
+  createForPet(
+    @CurrentUser() user: accounts,
+    @IdParam() petId: string,
+    @Body() createMedicalRecordDto: CreatePetMedicalRecordDto,
+    @FilesUploaded() files?: Express.Multer.File[],
+  ) {
+    return this.medicalRecordsService.create(
+      user,
+      {
+        ...createMedicalRecordDto,
+        petId,
+      },
       files,
     );
   }
@@ -80,5 +100,26 @@ export class MedicalRecordsController {
   @Delete('medical-records/:id')
   remove(@CurrentUser() user: accounts, @IdParam('id') id: string) {
     return this.medicalRecordsService.remove(user, id);
+  }
+
+  @Post('medical-records/:id/attachments')
+  @UseInterceptors(FilesInterceptor('attachments', 5))
+  @HttpCode(HttpStatus.ACCEPTED)
+  addAttachments(
+    @CurrentUser() user: accounts,
+    @IdParam() id: string,
+    @FilesUploaded({ required: true }) files: Express.Multer.File[],
+  ) {
+    return this.medicalRecordsService.addAttachments(user, id, files);
+  }
+
+  @Delete('medical-records/:id/attachments/:attachmentId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeAttachment(
+    @CurrentUser() user: accounts,
+    @IdParam('id') id: string,
+    @IdParam('attachmentId') attachmentId: string,
+  ) {
+    return this.medicalRecordsService.removeAttachment(user, id, attachmentId);
   }
 }

@@ -178,6 +178,57 @@ export class MedicalRecordsService {
     return this.medicalRecordsRepository.delete(id);
   }
 
+  async addAttachments(
+    user: accounts,
+    id: string,
+    files: Express.Multer.File[],
+  ) {
+    const medical = await this.assertMedicalRecordOwner(user, id);
+    const totalAttachments =
+      medical.medical_attachments.length + (files?.length ?? 0);
+
+    await this.subscriptionService.assertCanUploadMedicalImages(
+      user.id,
+      totalAttachments,
+    );
+
+    if (files.length > 0) {
+      await this.fileUploadService.addUploadJob({
+        jobName: FILE_UPLOAD_JOBS.MEDICAL_RECORDS,
+        files: files.map((f) => ({
+          file: f,
+          folder: `pets/${medical.pet_id}/medical/${medical.id}`,
+          quality: 'original',
+        })),
+        itemId: medical.id,
+      });
+    }
+
+    return this.medicalRecordsRepository.update(id, {
+      attachment_status: attachment_status.processing,
+    });
+  }
+
+  async removeAttachment(user: accounts, id: string, attachmentId: string) {
+    const medical = await this.assertMedicalRecordOwner(user, id);
+    const attachment = medical.medical_attachments.find(
+      (item) => item.id === attachmentId,
+    );
+
+    if (!attachment) {
+      throw new NotFoundException('Medical attachment not found');
+    }
+
+    await this.medicalRecordsRepository.deleteAttachments([attachmentId]);
+
+    if (attachment.file_id) {
+      await this.fileUploadService.addDeleteJob({
+        ids: [attachment.file_id],
+        jobName: FILE_DELETE_JOBS.MEDICAL_RECORDS,
+      });
+    }
+  }
+
   async destroyDeletedAttachments() {
     const attachments =
       await this.medicalRecordsRepository.findDeletedAttachments();

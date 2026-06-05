@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 import type { accounts } from '@app/generated/prisma/client';
+import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 
@@ -50,5 +51,14 @@ export class MeController {
   @HttpCode(HttpStatus.OK)
   deleteAvatar(@CurrentUser() user: accounts) {
     return this.usersService.deleteAvatar(user.id);
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deactivateMe(
+    @CurrentUser() user: accounts,
+    @Body() deleteUserDto: DeleteUserDto,
+  ) {
+    return this.usersService.deactivateAccount(user.id, deleteUserDto.password);
   }
 }

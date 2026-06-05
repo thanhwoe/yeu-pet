@@ -8,13 +8,13 @@ import { NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { SubscriptionService } from '../subscription/subscription.service';
+import { ModerationService } from '../moderation/moderation.service';
 import { PhotosService } from './photos.service';
 
 describe('PhotosService', () => {
   const photosRepository = {
     create: jest.fn(),
     findById: jest.fn(),
-    report: jest.fn(),
     upsertPhotoView: jest.fn(),
   };
   const photoLikesRepository = {
@@ -33,6 +33,9 @@ describe('PhotosService', () => {
   const subscriptionService = {
     assertCanUploadPhoto: jest.fn(),
   };
+  const moderationService = {
+    createReport: jest.fn(),
+  };
 
   let service: PhotosService;
 
@@ -47,6 +50,7 @@ describe('PhotosService', () => {
         { provide: IPetsRepository, useValue: petsRepository },
         { provide: FileUploadService, useValue: fileUploadService },
         { provide: SubscriptionService, useValue: subscriptionService },
+        { provide: ModerationService, useValue: moderationService },
         { provide: IEventBusService, useValue: {} },
         { provide: ICacheService, useValue: {} },
       ],
@@ -130,7 +134,10 @@ describe('PhotosService', () => {
       is_private: false,
       status: photos_status.ready,
     });
-    photosRepository.report.mockResolvedValue({ id: 'report-1' });
+    moderationService.createReport.mockResolvedValue({
+      reported: true,
+      report: { id: 'report-1' },
+    });
 
     await expect(
       service.report({ id: 'account-1' } as never, 'photo-1', {
@@ -141,6 +148,13 @@ describe('PhotosService', () => {
       reported: true,
       report: { id: 'report-1' },
     });
+    expect(moderationService.createReport).toHaveBeenCalledWith(
+      { id: 'account-1' },
+      expect.objectContaining({
+        targetId: 'photo-1',
+        targetType: 'photo',
+      }),
+    );
   });
 
   it('does not expose private photos owned by someone else', async () => {

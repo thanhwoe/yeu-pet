@@ -25,6 +25,8 @@ import {
 import { assertOwnerOrAdmin, isOwnerOrAdmin } from '@app/utils/ownership';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { SubscriptionService } from '../subscription/subscription.service';
+import { ModerationService } from '../moderation/moderation.service';
+import { report_target_type } from '@app/generated/prisma/enums';
 
 const toBoolean = (value: BooleanFormValue): boolean =>
   value === true || value === 'true' || value === '1';
@@ -46,6 +48,7 @@ export class PhotosService {
     @Inject(IPetsRepository)
     private readonly petsRepository: IPetsRepository,
     private readonly subscriptionService: SubscriptionService,
+    private readonly moderationService: ModerationService,
     private readonly fileUploadService: FileUploadService,
     @Inject(IEventBusService)
     private readonly eventBusService: IEventBusService,
@@ -265,17 +268,12 @@ export class PhotosService {
   async report(user: accounts, id: string, reportPhotoDto: ReportPhotoDto) {
     await this.assertReadable(user, id);
 
-    const report = await this.photosRepository.report({
-      reporter_account_id: user.id,
-      photo_id: id,
+    return this.moderationService.createReport(user, {
+      targetType: report_target_type.photo,
+      targetId: id,
       reason: reportPhotoDto.reason,
       description: reportPhotoDto.description,
     });
-
-    return {
-      reported: true,
-      report,
-    };
   }
 
   async update(user: accounts, id: string, updatePhotoDto: UpdatePhotoDto) {

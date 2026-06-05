@@ -18,6 +18,7 @@ describe('MedicalRecordsService', () => {
   };
   const fileUploadService = {
     addUploadJob: jest.fn(),
+    addDeleteJob: jest.fn(),
   };
   const subscriptionService = {
     assertCanCreateMedicalRecord: jest.fn(),
@@ -112,5 +113,61 @@ describe('MedicalRecordsService', () => {
     expect(medicalRecordsRepository.deleteAttachments).toHaveBeenCalledWith([
       'attachment-2',
     ]);
+  });
+
+  it('adds attachments through the dedicated attachment route flow', async () => {
+    medicalRecordsRepository.findById.mockResolvedValue({
+      id: 'record-1',
+      pet_id: 'pet-1',
+      medical_attachments: [{ id: 'attachment-1' }],
+    });
+    petsRepository.findById.mockResolvedValue({
+      id: 'pet-1',
+      account_id: 'account-1',
+    });
+    medicalRecordsRepository.update.mockResolvedValue({ id: 'record-1' });
+
+    await service.addAttachments({ id: 'account-1' } as never, 'record-1', [
+      { originalname: 'new.png' },
+    ] as Express.Multer.File[]);
+
+    expect(
+      subscriptionService.assertCanUploadMedicalImages,
+    ).toHaveBeenCalledWith('account-1', 2);
+    expect(fileUploadService.addUploadJob).toHaveBeenCalledWith(
+      expect.objectContaining({
+        itemId: 'record-1',
+      }),
+    );
+  });
+
+  it('soft-deletes a single attachment and queues file deletion', async () => {
+    medicalRecordsRepository.findById.mockResolvedValue({
+      id: 'record-1',
+      pet_id: 'pet-1',
+      medical_attachments: [
+        { id: 'attachment-1', file_id: 'file-1' },
+        { id: 'attachment-2', file_id: 'file-2' },
+      ],
+    });
+    petsRepository.findById.mockResolvedValue({
+      id: 'pet-1',
+      account_id: 'account-1',
+    });
+    medicalRecordsRepository.deleteAttachments.mockResolvedValue({ count: 1 });
+
+    await service.removeAttachment(
+      { id: 'account-1' } as never,
+      'record-1',
+      'attachment-1',
+    );
+
+    expect(medicalRecordsRepository.deleteAttachments).toHaveBeenCalledWith([
+      'attachment-1',
+    ]);
+    expect(fileUploadService.addDeleteJob).toHaveBeenCalledWith({
+      ids: ['file-1'],
+      jobName: 'medical-records',
+    });
   });
 });
