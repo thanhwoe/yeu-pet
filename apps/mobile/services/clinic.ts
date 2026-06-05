@@ -3,6 +3,10 @@ import { IClinic, IPagination } from "@/interfaces";
 import { parseQueryParams } from "@/utils";
 import { APIs } from "./api-helper";
 
+type LegacyPagination<T> = IPagination<T> & {
+  nextPage?: number | null;
+};
+
 export const getListSuggestClinicQuery = (city: string) =>
   APIs.get<{ data: IClinic[] }>(API_ROUTES.SUGGEST_CLINIC(city));
 
@@ -19,7 +23,10 @@ export const getListClinicQuery = ({
   city,
   query,
 }: IClinicQuery) =>
-  APIs.get<{ data: IClinic[]; metadata: IPagination }>(API_ROUTES.LIST_CLINIC, {
-    params: { limit, page, city, query },
-    paramsSerializer: parseQueryParams,
-  });
+  APIs.get<{ data: IClinic[]; metadata: LegacyPagination<IClinic> }>(
+    API_ROUTES.LIST_CLINIC,
+    {
+      params: { limit, page, city, query },
+      paramsSerializer: parseQueryParams,
+    },
+  );

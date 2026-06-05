@@ -66,7 +66,7 @@ export const ReminderSection = () => {
           <ReminderItem data={i} key={i.id} />
         ))}
         <TouchableOpacity
-          onPress={() => router.push("/(reminder)")}
+          onPress={() => router.push("/(tabs)/(reminder)")}
           className="mt-16 border-[1.5px] border-dashed rounded-32 p-16 items-center border-line-secondary"
         >
           <Body weight="bold" className="text-text-link">

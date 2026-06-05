@@ -6,6 +6,8 @@ import {
   ISitterBooking,
   ISitterBookingCancelForm,
   ISitterBookingForm,
+  ISitterBookingMessage,
+  ISitterBookingMessageForm,
   ISitterReview,
   ISitterReviewForm,
   SitterBookingStatus,
@@ -17,12 +19,17 @@ interface ISitterQuery {
   limit?: number;
   page?: number;
   address?: string;
+  city?: string;
+  district?: string;
+  minRating?: string | number;
+  maxPrice?: string | number;
 }
 
 interface ISitterBookingQuery {
   limit?: number;
   page?: number;
   status?: SitterBookingStatus;
+  role?: "owner" | "sitter";
 }
 
 export const getSittersQuery = (params?: ISitterQuery) =>
@@ -38,7 +45,7 @@ export const getMySitterProfileQuery = () =>
   APIs.get<IPetSitter | null>(API_ROUTES.MY_SITTER_PROFILE);
 
 export const registerSitterMutation = (params: IPetSitterForm) =>
-  APIs.post<IPetSitter>(API_ROUTES.REGISTER_SITTER, { data: params });
+  APIs.post<IPetSitter>(API_ROUTES.CREATE_MY_SITTER_PROFILE, { data: params });
 
 export const updateSitterMutation = ({
   id,
@@ -50,8 +57,8 @@ export const createSitterBookingMutation = (params: ISitterBookingForm) =>
   APIs.post<ISitterBooking>(API_ROUTES.SITTER_BOOKINGS, { data: params });
 
 export const getSitterBookingsQuery = (params?: ISitterBookingQuery) =>
-  APIs.get<IPagination<ISitterBooking>>(API_ROUTES.SITTER_BOOKINGS, {
-    params,
+  APIs.get<IPagination<ISitterBooking>>(API_ROUTES.MY_SITTER_BOOKINGS, {
+    params: { role: "owner", ...params },
     paramsSerializer: parseQueryParams,
   });
 
@@ -59,9 +66,9 @@ export const getSitterBookingsForSitterQuery = (
   params?: ISitterBookingQuery,
 ) =>
   APIs.get<IPagination<ISitterBooking>>(
-    API_ROUTES.SITTER_BOOKINGS_FOR_SITTER,
+    API_ROUTES.MY_SITTER_BOOKINGS,
     {
-      params,
+      params: { role: "sitter", ...params },
       paramsSerializer: parseQueryParams,
     },
   );
@@ -69,20 +76,45 @@ export const getSitterBookingsForSitterQuery = (
 export const getSitterBookingDetailQuery = (id: string) =>
   APIs.get<ISitterBooking>(API_ROUTES.SITTER_BOOKING_DETAIL(id));
 
+export const getSitterBookingMessagesQuery = ({
+  bookingId,
+  ...params
+}: {
+  bookingId: string;
+  page?: number;
+  limit?: number;
+}) =>
+  APIs.get<IPagination<ISitterBookingMessage>>(
+    API_ROUTES.SITTER_BOOKING_MESSAGES(bookingId),
+    {
+      params,
+      paramsSerializer: parseQueryParams,
+    },
+  );
+
+export const createSitterBookingMessageMutation = ({
+  bookingId,
+  ...params
+}: ISitterBookingMessageForm & { bookingId: string }) =>
+  APIs.post<ISitterBookingMessage>(
+    API_ROUTES.SITTER_BOOKING_MESSAGES(bookingId),
+    { data: params },
+  );
+
 export const confirmSitterBookingMutation = (id: string) =>
-  APIs.patch<ISitterBooking>(API_ROUTES.CONFIRM_SITTER_BOOKING(id));
+  APIs.post<ISitterBooking>(API_ROUTES.ACCEPT_SITTER_BOOKING(id));
 
 export const rejectSitterBookingMutation = (id: string) =>
-  APIs.patch<ISitterBooking>(API_ROUTES.REJECT_SITTER_BOOKING(id));
+  APIs.post<ISitterBooking>(API_ROUTES.REJECT_SITTER_BOOKING(id));
 
 export const completeSitterBookingMutation = (id: string) =>
-  APIs.patch<ISitterBooking>(API_ROUTES.COMPLETE_SITTER_BOOKING(id));
+  APIs.post<ISitterBooking>(API_ROUTES.COMPLETE_SITTER_BOOKING(id));
 
 export const cancelSitterBookingMutation = ({
   id,
   ...params
 }: ISitterBookingCancelForm & { id: string }) =>
-  APIs.patch<ISitterBooking>(API_ROUTES.CANCEL_SITTER_BOOKING(id), {
+  APIs.post<ISitterBooking>(API_ROUTES.CANCEL_SITTER_BOOKING(id), {
     data: params,
   });
 

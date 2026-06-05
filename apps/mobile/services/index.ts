@@ -11,5 +11,7 @@ export * from "./user";
 export * from "./medical-record";
 export * from "./notifications";
 export * from "./photo-comments";
+export * from "./reports";
 export * from "./settings";
 export * from "./sitter";
+export * from "./subscriptions";

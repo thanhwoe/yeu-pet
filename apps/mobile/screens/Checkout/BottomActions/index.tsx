@@ -1,7 +1,7 @@
 import { BottomActionWrapper } from "@/components/BottomActionWrapper";
 import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/Skeleton";
 import { Text } from "@/components/ui/Text";
-import { withLoading } from "@/hocs/withLoading";
 import { IOrderSummaryResponse } from "@/interfaces";
 import { View } from "react-native";
 
@@ -11,8 +11,6 @@ interface IProps {
   disabled?: boolean;
   onPlaceOrder?: (amount: number) => void;
 }
-
-const EnhancedText = withLoading(Text);
 
 export const BottomActions = ({
   data,
@@ -24,13 +22,11 @@ export const BottomActions = ({
     <BottomActionWrapper>
       <View className="flex-row justify-between">
         <Text className="font-semibold">Total</Text>
-        <EnhancedText
-          loadingClassName="h-5 w-20"
-          isLoading={loading}
-          className="text-text-link font-semibold"
-        >
-          {data?.total}
-        </EnhancedText>
+        {loading ? (
+          <Skeleton className="h-5 w-20" />
+        ) : (
+          <Text className="text-text-link font-semibold">{data?.total}</Text>
+        )}
       </View>
       <Button
         className="flex-1"

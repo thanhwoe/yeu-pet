@@ -50,7 +50,7 @@ class APIHelper {
 
   private transformResponse(): void {
     this.axiosClient.interceptors.response.use((response) => {
-      if (response.data) {
+      if (response.data && typeof response.data === "object") {
         response.data = camelcaseKeys(response.data, { deep: true });
       }
       return response;
@@ -114,7 +114,15 @@ class APIHelper {
           throw new Error("Network error. Please try again later.");
         }
 
-        throw error.response.data;
+        const payload = error.response.data;
+        if (payload && typeof payload === "object") {
+          throw camelcaseKeys(payload, { deep: true });
+        }
+
+        throw {
+          message: String(payload || "Request failed. Please try again."),
+          statusCode: error.response.status,
+        };
       });
   }
 

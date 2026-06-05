@@ -15,6 +15,8 @@ export * from "./reminder";
 export * from "./shipping-address";
 export * from "./settings";
 export * from "./sitter";
+export * from "./subscription";
+export * from "./reports";
 export * from "./user";
 export * from "./medical-record";
 export * from "./notification";

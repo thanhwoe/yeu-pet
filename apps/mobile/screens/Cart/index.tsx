@@ -44,7 +44,7 @@ export const CartScreen = () => {
   const { mutate: deleteCartItem, isPending: isDeleting } = useMutation({
     mutationFn: deleteCartItemMutation,
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.errors?.[0].message ?? "Failed to delete item" });
     },
     onSuccess: (_, variable) => {
       setCartItems((prev) => prev.filter((item) => item.id !== variable));
@@ -62,10 +62,10 @@ export const CartScreen = () => {
     setCartItems(updatedItems);
 
     const payload = updatedItems.map((item) => ({
-      id: item.id,
+      id: item.id ?? "",
       is_select: value,
       quantity: item.quantity,
-    }));
+    })).filter((item) => item.id);
 
     handleUpdateCart(payload);
   };

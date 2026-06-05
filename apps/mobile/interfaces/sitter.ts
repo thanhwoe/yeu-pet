@@ -71,6 +71,24 @@ export interface ISitterBookingCancelForm {
   reason?: string;
 }
 
+export type SitterBookingMessageType = "text" | "image" | "system";
+
+export interface ISitterBookingMessage {
+  id: string;
+  bookingId: string;
+  senderAccountId: string;
+  type: SitterBookingMessageType;
+  content: string | null;
+  imageUrl: string | null;
+  createdAt: string | null;
+}
+
+export interface ISitterBookingMessageForm {
+  content?: string;
+  imageUrl?: string;
+  type?: SitterBookingMessageType;
+}
+
 export interface ISitterReview {
   id: string;
   accountId: string;

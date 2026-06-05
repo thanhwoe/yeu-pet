@@ -1,6 +1,6 @@
 import "@tanstack/react-query";
 
-interface ErrorResponse {
+export interface ErrorResponse {
   statusCode: number;
   timestamp: string;
   path: string;

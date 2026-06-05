@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -13,7 +13,7 @@ Notifications.setNotificationHandler({
 });
 
 function handleRegistrationError(errorMessage: string) {
-  alert(errorMessage);
+  Alert.alert("Notifications", errorMessage);
   throw new Error(errorMessage);
 }
 
@@ -61,6 +61,8 @@ export async function registerForPushNotificationsAsync() {
   } else {
     handleRegistrationError("Must use physical device for push notifications");
   }
+
+  return undefined;
 }
 
 // export const schedulePushNotification = async (payload: IReminderResponse) => {

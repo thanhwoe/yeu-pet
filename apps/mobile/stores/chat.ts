@@ -1,6 +1,9 @@
 import { PERSIST_KEYS } from "@/constants/store";
 import { ChatRole, IChatMessage } from "@/interfaces";
-import { sendAiRequest } from "@/services/ai";
+import {
+  createAiConversationMutation,
+  sendAiMessageMutation,
+} from "@/services/ai";
 import { isToday } from "@/utils/date";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import "react-native-get-random-values";
@@ -13,6 +16,7 @@ type State = {
   messages: IChatMessage[];
   loading: boolean;
   context: string | null;
+  conversationId: string | null;
 };
 
 type Actions = {
@@ -20,6 +24,7 @@ type Actions = {
   clearMessage: () => void;
   setLoading: (loading: boolean) => void;
   setContext: (context: string) => void;
+  setConversationId: (conversationId: string | null) => void;
   markTypingComplete: (messageId: string) => void;
   sendMessage: (content: string, context?: string) => Promise<void>;
 };
@@ -29,6 +34,7 @@ const useChatStoreBase = create<State & Actions>()(
       messages: [],
       loading: false,
       context: null,
+      conversationId: null,
       addMessage: (message) => {
         const payload: IChatMessage = {
           ...message,
@@ -39,9 +45,11 @@ const useChatStoreBase = create<State & Actions>()(
           messages: [...state.messages, payload],
         }));
       },
-      clearMessage: () => set({ messages: [], context: null }),
+      clearMessage: () =>
+        set({ messages: [], context: null, conversationId: null }),
       setLoading: (loading) => set({ loading }),
       setContext: (context) => set({ context }),
+      setConversationId: (conversationId) => set({ conversationId }),
       markTypingComplete: (messageId: string) => {
         set((state) => ({
           messages: state.messages.map((message) => {
@@ -70,24 +78,34 @@ const useChatStoreBase = create<State & Actions>()(
         }));
 
         try {
-          const { messages, context: currentContext } = get();
-          const history = messages.slice(-6).map((m) => ({
-            role: m.role,
-            content: m.content,
-          }));
+          const currentConversationId =
+            get().conversationId ??
+            (
+              await createAiConversationMutation({
+                title: content.slice(0, 80),
+              })
+            ).id;
 
-          const response = await sendAiRequest({
-            message: content,
-            context: context || currentContext,
-            conversationHistory: history,
+          if (!get().conversationId) {
+            set({ conversationId: currentConversationId });
+          }
+
+          const response = await sendAiMessageMutation({
+            conversationId: currentConversationId,
+            content,
           });
 
           const assistantPayload: IChatMessage = {
             role: ChatRole.ASSISTANT,
-            content: response.message,
-            context: context || currentContext,
-            id: v4(),
-            timestamp: new Date().toISOString(),
+            content:
+              response.assistantMessage?.content ??
+              response.content ??
+              response.message?.content ??
+              "Sorry, I could not generate a response.",
+            context,
+            id: response.assistantMessage?.id ?? v4(),
+            timestamp:
+              response.assistantMessage?.createdAt ?? new Date().toISOString(),
           };
 
           set((state) => ({
@@ -115,6 +133,7 @@ const useChatStoreBase = create<State & Actions>()(
       partialize: (state) => ({
         messages: state.messages,
         context: state.context,
+        conversationId: state.conversationId,
       }),
       onRehydrateStorage: () => {
         return async (state) => {
@@ -122,6 +141,7 @@ const useChatStoreBase = create<State & Actions>()(
             state.messages = state.messages.filter((message) =>
               isToday(message.timestamp)
             );
+            state.conversationId = null;
           }
         };
       },

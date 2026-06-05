@@ -13,7 +13,12 @@ export const TrainingScreen = () => {
           <TouchableOpacity
             key={item.id}
             className="bg-background-white py-4 px-4 rounded-2xl"
-            onPress={() => router.push(`/(training)/${item.level}`)}
+            onPress={() =>
+              router.push({
+                pathname: "/training/[level]",
+                params: { level: String(item.level) },
+              })
+            }
           >
             <Text>
               Level: {item.level} - {item.title}

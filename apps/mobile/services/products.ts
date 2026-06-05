@@ -3,6 +3,10 @@ import { IPagination, IProduct, IProductDetail } from "@/interfaces";
 import { parseQueryParams } from "@/utils";
 import { APIs } from "./api-helper";
 
+type LegacyPagination<T> = IPagination<T> & {
+  nextPage?: number | null;
+};
+
 interface IProductsQuery {
   limit: number;
   page: number;
@@ -15,12 +19,12 @@ export const getListProductsQuery = ({
   category,
   query,
 }: IProductsQuery) =>
-  APIs.get<{ data: IProduct[]; metadata: IPagination }>(
+  APIs.get<{ data: IProduct[]; metadata: LegacyPagination<IProduct> }>(
     API_ROUTES.LIST_PRODUCTS,
     {
       params: { limit, page, category, query },
       paramsSerializer: parseQueryParams,
-    }
+    },
   );
 
 export const getProductDetailQuery = ({ id }: { id: string }) =>

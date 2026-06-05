@@ -20,7 +20,7 @@ export const getMedicalRecordsByPetIdQuery = ({
   ...params
 }: IMedicalRecordQueryParams) =>
   APIs.get<IPagination<IMedicalRecord>>(
-    API_ROUTES.MEDICAL_RECORDS_BY_PET(petId),
+    API_ROUTES.MEDICAL_RECORDS_FOR_PET(petId),
     {
       params,
       paramsSerializer: parseQueryParams,
@@ -51,10 +51,13 @@ export const createMedicalRecordMutation = (data: IMedicalRecordForm) => {
     } as any);
   });
 
-  return APIs.post<IMedicalRecord>(API_ROUTES.MEDICAL_RECORDS, {
-    data: formData,
-    headers: { "content-type": "multipart/form-data" },
-  });
+  return APIs.post<IMedicalRecord>(
+    API_ROUTES.MEDICAL_RECORDS_FOR_PET(data.petId),
+    {
+      data: formData,
+      headers: { "content-type": "multipart/form-data" },
+    },
+  );
 };
 
 export const updateMedicalRecordMutation = ({
@@ -94,3 +97,35 @@ export const updateMedicalRecordMutation = ({
 
 export const deleteMedicalRecordMutation = (id: string) =>
   APIs.delete(API_ROUTES.MEDICAL_RECORD_DETAIL(id));
+
+export const addMedicalRecordAttachmentsMutation = ({
+  id,
+  attachments,
+}: {
+  id: string;
+  attachments: IMedicalRecordForm["attachments"];
+}) => {
+  const formData = new FormData();
+
+  attachments?.forEach((attachment) => {
+    formData.append("attachments", {
+      uri: attachment.uri,
+      name: attachment.name,
+      type: attachment.type,
+      size: attachment.size,
+    } as any);
+  });
+
+  return APIs.post<IMedicalRecord>(API_ROUTES.MEDICAL_RECORD_ATTACHMENTS(id), {
+    data: formData,
+    headers: { "content-type": "multipart/form-data" },
+  });
+};
+
+export const deleteMedicalRecordAttachmentMutation = ({
+  id,
+  attachmentId,
+}: {
+  id: string;
+  attachmentId: string;
+}) => APIs.delete(API_ROUTES.MEDICAL_RECORD_ATTACHMENT(id, attachmentId));

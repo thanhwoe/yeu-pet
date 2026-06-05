@@ -1,6 +1,5 @@
 import * as Location from "expo-location";
-import { useEffect, useRef, useState } from "react";
-import { AppState } from "react-native";
+import { useEffect, useState } from "react";
 
 export const useLocation = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -9,7 +8,6 @@ export const useLocation = () => {
 
   const [address, setAddress] = useState<Location.LocationGeocodedAddress>();
   const [loading, setLoading] = useState(false);
-  const appState = useRef(AppState.currentState);
   // Request location permissions
   const requestLocationPermission = async () => {
     try {

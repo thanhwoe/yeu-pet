@@ -117,6 +117,12 @@ export const SETTINGS_KEY = {
   detail: () => [...SETTINGS_KEY.all, "detail"] as const,
 };
 
+export const SUBSCRIPTION_KEY = {
+  all: [{ scope: "subscription" }] as const,
+  detail: () => [...SUBSCRIPTION_KEY.all, "detail"] as const,
+  entitlements: () => [...SUBSCRIPTION_KEY.all, "entitlements"] as const,
+};
+
 export const SITTER_KEY = {
   all: [{ scope: "sitter" }] as const,
   lists: () => [...SITTER_KEY.all, "list"] as const,
@@ -136,6 +142,22 @@ export const SITTER_BOOKING_KEY = {
     [...SITTER_BOOKING_KEY.all, "sitter-list", { params }] as const,
   details: () => [...SITTER_BOOKING_KEY.all, "detail"] as const,
   detail: (id?: string) => [...SITTER_BOOKING_KEY.details(), id] as const,
+  messages: (id?: string) =>
+    [...SITTER_BOOKING_KEY.all, "messages", id] as const,
+};
+
+export const REPORTS_KEY = {
+  all: [{ scope: "reports" }] as const,
+  lists: () => [...REPORTS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...REPORTS_KEY.lists(), { params }] as const,
+};
+
+export const BLOCKS_KEY = {
+  all: [{ scope: "blocks" }] as const,
+  lists: () => [...BLOCKS_KEY.all, "list"] as const,
+  list: (params?: IQueryParams) =>
+    [...BLOCKS_KEY.lists(), { params }] as const,
 };
 
 export const SITTER_REVIEW_KEY = {

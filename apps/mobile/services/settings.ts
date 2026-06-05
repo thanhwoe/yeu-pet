@@ -6,4 +6,4 @@ export const getUserSettingsQuery = () =>
   APIs.get<IUserSettings>(API_ROUTES.SETTINGS);
 
 export const updateUserSettingsMutation = (params: IUserSettingsForm) =>
-  APIs.put<IUserSettings>(API_ROUTES.SETTINGS, { data: params });
+  APIs.patch<IUserSettings>(API_ROUTES.SETTINGS, { data: params });

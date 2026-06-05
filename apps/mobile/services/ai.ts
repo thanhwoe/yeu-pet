@@ -1,81 +1,96 @@
-import { ENV } from "@/constants/common";
-import { GeminiRequestOptions } from "@/interfaces";
-import { GoogleGenAI } from "@google/genai";
-import * as Network from "expo-network";
+import { API_ROUTES } from "@/constants/api-routes";
+import {
+  AiConversation,
+  AiCreateConversationInput,
+  AiMessage,
+  AiStreamResult,
+  IPagination,
+} from "@/interfaces";
+import { parseQueryParams } from "@/utils";
+import { APIs } from "./api-helper";
 
-const ai = new GoogleGenAI({
-  apiKey: ENV.GEMINI_API_KEY,
-});
-
-const INIT_PROMPT = `You are AI Vet Doctor, a virtual veterinarian in a pet healthcare application.
-
-Your role:
-- Provide safe, professional veterinary guidance for pet owners.
-- Always ask clarifying questions if important information is missing (species, breed, age, weight, duration of symptoms, medical history).
-- Offer possible causes based on symptoms, not definitive diagnoses.
-- Suggest safe, general home-care steps when appropriate.
-- Always include a section: “When to see a veterinarian immediately”.
-- Never provide prescription medication names or dosages.
-- Never guarantee a diagnosis.
-- If symptoms indicate risk, instruct the user to visit a licensed veterinarian urgently.
-- Use clear, friendly, concise language.
-
-Response format:
-1. Summary of understanding
-2. Follow-up questions (if needed)
-3. Possible causes (probabilistic, not definitive)
-4. Suggested home care
-5. When to see a veterinarian immediately
-`;
-
-export const sendAiRequest = async ({
-  message,
-  context,
-  conversationHistory = [],
-}: GeminiRequestOptions) => {
-  let prompt = INIT_PROMPT + "\n\n";
-
-  if (context) {
-    prompt += `${context}\n\n`;
-  }
-
-  conversationHistory.forEach((c) => {
-    prompt += `${c.role}: ${c.content}\n\n`;
+export const getAiConversationsQuery = (params?: {
+  page?: number;
+  limit?: number;
+}) =>
+  APIs.get<IPagination<AiConversation>>(API_ROUTES.AI_CONVERSATIONS, {
+    params,
+    paramsSerializer: parseQueryParams,
   });
 
-  prompt += `user: ${message}\n\n assistant:`;
+export const createAiConversationMutation = (
+  params: AiCreateConversationInput,
+) => APIs.post<AiConversation>(API_ROUTES.AI_CONVERSATIONS, { data: params });
 
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
-      contents: prompt,
-    });
+export const getAiMessagesQuery = ({
+  conversationId,
+  ...params
+}: {
+  conversationId: string;
+  page?: number;
+  limit?: number;
+}) =>
+  APIs.get<IPagination<AiMessage>>(
+    API_ROUTES.AI_CONVERSATION_MESSAGES(conversationId),
+    {
+      params,
+      paramsSerializer: parseQueryParams,
+    },
+  );
 
-    const aiMessage = response.text || "Sorry, I could not generate a response";
-    return {
-      message: aiMessage,
-    };
-  } catch (error: any) {
-    const { isInternetReachable } = await Network.getNetworkStateAsync();
+export const sendAiMessageMutation = ({
+  conversationId,
+  content,
+}: {
+  conversationId: string;
+  content: string;
+}) =>
+  APIs.post<string | AiStreamResult>(
+    API_ROUTES.AI_CONVERSATION_MESSAGES_STREAM(conversationId),
+    { data: { content } },
+  ).then(parseAiStreamResult);
 
-    let errorMessage =
-      "I'm having trouble connecting to the Ai service right now. Please try again later.";
+export const deleteAiConversationMutation = (conversationId: string) =>
+  APIs.delete(API_ROUTES.AI_CONVERSATION_DETAIL(conversationId));
 
-    if (error?.status === 429 || error?.message?.includes("quota")) {
-      errorMessage =
-        "I'm sorry, I've reached my daily limit. Please try again tomorrow.";
-    } else if (error?.status === 401 || error?.message?.includes("API_KEY")) {
-      errorMessage =
-        "There's an authentication error. Please check your API key.";
-    } else if (error?.status === 403) {
-      errorMessage = "Access denied. Please contact support.";
-    } else if (!isInternetReachable) {
-      errorMessage =
-        "No internet connection. Please check your connection and try again.";
+const parseAiStreamResult = (
+  response: string | AiStreamResult,
+): AiStreamResult => {
+  if (typeof response !== "string") {
+    return response;
+  }
+
+  const result: AiStreamResult = {};
+  const events = response
+    .split(/\n\n+/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+
+  for (const eventBlock of events) {
+    const eventName = eventBlock.match(/^event:\s*(.+)$/m)?.[1];
+    const data = eventBlock.match(/^data:\s*(.+)$/m)?.[1];
+
+    if (!eventName || !data) {
+      continue;
     }
 
-    return {
-      message: errorMessage,
-    };
+    try {
+      const parsed = JSON.parse(data);
+
+      if (eventName === "message") {
+        result.message = parsed;
+        result.content = parsed.content;
+        result.safety = parsed.safety;
+      }
+
+      if (eventName === "done") {
+        result.assistantMessage = parsed.assistantMessage;
+        result.userMessage = parsed.userMessage;
+      }
+    } catch {
+      // Ignore malformed SSE fragments and let the UI show the parsed pieces.
+    }
   }
+
+  return result;
 };

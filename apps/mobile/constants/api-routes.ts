@@ -7,7 +7,9 @@ export const API_ROUTES = {
   COMPLETE_ONBOARDING: "/users/complete-onboarding",
   RESEND_OTP: "/users/resend-otp",
   VERIFY_OTP: "/users/verify",
-  ME: "/users/me",
+  ME: "/me",
+  ME_AVATAR: "/me/avatar",
+  DEACTIVATE_ME: "/me",
   DEVICE: "/devices",
 
   REQUEST_RESET_PASSWORD: "/users/password/request",
@@ -38,9 +40,9 @@ export const API_ROUTES = {
   BUDGET_STATISTIC_YEARLY: "/budgets/statistics/yearly",
 
   UPLOAD_PHOTO: "/photos",
-  PHOTOS: "/photos",
+  PHOTOS: "/photos/social",
   USER_PHOTOS: "/photos/me",
-  TOGGLE_LIKE_PHOTO: (id: string) => `/photos/${id}/like`,
+  LIKE_PHOTO: (id: string) => `/photos/${id}/like`,
   DELETE_PHOTO: (id: string) => `/photos/${id}`,
   PHOTO_STATS: (id: string) => `/photos/${id}`,
   PHOTO_COMMENTS: (photoId: string) => `/photos/${photoId}/comments`,
@@ -57,17 +59,23 @@ export const API_ROUTES = {
 
   SETTINGS: "/settings",
 
+  SUBSCRIPTIONS_ME: "/subscriptions/me",
+  SUBSCRIPTION_ENTITLEMENTS: "/subscriptions/entitlements",
+  SUBSCRIPTION_MOCK_UPGRADE: "/subscriptions/mock-upgrade",
+  SUBSCRIPTION_MOCK_DOWNGRADE: "/subscriptions/mock-downgrade",
+
   SITTERS: "/sitters",
-  REGISTER_SITTER: "/sitters/register",
+  CREATE_MY_SITTER_PROFILE: "/sitters/me",
   MY_SITTER_PROFILE: "/sitters/me",
   SITTER_DETAIL: (id: string) => `/sitters/${id}`,
   SITTER_BOOKINGS: "/sitter-bookings",
-  SITTER_BOOKINGS_FOR_SITTER: "/sitter-bookings/sitter",
+  MY_SITTER_BOOKINGS: "/sitter-bookings/me",
   SITTER_BOOKING_DETAIL: (id: string) => `/sitter-bookings/${id}`,
-  CONFIRM_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/confirm`,
+  ACCEPT_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/accept`,
   REJECT_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/reject`,
   COMPLETE_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/complete`,
   CANCEL_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/cancel`,
+  SITTER_BOOKING_MESSAGES: (id: string) => `/sitter-bookings/${id}/messages`,
   SITTER_REVIEWS: "/sitter-reviews",
   SITTER_REVIEWS_BY_SITTER: (sitterId: string) =>
     `/sitter-reviews/${sitterId}`,
@@ -91,6 +99,22 @@ export const API_ROUTES = {
   PAYMENT_VNPAY: "/payment/vnpay",
 
   MEDICAL_RECORDS: "/medical-records",
+  MEDICAL_RECORDS_FOR_PET: (petId: string) =>
+    `/pets/${petId}/medical-records`,
   MEDICAL_RECORD_DETAIL: (id: string) => `/medical-records/${id}`,
-  MEDICAL_RECORDS_BY_PET: (petId: string) => `/pets/${petId}/medical-records`,
+  MEDICAL_RECORD_ATTACHMENTS: (id: string) =>
+    `/medical-records/${id}/attachments`,
+  MEDICAL_RECORD_ATTACHMENT: (id: string, attachmentId: string) =>
+    `/medical-records/${id}/attachments/${attachmentId}`,
+
+  AI_CONVERSATIONS: "/ai/conversations",
+  AI_CONVERSATION_DETAIL: (id: string) => `/ai/conversations/${id}`,
+  AI_CONVERSATION_MESSAGES: (id: string) => `/ai/conversations/${id}/messages`,
+  AI_CONVERSATION_MESSAGES_STREAM: (id: string) =>
+    `/ai/conversations/${id}/messages/stream`,
+
+  REPORTS: "/reports",
+  MY_REPORTS: "/reports/me",
+  MY_BLOCKS: "/blocks/me",
+  BLOCK_USER: (id: string) => `/blocks/${id}`,
 };

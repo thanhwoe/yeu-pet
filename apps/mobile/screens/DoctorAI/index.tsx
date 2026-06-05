@@ -20,7 +20,7 @@ import {
 export const DoctorAIScreen = () => {
   const flatListRef = useRef<FlatList>(null);
   const { messages, sendMessage, markTypingComplete, loading } = useChatStore();
-  const userInfo = useUserInfoStore.use.userInfo();
+  const userInfo = useUserInfoStore.use.user();
 
   const handleSendMessage = async (message: string) => {
     try {

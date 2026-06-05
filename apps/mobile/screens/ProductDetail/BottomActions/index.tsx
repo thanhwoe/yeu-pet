@@ -26,18 +26,23 @@ export const BottomActions = ({ loading }: IProps) => {
 
   const { mutate: addToCart, isPending: isAdding } = useMutation({
     mutationFn: addToCartMutation,
-    onSuccess: (res) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.all });
 
       Toast.success({ text: "Item added to cart" });
     },
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message, title: "Add to cart failed" });
+      Toast.error({
+        text: e.errors?.[0].message ?? "Failed to add item to cart",
+        title: "Add to cart failed",
+      });
     },
   });
 
   const handleAddToCart = () => {
     Keyboard.dismiss();
+    if (!productId) return;
+
     addToCart({ quantity, productId: String(productId) });
   };
 
@@ -74,7 +79,7 @@ export const BottomActions = ({ loading }: IProps) => {
             pathname: "/checkout",
             params: {
               quantity,
-              productId,
+              productId: String(productId),
             },
           })
         }

@@ -16,9 +16,9 @@ export const useUpdateCart = (delay: number = 1000) => {
   const { mutate: updateCart, isPending } = useMutation({
     mutationFn: updateCartMutation,
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message });
+      Toast.error({ text: e.errors?.[0].message ?? "Failed to update cart" });
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.lists() });
 
       pendingUpdatesRef.current.clear();
@@ -51,7 +51,9 @@ export const useUpdateCart = (delay: number = 1000) => {
       const items = Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems];
 
       items.forEach((item) => {
-        pendingUpdatesRef.current.set(item.id, item);
+        if (item.id) {
+          pendingUpdatesRef.current.set(item.id, item);
+        }
       });
 
       debouncedUpdateRef.current?.();

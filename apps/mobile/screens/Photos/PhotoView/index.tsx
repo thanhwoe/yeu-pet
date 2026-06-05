@@ -9,6 +9,7 @@ import {
   deletePhotoMutation,
   getPhotoStatsQuery,
   toggleLikePhotoMutation,
+  unlikePhotoMutation,
 } from "@/services";
 import { abbreviateNumber } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -88,6 +89,9 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const { mutate: toggleLikePhoto } = useMutation({
     mutationFn: toggleLikePhotoMutation,
   });
+  const { mutate: unlikePhoto } = useMutation({
+    mutationFn: unlikePhotoMutation,
+  });
 
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoMutation,
@@ -136,7 +140,9 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     }
 
     isSyncingLikeRef.current = true;
-    toggleLikePhoto(
+    const syncMutation = desiredLikedRef.current ? toggleLikePhoto : unlikePhoto;
+
+    syncMutation(
       { id: data.id },
       {
         onSuccess(updatedPhoto) {
@@ -180,7 +186,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
         },
       },
     );
-  }, [data.id, queryClient, toggleLikePhoto]);
+  }, [data.id, queryClient, toggleLikePhoto, unlikePhoto]);
 
   const scheduleLikeSync = useCallback(() => {
     if (likeSyncTimerRef.current) {

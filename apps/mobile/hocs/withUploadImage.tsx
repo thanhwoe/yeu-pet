@@ -9,7 +9,7 @@ import { ComponentType, useCallback, useState } from "react";
 import { Alert, Linking, View } from "react-native";
 
 interface WithUploadImageProps {}
-interface InjectProps {
+export interface UploadImageInjectedProps {
   onUpload: (val: UploadFileParam) => void;
 }
 
@@ -25,7 +25,7 @@ const openSettings = () =>
 export const withUploadImage =
   <P extends WithUploadImageProps>(Component: ComponentType<P>) =>
   // eslint-disable-next-line react/display-name
-  (props: Omit<P, keyof WithUploadImageProps> & InjectProps) => {
+  (props: Omit<P, keyof WithUploadImageProps> & UploadImageInjectedProps) => {
     const [isShowOptions, setIsShowOptions] = useState(false);
     const [uri, setUri] = useState("");
 

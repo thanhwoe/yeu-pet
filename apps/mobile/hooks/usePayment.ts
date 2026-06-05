@@ -46,7 +46,7 @@ export const usePayment = () => {
     onError: (error) => {
       console.log({ error });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // VnpayModule.show({
       //   isSandbox: data.isSandbox,
       //   scheme: "petcare",
