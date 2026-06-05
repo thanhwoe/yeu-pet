@@ -53,15 +53,17 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 ## Feature Tasks
 
 - [ ] Auth/account/profile/onboarding aligned with `/me` and canonical auth utilities.
+  - [x] Auth sign-in, sign-up, forgot password, and reset password forms moved under `features/auth/components`; old component exports removed.
 - [x] Settings supports notification toggles, language, and theme using `PATCH /settings`.
   - [x] Settings route is a thin Expo Router shim.
   - [x] Settings screen has loading/error/retry states for settings data.
   - [x] Settings shows subscription usage from entitlements.
-  - [ ] Profile edit, support/legal rows, and production subscription action remain.
+  - [x] Support and legal rows added.
+  - [ ] Profile edit and production subscription action remain.
 - [x] Subscription/entitlement APIs and paywall gating are implemented for Phase 1 quota surfaces.
   - [x] Add subscription/entitlement service functions.
   - [x] Wire entitlement queries into pet creation, photo upload, medical record creation, AI chat, and settings subscription summary.
-- [ ] Pet Management service and screens use canonical `/pets` APIs.
+- [x] Pet Management service and screens use canonical `/pets` APIs.
   - [x] Pet carousel and pet info form source moved under `features/pets/components`; old component exports removed.
   - [x] Pet create/update sends canonical `weightValue` and `weightUnit` alongside temporary legacy `weight`.
   - [x] Pet detail card displays canonical weight fields when returned.
@@ -79,13 +81,20 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
   - [x] Main medical record list/create/delete orchestration moved into `features/medical-records/hooks.ts`.
   - [x] Per-pet medical record list/delete and detail edit/delete orchestration moved into `features/medical-records/hooks.ts`.
   - [x] Collapsible medical record preview query moved into `features/medical-records/hooks.ts`.
-- [ ] Budget screens use `/budgets`, `/budgets/statistics/*`, categories, and transactions.
+- [x] Budget screens use `/budgets`, `/budgets/statistics/*`, categories, and transactions.
   - [x] Budget forms, transaction list, category statistic, and chart components moved under `features/budget/components`; old component exports removed.
+  - [x] Budget route screen composers moved under `features/budget/screens`; Expo routes are thin feature shims.
+  - [x] Budget categories expose the canonical delete route with confirmation and cache invalidation.
+  - [x] Budget services and transaction form support optional `petId` per the canonical contract.
 - [x] Photos Social uses `/photos/social`, `/photos/me`, explicit like/unlike, comments/replies, and reports.
+  - [x] Photos `LikeButton` moved under `features/photos/components`; old component export removed.
+  - [x] Photos grid, viewer, comments sheet, upload sheet, composer controls, and utility constants moved under `features/photos`; old screen-local component files removed.
+  - [x] Move the remaining Photos screen composer into `features/photos/screens/PhotosScreen.tsx`.
 - [x] Sitter profile/search uses canonical sitter routes.
 - [x] Sitter bookings use `/sitter-bookings/me` and POST status actions.
 - [x] Sitter booking messages use HTTP list/create routes.
 - [x] Pet Care AI uses backend conversation/message streaming APIs only.
+  - [x] AI chat message, markdown, typing, and loading components moved under `features/ai/components`; old component exports removed.
 - [x] Notifications/devices use `/devices` and `/notifications`.
 - [x] Home aggregation uses existing pet/upcoming reminder/budget APIs.
   - [x] Home pet, upcoming reminder, and monthly budget sections expose loading, empty/error recovery, and pull-to-refresh behavior.

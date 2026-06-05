@@ -1,3 +1,3 @@
-import { PhotosScreen } from "@/screens/Photos";
+import { PhotosScreen } from "@/features/photos/screens/PhotosScreen";
 
 export default PhotosScreen;

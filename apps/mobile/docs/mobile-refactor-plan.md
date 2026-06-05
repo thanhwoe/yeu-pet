@@ -109,7 +109,7 @@ Navigation actions:
 
 - Keep `app/(tabs)/store.tsx` hidden with `href: null`.
 - Treat Service tab Phase 2 cards as disabled/coming soon or remove navigation until product scope requests them.
-- Decide whether Pet Care AI is active Phase 1 according to the new refactor pack and API contract. Current `apps/mobile/AGENTS.md` still says Doctor AI is deferred, so align that doc before deeper AI UI work.
+- Pet Care AI is active Phase 1 per the API contract and current `apps/mobile/AGENTS.md`; legacy Doctor AI naming remains only in route/screen file names for now.
 
 ## Phase 2 - Route And Feature Foundations
 
@@ -214,9 +214,26 @@ Component quality tasks:
 
 ## Phase 5 - Feature Order
 
+### 5.0 Auth
+
+Status: started. Sign-in, sign-up, forgot password, and reset password form components now live under `features/auth/components`; old component exports were removed. Auth routes and screens remain in their current locations for now.
+
+Files/folders:
+
+- Move auth form components into `features/auth/components`. Done; old component exports removed.
+- Move auth screens toward `features/auth/screens` later if the route/screen split is revisited.
+- Keep auth service calls in `services/auth.ts`.
+
+Requirements:
+
+- Canonical sign-in/sign-up/reset password services.
+- OTP expiry state remains consistent.
+- Form validation stays Zod/React Hook Form.
+- Loading and mutation error states are visible.
+
 ### 5.1 Settings
 
-Status: Phase 1 settings shell implemented. Profile edit, support/legal links, and final production subscription purchase flow remain.
+Status: Phase 1 settings shell implemented. Support/legal rows are present. Profile edit and final production subscription purchase flow remain.
 
 Files/folders:
 
@@ -234,7 +251,7 @@ Requirements:
 - Theme and language persistence through `/settings`. Done.
 - Logout clears tokens/cache. Existing hook retained.
 - Loading/error states for settings and subscription summary. Done.
-- Remaining: profile edit navigation, support/legal rows, production subscription action, and manual visual QA.
+- Remaining: profile edit navigation, production subscription action, and manual visual QA.
 
 ### 5.2 Home + Pets
 
@@ -293,11 +310,11 @@ Requirements:
 
 ### 5.5 Budget
 
-Status: started. Budget forms, transaction list, category statistic, and chart components now live under `features/budget/components`; old component exports were removed. Query/mutation orchestration still remains mostly screen-local except `useBudgetCategories`.
+Status: started. Budget screens now live under `features/budget/screens`, and Budget forms, transaction list, category statistic, and chart components live under `features/budget/components`; old component exports were removed. Canonical budget route families are used, category delete is exposed with confirmation, and transaction forms support optional pet links. Query/mutation orchestration still remains mostly screen-local except `useBudgetCategories`.
 
 Files/folders:
 
-- Move budget screens toward `features/budget/screens`.
+- Move budget screens toward `features/budget/screens`. Done; `app/budget/*` files are thin route shims.
 - Move budget components and charts under `features/budget/components`. Done; old component exports removed.
 - Keep `features/budget/useBudgetCategories.ts` and add summary/transaction hooks.
 
@@ -312,9 +329,12 @@ Requirements:
 
 ### 5.6 Photos
 
+Status: started. Photo screen composition now lives at `features/photos/screens/PhotosScreen.tsx`. Photo grid, viewer, comments sheet, upload sheet, composer controls, utility constants, and `LikeButton` now live under `features/photos/components` and `features/photos/utils.ts`; old screen-local component files and old component exports were removed. `ImageGallery` remains shared because Medical Records also uses it.
+
 Files/folders:
 
-- Move photo screen pieces into `features/photos/components`.
+- Move photo screen pieces into `features/photos/components`. Started with grid/viewer/comment/upload pieces and `LikeButton`.
+- Move the Photos screen composer to `features/photos/screens/PhotosScreen.tsx`. Done; `app/photos.tsx` is now a thin route shim.
 - Keep or promote `ImageGallery` based on medical reuse.
 
 Requirements:
@@ -343,9 +363,11 @@ Requirements:
 
 ### 5.8 Pet Care AI
 
+Status: started. Chat message, markdown, typing, and loading message components now live under `features/ai/components`; old component exports were removed. Screen and store orchestration remain in their existing locations for now.
+
 Files/folders:
 
-- Move AI components into `features/ai/components` unless shared chat is truly needed.
+- Move AI components into `features/ai/components` unless shared chat is truly needed. Done; old component exports removed.
 - Move screens into `features/ai/screens`.
 
 Requirements:

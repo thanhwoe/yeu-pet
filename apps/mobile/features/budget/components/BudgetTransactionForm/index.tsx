@@ -11,7 +11,10 @@ import { DateTimePickerController } from "@/components/DatetimePickerController"
 import { InputController } from "@/components/InputController";
 import { OptionInputController } from "@/components/OptionInputController";
 import { Button } from "@/components/ui/Button";
+import { PET_KEY } from "@/constants/query-keys";
+import { getListPetQuery } from "@/services";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
@@ -24,6 +27,7 @@ interface IProps {
 }
 
 const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
+const NO_PET_VALUE = "__no_pet__";
 
 export const BudgetTransactionForm = ({
   onSubmit,
@@ -42,6 +46,11 @@ export const BudgetTransactionForm = ({
     defaultValues,
   });
 
+  const { data: pets } = useQuery({
+    queryKey: PET_KEY.list(),
+    queryFn: getListPetQuery,
+  });
+
   const categoryOptions = useMemo(
     () =>
       categories.map((c) => ({
@@ -58,6 +67,21 @@ export const BudgetTransactionForm = ({
       })),
     [categories],
   );
+
+  const petOptions = useMemo(
+    () => [
+      {
+        label: "No specific pet",
+        value: NO_PET_VALUE,
+      },
+      ...(pets?.data ?? []).map((pet) => ({
+        label: pet.name,
+        value: pet.id,
+      })),
+    ],
+    [pets?.data],
+  );
+
   return (
     <KeyboardAvoidingView
       className="px-26 gap-16 pb-safe-offset-8"
@@ -89,6 +113,16 @@ export const BudgetTransactionForm = ({
         label="Category"
         placeholder="Select category"
         options={categoryOptions}
+      />
+      <OptionInputController<
+        IBudgetTransactionFormInput,
+        IBudgetTransactionFormOutput
+      >
+        control={control}
+        name="petId"
+        label="Pet"
+        placeholder="No specific pet"
+        options={petOptions}
       />
       <DateTimePickerController<
         IBudgetTransactionFormInput,

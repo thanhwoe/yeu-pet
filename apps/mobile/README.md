@@ -37,7 +37,9 @@ The app provides the current user-facing mobile experience for:
 ## Project structure
 
 - `app/` — Expo Router screens and layouts
-- `components/` — reusable UI and feature components
+- `features/` — domain screens, feature components, and orchestration hooks
+- `components/` — shared app components used across domains
+- `components/ui/` — feature-free UI primitives
 - `constants/` — API routes, query keys, validation, shared values
 - `services/` — Axios helper and API domain services
 - `stores/` — Zustand state
@@ -209,10 +211,14 @@ pnpm --filter @yeu-pet/mobile ios
 4. `services/auth.ts`
 5. `constants/api-routes.ts`
 6. `constants/query-keys.ts`
+7. `docs/12-mobile-api-contract.md`
+8. `docs/mobile-fe-implementation-checklist.md`
+9. `apps/mobile/docs/mobile-refactor-plan.md`
 
 ## Maintenance rules
 
 - Keep the README aligned with the active product scope.
 - Keep AI provider keys and provider calls in the backend only.
 - Do not reintroduce deferred features into the main docs without product approval.
+- Put feature-owned components under `features/<domain>/components`, not shared `components/`.
 - If new domains are added, document them here and in `AGENTS.md`.

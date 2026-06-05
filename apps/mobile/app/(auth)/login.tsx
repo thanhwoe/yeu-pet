@@ -1,8 +1,8 @@
-import { SignInForm } from "@/components/SignInForm";
 import { Toast } from "@/components/Toast";
 import { Image } from "@/components/ui/Image";
 import { Body, Heading } from "@/components/ui/Typography";
 import { ISignInForm } from "@/constants/validation";
+import { SignInForm } from "@/features/auth/components/SignInForm";
 import { signInMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useMutation } from "@tanstack/react-query";

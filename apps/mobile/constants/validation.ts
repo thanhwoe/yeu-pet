@@ -218,6 +218,10 @@ export const budgetTransactionSchema = z.object({
   categoryId: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Category"),
   }),
+  petId: z
+    .string()
+    .optional()
+    .transform((value) => (value === "__no_pet__" ? undefined : value)),
   date: z.date({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Date"),
   }),

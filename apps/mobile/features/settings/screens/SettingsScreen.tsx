@@ -21,7 +21,7 @@ import {
 import { useUserInfoStore } from "@/stores";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 
 const THEME_OPTIONS = [
   { label: "System", value: "system" },
@@ -33,6 +33,10 @@ const LANGUAGE_OPTIONS = [
   { label: "English", value: "en" },
   { label: "Tiếng Việt", value: "vi" },
 ] as const;
+
+const SUPPORT_EMAIL = "support@yeupet.app";
+const PRIVACY_URL = "https://yeupet.app/privacy";
+const TERMS_URL = "https://yeupet.app/terms";
 
 export function SettingsScreen() {
   const { loading, logout } = useLogout();
@@ -104,6 +108,14 @@ export function SettingsScreen() {
     },
     [setColorScheme, settings?.theme, updateSettings],
   );
+
+  const openExternalLink = useCallback(async (url: string) => {
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Toast.error({ text: "Could not open this link. Please try again." });
+    }
+  }, []);
 
   if (isLoadingSettings) {
     return (
@@ -314,6 +326,30 @@ export function SettingsScreen() {
               onChange={(language) => handleUpdateSettings({ language })}
             />
           </SettingsRow>
+        </SettingsSection>
+
+        <SettingsSection
+          title="Help and legal"
+          description="Get support and review YeuPet policies."
+        >
+          <SettingsRow
+            title="Contact support"
+            description="Email us when you need help with your pets, bookings, or account."
+            value="Email"
+            onPress={() => openExternalLink(`mailto:${SUPPORT_EMAIL}`)}
+          />
+          <SettingsRow
+            title="Privacy policy"
+            description="How YeuPet protects your account and pet-care data."
+            value="Open"
+            onPress={() => openExternalLink(PRIVACY_URL)}
+          />
+          <SettingsRow
+            title="Terms of service"
+            description="Rules for using YeuPet features and services."
+            value="Open"
+            onPress={() => openExternalLink(TERMS_URL)}
+          />
         </SettingsSection>
 
         <SettingsSection title="Session">

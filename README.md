@@ -72,6 +72,10 @@ The mobile app uses React Native with Expo. Key features:
 - Zustand for state management
 - NativeWind for styling
 
+## Documentation
+
+Use [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) as the entry point for project docs, active implementation trackers, and mobile refactor references.
+
 ## Docker
 
 ```bash

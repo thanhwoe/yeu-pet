@@ -31,6 +31,7 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - Settings
 - Sitter booking
 - Subscription
+- Pet Care AI
 
 ### Deferred / legacy unless explicitly requested
 
@@ -38,14 +39,14 @@ Welcome! You are an AI agent working on the `pet-care` (Pet Land) repository. Pl
 - Clinics
 - Spas
 - Training
-- Doctor AI
 
 ## 3. Directory Structure
 
 - `app/` - Expo Router screens and layouts.
 - `assets/` - Static assets including fonts (Nunito) and images.
 - `components/ui/` - Reusable UI primitive components (Button, BottomSheet, Modal, etc.) built with NativeWind & `cva`.
-- `components/` - Feature-specific components (e.g., `PetCardCarousel`, `BudgetCategoryForm`).
+- `components/` - Shared app components used across domains, such as generic controllers, feedback, media, navigation, and layout.
+- `features/` - Domain screens, reusable feature components, and orchestration hooks.
 - `constants/` - Constant values, API routes, and store keys.
 - `hooks/` - Custom React hooks.
 - `interfaces/` - TypeScript typings and interfaces.
@@ -97,6 +98,6 @@ Keep the docs aligned with the active Expo product.
 
 - Prefer feature-domain organization over generic screen-only organization.
 - Keep `services/` focused on API transport and domain requests.
-- Keep `components/` focused on reusable UI and feature composition.
+- Keep `components/` focused on cross-domain shared UI. Put feature-owned components in `features/<domain>/components`.
 - If a new feature is added, document the feature domain and route behavior before or alongside the code.
 - If a feature is deferred, mark it clearly in docs rather than leaving it mixed into active scope.

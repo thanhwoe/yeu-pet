@@ -4,6 +4,7 @@ export interface IBudgetTransaction {
   id: string;
   accountId: string;
   categoryId: string;
+  petId?: string | null;
   amount: string;
   description: string;
   date: string;

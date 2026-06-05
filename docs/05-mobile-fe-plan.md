@@ -1,5 +1,10 @@
 # 05 — Mobile FE Refactor & Implementation Plan
 
+> Status: reference plan. The active Phase 1 mobile implementation tracker is
+> `docs/mobile-fe-implementation-checklist.md`, the canonical API contract is
+> `docs/12-mobile-api-contract.md`, and the current incremental folder plan is
+> `apps/mobile/docs/mobile-refactor-plan.md`.
+
 ## 1. Goal
 
 Refactor `apps/mobile` so phase 1 features are stable, consistent, and connected to backend APIs.
@@ -40,18 +45,14 @@ SettingsSubscreens
 ## 3. Recommended folder structure
 
 ```txt
-apps/mobile/src
-├── app or navigation
-├── api
-│   ├── client.ts
-│   ├── endpoints
-│   └── types
+apps/mobile/
+├── app
 ├── components
 │   ├── ui
-│   ├── forms
-│   ├── bottom-sheet
-│   ├── charts
-│   └── feature
+│   ├── form/shared controllers
+│   ├── feedback
+│   ├── media
+│   └── navigation/shared app components
 ├── features
 │   ├── auth
 │   ├── pets
@@ -63,12 +64,17 @@ apps/mobile/src
 │   ├── sitters
 │   ├── subscriptions
 │   └── settings
+├── services
+├── interfaces
 ├── hooks
-├── i18n
 ├── theme
 ├── utils
-└── store
+└── stores
 ```
+
+Do not introduce a `src/` tree during the current refactor. The mobile alias
+maps to `apps/mobile/*`; feature ownership is being established at the current
+root level first.
 
 ## 4. Data fetching rules
 

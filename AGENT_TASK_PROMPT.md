@@ -4,7 +4,7 @@ You are working on a monorepo pet-care mobile app startup.
 
 ## Mission
 
-Refactor and complete phase 1 of the project with this delivery order:
+Refactor and complete phase 1 of the project with this delivery order. Use `DOCUMENTATION_INDEX.md`, `docs/backend-api-implementation-checklist.md`, `docs/mobile-fe-implementation-checklist.md`, and `apps/mobile/docs/mobile-refactor-plan.md` for current implementation status.
 
 1. Redesign database and Prisma schema.
 2. Implement and refactor backend APIs in `apps/api`.
@@ -16,8 +16,8 @@ Refactor and complete phase 1 of the project with this delivery order:
 - Monorepo uses pnpm.
 - Backend is NestJS + Prisma + Supabase PostgreSQL.
 - Mobile app is React Native + Expo.
-- Current features include pet management, reminders, budget statistics, photos social, medical records, sitter booking partial/backend.
-- Missing or incomplete phase 1 features include Doctor AI, subscriptions, settings, sitter booking FE, stronger entitlement checks, and better database design.
+- Current features include pet management, reminders, budget statistics, photos social, medical records, subscriptions/entitlements, settings, Pet Care AI through backend APIs, and sitter booking.
+- Remaining work is tracked in the active implementation checklists. Do not assume older plan documents describe current completion state.
 
 ## Required workflow
 

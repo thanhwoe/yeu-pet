@@ -1,8 +1,8 @@
-import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
 import { Toast } from "@/components/Toast";
 import { Image } from "@/components/ui/Image";
 import { Body, Heading } from "@/components/ui/Typography";
 import { IForgotPasswordForm } from "@/constants/validation";
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
 import { requestResetPasswordMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import { useMutation } from "@tanstack/react-query";

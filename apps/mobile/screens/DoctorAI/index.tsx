@@ -1,8 +1,8 @@
-import { ChatMessage } from "@/components/ChatMessage";
-import { LoadingMessage } from "@/components/LoadingMessage";
 import { PaywallNotice } from "@/components/PaywallNotice";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
+import { ChatMessage } from "@/features/ai/components/ChatMessage";
+import { LoadingMessage } from "@/features/ai/components/LoadingMessage";
 import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IChatMessage } from "@/interfaces";

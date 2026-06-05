@@ -1,8 +1,8 @@
-import { ResetPasswordForm } from "@/components/ResetPasswordForm";
 import { Toast } from "@/components/Toast";
 import { Image } from "@/components/ui/Image";
 import { Body, Heading } from "@/components/ui/Typography";
 import { IResetPasswordForm } from "@/constants/validation";
+import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
 import {
   requestResetPasswordMutation,
   resetPasswordMutation,

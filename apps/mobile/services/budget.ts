@@ -17,6 +17,7 @@ import { APIs } from "./api-helper";
 interface IBudgetQuery {
   month?: number;
   year?: number;
+  petId?: string;
 }
 export const getBudgetQuery = (params?: IBudgetQuery) =>
   APIs.get<IBudget>(API_ROUTES.BUDGETS, {
@@ -28,6 +29,7 @@ interface IBudgetParams {
   amount: number;
   month: number;
   year: number;
+  petId?: string;
 }
 
 export const updateBudgetMutation = (params: IBudgetParams) =>
@@ -35,6 +37,7 @@ export const updateBudgetMutation = (params: IBudgetParams) =>
 
 interface IBudgetStatisticYearlyParams {
   year?: number;
+  petId?: string;
 }
 export const getBudgetYearlyStatisticsQuery = (
   params: IBudgetStatisticYearlyParams,
@@ -47,6 +50,7 @@ export const getBudgetYearlyStatisticsQuery = (
 interface IBudgetStatisticMonthlyParams {
   year?: number;
   month?: number;
+  petId?: string;
 }
 export const getBudgetMonthlyStatisticsQuery = (
   params: IBudgetStatisticMonthlyParams,
@@ -66,6 +70,9 @@ export const updateBudgetCategoryMutation = ({
   APIs.patch<IBudgetCategory>(API_ROUTES.MUTATE_BUDGET_CATEGORY(id), {
     data: params,
   });
+
+export const deleteBudgetCategoryMutation = (id: string) =>
+  APIs.delete(API_ROUTES.MUTATE_BUDGET_CATEGORY(id));
 
 interface IBudgetCategoryQuery {
   limit?: number;
@@ -100,6 +107,8 @@ interface IBudgetTransactionQuery {
   page?: number;
   month?: number;
   year?: number;
+  categoryId?: string;
+  petId?: string;
 }
 export const getBudgetTransactionQuery = (params: IBudgetTransactionQuery) =>
   APIs.get<IPagination<IBudgetTransaction>>(API_ROUTES.BUDGET_TRANSACTIONS, {

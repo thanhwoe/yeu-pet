@@ -1,7 +1,7 @@
-import { SignUpForm } from "@/components/SignUpForm";
 import { Toast } from "@/components/Toast";
 import { Body, Heading } from "@/components/ui/Typography";
 import { ISignUpForm } from "@/constants/validation";
+import { SignUpForm } from "@/features/auth/components/SignUpForm";
 import { signUpMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useMutation } from "@tanstack/react-query";

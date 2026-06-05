@@ -55,21 +55,20 @@ Future admin portal: apps/admin or apps/portal
 
 ## 4. Current phase 1 feature scope
 
-### Implemented or partially implemented
+### Implemented or actively being refined
 
 - Pet Management
 - Reminder
 - Budget Statistics
 - Photos Social
 - Medical Records
-- Sitter Booking backend or partial support; FE chưa hoàn chỉnh
-
-### Not implemented yet
-
-- Doctor AI / Pet Care AI
-- Subscriptions
+- Sitter Booking
+- Pet Care AI through backend APIs
+- Subscriptions and entitlement checks
 - Settings
-- Complete sitter booking FE
+
+### Planned beyond Phase 1 or not complete
+
 - Admin portal
 
 ## 5. Recommended execution order
@@ -97,7 +96,11 @@ Agent nên thực hiện theo thứ tự sau:
 │   │   ├── prisma
 │   │   └── src
 │   └── mobile
-│       └── src
+│       ├── app
+│       ├── features
+│       ├── components
+│       ├── services
+│       └── docs
 ├── packages                 # optional shared package later
 ├── docs                     # project docs for agent/product/backend/mobile
 ├── package.json
@@ -138,7 +141,15 @@ docs/07-doctor-ai-plan.md
 docs/08-sitter-booking-plan.md
 docs/09-testing-release-checklist.md
 docs/10-admin-portal-roadmap.md
+docs/11-database-implementation-checklist.md
+docs/12-mobile-api-contract.md
+docs/13-mobile-ui-ux-skills-guide.md
+docs/backend-api-implementation-checklist.md
+docs/mobile-fe-implementation-checklist.md
+apps/mobile/docs/mobile-refactor-plan.md
+apps/mobile/docs/mobile-refactor-audit.md
 AGENT_TASK_PROMPT.md
+DOCUMENTATION_INDEX.md
 ```
 
 ## 10. Definition of done for phase 1

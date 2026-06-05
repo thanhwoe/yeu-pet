@@ -2,6 +2,8 @@
 
 This documentation pack is for the next mobile frontend refactor of the YeuPet React Native + Expo app.
 
+> Reference pack: these files preserve the imported refactor guidance. Do not treat checklist status here as the current completion state; use `docs/mobile-fe-implementation-checklist.md`, `apps/mobile/docs/mobile-refactor-plan.md`, and `apps/mobile/docs/mobile-refactor-audit.md` for active project status.
+
 The goal is to help the coding agent refactor the mobile folder structure, clean up reusable components, align screens with the finalized Phase 1 backend APIs, and improve UI/UX quality without touching out-of-scope Phase 2 features.
 
 ## Current project context

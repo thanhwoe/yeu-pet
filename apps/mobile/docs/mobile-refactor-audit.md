@@ -5,23 +5,18 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
 ## Summary
 
 - The app still uses the current root-level structure (`app`, `screens`, `components`, `features`, `services`, `interfaces`, `stores`, `theme`) rather than the proposed `src/` structure.
-- Most Expo Router route files are thin shims into `screens/*` or `features/*`. The Service tab still contains screen logic directly.
+- Most Expo Router route files are thin shims into `features/*` or transitional `screens/*`. The Service tab still contains screen logic directly.
 - The active API layer uses `services/api-helper.ts`, `constants/api-routes.ts`, and domain service files. This matches current `apps/mobile/CODE_CONVENTIONS.md`, so the first refactor slice should keep `services/` instead of introducing `src/api` immediately.
 - Several canonical endpoint updates are already present: `/me`, `PATCH /settings`, `/photos/social`, `/photos/me`, `/sitters/me`, `/sitter-bookings/me`, reminder status action routes, devices, notifications, and backend AI conversation routes.
 - Phase 2/deferred files are still present in routing and services, but the Store tab is hidden from bottom tabs. These should remain frozen unless needed for compile stability.
 
 ## Current Folder Structure Issues
 
-- `screens/` contains both Phase 1 screens and frozen Phase 2 screens:
-  - Phase 1 examples: `Home`, `Reminder`, `Budget`, `BudgetCategories`, `BudgetTransactions`, `MedicalRecord`, `MedicalRecordDetail`, `Photos`, `Sitter`, `DoctorAI`, `Notifications`.
+- `screens/` still contains transitional Phase 1 screen composers plus frozen Phase 2 screens:
+  - Phase 1 examples: `Home`, `Reminder`, `Budget`, `BudgetCategories`, `BudgetTransactions`, `MedicalRecord`, `MedicalRecordDetail`, `Sitter`, `DoctorAI`, `Notifications`.
   - Frozen examples: `Cart`, `Checkout`, `ShippingAddress`, `ListClinic`, `ListSpa`, `ProductDetail`, `Store`, `Training`, `TrainingLevel`.
-- `components/` mixes UI primitives, shared product components, feature-specific components, and frozen commerce/clinic/training components.
-- `features/` is currently light and contains only a few orchestration hooks:
-  - `features/budget/useBudgetCategories.ts`
-  - `features/pets/usePetCardSection.ts`
-  - `features/settings/components/ThemeToggle.tsx`
-  - `features/sitter/useSitters.ts`
-  - `features/subscriptions/useEntitlements.ts`
+- `components/` now mostly holds shared primitives, controllers, feedback, media, navigation, and frozen commerce/clinic/training components. Avoid adding new feature-owned components here.
+- `features/` now owns migrated components/screens/hooks for auth, settings, pets, reminders, medical records, budget, photos, AI, subscriptions, and sitter. Continue moving remaining active screen composers incrementally.
 - `services/` mixes Phase 1 API files with frozen services (`carts`, `products`, `payments`, `shipping-address`, `clinic`, `spa`).
 - `interfaces/` is still global. Many domain response types remain in `interfaces/*`; feature-local `types.ts` files do not yet exist.
 - `app/(tabs)/(service)/index.tsx` is not a thin route shim.
@@ -32,6 +27,10 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
   - `app/(auth)/*`
   - `app/(onboarding)/*`
   - `app/verify-otp.tsx`
+  - `features/auth/components/ForgotPasswordForm`
+  - `features/auth/components/ResetPasswordForm`
+  - `features/auth/components/SignInForm`
+  - `features/auth/components/SignUpForm`
   - `screens/ForgotPassword`
   - `screens/ResetPassword`
   - `screens/VerifyOtp`
@@ -70,9 +69,9 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
   - `components/ImageGallery`
 - Budget:
   - `app/budget/*`
-  - `screens/Budget`
-  - `screens/BudgetCategories`
-  - `screens/BudgetTransactions`
+  - `features/budget/screens/Budget`
+  - `features/budget/screens/BudgetCategories`
+  - `features/budget/screens/BudgetTransactions`
   - `features/budget/components/BudgetCategoryForm`
   - `features/budget/components/BudgetCategoryStatistic`
   - `features/budget/components/BudgetTransaction`
@@ -80,8 +79,18 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
   - `features/budget/components/chart`
 - Photos Social:
   - `app/photos.tsx`
-  - `screens/Photos`
-  - `components/LikeButton`
+  - `features/photos/screens/PhotosScreen.tsx`
+  - `features/photos/components/CaptionInput`
+  - `features/photos/components/EmptyPhotos`
+  - `features/photos/components/LikeButton`
+  - `features/photos/components/PhotoCommentsSheet`
+  - `features/photos/components/PhotoItem`
+  - `features/photos/components/PhotoView`
+  - `features/photos/components/SocialPhotos`
+  - `features/photos/components/SubmitButton`
+  - `features/photos/components/TakePhotoSheet`
+  - `features/photos/components/UserPhotos`
+  - `features/photos/utils.ts`
   - `components/ImageGallery`
 - Sitter Booking:
   - `app/(tabs)/sitter.tsx`
@@ -89,10 +98,10 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
 - Pet Care AI:
   - `app/doctor-ai.tsx`
   - `screens/DoctorAI`
-  - `components/ChatMessage`
-  - `components/Markdown`
-  - `components/TypingMessage`
-  - `components/LoadingMessage`
+  - `features/ai/components/ChatMessage`
+  - `features/ai/components/Markdown`
+  - `features/ai/components/TypingMessage`
+  - `features/ai/components/LoadingMessage`
 - Notifications/devices:
   - `app/notifications.tsx`
   - `screens/Notifications`
@@ -176,12 +185,13 @@ Candidates for shared layout, feedback, form, media, navigation, or common folde
 
 ### Feature Components
 
+- Auth: `features/auth/components/ForgotPasswordForm`, `features/auth/components/ResetPasswordForm`, `features/auth/components/SignInForm`, `features/auth/components/SignUpForm`
 - Pets: `features/pets/components/PetCardCarousel`, `features/pets/components/PetInfoForm`
 - Reminders: `features/reminders/components/ReminderCalendar`, `features/reminders/components/ReminderForm`, `features/reminders/components/ReminderIcons`
 - Medical Records: `features/medical-records/hooks.ts`, `features/medical-records/components/MedicalRecordContainer`, `features/medical-records/components/MedicalRecordForm`, `features/medical-records/components/MedicalRecordListItem`, `features/medical-records/components/MedicalRecordType`, `features/medical-records/components/PetTimeline`
-- Budget: `features/budget/components/BudgetCategoryForm`, `features/budget/components/BudgetCategoryStatistic`, `features/budget/components/BudgetTransaction`, `features/budget/components/BudgetTransactionForm`, `features/budget/components/chart`
-- Photos: `LikeButton`, `screens/Photos/*`
-- AI: `ChatMessage`, `Markdown`, `TypingMessage`, `LoadingMessage` unless shared with sitter messages later
+- Budget: `features/budget/screens/Budget`, `features/budget/screens/BudgetCategories`, `features/budget/screens/BudgetTransactions`, `features/budget/components/BudgetCategoryForm`, `features/budget/components/BudgetCategoryStatistic`, `features/budget/components/BudgetTransaction`, `features/budget/components/BudgetTransactionForm`, `features/budget/components/chart`
+- Photos: `features/photos/screens/PhotosScreen.tsx`, `features/photos/components/CaptionInput`, `features/photos/components/EmptyPhotos`, `features/photos/components/LikeButton`, `features/photos/components/PhotoCommentsSheet`, `features/photos/components/PhotoItem`, `features/photos/components/PhotoView`, `features/photos/components/SocialPhotos`, `features/photos/components/SubmitButton`, `features/photos/components/TakePhotoSheet`, `features/photos/components/UserPhotos`, `features/photos/utils.ts`
+- AI: `features/ai/components/ChatMessage`, `features/ai/components/Markdown`, `features/ai/components/TypingMessage`, `features/ai/components/LoadingMessage`
 - Settings: `features/settings/components/ThemeToggle.tsx`
 
 ## Legacy Endpoint Audit
@@ -196,6 +206,8 @@ Candidates for shared layout, feedback, form, media, navigation, or common folde
 | Sitter profile | `CREATE_MY_SITTER_PROFILE` and `MY_SITTER_PROFILE` use `/sitters/me` | `/sitters/me` | Aligned |
 | Sitter bookings | `MY_SITTER_BOOKINGS = "/sitter-bookings/me"` and role params | `GET /sitter-bookings/me?role=` | Aligned |
 | Sitter actions | Services use POST accept/reject/complete/cancel routes | POST action routes | Aligned |
+| Budget | Services use `/budgets`, `/budgets/statistics/*`, `/budgets/categories`, and `/budgets/transactions`; transaction forms support optional `petId` | Canonical budget routes with optional pet filters | Aligned |
+| Pets | Services use `/pets` and `/pets/:id`; create/update submit `weightValue` and `weightUnit` where a weight can be parsed | Canonical pet routes and weight fields | Aligned |
 | Medical record create | `createMedicalRecordMutation` posts to `API_ROUTES.MEDICAL_RECORDS_FOR_PET(data.petId)` | `POST /pets/:id/medical-records` | Aligned |
 | AI | `services/ai.ts` calls `/ai/conversations` and `/messages/stream` through backend | Backend AI only | Aligned |
 | Devices | `services/user.ts` uses `POST /devices` and `DELETE /devices/:id` | `/devices` | Aligned |
@@ -205,12 +217,12 @@ Search notes:
 
 - No direct mobile `@google/genai` import was found in active source.
 - No screen-level raw `axios` calls were found; `axios` is centralized in `services/api-helper.ts`.
-- `accountId` appears in response/interface types and ownership checks. `screens/Photos/PhotoCommentsSheet/index.tsx` constructs local optimistic comment data with `accountId`; verify it is not sent to backend before refactoring comments.
+- `accountId` appears in response/interface types and ownership checks. `features/photos/components/PhotoCommentsSheet/index.tsx` constructs local optimistic comment data with `accountId`; verify it is not sent to backend before refactoring comments.
 
 ## Duplicated State And API Logic
 
 - Server state generally uses React Query, but query/mutation orchestration is still spread across screens and components.
-- Budget queries and mutations are heavily screen-local in `screens/Budget`, `screens/BudgetCategories`, and `screens/BudgetTransactions`; move to `features/budget`.
+- Budget queries and mutations are still mostly screen-local in `features/budget/screens/Budget` and `features/budget/screens/BudgetTransactions`; continue extracting shared orchestration into `features/budget`.
 - Reminder calendar queries/mutations and ReminderHeader create flow now live in `features/reminders/hooks.ts`. Home reminder summary still contains its own reminder orchestration and can be consolidated later.
 - Pet creation/edit/delete logic is now owned by `features/pets/components/PetCardCarousel/AddCard.tsx` and `features/pets/usePetCardSection.ts`; continue consolidating shared pet hooks in `features/pets`.
 - Main medical record list/create/delete, per-pet list/delete, detail update/delete, and collapsible preview query orchestration now lives in `features/medical-records/hooks.ts`. Shared attachment/media components can be consolidated later.
@@ -229,8 +241,8 @@ Search notes:
   - `components/ImageGallery/index.tsx`
   - `components/Toast/*`
   - `components/Skeleton/index.tsx`
-  - `components/Markdown/index.tsx`
-  - `components/LikeButton/index.tsx`
+  - `features/ai/components/Markdown/index.tsx`
+  - `features/photos/components/LikeButton/index.tsx`
   - `components/ui/BottomSheet/index.tsx`
   - `app/(tabs)/_layout.tsx`
   - Photo comments/photo viewer files
