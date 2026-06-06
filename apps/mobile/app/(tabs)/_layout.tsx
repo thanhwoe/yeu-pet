@@ -37,11 +37,15 @@ const AnimatedTabButton = ({
   focused,
   label,
   onPress,
+  onLongPress,
+  testID,
 }: {
   children: React.ReactNode;
   focused: boolean;
   label: string;
   onPress?: (e: GestureResponderEvent) => void;
+  onLongPress?: ((e: GestureResponderEvent) => void) | null;
+  testID?: string;
 }) => {
   const scale = useSharedValue(focused ? 1.05 : 1);
   const labelOpacity = useSharedValue(focused ? 1 : 0);
@@ -113,6 +117,11 @@ const AnimatedTabButton = ({
   return (
     <Pressable
       onPress={handlePress}
+      onLongPress={onLongPress ?? undefined}
+      testID={testID}
+      accessibilityLabel={`${label} tab`}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: focused }}
       className="flex-1 justify-center items-center py-8"
     >
       <Animated.View

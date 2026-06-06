@@ -15,8 +15,11 @@ export const SocialPhotos = () => {
     data = [],
     hasNextPage,
     isLoading,
+    isError,
+    isRefetching,
     isFetchingNextPage,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: PHOTOS_KEY.list({ limit: LIMIT, key: "social" }),
     queryFn: ({ pageParam }) =>
@@ -51,7 +54,15 @@ export const SocialPhotos = () => {
       numColumns={3}
       keyExtractor={keyExtractor}
       renderItem={renderItem}
-      ListEmptyComponent={<EmptyPhotos isLoading={isLoading} />}
+      ListEmptyComponent={
+        <EmptyPhotos
+          isLoading={isLoading}
+          isError={isError}
+          title="No shared photos yet"
+          description="When the community shares public pet moments, they will appear here."
+          onRetry={() => refetch()}
+        />
+      }
       ListFooterComponent={
         isFetchingNextPage ? (
           <View className="items-center py-20">
@@ -63,6 +74,8 @@ export const SocialPhotos = () => {
       showsVerticalScrollIndicator={false}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.4}
+      refreshing={isRefetching && !isFetchingNextPage}
+      onRefresh={refetch}
       contentContainerStyle={{ paddingBottom: 112 }}
     />
   );

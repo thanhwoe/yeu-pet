@@ -137,6 +137,7 @@ export const useBudgetCategories = () => {
   return {
     categories: categoriesQuery.data?.data ?? [],
     isLoading: categoriesQuery.isLoading,
+    isRefreshing: categoriesQuery.isRefetching && !categoriesQuery.isLoading,
     isSubmitting: isCreating || isUpdating,
     isDeleting,
     isFormOpen,
@@ -149,5 +150,6 @@ export const useBudgetCategories = () => {
     closeForm,
     handleSubmit,
     handleDelete,
+    refetch: categoriesQuery.refetch,
   };
 };

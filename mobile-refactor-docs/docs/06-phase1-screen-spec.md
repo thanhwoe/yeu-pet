@@ -260,7 +260,6 @@ Current related areas:
 
 - `app/photos.tsx`
 - `screens/Photos`
-- `components/LikeButton`
 - `components/ImageGallery`
 
 Target:

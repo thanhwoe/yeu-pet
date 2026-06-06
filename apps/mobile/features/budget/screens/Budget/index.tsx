@@ -79,7 +79,12 @@ export function BudgetScreen() {
     queryFn: () => getBudgetQuery({ month: actualMonth, year: monthYear.year }),
   });
 
-  const { data: transactions, isLoading: isLoadingTransaction } = useQuery({
+  const {
+    data: transactions,
+    isError: isTransactionError,
+    isLoading: isLoadingTransaction,
+    refetch: refetchTransactions,
+  } = useQuery({
     queryKey: BUDGET_TRANSACTION_KEY.list({
       limit: 5,
       month: actualMonth,
@@ -204,6 +209,8 @@ export function BudgetScreen() {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
+          accessibilityLabel="Open budget actions"
+          accessibilityRole="button"
           onPress={() => setOpenAddOptions(true)}
         >
           <AddIcon className="text-icon-primary" weight="bold" />
@@ -237,6 +244,8 @@ export function BudgetScreen() {
         <Tabs tabs={TABS} active={activeTab} onChange={setActiveTab} />
         <TouchableOpacity
           className="flex-row items-center gap-8 pr-8"
+          accessibilityLabel="Select budget period"
+          accessibilityRole="button"
           onPress={() => setOpenDatePicker(true)}
         >
           <Body weight="bold">
@@ -268,6 +277,16 @@ export function BudgetScreen() {
         scrollEnabled={false}
         ListHeaderComponent={ListHeaderComponent}
         loading={isLoadingTransaction}
+        error={isTransactionError}
+        onRetry={() => refetchTransactions()}
+        onAdd={() => {
+          if (categories?.data.length) {
+            setOpenTransactionForm(true);
+            return;
+          }
+
+          setOpenCategoryForm(true);
+        }}
       />
       <BottomSheet
         useScrollView={false}

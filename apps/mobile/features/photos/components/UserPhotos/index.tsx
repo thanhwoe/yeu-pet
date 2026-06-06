@@ -14,9 +14,12 @@ export const UserPhotos = () => {
   const {
     data = [],
     isLoading,
+    isError,
+    isRefetching,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: PHOTOS_KEY.list({ limit: LIMIT, key: "user" }),
     queryFn: ({ pageParam }) =>
@@ -54,7 +57,15 @@ export const UserPhotos = () => {
       keyExtractor={keyExtractor}
       renderItem={renderItem}
       estimatedItemSize={ITEM_WIDTH}
-      ListEmptyComponent={<EmptyPhotos isLoading={isLoading} />}
+      ListEmptyComponent={
+        <EmptyPhotos
+          isLoading={isLoading}
+          isError={isError}
+          title="No photos saved yet"
+          description="Your public and private pet memories will collect here after you upload them."
+          onRetry={() => refetch()}
+        />
+      }
       ListFooterComponent={
         isFetchingNextPage ? (
           <View className="items-center py-20">
@@ -65,6 +76,8 @@ export const UserPhotos = () => {
       showsVerticalScrollIndicator={false}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.4}
+      refreshing={isRefetching && !isFetchingNextPage}
+      onRefresh={refetch}
       contentContainerStyle={{ paddingBottom: 112 }}
     />
   );

@@ -229,7 +229,6 @@ chart/                       -> src/features/budget/components/charts/ unless us
 ### Photos
 
 ```txt
-LikeButton/            -> src/features/photos/components/LikeButton/
 ImageGallery/          -> shared media if also used by medical records
 ```
 
@@ -273,7 +272,7 @@ Route files in `app/` should be thin.
 Example:
 
 ```tsx
-import { ReminderScreen } from '@/features/reminders/screens/ReminderScreen';
+import { ReminderScreen } from "@/features/reminders/screens/ReminderScreen";
 
 export default ReminderScreen;
 ```
@@ -287,14 +286,14 @@ Use stable aliases. Avoid long relative import chains.
 Recommended:
 
 ```tsx
-import { AppButton } from '@/components/ui/AppButton';
-import { usePets } from '@/features/pets/hooks';
+import { AppButton } from "@/components/ui/AppButton";
+import { usePets } from "@/features/pets/hooks";
 ```
 
 Avoid:
 
 ```tsx
-import { AppButton } from '../../../../components/ui/Button';
+import { AppButton } from "../../../../components/ui/Button";
 ```
 
 ## Migration safety

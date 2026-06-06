@@ -214,10 +214,6 @@ Refactor requirements:
 
 ### Move to photos feature
 
-```txt
-LikeButton
-```
-
 Potential shared/media:
 
 ```txt
@@ -282,14 +278,14 @@ Avoid:
 
 ```tsx
 // Feature API call inside visual component.
-await axios.post('/pets', data);
+await axios.post("/pets", data);
 ```
 
 Avoid:
 
 ```tsx
 // Hardcoded colors in feature screen.
-<View style={{ backgroundColor: '#FFFFFF' }} />
+<View style={{ backgroundColor: "#FFFFFF" }} />
 ```
 
 Avoid:
@@ -309,7 +305,7 @@ Avoid:
 
 ```tsx
 // Deep feature dependency from primitive.
-import { Pet } from '@/features/pets/types';
+import { Pet } from "@/features/pets/types";
 ```
 
 ## Migration process per component group

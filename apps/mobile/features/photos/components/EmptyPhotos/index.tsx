@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/Skeleton";
-import { Text } from "@/components/ui/Text";
+import { StateView } from "@/components/ui/StateView";
 import {
   GRID_COLUMNS,
   GRID_GAP,
@@ -10,9 +10,19 @@ import { View } from "react-native";
 
 interface IProps {
   isLoading: boolean;
+  isError?: boolean;
+  title?: string;
+  description?: string;
+  onRetry?: () => void;
 }
 
-export const EmptyPhotos = ({ isLoading }: IProps) => {
+export const EmptyPhotos = ({
+  isLoading,
+  isError,
+  title = "No photos yet",
+  description = "Start capturing and sharing your pet's moments.",
+  onRetry,
+}: IProps) => {
   if (isLoading) {
     return (
       <View className="flex-row flex-wrap">
@@ -33,17 +43,26 @@ export const EmptyPhotos = ({ isLoading }: IProps) => {
       </View>
     );
   }
+
+  if (isError) {
+    return (
+      <StateView
+        variant="error"
+        title="Photos could not load"
+        description="Try again to refresh these pet moments."
+        actionLabel="Retry"
+        onAction={onRetry}
+        className="mt-32"
+      />
+    );
+  }
+
   return (
-    <View className="flex-1 items-center justify-center px-24 py-80">
-      <View className="items-center gap-8 rounded-24 bg-background-card px-24 py-28">
-        <Text variant="heading" className="text-center font-medium">
-          No Photos Yet
-        </Text>
-        <Text variant="body2" color="tertiary" className="text-center">
-          You haven&apos;t uploaded any photos yet. Start capturing and sharing
-          your pet&apos;s moments!
-        </Text>
-      </View>
-    </View>
+    <StateView
+      variant="empty"
+      title={title}
+      description={description}
+      className="mt-32"
+    />
   );
 };

@@ -90,6 +90,9 @@ export const BudgetSection = memo(
             </View>
             <TouchableOpacity
               disabled={loading}
+              accessibilityLabel="Edit monthly budget"
+              accessibilityRole="button"
+              accessibilityState={{ disabled: loading }}
               onPress={() => setShowBottomSheet(true)}
               className="p-8 bg-background-secondary rounded-16"
             >

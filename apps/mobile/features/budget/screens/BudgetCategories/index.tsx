@@ -19,6 +19,7 @@ export const BudgetCategoriesScreen = () => {
   const {
     categories,
     isLoading,
+    isRefreshing,
     isSubmitting,
     isDeleting,
     isFormOpen,
@@ -31,6 +32,7 @@ export const BudgetCategoriesScreen = () => {
     closeForm,
     handleSubmit,
     handleDelete,
+    refetch,
   } = useBudgetCategories();
 
   useEffect(() => {
@@ -38,6 +40,8 @@ export const BudgetCategoriesScreen = () => {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
+          accessibilityLabel="Add budget category"
+          accessibilityRole="button"
           onPress={openCreateForm}
         >
           <AddIcon className="text-icon-primary" weight="bold" />
@@ -53,6 +57,8 @@ export const BudgetCategoriesScreen = () => {
         className="mt-16"
         contentContainerClassName="gap-16"
         data={categories}
+        refreshing={isRefreshing}
+        onRefresh={refetch}
         renderItem={({ item }) => (
           <CategoryItem
             data={item}

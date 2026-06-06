@@ -4,6 +4,7 @@ import { IBudgetTransactionSection } from "@/utils/budget";
 import { memo } from "react";
 import { SectionList, SectionListProps, View } from "react-native";
 import { Skeleton } from "@/components/Skeleton";
+import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
 import { TransactionItem } from "./TransactionItem";
 
@@ -16,6 +17,9 @@ interface IProps extends SectionListProps<
   onDelete?: (item: IBudgetTransaction) => void;
   deleting?: boolean;
   editing?: boolean;
+  error?: boolean;
+  onRetry?: () => void;
+  onAdd?: () => void;
 }
 
 export const BudgetTransaction = memo<IProps>(
@@ -26,6 +30,9 @@ export const BudgetTransaction = memo<IProps>(
     onDelete,
     editing,
     deleting,
+    error,
+    onRetry,
+    onAdd,
     ...props
   }) => {
     return (
@@ -74,7 +81,30 @@ export const BudgetTransaction = memo<IProps>(
               </View>
             );
           }
-          return <Body center>No transaction added yet.</Body>;
+
+          if (error) {
+            return (
+              <StateView
+                variant="error"
+                title="Transactions could not load"
+                description="Try again to refresh your pet-care spending."
+                actionLabel="Retry"
+                onAction={onRetry}
+                className="mt-20"
+              />
+            );
+          }
+
+          return (
+            <StateView
+              variant="empty"
+              title="No transactions yet"
+              description="Add your first pet-care expense to start tracking this budget."
+              actionLabel={onAdd ? "Add transaction" : undefined}
+              onAction={onAdd}
+              className="mt-20"
+            />
+          );
         }}
         showsVerticalScrollIndicator={false}
         {...props}

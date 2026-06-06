@@ -69,6 +69,13 @@ export const DayItem = memo<DayProps>(
         onPress={handlePress}
         onLongPress={handleLongPress}
         disabled={disabled}
+        accessibilityLabel={
+          date
+            ? `Select ${date.dateString}${marking?.marked ? ", has reminders" : ""}`
+            : "Calendar day"
+        }
+        accessibilityRole="button"
+        accessibilityState={{ disabled, selected: state === "selected" }}
         style={{
           width: (SCREEN_WIDTH - 40) / 7,
           height: 30,

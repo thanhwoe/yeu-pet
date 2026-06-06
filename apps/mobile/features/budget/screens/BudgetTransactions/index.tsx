@@ -50,6 +50,8 @@ export const BudgetTransactionsScreen = () => {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
+          accessibilityLabel="Add budget transaction"
+          accessibilityRole="button"
           onPress={() => setOpenTransactionForm(true)}
         >
           <AddIcon className="text-icon-primary" weight="bold" />
@@ -66,9 +68,12 @@ export const BudgetTransactionsScreen = () => {
   const {
     data: transactions,
     isLoading,
+    isError,
     isFetchingNextPage,
+    isRefetching,
     hasNextPage,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: BUDGET_TRANSACTION_KEY.list({
       limit: 10,
@@ -170,6 +175,11 @@ export const BudgetTransactionsScreen = () => {
       <BudgetTransaction
         sections={sections}
         loading={isLoading}
+        error={isError}
+        onRetry={() => refetch()}
+        onAdd={() => setOpenTransactionForm(true)}
+        refreshing={isRefetching && !isFetchingNextPage}
+        onRefresh={refetch}
         contentContainerClassName="pb-safe"
         className="mt-20"
         onEndReached={() => {

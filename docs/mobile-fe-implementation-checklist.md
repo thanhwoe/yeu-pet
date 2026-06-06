@@ -61,7 +61,8 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
   - [x] Settings shows subscription usage from entitlements.
   - [x] Support and legal rows added.
   - [x] Profile edit bottom sheet added.
-  - [ ] Production subscription action remains.
+  - [x] Production-safe subscription CTA added; dev mock upgrade/downgrade controls are hidden outside dev builds.
+  - [ ] Native purchase or RevenueCat integration remains.
 - [x] Subscription/entitlement APIs and paywall gating are implemented for Phase 1 quota surfaces.
   - [x] Add subscription/entitlement service functions.
   - [x] Wire entitlement queries into pet creation, photo upload, medical record creation, AI chat, and settings subscription summary.
@@ -89,7 +90,6 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
   - [x] Budget categories expose the canonical delete route with confirmation and cache invalidation.
   - [x] Budget services and transaction form support optional `petId` per the canonical contract.
 - [x] Photos Social uses `/photos/social`, `/photos/me`, explicit like/unlike, comments/replies, and reports.
-  - [x] Photos `LikeButton` moved under `features/photos/components`; old component export removed.
   - [x] Photos grid, viewer, comments sheet, upload sheet, composer controls, and utility constants moved under `features/photos`; old screen-local component files removed.
   - [x] Move the remaining Photos screen composer into `features/photos/screens/PhotosScreen.tsx`.
 - [x] Sitter profile/search uses canonical sitter routes.
@@ -108,9 +108,15 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 - [ ] Apply `.codex/skills/mobile-ui-review-checklist/SKILL.md` before marking UI tasks complete.
 - [ ] Loading states for major screens.
 - [ ] Empty states for major screens.
+  - [x] Budget transactions use a friendly empty state with an add action.
+  - [x] Photos Social and My Photos use tab-specific empty states.
 - [ ] Error states and retry actions.
   - [x] Settings has loading/error/retry states.
+  - [x] Budget transaction lists expose retry on load failure.
+  - [x] Photos Social and My Photos expose retry on load failure.
 - [ ] Pull-to-refresh where useful.
+  - [x] Budget category and transaction lists support pull-to-refresh.
+  - [x] Photos Social and My Photos support pull-to-refresh.
 - [ ] Mutation pending states.
   - [x] Settings disables/pends setting updates and subscription mock actions.
 - [ ] Confirm delete dialogs.
@@ -118,6 +124,10 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 - [ ] Safe area and keyboard handling.
 - [ ] Dark mode compatibility.
 - [ ] Accessible touch targets.
+  - [x] Budget icon-only actions have accessible labels and roles.
+  - [x] Pet carousel and reminder calendar primary touch targets have accessible labels and roles.
+  - [x] Photos like button exposes accessible labels, role, state, and hit slop.
+  - [x] Custom bottom tabs expose tab labels and selected state.
 
 ## Verification Commands
 

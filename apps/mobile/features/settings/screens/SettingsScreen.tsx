@@ -148,6 +148,15 @@ export function SettingsScreen() {
     [updateProfile],
   );
 
+  const handleSubscriptionAction = useCallback(() => {
+    Toast.warn({
+      text:
+        entitlements?.tier === "premium"
+          ? "Subscription management will be available after store integration."
+          : "Premium purchase will be available after store integration.",
+    });
+  }, [entitlements?.tier]);
+
   if (isLoadingSettings) {
     return (
       <ScreenContainer>
@@ -243,24 +252,42 @@ export function SettingsScreen() {
               </Button>
             </SettingsRow>
           ) : null}
-          <View className="flex-row gap-10 border-b border-line-secondary px-16 py-14">
-            <Button
-              size="sm"
-              variant="secondary"
-              loading={isUpgrading}
-              onPress={() => mockUpgrade()}
-            >
-              Mock Upgrade
+          <SettingsRow
+            title={
+              entitlements?.tier === "premium"
+                ? "Manage subscription"
+                : "Upgrade to Premium"
+            }
+            description={
+              entitlements?.tier === "premium"
+                ? "Review billing and plan changes when store integration is connected."
+                : "Unlock higher limits for pets, reminders, photos, records, and AI."
+            }
+          >
+            <Button size="sm" variant="secondary" onPress={handleSubscriptionAction}>
+              {entitlements?.tier === "premium" ? "Manage" : "Upgrade"}
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              loading={isDowngrading}
-              onPress={() => mockDowngrade()}
-            >
-              Mock Downgrade
-            </Button>
-          </View>
+          </SettingsRow>
+          {__DEV__ ? (
+            <View className="flex-row gap-10 border-b border-line-secondary px-16 py-14">
+              <Button
+                size="sm"
+                variant="secondary"
+                loading={isUpgrading}
+                onPress={() => mockUpgrade()}
+              >
+                Mock Upgrade
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                loading={isDowngrading}
+                onPress={() => mockDowngrade()}
+              >
+                Mock Downgrade
+              </Button>
+            </View>
+          ) : null}
         </SettingsSection>
 
         <SettingsSection

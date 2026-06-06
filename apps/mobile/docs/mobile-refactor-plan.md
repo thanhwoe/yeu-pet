@@ -233,7 +233,7 @@ Requirements:
 
 ### 5.1 Settings
 
-Status: Phase 1 settings shell implemented. Profile edit, support/legal rows, and settings preferences are present. Final production subscription purchase flow remains.
+Status: Phase 1 settings shell implemented. Profile edit, support/legal rows, settings preferences, and a production-safe subscription CTA are present. Native purchase or RevenueCat integration remains.
 
 Files/folders:
 
@@ -251,7 +251,7 @@ Requirements:
 - Theme and language persistence through `/settings`. Done.
 - Logout clears tokens/cache. Existing hook retained.
 - Loading/error states for settings and subscription summary. Done.
-- Remaining: production subscription action and manual visual QA.
+- Remaining: native purchase or RevenueCat integration and manual visual QA.
 
 ### 5.2 Home + Pets
 
@@ -329,11 +329,11 @@ Requirements:
 
 ### 5.6 Photos
 
-Status: started. Photo screen composition now lives at `features/photos/screens/PhotosScreen.tsx`. Photo grid, viewer, comments sheet, upload sheet, composer controls, utility constants, and `LikeButton` now live under `features/photos/components` and `features/photos/utils.ts`; old screen-local component files and old component exports were removed. `ImageGallery` remains shared because Medical Records also uses it.
+Status: started. Photo screen composition now lives at `features/photos/screens/PhotosScreen.tsx`. Photo grid, viewer, comments sheet, upload sheet, composer controls, utility constants, old screen-local component files and old component exports were removed. `ImageGallery` remains shared because Medical Records also uses it.
 
 Files/folders:
 
-- Move photo screen pieces into `features/photos/components`. Started with grid/viewer/comment/upload pieces and `LikeButton`.
+- Move photo screen pieces into `features/photos/components`. Started with grid/viewer/comment/upload pieces.
 - Move the Photos screen composer to `features/photos/screens/PhotosScreen.tsx`. Done; `app/photos.tsx` is now a thin route shim.
 - Keep or promote `ImageGallery` based on medical reuse.
 

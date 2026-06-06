@@ -82,7 +82,6 @@ This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonic
   - `features/photos/screens/PhotosScreen.tsx`
   - `features/photos/components/CaptionInput`
   - `features/photos/components/EmptyPhotos`
-  - `features/photos/components/LikeButton`
   - `features/photos/components/PhotoCommentsSheet`
   - `features/photos/components/PhotoItem`
   - `features/photos/components/PhotoView`
@@ -190,28 +189,28 @@ Candidates for shared layout, feedback, form, media, navigation, or common folde
 - Reminders: `features/reminders/components/ReminderCalendar`, `features/reminders/components/ReminderForm`, `features/reminders/components/ReminderIcons`
 - Medical Records: `features/medical-records/hooks.ts`, `features/medical-records/components/MedicalRecordContainer`, `features/medical-records/components/MedicalRecordForm`, `features/medical-records/components/MedicalRecordListItem`, `features/medical-records/components/MedicalRecordType`, `features/medical-records/components/PetTimeline`
 - Budget: `features/budget/screens/Budget`, `features/budget/screens/BudgetCategories`, `features/budget/screens/BudgetTransactions`, `features/budget/components/BudgetCategoryForm`, `features/budget/components/BudgetCategoryStatistic`, `features/budget/components/BudgetTransaction`, `features/budget/components/BudgetTransactionForm`, `features/budget/components/chart`
-- Photos: `features/photos/screens/PhotosScreen.tsx`, `features/photos/components/CaptionInput`, `features/photos/components/EmptyPhotos`, `features/photos/components/LikeButton`, `features/photos/components/PhotoCommentsSheet`, `features/photos/components/PhotoItem`, `features/photos/components/PhotoView`, `features/photos/components/SocialPhotos`, `features/photos/components/SubmitButton`, `features/photos/components/TakePhotoSheet`, `features/photos/components/UserPhotos`, `features/photos/utils.ts`
+- Photos: `features/photos/screens/PhotosScreen.tsx`, `features/photos/components/CaptionInput`, `features/photos/components/EmptyPhotos`, `features/photos/components/PhotoCommentsSheet`, `features/photos/components/PhotoItem`, `features/photos/components/PhotoView`, `features/photos/components/SocialPhotos`, `features/photos/components/SubmitButton`, `features/photos/components/TakePhotoSheet`, `features/photos/components/UserPhotos`, `features/photos/utils.ts`
 - AI: `features/ai/components/ChatMessage`, `features/ai/components/Markdown`, `features/ai/components/TypingMessage`, `features/ai/components/LoadingMessage`
 - Settings: `features/settings/components/ThemeToggle.tsx`
 
 ## Legacy Endpoint Audit
 
-| Area | Current usage | Canonical replacement | Status |
-| --- | --- | --- | --- |
-| Profile | `API_ROUTES.ME = "/me"` in `constants/api-routes.ts`; `services/user.ts` uses it for read and update | `/me` | Aligned |
-| Settings | `services/settings.ts` uses `APIs.patch(API_ROUTES.SETTINGS)` | `PATCH /settings` | Aligned |
-| Photos social | `API_ROUTES.PHOTOS = "/photos/social"`; `services/photos.ts` uses it | `GET /photos/social` | Aligned |
-| My photos | `API_ROUTES.USER_PHOTOS = "/photos/me"` | `GET /photos/me` | Aligned |
-| Likes | `toggleLikePhotoMutation` function name posts to `POST /photos/:id/like`; `unlikePhotoMutation` deletes same route | Explicit like/unlike endpoints | Endpoint aligned; rename function later for clarity |
-| Sitter profile | `CREATE_MY_SITTER_PROFILE` and `MY_SITTER_PROFILE` use `/sitters/me` | `/sitters/me` | Aligned |
-| Sitter bookings | `MY_SITTER_BOOKINGS = "/sitter-bookings/me"` and role params | `GET /sitter-bookings/me?role=` | Aligned |
-| Sitter actions | Services use POST accept/reject/complete/cancel routes | POST action routes | Aligned |
-| Budget | Services use `/budgets`, `/budgets/statistics/*`, `/budgets/categories`, and `/budgets/transactions`; transaction forms support optional `petId` | Canonical budget routes with optional pet filters | Aligned |
-| Pets | Services use `/pets` and `/pets/:id`; create/update submit `weightValue` and `weightUnit` where a weight can be parsed | Canonical pet routes and weight fields | Aligned |
-| Medical record create | `createMedicalRecordMutation` posts to `API_ROUTES.MEDICAL_RECORDS_FOR_PET(data.petId)` | `POST /pets/:id/medical-records` | Aligned |
-| AI | `services/ai.ts` calls `/ai/conversations` and `/messages/stream` through backend | Backend AI only | Aligned |
-| Devices | `services/user.ts` uses `POST /devices` and `DELETE /devices/:id` | `/devices` | Aligned |
-| Frozen commerce/payment | Store/cart/payment routes remain under compatibility/deferred service files | Out of scope | Frozen |
+| Area                    | Current usage                                                                                                                                    | Canonical replacement                             | Status                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- | --------------------------------------------------- |
+| Profile                 | `API_ROUTES.ME = "/me"` in `constants/api-routes.ts`; `services/user.ts` uses it for read and update                                             | `/me`                                             | Aligned                                             |
+| Settings                | `services/settings.ts` uses `APIs.patch(API_ROUTES.SETTINGS)`                                                                                    | `PATCH /settings`                                 | Aligned                                             |
+| Photos social           | `API_ROUTES.PHOTOS = "/photos/social"`; `services/photos.ts` uses it                                                                             | `GET /photos/social`                              | Aligned                                             |
+| My photos               | `API_ROUTES.USER_PHOTOS = "/photos/me"`                                                                                                          | `GET /photos/me`                                  | Aligned                                             |
+| Likes                   | `toggleLikePhotoMutation` function name posts to `POST /photos/:id/like`; `unlikePhotoMutation` deletes same route                               | Explicit like/unlike endpoints                    | Endpoint aligned; rename function later for clarity |
+| Sitter profile          | `CREATE_MY_SITTER_PROFILE` and `MY_SITTER_PROFILE` use `/sitters/me`                                                                             | `/sitters/me`                                     | Aligned                                             |
+| Sitter bookings         | `MY_SITTER_BOOKINGS = "/sitter-bookings/me"` and role params                                                                                     | `GET /sitter-bookings/me?role=`                   | Aligned                                             |
+| Sitter actions          | Services use POST accept/reject/complete/cancel routes                                                                                           | POST action routes                                | Aligned                                             |
+| Budget                  | Services use `/budgets`, `/budgets/statistics/*`, `/budgets/categories`, and `/budgets/transactions`; transaction forms support optional `petId` | Canonical budget routes with optional pet filters | Aligned                                             |
+| Pets                    | Services use `/pets` and `/pets/:id`; create/update submit `weightValue` and `weightUnit` where a weight can be parsed                           | Canonical pet routes and weight fields            | Aligned                                             |
+| Medical record create   | `createMedicalRecordMutation` posts to `API_ROUTES.MEDICAL_RECORDS_FOR_PET(data.petId)`                                                          | `POST /pets/:id/medical-records`                  | Aligned                                             |
+| AI                      | `services/ai.ts` calls `/ai/conversations` and `/messages/stream` through backend                                                                | Backend AI only                                   | Aligned                                             |
+| Devices                 | `services/user.ts` uses `POST /devices` and `DELETE /devices/:id`                                                                                | `/devices`                                        | Aligned                                             |
+| Frozen commerce/payment | Store/cart/payment routes remain under compatibility/deferred service files                                                                      | Out of scope                                      | Frozen                                              |
 
 Search notes:
 
@@ -242,7 +241,6 @@ Search notes:
   - `components/Toast/*`
   - `components/Skeleton/index.tsx`
   - `features/ai/components/Markdown/index.tsx`
-  - `features/photos/components/LikeButton/index.tsx`
   - `components/ui/BottomSheet/index.tsx`
   - `app/(tabs)/_layout.tsx`
   - Photo comments/photo viewer files

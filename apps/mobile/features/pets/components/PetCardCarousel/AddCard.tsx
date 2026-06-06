@@ -99,6 +99,8 @@ export const AddCard = ({
     <>
       <CardWrapper
         onPress={() => setShowForm(true)}
+        accessibilityLabel="Add new pet"
+        accessibilityRole="button"
         className="relative bg-background-card rounded-28 justify-center items-center border-2 border-dashed border-line-primary overflow-hidden"
         style={[{ width: CARD_WIDTH, height: CARD_HEIGHT }, zoomStyle]}
       >

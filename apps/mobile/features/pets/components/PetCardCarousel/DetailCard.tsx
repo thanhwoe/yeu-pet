@@ -230,6 +230,8 @@ export const DetailCard = memo<IProps>(
                   " size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
+                accessibilityLabel={`Show ${pet.name} details`}
+                accessibilityRole="button"
                 onPress={flip}
               >
                 <FrontIcon className={theme.icon} weight="bold" size={20} />
@@ -239,6 +241,8 @@ export const DetailCard = memo<IProps>(
                   "size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
+                accessibilityLabel={`Edit ${pet.name}`}
+                accessibilityRole="button"
                 onPress={() => onEdit(pet)}
               >
                 <EditIcon weight="bold" size={20} className={theme.icon} />
@@ -248,6 +252,8 @@ export const DetailCard = memo<IProps>(
                   " size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
+                accessibilityLabel={`Delete ${pet.name}`}
+                accessibilityRole="button"
                 onPress={() => onDelete(pet)}
               >
                 <DeleteIcon weight="bold" size={20} className={theme.icon} />
@@ -331,6 +337,8 @@ export const DetailCard = memo<IProps>(
               "absolute top-18 right-18 size-36 rounded-18 justify-center items-center shadow-shadow-primary elevation-md",
               theme.color,
             )}
+            accessibilityLabel={`Hide ${pet.name} details`}
+            accessibilityRole="button"
             onPress={flip}
             activeOpacity={0.8}
           >

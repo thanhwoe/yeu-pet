@@ -286,7 +286,6 @@ src/features/photos/
 │   ├── PhotoCard.tsx
 │   ├── PhotoUploadSheet.tsx
 │   ├── PhotoDetailModal.tsx
-│   ├── LikeButton.tsx
 │   ├── CommentList.tsx
 │   ├── CommentItem.tsx
 │   └── CommentInput.tsx

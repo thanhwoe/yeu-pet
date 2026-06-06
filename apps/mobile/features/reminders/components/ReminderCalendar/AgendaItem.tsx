@@ -85,6 +85,8 @@ export const AgendaItem = ({
         <View className="border border-line-tertiary bg-background-card">
           <TouchableOpacity
             onPress={() => setVisible(true)}
+            accessibilityLabel={`Open ${item.title} reminder for ${item.pets.name}`}
+            accessibilityRole="button"
             className="flex-row items-center py-20 px-20 gap-12"
           >
             <View>
