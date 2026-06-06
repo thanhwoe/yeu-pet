@@ -1,4 +1,5 @@
 import { API_ROUTES } from "@/constants/api-routes";
+import { IProfileForm } from "@/constants/validation";
 import { IDeviceResponse, IUser } from "@/interfaces";
 import { APIs } from "./api-helper";
 
@@ -12,6 +13,9 @@ export const verifyOtpMutation = (code: string) =>
   APIs.post<IUser>(API_ROUTES.VERIFY_OTP, { data: { code } });
 
 export const getUserQuery = () => APIs.get<IUser>(API_ROUTES.ME);
+
+export const updateUserProfileMutation = (params: IProfileForm) =>
+  APIs.patch<IUser>(API_ROUTES.ME, { data: params });
 
 interface DeviceInfoParams {
   pushToken: string;

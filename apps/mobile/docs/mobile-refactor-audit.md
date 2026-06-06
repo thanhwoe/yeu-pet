@@ -198,7 +198,7 @@ Candidates for shared layout, feedback, form, media, navigation, or common folde
 
 | Area | Current usage | Canonical replacement | Status |
 | --- | --- | --- | --- |
-| Profile | `API_ROUTES.ME = "/me"` in `constants/api-routes.ts`; `services/user.ts` uses it | `/me` | Aligned |
+| Profile | `API_ROUTES.ME = "/me"` in `constants/api-routes.ts`; `services/user.ts` uses it for read and update | `/me` | Aligned |
 | Settings | `services/settings.ts` uses `APIs.patch(API_ROUTES.SETTINGS)` | `PATCH /settings` | Aligned |
 | Photos social | `API_ROUTES.PHOTOS = "/photos/social"`; `services/photos.ts` uses it | `GET /photos/social` | Aligned |
 | My photos | `API_ROUTES.USER_PHOTOS = "/photos/me"` | `GET /photos/me` | Aligned |

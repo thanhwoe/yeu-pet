@@ -52,14 +52,16 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 
 ## Feature Tasks
 
-- [ ] Auth/account/profile/onboarding aligned with `/me` and canonical auth utilities.
+- [x] Auth/account/profile/onboarding aligned with `/me` and canonical auth utilities.
   - [x] Auth sign-in, sign-up, forgot password, and reset password forms moved under `features/auth/components`; old component exports removed.
+  - [x] Profile edit uses canonical `PATCH /me` and updates local user state.
 - [x] Settings supports notification toggles, language, and theme using `PATCH /settings`.
   - [x] Settings route is a thin Expo Router shim.
   - [x] Settings screen has loading/error/retry states for settings data.
   - [x] Settings shows subscription usage from entitlements.
   - [x] Support and legal rows added.
-  - [ ] Profile edit and production subscription action remain.
+  - [x] Profile edit bottom sheet added.
+  - [ ] Production subscription action remains.
 - [x] Subscription/entitlement APIs and paywall gating are implemented for Phase 1 quota surfaces.
   - [x] Add subscription/entitlement service functions.
   - [x] Wire entitlement queries into pet creation, photo upload, medical record creation, AI chat, and settings subscription summary.

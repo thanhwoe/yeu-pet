@@ -233,7 +233,7 @@ Requirements:
 
 ### 5.1 Settings
 
-Status: Phase 1 settings shell implemented. Support/legal rows are present. Profile edit and final production subscription purchase flow remain.
+Status: Phase 1 settings shell implemented. Profile edit, support/legal rows, and settings preferences are present. Final production subscription purchase flow remains.
 
 Files/folders:
 
@@ -245,13 +245,13 @@ Files/folders:
 
 Requirements:
 
-- Profile/account entry. Partially done with signed-in account summary.
+- Profile/account entry. Done with signed-in account summary and `PATCH /me` edit sheet.
 - Subscription summary. Done with entitlements usage and retry state.
 - Notification toggles. Done with `/settings` updates.
 - Theme and language persistence through `/settings`. Done.
 - Logout clears tokens/cache. Existing hook retained.
 - Loading/error states for settings and subscription summary. Done.
-- Remaining: profile edit navigation, production subscription action, and manual visual QA.
+- Remaining: production subscription action and manual visual QA.
 
 ### 5.2 Home + Pets
 

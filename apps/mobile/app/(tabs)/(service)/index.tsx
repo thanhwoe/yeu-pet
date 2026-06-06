@@ -47,6 +47,7 @@ export default function Screen() {
           title="Doctor AI"
           subTitle="Tư vấn sức khỏe"
           icon={ChatsIcon}
+          onPress={() => router.push("/doctor-ai")}
           themeClassName="text-accent-blue"
         />
         <ServiceCard
