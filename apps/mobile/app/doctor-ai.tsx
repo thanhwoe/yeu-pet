@@ -1,3 +1,3 @@
-import { DoctorAIScreen } from "@/screens/DoctorAI";
+import { DoctorAIScreen } from "@/features/ai/screens/DoctorAIScreen";
 
 export default DoctorAIScreen;

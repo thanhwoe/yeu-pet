@@ -407,6 +407,7 @@ export const ModelName = {
   sitter_reviews: 'sitter_reviews',
   email_logs: 'email_logs',
   email_suppressions: 'email_suppressions',
+  email_change_requests: 'email_change_requests',
   subscription_plans: 'subscription_plans',
   user_subscriptions: 'user_subscriptions',
   usage_counters: 'usage_counters',
@@ -431,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos" | "pet_sitters" | "sitter_bookings" | "sitter_reviews" | "email_logs" | "email_suppressions" | "subscription_plans" | "user_subscriptions" | "usage_counters" | "ai_conversations" | "ai_messages" | "ai_usage_logs" | "user_blocks" | "reports" | "sitter_booking_messages"
+    modelProps: "accounts" | "refresh_tokens" | "otp_tokens" | "medical_records" | "pets" | "medical_attachments" | "account_devices" | "account_settings" | "notifications" | "reminders" | "notification_deliveries" | "budget_categories" | "budget_transactions" | "budgets" | "photo_comments" | "photo_likes" | "photo_views" | "photos" | "pet_sitters" | "sitter_bookings" | "sitter_reviews" | "email_logs" | "email_suppressions" | "email_change_requests" | "subscription_plans" | "user_subscriptions" | "usage_counters" | "ai_conversations" | "ai_messages" | "ai_usage_logs" | "user_blocks" | "reports" | "sitter_booking_messages"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2137,6 +2138,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    email_change_requests: {
+      payload: Prisma.$email_change_requestsPayload<ExtArgs>
+      fields: Prisma.email_change_requestsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.email_change_requestsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.email_change_requestsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        findFirst: {
+          args: Prisma.email_change_requestsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.email_change_requestsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        findMany: {
+          args: Prisma.email_change_requestsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>[]
+        }
+        create: {
+          args: Prisma.email_change_requestsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        createMany: {
+          args: Prisma.email_change_requestsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.email_change_requestsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>[]
+        }
+        delete: {
+          args: Prisma.email_change_requestsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        update: {
+          args: Prisma.email_change_requestsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        deleteMany: {
+          args: Prisma.email_change_requestsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.email_change_requestsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.email_change_requestsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>[]
+        }
+        upsert: {
+          args: Prisma.email_change_requestsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$email_change_requestsPayload>
+        }
+        aggregate: {
+          args: Prisma.Email_change_requestsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmail_change_requests>
+        }
+        groupBy: {
+          args: Prisma.email_change_requestsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_change_requestsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.email_change_requestsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Email_change_requestsCountAggregateOutputType> | number
+        }
+      }
+    }
     subscription_plans: {
       payload: Prisma.$subscription_plansPayload<ExtArgs>
       fields: Prisma.subscription_plansFieldRefs
@@ -3234,6 +3309,25 @@ export const Email_suppressionsScalarFieldEnum = {
 export type Email_suppressionsScalarFieldEnum = (typeof Email_suppressionsScalarFieldEnum)[keyof typeof Email_suppressionsScalarFieldEnum]
 
 
+export const Email_change_requestsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  new_email: 'new_email',
+  otp_hash: 'otp_hash',
+  status: 'status',
+  attempts: 'attempts',
+  resend_count: 'resend_count',
+  last_sent_at: 'last_sent_at',
+  expires_at: 'expires_at',
+  verified_at: 'verified_at',
+  cancelled_at: 'cancelled_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Email_change_requestsScalarFieldEnum = (typeof Email_change_requestsScalarFieldEnum)[keyof typeof Email_change_requestsScalarFieldEnum]
+
+
 export const Subscription_plansScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -3700,6 +3794,20 @@ export type ListEnumsitter_bookings_statusFieldRefInput<$PrismaModel> = FieldRef
 
 
 /**
+ * Reference to a field of type 'email_change_status'
+ */
+export type Enumemail_change_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'email_change_status'>
+    
+
+
+/**
+ * Reference to a field of type 'email_change_status[]'
+ */
+export type ListEnumemail_change_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'email_change_status[]'>
+    
+
+
+/**
  * Reference to a field of type 'subscription_provider'
  */
 export type Enumsubscription_providerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'subscription_provider'>
@@ -3943,6 +4051,7 @@ export type GlobalOmitConfig = {
   sitter_reviews?: Prisma.sitter_reviewsOmit
   email_logs?: Prisma.email_logsOmit
   email_suppressions?: Prisma.email_suppressionsOmit
+  email_change_requests?: Prisma.email_change_requestsOmit
   subscription_plans?: Prisma.subscription_plansOmit
   user_subscriptions?: Prisma.user_subscriptionsOmit
   usage_counters?: Prisma.usage_countersOmit

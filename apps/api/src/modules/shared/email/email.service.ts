@@ -1,13 +1,22 @@
 import { EmailJobData } from '@app/interfaces/email-jobs.interface';
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EmailLogsRepository } from './email-logs.repository';
 import { RESEND_CLIENT, ResendEmailPayload } from './resend.client';
 import type { ResendClient } from './resend.client';
+import type { WebhookEventPayload } from 'resend';
 
 export const EMAIL_LOG_STATUS = {
   PENDING: 'pending',
   SENT: 'sent',
+  DELIVERED: 'delivered',
+  DELIVERY_DELAYED: 'delivery_delayed',
+  BOUNCED: 'bounced',
+  COMPLAINED: 'complained',
   FAILED: 'failed',
   SUPPRESSED: 'suppressed',
 } as const;
@@ -37,6 +46,11 @@ export class EmailService {
     try {
       const response = await this.resendClient.sendEmail(
         this.toResendPayload(input),
+        {
+          idempotencyKey:
+            input.idempotencyKey ??
+            this.toIdempotencyKey(input.subject, input.accountId, input.to),
+        },
       );
 
       return this.emailLogsRepository.updateStatus(log.id, {
@@ -51,20 +65,148 @@ export class EmailService {
     }
   }
 
+  async sendEmailChangeOtpEmail(params: {
+    to: string;
+    otp: string;
+    expiresInMinutes: number;
+    userName?: string;
+    idempotencyKey: string;
+  }) {
+    const subject = 'Verify your new email for YeuPet';
+    const name = params.userName?.trim() || 'there';
+    const text = [
+      `Hi ${name},`,
+      '',
+      `Your YeuPet email verification code is ${params.otp}.`,
+      `This code expires in ${params.expiresInMinutes} minutes.`,
+      '',
+      'If you did not request this email change, you can ignore this email.',
+    ].join('\n');
+    const html = `
+      <!doctype html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>${subject}</title>
+        </head>
+        <body style="margin: 0; padding: 0; background: #f8fafc;">
+          <main style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1f2937; line-height: 1.5; max-width: 520px; margin: 0 auto; padding: 32px 20px;">
+            <h1 style="font-size: 22px; line-height: 1.25; margin: 0 0 20px;">Verify your new email</h1>
+            <p style="margin: 0 0 16px;">Hi ${this.escapeHtml(name)},</p>
+            <p style="margin: 0 0 16px;">Use this code to finish changing your YeuPet account email:</p>
+            <p aria-label="Verification code ${params.otp}" style="font-size: 32px; font-weight: 700; letter-spacing: 6px; margin: 24px 0; color: #111827;">${params.otp}</p>
+            <p style="margin: 0 0 16px;">This code expires in ${params.expiresInMinutes} minutes.</p>
+            <p style="margin: 0; color: #64748b;">If you did not request this email change, you can ignore this email.</p>
+          </main>
+        </body>
+      </html>
+    `;
+
+    const log = await this.sendEmail({
+      to: params.to,
+      subject,
+      html,
+      text,
+      idempotencyKey: params.idempotencyKey,
+    });
+
+    if (log.status !== EMAIL_LOG_STATUS.SENT) {
+      throw new ServiceUnavailableException(
+        'Could not send verification email. Please try again later.',
+      );
+    }
+
+    return log;
+  }
+
   suppressEmail(email: string, reason: string) {
     return this.emailLogsRepository.suppressEmail(email, reason);
   }
 
+  async processResendWebhook(event: WebhookEventPayload) {
+    const emailId = 'email_id' in event.data ? event.data.email_id : undefined;
+    const toEmail = 'to' in event.data ? event.data.to?.[0] : undefined;
+
+    if (!emailId) return;
+
+    switch (event.type) {
+      case 'email.delivered':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.DELIVERED,
+        });
+        break;
+      case 'email.delivery_delayed':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.DELIVERY_DELAYED,
+        });
+        break;
+      case 'email.bounced':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.BOUNCED,
+          error:
+            'bounce' in event.data
+              ? `${event.data.bounce.type}: ${event.data.bounce.message}`
+              : 'Email bounced',
+        });
+
+        if (toEmail) {
+          await this.suppressEmail(toEmail, 'hard_bounce');
+        }
+        break;
+      case 'email.complained':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.COMPLAINED,
+          error: 'Recipient marked email as spam',
+        });
+
+        if (toEmail) {
+          await this.suppressEmail(toEmail, 'complaint');
+        }
+        break;
+      case 'email.failed':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.FAILED,
+          error:
+            'failed' in event.data
+              ? event.data.failed.reason
+              : 'Email delivery failed',
+        });
+        break;
+      case 'email.suppressed':
+        await this.emailLogsRepository.updateStatusByResendEmailId(emailId, {
+          status: EMAIL_LOG_STATUS.SUPPRESSED,
+          error: 'Email suppressed by provider',
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
   private toResendPayload(input: EmailJobData): ResendEmailPayload {
-    return {
-      from:
-        this.configService.get<string>('RESEND_FROM_EMAIL') ??
-        'YeuPet <noreply@yeupet.com>',
+    const basePayload = {
+      from: this.getFromAddress(),
       to: input.to,
       subject: input.subject,
-      html: input.html,
-      text: input.text,
     };
+
+    if (input.html) {
+      return {
+        ...basePayload,
+        html: input.html,
+        text: input.text,
+      };
+    }
+
+    if (input.text) {
+      return {
+        ...basePayload,
+        text: input.text,
+      };
+    }
+
+    throw new Error('Email body must include html or text content');
   }
 
   private toErrorMessage(error: unknown): string {
@@ -73,5 +215,35 @@ export class EmailService {
     }
 
     return 'Unknown email delivery error';
+  }
+
+  private getFromAddress(): string {
+    const fromEmail =
+      this.configService.get<string>('RESEND_FROM_EMAIL') ??
+      'noreply@yeupet.com';
+    const fromName = this.configService.get<string>('RESEND_FROM_NAME');
+
+    if (!fromName) return fromEmail;
+
+    return `${fromName} <${fromEmail}>`;
+  }
+
+  private toIdempotencyKey(
+    subject: string,
+    accountId: string | undefined,
+    to: string,
+  ): string {
+    const key = `${subject}/${accountId ?? to}`.toLowerCase();
+
+    return key.replace(/[^a-z0-9._/-]+/g, '-').slice(0, 256);
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 }

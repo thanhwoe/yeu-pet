@@ -348,34 +348,37 @@ Requirements:
 
 ### 5.7 Sitter
 
+Status: implemented for Phase 1 mobile. The tab route now imports `features/sitter/screens/SitterScreen.tsx`; discovery, profile create/edit with availability, booking request, owner/sitter booking actions, HTTP messages, review, and external-payment copy are wired through canonical services.
+
 Files/folders:
 
-- Move sitter screens and components into `features/sitter`.
+- Move sitter screens and components into `features/sitter`. Done for the tab screen.
 - Keep HTTP message thread, no WebSocket.
 
 Requirements:
 
-- Sitter discovery/profile.
-- Booking request/actions.
-- Booking messages through HTTP list/create.
-- External payment copy.
-- Review only after completed booking.
+- Sitter discovery/profile. Done, including filter sheet and recent review visibility on profile sheets.
+- Booking request/actions. Done.
+- Booking messages through HTTP list/create. Done.
+- External payment copy. Done.
+- Review only after completed booking. Done in mobile action gating; backend still enforces duplicate/completion rules.
 
 ### 5.8 Pet Care AI
 
-Status: started. Chat message, markdown, typing, and loading message components now live under `features/ai/components`; old component exports were removed. Screen and store orchestration remain in their existing locations for now.
+Status: started. Chat message, markdown, typing, and loading message components now live under `features/ai/components`; old component exports were removed. The Doctor AI route now imports `features/ai/screens/DoctorAIScreen.tsx`; chat store orchestration sends optional pet context through backend conversation creation.
 
 Files/folders:
 
 - Move AI components into `features/ai/components` unless shared chat is truly needed. Done; old component exports removed.
-- Move screens into `features/ai/screens`.
+- Move screens into `features/ai/screens`. Done for `DoctorAIScreen`.
 
 Requirements:
 
 - Backend `/ai/conversations` only.
-- Safety disclaimer.
+- Safety disclaimer. Done.
 - Quota/paywall state.
 - Streaming fallback documented if needed.
+- Pet selector. Done for optional conversation context.
 - Markdown is readable in light/dark mode.
 
 ### 5.9 Notifications

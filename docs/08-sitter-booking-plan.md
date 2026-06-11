@@ -164,14 +164,14 @@ Later:
 
 ## 10. Phase 1 checklist
 
-- [ ] Update sitter profile schema.
-- [ ] Add booking message table if chat implemented.
-- [ ] Implement sitter registration API.
-- [ ] Implement sitter search API.
-- [ ] Implement booking request API.
-- [ ] Implement status transition actions.
-- [ ] Implement review/rating update.
-- [ ] Implement mobile sitter list/profile.
-- [ ] Implement booking request form.
-- [ ] Implement booking detail/status actions.
-- [ ] Show external payment disclaimer.
+- [x] Update sitter profile schema.
+- [x] Add booking message table if chat implemented.
+- [x] Implement sitter registration API.
+- [x] Implement sitter search API.
+- [x] Implement booking request API.
+- [x] Implement status transition actions.
+- [x] Implement review/rating update.
+- [x] Implement mobile sitter list/profile.
+- [x] Implement booking request form.
+- [x] Implement booking detail/status actions.
+- [x] Show external payment disclaimer.

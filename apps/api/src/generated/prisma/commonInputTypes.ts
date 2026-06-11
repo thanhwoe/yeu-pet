@@ -629,6 +629,23 @@ export type Enumsitter_bookings_statusWithAggregatesFilter<$PrismaModel = never>
   _max?: Prisma.NestedEnumsitter_bookings_statusFilter<$PrismaModel>
 }
 
+export type Enumemail_change_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.email_change_status | Prisma.Enumemail_change_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel> | $Enums.email_change_status
+}
+
+export type Enumemail_change_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.email_change_status | Prisma.Enumemail_change_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumemail_change_statusWithAggregatesFilter<$PrismaModel> | $Enums.email_change_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel>
+}
+
 export type Enumsubscription_providerFilter<$PrismaModel = never> = {
   equals?: $Enums.subscription_provider | Prisma.Enumsubscription_providerFieldRefInput<$PrismaModel>
   in?: $Enums.subscription_provider[] | Prisma.ListEnumsubscription_providerFieldRefInput<$PrismaModel>
@@ -1343,6 +1360,23 @@ export type NestedEnumsitter_bookings_statusWithAggregatesFilter<$PrismaModel = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumsitter_bookings_statusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumsitter_bookings_statusFilter<$PrismaModel>
+}
+
+export type NestedEnumemail_change_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.email_change_status | Prisma.Enumemail_change_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel> | $Enums.email_change_status
+}
+
+export type NestedEnumemail_change_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.email_change_status | Prisma.Enumemail_change_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.email_change_status[] | Prisma.ListEnumemail_change_statusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumemail_change_statusWithAggregatesFilter<$PrismaModel> | $Enums.email_change_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumemail_change_statusFilter<$PrismaModel>
 }
 
 export type NestedEnumsubscription_providerFilter<$PrismaModel = never> = {

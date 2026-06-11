@@ -42,6 +42,20 @@ export class EmailLogsRepository {
     });
   }
 
+  updateStatusByResendEmailId(
+    resendEmailId: string,
+    input: Omit<UpdateEmailLogStatusInput, 'resendEmailId'>,
+  ) {
+    return this.prisma.email_logs.updateMany({
+      where: { resend_email_id: resendEmailId },
+      data: {
+        status: input.status,
+        error: input.error,
+        updated_at: new Date(),
+      },
+    });
+  }
+
   findSuppression(email: string) {
     return this.prisma.email_suppressions.findUnique({
       where: {

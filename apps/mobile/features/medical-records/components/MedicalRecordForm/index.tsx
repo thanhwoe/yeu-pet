@@ -52,8 +52,8 @@ export const MedicalRecordForm = ({
     useEntitlements();
   const recordLimit = getLimitState("maxMedicalRecords");
   const maxFiles =
-    entitlements?.limits.maxMedicalImagesPerRecord ??
-    getLimitState("maxMedicalImagesPerRecord").limit ??
+    entitlements?.limits.maxImagesPerMedicalRecord ??
+    getLimitState("maxImagesPerMedicalRecord").limit ??
     5;
 
   const handleSubmitForm = (data: IMedicalRecordForm) => {

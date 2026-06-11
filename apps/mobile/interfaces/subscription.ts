@@ -2,9 +2,9 @@ export interface SubscriptionLimits {
   maxPets: number;
   maxActiveReminders: number;
   maxMedicalRecords: number;
-  maxMedicalImagesPerRecord: number;
+  maxImagesPerMedicalRecord: number;
   maxBudgetTransactionsPerMonth: number;
-  maxPhotoUploads: number;
+  maxPhotos: number;
   aiMessagesPerMonth: number;
   aiWithPetContext: boolean;
   aiWithMedicalHistory: boolean;

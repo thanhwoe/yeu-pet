@@ -79,6 +79,7 @@ export const API_ROUTES = {
   REJECT_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/reject`,
   COMPLETE_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/complete`,
   CANCEL_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/cancel`,
+  REVIEW_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/review`,
   SITTER_BOOKING_MESSAGES: (id: string) => `/sitter-bookings/${id}/messages`,
   SITTER_REVIEWS: "/sitter-reviews",
   SITTER_REVIEWS_BY_SITTER: (sitterId: string) =>

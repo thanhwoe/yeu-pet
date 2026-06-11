@@ -93,10 +93,24 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
   - [x] Photos grid, viewer, comments sheet, upload sheet, composer controls, and utility constants moved under `features/photos`; old screen-local component files removed.
   - [x] Move the remaining Photos screen composer into `features/photos/screens/PhotosScreen.tsx`.
 - [x] Sitter profile/search uses canonical sitter routes.
+  - [x] Sitter tab route imports the feature-owned screen directly.
+  - [x] Sitter profile create/edit uses `/sitters/me`.
+  - [x] Sitter profile edit exposes availability status for pausing/resuming discovery.
+  - [x] Sitter discovery opens profile/request flow with pet selection and schedule validation.
+  - [x] Sitter profile sheet shows recent reviews with loading, empty, and retry states.
+  - [x] Sitter discovery supports city, district, minimum rating, and max price filters.
 - [x] Sitter bookings use `/sitter-bookings/me` and POST status actions.
+  - [x] Owner and sitter booking lists expose accept, reject, cancel, complete, message, and review actions where allowed.
+  - [x] Sitter booking lists handle loading, retryable errors, and missing sitter profile state.
 - [x] Sitter booking messages use HTTP list/create routes.
+  - [x] Sitter messages are loaded and sent through booking-scoped HTTP routes.
+  - [x] External payment copy is visible on sitter profile, booking request, booking list, and message surfaces.
 - [x] Pet Care AI uses backend conversation/message streaming APIs only.
   - [x] AI chat message, markdown, typing, and loading components moved under `features/ai/components`; old component exports removed.
+  - [x] AI route imports the feature-owned screen directly.
+  - [x] AI chat creates backend conversations with optional pet context.
+  - [x] AI screen shows a safety disclaimer and urgent-care escalation copy.
+  - [x] AI input blocks blank sends and exposes an accessible send action.
 - [x] Notifications/devices use `/devices` and `/notifications`.
 - [x] Home aggregation uses existing pet/upcoming reminder/budget APIs.
   - [x] Home pet, upcoming reminder, and monthly budget sections expose loading, empty/error recovery, and pull-to-refresh behavior.

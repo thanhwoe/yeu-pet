@@ -74,6 +74,7 @@ export const ModelName = {
   sitter_reviews: 'sitter_reviews',
   email_logs: 'email_logs',
   email_suppressions: 'email_suppressions',
+  email_change_requests: 'email_change_requests',
   subscription_plans: 'subscription_plans',
   user_subscriptions: 'user_subscriptions',
   usage_counters: 'usage_counters',
@@ -491,6 +492,25 @@ export const Email_suppressionsScalarFieldEnum = {
 } as const
 
 export type Email_suppressionsScalarFieldEnum = (typeof Email_suppressionsScalarFieldEnum)[keyof typeof Email_suppressionsScalarFieldEnum]
+
+
+export const Email_change_requestsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  new_email: 'new_email',
+  otp_hash: 'otp_hash',
+  status: 'status',
+  attempts: 'attempts',
+  resend_count: 'resend_count',
+  last_sent_at: 'last_sent_at',
+  expires_at: 'expires_at',
+  verified_at: 'verified_at',
+  cancelled_at: 'cancelled_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Email_change_requestsScalarFieldEnum = (typeof Email_change_requestsScalarFieldEnum)[keyof typeof Email_change_requestsScalarFieldEnum]
 
 
 export const Subscription_plansScalarFieldEnum = {

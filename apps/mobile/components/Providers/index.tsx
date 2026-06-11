@@ -49,6 +49,7 @@ export const combineProviders = (
 const InitialProvider = ({ children }: Children) => {
   const isInitialized = useInitialize();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const themeVariables = themes[colorScheme] ?? themes.light;
 
   useEffect(() => {
     date.locale("vi");
@@ -87,7 +88,7 @@ const InitialProvider = ({ children }: Children) => {
 
   return (
     <>
-      <View style={[{ flex: 1 }, themes[colorScheme]]}>{children}</View>
+      <View style={[{ flex: 1 }, themeVariables]}>{children}</View>
       <StatusBar
         key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
         style={isDarkColorScheme ? "light" : "dark"}

@@ -14,6 +14,7 @@ interface SettingsRowProps {
   loading?: boolean;
   destructive?: boolean;
   className?: string;
+  accessibilityLabel?: string;
 }
 
 export function SettingsRow({
@@ -26,11 +27,12 @@ export function SettingsRow({
   loading,
   destructive,
   className,
+  accessibilityLabel,
 }: SettingsRowProps) {
   const content = (
     <View
       className={cn(
-        "min-h-60 flex-row items-center gap-12 border-b border-line-secondary px-16 py-12",
+        "min-h-58 flex-row items-center gap-12 border-b border-line-subtle px-16 py-12",
         disabled && "opacity-50",
         className,
       )}
@@ -38,19 +40,23 @@ export function SettingsRow({
       <View className="flex-1 gap-2">
         <Text
           variant="body2"
-          className={cn("font-semibold", destructive && "text-text-negative")}
+          className={cn("font-semibold", destructive && "text-danger-text")}
         >
           {title}
         </Text>
         {description ? (
-          <Text variant="footnote" color="secondary">
+          <Text variant="footnote" className="text-text-muted">
             {description}
           </Text>
         ) : null}
       </View>
       {loading ? <Spinner size={18} /> : null}
       {value ? (
-        <Text variant="footnote" color="secondary" className="text-right">
+        <Text
+          variant="footnote"
+          className="max-w-100 text-right text-text-muted"
+          numberOfLines={2}
+        >
           {value}
         </Text>
       ) : null}
@@ -65,6 +71,10 @@ export function SettingsRow({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={
+        accessibilityLabel ??
+        [title, description, value].filter(Boolean).join(". ")
+      }
       accessibilityState={{ disabled, busy: loading }}
       disabled={disabled || loading}
       onPress={onPress}

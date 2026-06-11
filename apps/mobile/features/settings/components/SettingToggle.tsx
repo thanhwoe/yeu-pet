@@ -29,7 +29,7 @@ export function SettingToggle({
     >
       <View
         className={cn(
-          "h-26 w-26 rounded-full bg-background-card shadow-card",
+          "h-26 w-26 rounded-full bg-background-surface shadow-card",
           value && "translate-x-24",
         )}
       />

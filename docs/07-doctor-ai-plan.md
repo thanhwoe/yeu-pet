@@ -213,6 +213,6 @@ For urgent symptoms, contact a veterinarian immediately.
 - [ ] Implement streaming endpoint.
 - [ ] Save conversation and messages.
 - [ ] Track usage counter.
-- [ ] Implement mobile chat screen.
+- [x] Implement mobile chat screen.
 - [ ] Add paywall on quota exceeded.
 - [ ] Test streaming on iOS and Android.

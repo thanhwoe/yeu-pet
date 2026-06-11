@@ -1,62 +1,74 @@
 import { ConfigService } from '@nestjs/config';
+import { CreateEmailOptions, Resend, WebhookEventPayload } from 'resend';
 
 export const RESEND_CLIENT = Symbol('RESEND_CLIENT');
 
-export interface ResendEmailPayload {
-  from: string;
-  to: string;
-  subject: string;
-  html?: string;
-  text?: string;
-}
+export type ResendEmailPayload = CreateEmailOptions;
 
 export interface ResendEmailResponse {
   id: string;
 }
 
 export interface ResendClient {
-  sendEmail(payload: ResendEmailPayload): Promise<ResendEmailResponse>;
+  sendEmail(
+    payload: ResendEmailPayload,
+    options?: { idempotencyKey?: string },
+  ): Promise<ResendEmailResponse>;
+  verifyWebhook(input: {
+    payload: string;
+    headers: {
+      id: string;
+      timestamp: string;
+      signature: string;
+    };
+  }): WebhookEventPayload;
 }
 
-interface ResendApiResponse {
-  id?: string;
-  message?: string;
-  name?: string;
-}
+export class SdkResendClient implements ResendClient {
+  private readonly resend: Resend;
 
-export class HttpResendClient implements ResendClient {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY'));
+  }
 
-  async sendEmail(payload: ResendEmailPayload): Promise<ResendEmailResponse> {
-    const apiKey = this.configService.get<string>('RESEND_API_KEY');
-
-    if (!apiKey) {
+  async sendEmail(
+    payload: ResendEmailPayload,
+    options?: { idempotencyKey?: string },
+  ): Promise<ResendEmailResponse> {
+    if (!this.configService.get<string>('RESEND_API_KEY')) {
       throw new Error('RESEND_API_KEY is not configured');
     }
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+    const { data, error } = await this.resend.emails.send(payload, {
+      idempotencyKey: options?.idempotencyKey,
     });
-    const body = (await response.json().catch(() => ({}))) as ResendApiResponse;
 
-    if (!response.ok) {
-      throw new Error(
-        body.message ??
-          body.name ??
-          `Resend request failed: ${response.status}`,
-      );
+    if (error) {
+      throw new Error(error.message);
     }
 
-    if (!body.id) {
+    if (!data?.id) {
       throw new Error('Resend response did not include an email id');
     }
 
-    return { id: body.id };
+    return { id: data.id };
+  }
+
+  verifyWebhook(input: {
+    payload: string;
+    headers: {
+      id: string;
+      timestamp: string;
+      signature: string;
+    };
+  }): WebhookEventPayload {
+    return this.resend.webhooks.verify({
+      payload: input.payload,
+      headers: input.headers,
+      webhookSecret: this.configService.getOrThrow<string>(
+        'RESEND_WEBHOOK_SECRET',
+      ),
+    });
   }
 }
 
@@ -64,5 +76,5 @@ export const resendClientProvider = {
   provide: RESEND_CLIENT,
   inject: [ConfigService],
   useFactory: (configService: ConfigService): ResendClient =>
-    new HttpResendClient(configService),
+    new SdkResendClient(configService),
 };

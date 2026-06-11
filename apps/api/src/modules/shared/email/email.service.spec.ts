@@ -38,6 +38,7 @@ describe('EmailService', () => {
     repository = createRepository();
     resendClient = {
       sendEmail: jest.fn().mockResolvedValue({ id: 'resend-1' }),
+      verifyWebhook: jest.fn(),
     };
     service = new EmailService(
       repository as unknown as EmailLogsRepository,
@@ -57,12 +58,14 @@ describe('EmailService', () => {
     expect(repository.findSuppression.mock.calls).toEqual([[email.to]]);
     expect(resendClient.sendEmail.mock.calls).toEqual([
       [
-        {
+        expect.objectContaining({
           from: 'YeuPet <mail@example.com>',
           to: email.to,
           subject: email.subject,
-          html: undefined,
           text: email.text,
+        }),
+        {
+          idempotencyKey: 'welcome/account-1',
         },
       ],
     ]);
@@ -107,5 +110,46 @@ describe('EmailService', () => {
         error: 'invalid api key',
       },
     ]);
+  });
+
+  it('sends email change OTP email with expiry copy', async () => {
+    await service.sendEmailChangeOtpEmail({
+      to: 'new@example.com',
+      otp: '123456',
+      expiresInMinutes: 10,
+      userName: 'Thanh',
+      idempotencyKey: 'email-change-otp/request-1/initial',
+    });
+
+    expect(resendClient.sendEmail.mock.calls).toHaveLength(1);
+    const payload = resendClient.sendEmail.mock.calls[0][0];
+    const options = resendClient.sendEmail.mock.calls[0][1];
+
+    expect(payload).toMatchObject({
+      to: 'new@example.com',
+      subject: 'Verify your new email for YeuPet',
+    });
+    expect('text' in payload ? payload.text : '').toContain('123456');
+    expect(options).toEqual({
+      idempotencyKey: 'email-change-otp/request-1/initial',
+    });
+  });
+
+  it('rejects email change OTP email when delivery is suppressed', async () => {
+    repository.findSuppression.mockResolvedValue({
+      id: 'suppression-1',
+      email: 'new@example.com',
+      reason: 'bounce',
+      created_at: new Date(),
+    });
+
+    await expect(
+      service.sendEmailChangeOtpEmail({
+        to: 'new@example.com',
+        otp: '123456',
+        expiresInMinutes: 10,
+        idempotencyKey: 'email-change-otp/request-1/initial',
+      }),
+    ).rejects.toThrow('Could not send verification email');
   });
 });

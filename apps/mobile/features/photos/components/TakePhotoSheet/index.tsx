@@ -36,7 +36,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const queryClient = useQueryClient();
   const { entitlements, getLimitState, isUpgrading, upgrade } =
     useEntitlements();
-  const photoLimit = getLimitState("maxPhotoUploads");
+  const photoLimit = getLimitState("maxPhotos");
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,

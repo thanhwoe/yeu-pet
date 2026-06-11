@@ -1,4 +1,9 @@
-import { ConflictException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { Test } from '@nestjs/testing';
 import {
@@ -7,12 +12,15 @@ import {
 } from '../file-workers/file-workers.job';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { OtpService } from '../shared/otp/otp.service';
+import { EmailService } from '../shared/email/email.service';
+import { EmailChangeRequestsRepository } from './email-change-requests.repository';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
   const usersRepository = {
     delete: jest.fn(),
     existsByEmail: jest.fn(),
+    findByEmail: jest.fn(),
     findAccount: jest.fn(),
     findById: jest.fn(),
     update: jest.fn(),
@@ -21,6 +29,18 @@ describe('UsersService', () => {
   const fileUploadService = {
     addDeleteJob: jest.fn(),
     addUploadJob: jest.fn(),
+  };
+  const emailService = {
+    sendEmailChangeOtpEmail: jest.fn(),
+  };
+  const emailChangeRequestsRepository = {
+    cancelPendingForAccount: jest.fn(),
+    create: jest.fn(),
+    findById: jest.fn(),
+    incrementAttempts: jest.fn(),
+    update: jest.fn(),
+    updateForResend: jest.fn(),
+    verifyAndUpdateAccountEmail: jest.fn(),
   };
 
   let service: UsersService;
@@ -34,48 +54,177 @@ describe('UsersService', () => {
         { provide: IUsersRepository, useValue: usersRepository },
         { provide: OtpService, useValue: otpService },
         { provide: FileUploadService, useValue: fileUploadService },
+        { provide: EmailService, useValue: emailService },
+        {
+          provide: EmailChangeRequestsRepository,
+          useValue: emailChangeRequestsRepository,
+        },
       ],
     }).compile();
 
     service = moduleRef.get(UsersService);
   });
 
-  it('updates profile fields after checking email uniqueness', async () => {
+  it('updates profile name fields without allowing direct email change', async () => {
     usersRepository.findAccount.mockResolvedValue({
       id: 'account-1',
       email: 'old@example.com',
     });
-    usersRepository.existsByEmail.mockResolvedValue(false);
     usersRepository.update.mockResolvedValue({ id: 'account-1' });
 
     await service.updateProfile('account-1', {
+      // @ts-expect-error email is intentionally ignored when legacy clients send it
       email: 'new@example.com',
       firstName: 'New',
       lastName: 'Name',
     });
 
-    expect(usersRepository.existsByEmail).toHaveBeenCalledWith(
-      'new@example.com',
-    );
+    expect(usersRepository.existsByEmail).not.toHaveBeenCalled();
     expect(usersRepository.update).toHaveBeenCalledWith('account-1', {
-      email: 'new@example.com',
       first_name: 'New',
       last_name: 'Name',
     });
   });
 
-  it('rejects profile update when email already exists', async () => {
+  it('rejects email change request when the email belongs to another account', async () => {
     usersRepository.findAccount.mockResolvedValue({
       id: 'account-1',
       email: 'old@example.com',
     });
-    usersRepository.existsByEmail.mockResolvedValue(true);
+    usersRepository.findByEmail.mockResolvedValue({ id: 'account-2' });
 
     await expect(
-      service.updateProfile('account-1', {
-        email: 'new@example.com',
+      service.requestEmailChange('account-1', {
+        newEmail: 'new@example.com',
       }),
     ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it('creates email change request and sends OTP to the new email', async () => {
+    usersRepository.findAccount.mockResolvedValue({
+      id: 'account-1',
+      email: 'old@example.com',
+      first_name: 'Thanh',
+      last_name: 'Nguyen',
+    });
+    usersRepository.findByEmail.mockResolvedValue(null);
+    emailChangeRequestsRepository.create.mockResolvedValue({
+      id: 'request-1',
+      new_email: 'new@example.com',
+      expires_at: new Date('2026-06-11T09:50:00.000Z'),
+      last_sent_at: new Date('2026-06-11T09:40:00.000Z'),
+    });
+
+    const result = await service.requestEmailChange('account-1', {
+      newEmail: ' NEW@example.com ',
+    });
+
+    expect(
+      emailChangeRequestsRepository.cancelPendingForAccount,
+    ).toHaveBeenCalledWith('account-1');
+    expect(emailChangeRequestsRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        accountId: 'account-1',
+        newEmail: 'new@example.com',
+      }),
+    );
+    expect(emailService.sendEmailChangeOtpEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'new@example.com',
+        expiresInMinutes: 10,
+        userName: 'Thanh Nguyen',
+      }),
+    );
+    expect(result).toMatchObject({
+      requestId: 'request-1',
+      newEmail: 'new@example.com',
+      maskedEmail: 'ne**@example.com',
+    });
+  });
+
+  it('does not allow requesting the current email', async () => {
+    usersRepository.findAccount.mockResolvedValue({
+      id: 'account-1',
+      email: 'old@example.com',
+    });
+
+    await expect(
+      service.requestEmailChange('account-1', {
+        newEmail: ' OLD@example.com ',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('rejects wrong email change OTP and increments attempts', async () => {
+    emailChangeRequestsRepository.findById.mockResolvedValue({
+      id: 'request-1',
+      account_id: 'account-1',
+      new_email: 'new@example.com',
+      otp_hash: await bcrypt.hash('123456', 4),
+      attempts: 0,
+      status: 'pending',
+      expires_at: new Date(Date.now() + 60_000),
+    });
+    emailChangeRequestsRepository.incrementAttempts.mockResolvedValue({
+      attempts: 1,
+    });
+
+    await expect(
+      service.verifyEmailChange('account-1', {
+        requestId: 'request-1',
+        otp: '000000',
+      }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+
+    expect(
+      emailChangeRequestsRepository.incrementAttempts,
+    ).toHaveBeenCalledWith('request-1');
+  });
+
+  it('verifies OTP and updates account email after re-checking uniqueness', async () => {
+    emailChangeRequestsRepository.findById.mockResolvedValue({
+      id: 'request-1',
+      account_id: 'account-1',
+      new_email: 'new@example.com',
+      otp_hash: await bcrypt.hash('123456', 4),
+      attempts: 0,
+      status: 'pending',
+      expires_at: new Date(Date.now() + 60_000),
+    });
+    usersRepository.findByEmail.mockResolvedValue(null);
+    emailChangeRequestsRepository.verifyAndUpdateAccountEmail.mockResolvedValue(
+      {
+        id: 'account-1',
+        email: 'new@example.com',
+      },
+    );
+
+    const result = await service.verifyEmailChange('account-1', {
+      requestId: 'request-1',
+      otp: '123456',
+    });
+
+    expect(
+      emailChangeRequestsRepository.verifyAndUpdateAccountEmail,
+    ).toHaveBeenCalledWith({
+      requestId: 'request-1',
+      accountId: 'account-1',
+      newEmail: 'new@example.com',
+    });
+    expect(result).toEqual({
+      account: { id: 'account-1', email: 'new@example.com' },
+    });
+  });
+
+  it('does not allow another account to cancel a request', async () => {
+    emailChangeRequestsRepository.findById.mockResolvedValue({
+      id: 'request-1',
+      account_id: 'account-2',
+    });
+
+    await expect(
+      service.cancelEmailChange('account-1', { requestId: 'request-1' }),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('queues avatar upload under the user folder', async () => {

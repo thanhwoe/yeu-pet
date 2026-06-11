@@ -133,6 +133,11 @@ export type email_logs = Prisma.email_logsModel
  */
 export type email_suppressions = Prisma.email_suppressionsModel
 /**
+ * Model email_change_requests
+ * 
+ */
+export type email_change_requests = Prisma.email_change_requestsModel
+/**
  * Model subscription_plans
  * 
  */

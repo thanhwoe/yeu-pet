@@ -1,19 +1,26 @@
 import { PaywallNotice } from "@/components/PaywallNotice";
+import { Avatar } from "@/components/ui/Avatar";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
+import { Body } from "@/components/ui/Typography";
+import { PET_KEY } from "@/constants/query-keys";
 import { ChatMessage } from "@/features/ai/components/ChatMessage";
 import { LoadingMessage } from "@/features/ai/components/LoadingMessage";
 import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { IChatMessage } from "@/interfaces";
+import { IChatMessage, IPet } from "@/interfaces";
+import { getListPetQuery } from "@/services";
 import { useChatStore, useUserInfoStore } from "@/stores";
+import { cn } from "@/utils";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useQuery } from "@tanstack/react-query";
 import { PaperPlaneTiltIcon } from "phosphor-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   View,
@@ -23,6 +30,13 @@ export const DoctorAIScreen = () => {
   const flatListRef = useRef<FlatList>(null);
   const { messages, sendMessage, markTypingComplete, loading } = useChatStore();
   const userInfo = useUserInfoStore.use.user();
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const petsQuery = useQuery({
+    queryKey: PET_KEY.list(),
+    queryFn: getListPetQuery,
+  });
+  const pets = petsQuery.data?.data ?? [];
+  const selectedPet = pets.find((pet) => pet.id === selectedPetId);
   const { entitlements, getLimitState, isPremium, isUpgrading, upgrade } =
     useEntitlements();
   const aiLimit = getLimitState("aiMessagesPerMonth");
@@ -33,7 +47,10 @@ export const DoctorAIScreen = () => {
     }
 
     try {
-      await sendMessage(message);
+      await sendMessage(message, {
+        petId: selectedPetId,
+        context: selectedPet ? `Pet context: ${selectedPet.name}` : undefined,
+      });
     } catch (e) {
       console.log({ e });
     }
@@ -59,9 +76,13 @@ export const DoctorAIScreen = () => {
           source={require("@/assets/images/ai-doctor.png")}
         />
         <Text variant="title2" className="text-center">
-          Hi {userInfo?.firstName} {userInfo?.lastName}, how can I help you
-          today?
+          Hi {userInfo?.firstName} {userInfo?.lastName}, what would you like
+          help with today?
         </Text>
+        <Body variant="body3" className="text-center text-text-tertiary-inverse">
+          Ask about feeding, grooming, behavior, medication reminders, or
+          symptoms. For urgent symptoms, contact a veterinarian immediately.
+        </Body>
       </View>
     );
   };
@@ -76,6 +97,13 @@ export const DoctorAIScreen = () => {
 
   return (
     <View className="flex-1 bg-background-screen px-5 pb-safe-or-2">
+      <SafetyNotice />
+      <PetContextSelector
+        pets={pets}
+        loading={petsQuery.isLoading}
+        selectedPetId={selectedPetId}
+        onChange={setSelectedPetId}
+      />
       {!isPremium && (
         <View className="pb-12">
           <PaywallNotice
@@ -113,6 +141,92 @@ export const DoctorAIScreen = () => {
 
 const SendIcon = withIconClassName(PaperPlaneTiltIcon);
 
+const SafetyNotice = () => (
+  <View className="mb-12 rounded-20 bg-background-card-highlight px-14 py-12">
+    <Body variant="body3" weight="semiBold">
+      Pet Care AI is guidance, not a diagnosis
+    </Body>
+    <Body variant="body4" className="mt-4 text-text-tertiary-inverse">
+      If your pet has trouble breathing, seizures, poisoning, heavy bleeding, or
+      extreme weakness, contact a veterinarian or emergency clinic now.
+    </Body>
+  </View>
+);
+
+const PetContextSelector = ({
+  pets,
+  loading,
+  selectedPetId,
+  onChange,
+}: {
+  pets: IPet[];
+  loading: boolean;
+  selectedPetId: string | null;
+  onChange: (petId: string | null) => void;
+}) => {
+  if (loading || !pets.length) {
+    return null;
+  }
+
+  return (
+    <View className="mb-12 gap-8">
+      <Body variant="body3" weight="semiBold">
+        Pet context
+      </Body>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerClassName="gap-10"
+      >
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Ask without pet context"
+          accessibilityState={{ selected: selectedPetId === null }}
+          onPress={() => onChange(null)}
+          className={cn(
+            "h-42 justify-center rounded-full border border-line-secondary px-14",
+            selectedPetId === null && "bg-background-primary",
+          )}
+        >
+          <Body
+            variant="body3"
+            weight="semiBold"
+            className={cn(selectedPetId === null && "text-text-primary-inverse")}
+          >
+            General
+          </Body>
+        </TouchableOpacity>
+        {pets.map((pet) => {
+          const selected = selectedPetId === pet.id;
+
+          return (
+            <TouchableOpacity
+              key={pet.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Use ${pet.name} as AI pet context`}
+              accessibilityState={{ selected }}
+              onPress={() => onChange(pet.id)}
+              className={cn(
+                "h-42 flex-row items-center gap-8 rounded-full border border-line-secondary px-10",
+                selected && "bg-background-primary",
+              )}
+            >
+              <Avatar size="small" source={{ uri: pet.avatarUrl ?? "" }} />
+              <Body
+                variant="body3"
+                weight="semiBold"
+                className={cn(selected && "text-text-primary-inverse")}
+              >
+                {pet.name}
+              </Body>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
 interface MessageInputProps {
   onSubmit: (message: string) => void;
   disabled?: boolean;
@@ -121,10 +235,13 @@ const MessageInput = ({ onSubmit, disabled }: MessageInputProps) => {
   const [value, setValue] = useState("");
   const headerHeight = useHeaderHeight();
   const { messages, loading } = useChatStore();
+  const trimmedValue = value.trim();
 
   const isGeneratingMessage = messages.some(
     (message) => message.role === "assistant" && !message.typingCompleted
   );
+  const inputDisabled =
+    disabled || loading || isGeneratingMessage || !trimmedValue;
 
   return (
     <KeyboardAvoidingView
@@ -145,12 +262,18 @@ const MessageInput = ({ onSubmit, disabled }: MessageInputProps) => {
           />
         </View>
         <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Send AI message"
+          accessibilityState={{ disabled: inputDisabled }}
           onPress={() => {
-            onSubmit(value);
+            onSubmit(trimmedValue);
             setValue("");
           }}
-          disabled={disabled || loading || isGeneratingMessage}
-          className="self-end mb-1 items-center justify-center p-2 rounded-full bg-background-secondary"
+          disabled={inputDisabled}
+          className={cn(
+            "self-end mb-1 items-center justify-center rounded-full bg-background-secondary p-2",
+            inputDisabled && "opacity-50",
+          )}
         >
           <SendIcon className="text-icon-foreground" />
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 # Mobile Refactor Audit
 
-This audit follows `mobile-refactor-docs/AGENT_MASTER_PROMPT.md` and the canonical Phase 1 contract in `docs/12-mobile-api-contract.md`.
+This audit follows the canonical Phase 1 contract in `docs/12-mobile-api-contract.md`.
 
 ## Summary
 

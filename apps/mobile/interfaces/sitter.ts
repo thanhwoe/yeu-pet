@@ -14,8 +14,14 @@ export type SitterBookingType = "hourly" | "daily";
 export interface IPetSitter {
   id: string;
   accountId: string;
+  displayName?: string | null;
   bio: string | null;
   address: string;
+  city?: string | null;
+  district?: string | null;
+  ward?: string | null;
+  experience?: string | null;
+  serviceNotes?: string | null;
   hourlyRate: string | number;
   dailyRate: string | number;
   maxConcurrentBookings: number;
@@ -24,6 +30,7 @@ export interface IPetSitter {
   avgRating: string | number;
   totalReviews: number;
   isAvailable: boolean;
+  isVerified?: boolean | null;
   createdAt: string | null;
   updatedAt: string | null;
   account?: IUser;
@@ -34,6 +41,7 @@ export interface IPetSitterForm {
   address: string;
   hourlyRate: string | number;
   dailyRate: string | number;
+  isAvailable?: boolean;
 }
 
 export interface ISitterBooking {
@@ -47,6 +55,13 @@ export interface ISitterBooking {
   startTime: string;
   endTime: string;
   totalPrice: string | number | null;
+  ownerNotes?: string | null;
+  sitterNotes?: string | null;
+  careInstructions?: string | null;
+  payment?: {
+    inApp?: boolean;
+    note?: string | null;
+  } | null;
   expiresAt: string | null;
   confirmedAt: string | null;
   cancelledBy: string | null;
@@ -65,6 +80,8 @@ export interface ISitterBookingForm {
   sitterId: string;
   startTime: string;
   endTime: string;
+  ownerNotes?: string;
+  careInstructions?: string;
 }
 
 export interface ISitterBookingCancelForm {

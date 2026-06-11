@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { SharedModule } from '../shared/shared.module';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
+import { EmailChangeRequestsRepository } from './email-change-requests.repository';
 import { MeController } from './me.controller';
 
 @Module({
@@ -11,6 +12,7 @@ import { MeController } from './me.controller';
   providers: [
     UsersService,
     UsersRepository,
+    EmailChangeRequestsRepository,
     { provide: IUsersRepository, useExisting: UsersRepository },
   ],
   imports: [SharedModule],

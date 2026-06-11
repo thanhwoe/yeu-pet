@@ -17,6 +17,7 @@ type State = {
   loading: boolean;
   context: string | null;
   conversationId: string | null;
+  conversationPetId: string | null;
 };
 
 type Actions = {
@@ -26,7 +27,10 @@ type Actions = {
   setContext: (context: string) => void;
   setConversationId: (conversationId: string | null) => void;
   markTypingComplete: (messageId: string) => void;
-  sendMessage: (content: string, context?: string) => Promise<void>;
+  sendMessage: (
+    content: string,
+    options?: { context?: string; petId?: string | null },
+  ) => Promise<void>;
 };
 const useChatStoreBase = create<State & Actions>()(
   persist(
@@ -35,6 +39,7 @@ const useChatStoreBase = create<State & Actions>()(
       loading: false,
       context: null,
       conversationId: null,
+      conversationPetId: null,
       addMessage: (message) => {
         const payload: IChatMessage = {
           ...message,
@@ -46,7 +51,12 @@ const useChatStoreBase = create<State & Actions>()(
         }));
       },
       clearMessage: () =>
-        set({ messages: [], context: null, conversationId: null }),
+        set({
+          messages: [],
+          context: null,
+          conversationId: null,
+          conversationPetId: null,
+        }),
       setLoading: (loading) => set({ loading }),
       setContext: (context) => set({ context }),
       setConversationId: (conversationId) => set({ conversationId }),
@@ -63,36 +73,52 @@ const useChatStoreBase = create<State & Actions>()(
           }),
         }));
       },
-      sendMessage: async (content, context) => {
+      sendMessage: async (content, options) => {
+        const trimmedContent = content.trim();
+        if (!trimmedContent) {
+          return;
+        }
+
+        const context = options?.context;
+        const petId = options?.petId ?? null;
         const userPayload: IChatMessage = {
           role: ChatRole.USER,
-          content,
+          content: trimmedContent,
           context,
           id: v4(),
           timestamp: new Date().toISOString(),
         };
 
+        const shouldStartNewConversation =
+          !get().conversationId || get().conversationPetId !== petId;
+
         set((state) => ({
-          messages: [...state.messages, userPayload],
+          messages: shouldStartNewConversation
+            ? [userPayload]
+            : [...state.messages, userPayload],
           loading: true,
         }));
 
         try {
           const currentConversationId =
-            get().conversationId ??
+            (!shouldStartNewConversation && get().conversationId) ||
             (
               await createAiConversationMutation({
-                title: content.slice(0, 80),
+                title: trimmedContent.slice(0, 80),
+                petId: petId ?? undefined,
               })
             ).id;
 
-          if (!get().conversationId) {
-            set({ conversationId: currentConversationId });
+          if (shouldStartNewConversation) {
+            set({
+              conversationId: currentConversationId,
+              conversationPetId: petId,
+            });
           }
 
           const response = await sendAiMessageMutation({
             conversationId: currentConversationId,
-            content,
+            content: trimmedContent,
           });
 
           const assistantPayload: IChatMessage = {
@@ -134,6 +160,7 @@ const useChatStoreBase = create<State & Actions>()(
         messages: state.messages,
         context: state.context,
         conversationId: state.conversationId,
+        conversationPetId: state.conversationPetId,
       }),
       onRehydrateStorage: () => {
         return async (state) => {
@@ -142,6 +169,7 @@ const useChatStoreBase = create<State & Actions>()(
               isToday(message.timestamp)
             );
             state.conversationId = null;
+            state.conversationPetId = null;
           }
         };
       },

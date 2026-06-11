@@ -313,6 +313,80 @@ export const medicalRecordSchema = z
     }
   });
 
+const sitterRateSchema = (label: string) =>
+  z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED(label),
+    })
+    .min(1, ERROR_MESSAGE.FIELD_REQUIRED(label))
+    .refine((val) => !isNaN(parseLocalNumber(val)), {
+      message: ERROR_MESSAGE.FIELD_INVALID(label),
+    })
+    .transform((val) => parseLocalNumber(val));
+
+export const sitterProfileSchema = z.object({
+  address: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Service area"),
+    })
+    .trim()
+    .min(3, ERROR_MESSAGE.FIELD_INVALID("Service area")),
+  bio: z
+    .string()
+    .trim()
+    .max(200, "Bio must be at most 200 characters.")
+    .optional()
+    .transform((value) => value || undefined),
+  hourlyRate: sitterRateSchema("Hourly rate"),
+  dailyRate: sitterRateSchema("Daily rate"),
+  isAvailable: z.boolean().optional(),
+});
+
+export const sitterBookingSchema = z
+  .object({
+    petId: z.string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Pet"),
+    }),
+    type: z.enum(["hourly", "daily"], {
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Service type"),
+    }),
+    startTime: z.date({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Start time"),
+    }),
+    endTime: z.date({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("End time"),
+    }),
+  })
+  .refine((data) => data.startTime.getTime() > Date.now(), {
+    message: "Start time must be in the future.",
+    path: ["startTime"],
+  })
+  .refine((data) => data.endTime.getTime() > data.startTime.getTime(), {
+    message: "End time must be after start time.",
+    path: ["endTime"],
+  });
+
+export const sitterCancelSchema = z.object({
+  reason: z.string().trim().max(240, "Reason must be at most 240 characters.").optional(),
+});
+
+export const sitterMessageSchema = z.object({
+  content: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Message"),
+    })
+    .trim()
+    .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Message"))
+    .max(2000, "Message must be at most 2000 characters."),
+});
+
+export const sitterReviewSchema = z.object({
+  rating: z.enum(["1", "2", "3", "4", "5"], {
+    message: ERROR_MESSAGE.FIELD_REQUIRED("Rating"),
+  }),
+  comment: z.string().trim().max(500, "Review must be at most 500 characters.").optional(),
+});
+
 export const shippingAddressSchema = z.object({
   phone: z
     .string({
@@ -357,6 +431,14 @@ export type IBudgetTransactionFormOutput = z.output<
 export type IReminderForm = z.infer<typeof reminderSchema>;
 
 export type IMedicalRecordForm = z.infer<typeof medicalRecordSchema>;
+
+export type ISitterProfileForm = z.output<typeof sitterProfileSchema>;
+export type ISitterProfileFormInput = z.input<typeof sitterProfileSchema>;
+
+export type ISitterBookingFormValues = z.infer<typeof sitterBookingSchema>;
+export type ISitterCancelForm = z.infer<typeof sitterCancelSchema>;
+export type ISitterMessageForm = z.infer<typeof sitterMessageSchema>;
+export type ISitterReviewFormValues = z.infer<typeof sitterReviewSchema>;
 
 export type ISignInForm = z.infer<typeof signInSchema>;
 

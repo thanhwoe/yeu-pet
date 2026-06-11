@@ -101,3 +101,45 @@ Keep the docs aligned with the active Expo product.
 - Keep `components/` focused on cross-domain shared UI. Put feature-owned components in `features/<domain>/components`.
 - If a new feature is added, document the feature domain and route behavior before or alongside the code.
 - If a feature is deferred, mark it clearly in docs rather than leaving it mixed into active scope.
+
+## 8. Mobile UI Review Rules
+
+Target:
+
+- iOS first
+
+Design System:
+
+- Orange theme (light)
+- Blue theme (dark)
+
+Check:
+
+- Safe Area
+- Bottom Sheet
+- Keyboard Avoiding
+- Typography Scale
+- Touch Target >= 44pt
+- Accessibility Labels
+
+Review every screen:
+
+- onboarding
+- home
+- pet profile
+- medical record
+- reminders
+- photos
+- budget
+- settings
+- sitter
+- doctor ai
+
+Always:
+
+1. Run app.
+2. Open simulator.
+3. Capture screenshot.
+4. Review UI.
+5. Fix code.
+6. Verify again.

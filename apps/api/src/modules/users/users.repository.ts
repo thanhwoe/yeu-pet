@@ -3,7 +3,7 @@ import { accounts } from '@app/generated/prisma/client';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { PrismaService } from '@app/database/prisma/prisma.service';
 
-const ACCOUNT_PUBLIC_SELECT = {
+export const ACCOUNT_PUBLIC_SELECT = {
   id: true,
   email: true,
   first_name: true,

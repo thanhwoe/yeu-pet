@@ -11,9 +11,9 @@ type LimitKey = keyof Pick<
   | "maxPets"
   | "maxActiveReminders"
   | "maxMedicalRecords"
-  | "maxMedicalImagesPerRecord"
+  | "maxImagesPerMedicalRecord"
   | "maxBudgetTransactionsPerMonth"
-  | "maxPhotoUploads"
+  | "maxPhotos"
   | "aiMessagesPerMonth"
 >;
 
@@ -23,10 +23,10 @@ const USAGE_BY_LIMIT: Record<LimitKey, UsageKey> = {
   aiMessagesPerMonth: "aiMessagesThisMonth",
   maxActiveReminders: "activeReminders",
   maxBudgetTransactionsPerMonth: "budgetTransactionsThisMonth",
-  maxMedicalImagesPerRecord: "medicalRecords",
+  maxImagesPerMedicalRecord: "medicalRecords",
   maxMedicalRecords: "medicalRecords",
   maxPets: "pets",
-  maxPhotoUploads: "photos",
+  maxPhotos: "photos",
 };
 
 export const useEntitlements = () => {

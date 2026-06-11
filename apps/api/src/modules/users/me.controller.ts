@@ -14,6 +14,12 @@ import { CurrentUser } from '@app/decorators/current-user.decorator';
 import { FileUploaded } from '@app/decorators/file-uploaded.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import {
+  CancelEmailChangeDto,
+  RequestEmailChangeDto,
+  ResendEmailChangeDto,
+  VerifyEmailChangeDto,
+} from './dto/email-change.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UsersService } from './users.service';
 
@@ -51,6 +57,42 @@ export class MeController {
   @HttpCode(HttpStatus.OK)
   deleteAvatar(@CurrentUser() user: accounts) {
     return this.usersService.deleteAvatar(user.id);
+  }
+
+  @Post('me/email-change/request')
+  @HttpCode(HttpStatus.ACCEPTED)
+  requestEmailChange(
+    @CurrentUser() user: accounts,
+    @Body() requestEmailChangeDto: RequestEmailChangeDto,
+  ) {
+    return this.usersService.requestEmailChange(user.id, requestEmailChangeDto);
+  }
+
+  @Post('me/email-change/verify')
+  @HttpCode(HttpStatus.OK)
+  verifyEmailChange(
+    @CurrentUser() user: accounts,
+    @Body() verifyEmailChangeDto: VerifyEmailChangeDto,
+  ) {
+    return this.usersService.verifyEmailChange(user.id, verifyEmailChangeDto);
+  }
+
+  @Post('me/email-change/resend')
+  @HttpCode(HttpStatus.ACCEPTED)
+  resendEmailChange(
+    @CurrentUser() user: accounts,
+    @Body() resendEmailChangeDto: ResendEmailChangeDto,
+  ) {
+    return this.usersService.resendEmailChange(user.id, resendEmailChangeDto);
+  }
+
+  @Post('me/email-change/cancel')
+  @HttpCode(HttpStatus.OK)
+  cancelEmailChange(
+    @CurrentUser() user: accounts,
+    @Body() cancelEmailChangeDto: CancelEmailChangeDto,
+  ) {
+    return this.usersService.cancelEmailChange(user.id, cancelEmailChangeDto);
   }
 
   @Delete('me')

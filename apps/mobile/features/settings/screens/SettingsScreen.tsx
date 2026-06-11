@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/Button";
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { StateView } from "@/components/ui/StateView";
 import { Text } from "@/components/ui/Text";
-import { Toast } from "@/components/Toast";
 import {
   SETTINGS_KEY,
   SUBSCRIPTION_KEY,
@@ -17,7 +17,7 @@ import { SettingsSection } from "@/features/settings/components/SettingsSection"
 import { SettingToggle } from "@/features/settings/components/SettingToggle";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useLogout } from "@/hooks/useLogout";
-import { IUserSettingsForm } from "@/interfaces";
+import { IUserSettingsForm, SubscriptionEntitlements } from "@/interfaces";
 import {
   getEntitlementsQuery,
   getUserSettingsQuery,
@@ -29,7 +29,7 @@ import {
 import { useUserInfoStore } from "@/stores";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import { Linking, View } from "react-native";
+import { Alert, Linking, View } from "react-native";
 
 const THEME_OPTIONS = [
   { label: "System", value: "system" },
@@ -45,6 +45,169 @@ const LANGUAGE_OPTIONS = [
 const SUPPORT_EMAIL = "support@yeupet.app";
 const PRIVACY_URL = "https://yeupet.app/privacy";
 const TERMS_URL = "https://yeupet.app/terms";
+
+const formatUsage = (usage: number, limit: number) =>
+  limit < 0 ? `${usage} used` : `${usage}/${limit}`;
+
+const formatStatus = (status: SubscriptionEntitlements["status"]) =>
+  status
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const getUsagePercent = (usage: number, limit: number) => {
+  if (limit < 0) return 100;
+  if (limit === 0) return 0;
+  return Math.min(100, Math.round((usage / limit) * 100));
+};
+
+const getInitials = (name: string) => {
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
+  return initials || "YP";
+};
+
+function ProfileCard({
+  name,
+  contact,
+  onEdit,
+}: {
+  name: string;
+  contact: string;
+  onEdit: () => void;
+}) {
+  return (
+    <View className="flex-row items-center gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-16 py-14 shadow-sm">
+      <View className="h-56 w-56 items-center justify-center rounded-full bg-background-surface-muted">
+        <Text variant="heading" className="font-bold text-text-accent">
+          {getInitials(name)}
+        </Text>
+      </View>
+      <View className="flex-1 gap-2">
+        <Text variant="title3" className="font-bold" numberOfLines={1}>
+          {name}
+        </Text>
+        <Text variant="footnote" className="text-text-muted" numberOfLines={1}>
+          {contact}
+        </Text>
+      </View>
+      <Button size="sm" variant="outline" onPress={onEdit}>
+        Edit
+      </Button>
+    </View>
+  );
+}
+
+function UsageMeter({
+  label,
+  usage,
+  limit,
+}: {
+  label: string;
+  usage: number;
+  limit: number;
+}) {
+  const percent = getUsagePercent(usage, limit);
+
+  return (
+    <View className="gap-6">
+      <View className="flex-row items-center justify-between gap-12">
+        <Text variant="footnote" className="font-semibold">
+          {label}
+        </Text>
+        <Text variant="footnote" className="text-text-muted">
+          {formatUsage(usage, limit)}
+        </Text>
+      </View>
+      <View className="h-6 overflow-hidden rounded-full bg-background-surface-muted">
+        <View
+          className="h-full rounded-full bg-background-primary"
+          style={{ width: `${percent}%` }}
+        />
+      </View>
+    </View>
+  );
+}
+
+function SubscriptionSummary({
+  entitlements,
+  loading,
+}: {
+  entitlements?: SubscriptionEntitlements;
+  loading: boolean;
+}) {
+  if (loading && !entitlements) {
+    return (
+      <SettingsRow
+        title="Loading plan"
+        description="Checking plan and usage."
+        loading
+      />
+    );
+  }
+
+  if (!entitlements) {
+    return (
+      <SettingsRow
+        title="Plan details unavailable"
+        description="Retry to refresh subscription status."
+      />
+    );
+  }
+
+  const planLabel = entitlements.tier === "premium" ? "Premium" : "Free";
+  const summary = `${formatUsage(
+    entitlements.usage.pets,
+    entitlements.limits.maxPets,
+  )} pets · ${formatUsage(
+    entitlements.usage.aiMessagesThisMonth,
+    entitlements.limits.aiMessagesPerMonth,
+  )} AI messages · ${formatUsage(
+    entitlements.usage.photos,
+    entitlements.limits.maxPhotos,
+  )} photos`;
+
+  return (
+    <View className="gap-14 border-b border-line-subtle px-16 py-14">
+      <View className="flex-row items-start justify-between gap-12">
+        <View className="flex-1 gap-2">
+          <Text variant="body2" className="font-semibold">
+            {planLabel} plan
+          </Text>
+          <Text variant="footnote" className="text-text-muted">
+            {summary}
+          </Text>
+        </View>
+        <View className="rounded-full bg-background-surface-muted px-10 py-5">
+          <Text variant="caption1" className="font-semibold text-text-accent">
+            {formatStatus(entitlements.status)}
+          </Text>
+        </View>
+      </View>
+
+      <UsageMeter
+        label="Pets"
+        usage={entitlements.usage.pets}
+        limit={entitlements.limits.maxPets}
+      />
+      <UsageMeter
+        label="AI messages"
+        usage={entitlements.usage.aiMessagesThisMonth}
+        limit={entitlements.limits.aiMessagesPerMonth}
+      />
+      <UsageMeter
+        label="Photos"
+        usage={entitlements.usage.photos}
+        limit={entitlements.limits.maxPhotos}
+      />
+    </View>
+  );
+}
 
 export function SettingsScreen() {
   const { loading, logout } = useLogout();
@@ -157,6 +320,21 @@ export function SettingsScreen() {
     });
   }, [entitlements?.tier]);
 
+  const handleLogoutPress = useCallback(() => {
+    Alert.alert(
+      "Log out?",
+      "This will clear the local session on this device.",
+      [
+        { text: "Stay signed in", style: "cancel" },
+        {
+          text: "Log out",
+          style: "destructive",
+          onPress: logout,
+        },
+      ],
+    );
+  }, [logout]);
+
   if (isLoadingSettings) {
     return (
       <ScreenContainer>
@@ -186,62 +364,40 @@ export function SettingsScreen() {
   }
 
   const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ");
-  const planLabel = entitlements?.tier === "premium" ? "Premium" : "Free";
-  const planUsage = entitlements
-    ? `${entitlements.usage.pets}/${entitlements.limits.maxPets} pets · ${entitlements.usage.aiMessagesThisMonth}/${entitlements.limits.aiMessagesPerMonth} AI messages`
-    : isLoadingEntitlements
-      ? "Loading plan..."
-      : "Plan details unavailable";
+  const notificationsMuted = !settings.notificationEnable;
+  const displayName = fullName || "YeuPet owner";
+  const contact = user?.email || user?.phone || "Account details synced";
 
   return (
-    <ScreenContainer scrollEnabled className="px-20 pt-safe-offset-16">
-      <View className="gap-20 pb-32">
-        <View className="gap-6">
+    <ScreenContainer
+      scrollEnabled
+      className="bg-background"
+      stickyHeaderIndices={[0]}
+    >
+      <View className="bg-background px-20 pb-10 pt-safe-offset-16">
+        <View className="border-b border-line-subtle pb-10">
           <Text variant="largeTitle" className="font-bold">
             Settings
           </Text>
-          <Text variant="body2" color="secondary">
-            Manage your account, care reminders, and app preferences.
-          </Text>
         </View>
+      </View>
 
-        <View className="gap-3 rounded-24 bg-background-card p-16">
-          <Text variant="body2" color="secondary">
-            Signed in as
-          </Text>
-          <Text variant="title3" className="font-bold">
-            {fullName || "YeuPet owner"}
-          </Text>
-          <Text variant="body2" color="secondary">
-            {user?.email || user?.phone || "Account details are synced."}
-          </Text>
-        </View>
+      <View className="gap-22 px-20 pb-120">
+        <ProfileCard
+          name={displayName}
+          contact={contact}
+          onEdit={() => setIsProfileFormOpen(true)}
+        />
 
-        <SettingsSection
-          title="Account"
-          description="Keep your owner profile up to date."
-        >
-          <SettingsRow
-            title="Profile"
-            description="Update your display name and contact email."
-            value="Edit"
-            onPress={() => setIsProfileFormOpen(true)}
-          />
-        </SettingsSection>
-
-        <SettingsSection
-          title="Subscription"
-          description="Your current plan and care limits."
-        >
-          <SettingsRow
-            title={`${planLabel} plan`}
-            description={planUsage}
+        <SettingsSection title="Subscription">
+          <SubscriptionSummary
+            entitlements={entitlements}
             loading={isLoadingEntitlements}
           />
           {isEntitlementsError ? (
             <SettingsRow
               title="Plan details could not refresh"
-              description="Try again to update your subscription status."
+              description="Retry to refresh subscription status."
             >
               <Button
                 size="sm"
@@ -253,26 +409,29 @@ export function SettingsScreen() {
             </SettingsRow>
           ) : null}
           <SettingsRow
-            title={
-              entitlements?.tier === "premium"
-                ? "Manage subscription"
-                : "Upgrade to Premium"
-            }
+            title={entitlements?.tier === "premium" ? "Manage plan" : "Upgrade"}
             description={
               entitlements?.tier === "premium"
-                ? "Review billing and plan changes when store integration is connected."
-                : "Unlock higher limits for pets, reminders, photos, records, and AI."
+                ? "Billing and plan changes"
+                : "More pets, photos, records, and AI"
             }
           >
-            <Button size="sm" variant="secondary" onPress={handleSubscriptionAction}>
+            <Button
+              size="sm"
+              variant={entitlements?.tier === "premium" ? "outline" : "primary"}
+              onPress={handleSubscriptionAction}
+            >
               {entitlements?.tier === "premium" ? "Manage" : "Upgrade"}
             </Button>
           </SettingsRow>
-          {__DEV__ ? (
-            <View className="flex-row gap-10 border-b border-line-secondary px-16 py-14">
+        </SettingsSection>
+
+        {__DEV__ ? (
+          <SettingsSection title="Developer tools">
+            <View className="flex-row gap-10 px-16 py-14">
               <Button
                 size="sm"
-                variant="secondary"
+                variant="outline"
                 loading={isUpgrading}
                 onPress={() => mockUpgrade()}
               >
@@ -287,16 +446,13 @@ export function SettingsScreen() {
                 Mock Downgrade
               </Button>
             </View>
-          ) : null}
-        </SettingsSection>
+          </SettingsSection>
+        ) : null}
 
-        <SettingsSection
-          title="Notifications"
-          description="Choose which pet-care updates can reach you."
-        >
+        <SettingsSection title="Notifications">
           <SettingsRow
             title="Push notifications"
-            description="Master switch for reminders, bookings, social, and AI updates."
+            description="Master notification switch"
             loading={isUpdatingSettings}
           >
             <SettingToggle
@@ -310,7 +466,9 @@ export function SettingsScreen() {
           </SettingsRow>
           <SettingsRow
             title="Care reminders"
-            description="Vaccines, medicine, grooming, and daily care."
+            description="Vaccines, medicine, grooming"
+            value={notificationsMuted ? "Muted" : undefined}
+            disabled={notificationsMuted}
           >
             <SettingToggle
               label="Care reminders"
@@ -323,7 +481,9 @@ export function SettingsScreen() {
           </SettingsRow>
           <SettingsRow
             title="Sitter booking"
-            description="Requests, status changes, and messages."
+            description="Requests and messages"
+            value={notificationsMuted ? "Muted" : undefined}
+            disabled={notificationsMuted}
           >
             <SettingToggle
               label="Sitter booking notifications"
@@ -335,8 +495,10 @@ export function SettingsScreen() {
             />
           </SettingsRow>
           <SettingsRow
-            title="Photos social"
-            description="Comments, replies, and social activity."
+            title="Photos/social"
+            description="Comments and activity"
+            value={notificationsMuted ? "Muted" : undefined}
+            disabled={notificationsMuted}
           >
             <SettingToggle
               label="Photos social notifications"
@@ -349,7 +511,9 @@ export function SettingsScreen() {
           </SettingsRow>
           <SettingsRow
             title="Pet Care AI"
-            description="Conversation updates and monthly usage notices."
+            description="Usage and care tips"
+            value={notificationsMuted ? "Muted" : undefined}
+            disabled={notificationsMuted}
           >
             <SettingToggle
               label="Pet Care AI notifications"
@@ -362,14 +526,8 @@ export function SettingsScreen() {
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection
-          title="Appearance"
-          description="Keep the app comfortable in any light."
-        >
-          <SettingsRow
-            title="Theme"
-            description="Follow your device, light mode, or dark mode."
-          >
+        <SettingsSection title="Appearance">
+          <SettingsRow title="Theme">
             <SegmentedSetting
               accessibilityLabel="Theme preference"
               options={THEME_OPTIONS}
@@ -380,14 +538,8 @@ export function SettingsScreen() {
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection
-          title="Language"
-          description="Choose the app language."
-        >
-          <SettingsRow
-            title="App language"
-            description="Vietnamese and English are supported."
-          >
+        <SettingsSection title="Language">
+          <SettingsRow title="App language">
             <SegmentedSetting
               accessibilityLabel="Language preference"
               options={LANGUAGE_OPTIONS}
@@ -398,25 +550,19 @@ export function SettingsScreen() {
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection
-          title="Help and legal"
-          description="Get support and review YeuPet policies."
-        >
+        <SettingsSection title="Help & Legal">
           <SettingsRow
             title="Contact support"
-            description="Email us when you need help with your pets, bookings, or account."
             value="Email"
             onPress={() => openExternalLink(`mailto:${SUPPORT_EMAIL}`)}
           />
           <SettingsRow
             title="Privacy policy"
-            description="How YeuPet protects your account and pet-care data."
             value="Open"
             onPress={() => openExternalLink(PRIVACY_URL)}
           />
           <SettingsRow
             title="Terms of service"
-            description="Rules for using YeuPet features and services."
             value="Open"
             onPress={() => openExternalLink(TERMS_URL)}
           />
@@ -425,13 +571,14 @@ export function SettingsScreen() {
         <SettingsSection title="Session">
           <SettingsRow
             title="Logout"
-            description="Sign out on this device and clear local session data."
+            description="Sign out of this device"
             destructive
+            className="bg-danger-surface"
           >
             <Button
               size="sm"
               variant="destructive"
-              onPress={logout}
+              onPress={handleLogoutPress}
               loading={loading}
             >
               Logout

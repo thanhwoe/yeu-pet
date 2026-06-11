@@ -214,6 +214,9 @@ export const darkColorTheme = {
   "--text-secondary-inverse": "--grey-80",
   "--text-secondary-inverse-disabled": "--grey-50",
   "--text-secondary-disabled": "--grey-60",
+  "--text-muted": "--grey-30",
+  "--text-subtle": "--grey-40",
+  "--text-accent": "--blue-40",
 
   "--text-tertiary": "--grey-80",
   "--text-tertiary-inverse": "--grey-30",
@@ -243,6 +246,8 @@ export const darkColorTheme = {
 
   "--background-card": "--blue-90",
   "--background-card-highlight": "--blue-80",
+  "--background-surface": "--blue-90",
+  "--background-surface-muted": "--blue-80",
 
   "--background-positive": "--green-60",
   "--background-positive-highlight": "--green-40",
@@ -263,10 +268,14 @@ export const darkColorTheme = {
   "--line-secondary-pressed": "--blue-80",
   "--line-tertiary": "--blue-100",
   "--line-inverse": "--grey-10",
+  "--line-subtle": "--blue-80",
+  "--line-strong": "--blue-60",
 
   "--line-negative": "--red-70",
   "--line-positive": "--green-70",
   "--line-highlight": "--blue-50",
+  "--danger-surface": "--red-90",
+  "--danger-text": "--red-40",
 
   // ICON
   "--icon-primary": "--grey-10",
@@ -324,6 +333,9 @@ export const lightColorTheme = {
   "--text-secondary-inverse": "--orange-10",
   "--text-secondary-inverse-disabled": "--orange-30",
   "--text-secondary-disabled": "--orange-40",
+  "--text-muted": "--slate-50",
+  "--text-subtle": "--slate-40",
+  "--text-accent": "--amber-70",
 
   "--text-tertiary": "--grey-30",
   "--text-tertiary-inverse": "--grey-80",
@@ -351,6 +363,8 @@ export const lightColorTheme = {
 
   "--background-card": "--grey-0",
   "--background-card-highlight": "--amber-5",
+  "--background-surface": "--grey-0",
+  "--background-surface-muted": "--slate-0",
 
   "--background-positive": "--green-40",
   "--background-positive-highlight": "--green-20",
@@ -370,10 +384,14 @@ export const lightColorTheme = {
   "--line-secondary-pressed": "--orange-5",
   "--line-tertiary": "--orange-5",
   "--line-inverse": "--grey-70",
+  "--line-subtle": "--slate-10",
+  "--line-strong": "--slate-15",
 
   "--line-negative": "--red-30",
   "--line-positive": "--green-30",
   "--line-highlight": "--amber-30",
+  "--danger-surface": "--red-0",
+  "--danger-text": "--red-50",
 
   // ICON
   "--icon-primary": "--grey-80",

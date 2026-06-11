@@ -39,6 +39,16 @@ export const subscription_status = {
 export type subscription_status = (typeof subscription_status)[keyof typeof subscription_status]
 
 
+export const email_change_status = {
+  pending: 'pending',
+  verified: 'verified',
+  expired: 'expired',
+  cancelled: 'cancelled'
+} as const
+
+export type email_change_status = (typeof email_change_status)[keyof typeof email_change_status]
+
+
 export const user_role = {
   user: 'user',
   admin: 'admin'

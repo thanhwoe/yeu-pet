@@ -47,11 +47,8 @@ export const getMySitterProfileQuery = () =>
 export const registerSitterMutation = (params: IPetSitterForm) =>
   APIs.post<IPetSitter>(API_ROUTES.CREATE_MY_SITTER_PROFILE, { data: params });
 
-export const updateSitterMutation = ({
-  id,
-  ...params
-}: IPetSitterForm & { id: string }) =>
-  APIs.patch<IPetSitter>(API_ROUTES.SITTER_DETAIL(id), { data: params });
+export const updateSitterMutation = (params: IPetSitterForm) =>
+  APIs.patch<IPetSitter>(API_ROUTES.MY_SITTER_PROFILE, { data: params });
 
 export const createSitterBookingMutation = (params: ISitterBookingForm) =>
   APIs.post<ISitterBooking>(API_ROUTES.SITTER_BOOKINGS, { data: params });
@@ -118,8 +115,14 @@ export const cancelSitterBookingMutation = ({
     data: params,
   });
 
-export const createSitterReviewMutation = (params: ISitterReviewForm) =>
-  APIs.post<ISitterReview>(API_ROUTES.SITTER_REVIEWS, { data: params });
+export const createSitterReviewMutation = ({
+  bookingId,
+  rating,
+  comment,
+}: ISitterReviewForm) =>
+  APIs.post<ISitterReview>(API_ROUTES.REVIEW_SITTER_BOOKING(bookingId), {
+    data: { rating, comment },
+  });
 
 export const getSitterReviewsQuery = ({
   sitterId,

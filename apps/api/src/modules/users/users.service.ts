@@ -6,12 +6,15 @@ import {
   BadRequestException,
   UnauthorizedException,
   Inject,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { accounts } from '@app/generated/prisma/client';
+import { accounts, email_change_status } from '@app/generated/prisma/client';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 import dayjs from 'dayjs';
+import crypto from 'node:crypto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import {
   RequestResetPasswordDto,
@@ -20,10 +23,18 @@ import {
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { OtpService } from '../shared/otp/otp.service';
+import { EmailService } from '../shared/email/email.service';
 import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
 } from '../file-workers/file-workers.job';
+import {
+  CancelEmailChangeDto,
+  RequestEmailChangeDto,
+  ResendEmailChangeDto,
+  VerifyEmailChangeDto,
+} from './dto/email-change.dto';
+import { EmailChangeRequestsRepository } from './email-change-requests.repository';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +45,8 @@ export class UsersService {
     private readonly usersRepository: IUsersRepository,
     private readonly otpService: OtpService,
     private readonly fileUploadService: FileUploadService,
+    private readonly emailService: EmailService,
+    private readonly emailChangeRequestsRepository: EmailChangeRequestsRepository,
   ) {}
 
   async findById(id: string) {
@@ -215,16 +228,6 @@ export class UsersService {
   ) {
     const user = await this.getUser({ id: userId });
 
-    // Check email existed
-    if (updateProfileDto.email && updateProfileDto.email !== user.email) {
-      const emailExists = await this.usersRepository.existsByEmail(
-        updateProfileDto.email,
-      );
-      if (emailExists) {
-        throw new ConflictException('Email already exists');
-      }
-    }
-
     // Handle avatar upload
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
@@ -245,8 +248,176 @@ export class UsersService {
     return this.usersRepository.update(userId, {
       first_name: updateProfileDto.firstName,
       last_name: updateProfileDto.lastName,
-      email: updateProfileDto.email,
     });
+  }
+
+  async requestEmailChange(userId: string, dto: RequestEmailChangeDto) {
+    const user = await this.getUser({ id: userId });
+    const newEmail = this.normalizeEmail(dto.newEmail);
+
+    if (this.normalizeEmail(user.email ?? '') === newEmail) {
+      throw new BadRequestException(
+        'New email must be different from current email',
+      );
+    }
+
+    await this.assertEmailAvailable(newEmail, userId);
+    await this.emailChangeRequestsRepository.cancelPendingForAccount(userId);
+
+    const otp = this.generateOtp();
+    const otpHash = await this.hashOtp(otp);
+    const now = new Date();
+    const expiresInMinutes = this.getEmailOtpConfig(
+      'EMAIL_OTP_EXPIRES_MINUTES',
+      10,
+    );
+    const request = await this.emailChangeRequestsRepository.create({
+      accountId: userId,
+      newEmail,
+      otpHash,
+      expiresAt: dayjs(now).add(expiresInMinutes, 'minute').toDate(),
+      lastSentAt: now,
+    });
+
+    try {
+      await this.emailService.sendEmailChangeOtpEmail({
+        to: newEmail,
+        otp,
+        expiresInMinutes,
+        userName: [user.first_name, user.last_name].filter(Boolean).join(' '),
+        idempotencyKey: `email-change-otp/${request.id}/initial`,
+      });
+    } catch (error) {
+      await this.emailChangeRequestsRepository.update(request.id, {
+        status: email_change_status.cancelled,
+        cancelled_at: new Date(),
+      });
+
+      throw error;
+    }
+
+    return this.toEmailChangeResponse(request);
+  }
+
+  async verifyEmailChange(userId: string, dto: VerifyEmailChangeDto) {
+    const request = await this.getPendingEmailChangeRequest(
+      userId,
+      dto.requestId,
+    );
+    const maxAttempts = this.getEmailOtpConfig('EMAIL_OTP_MAX_ATTEMPTS', 5);
+
+    if (request.attempts >= maxAttempts) {
+      throw this.tooManyRequests('Too many invalid OTP attempts');
+    }
+
+    const valid = await bcrypt.compare(dto.otp, request.otp_hash);
+
+    if (!valid) {
+      const updated =
+        await this.emailChangeRequestsRepository.incrementAttempts(request.id);
+
+      if (updated.attempts >= maxAttempts) {
+        throw this.tooManyRequests('Too many invalid OTP attempts');
+      }
+
+      throw new BadRequestException('Invalid OTP code');
+    }
+
+    await this.assertEmailAvailable(request.new_email, userId);
+    const account =
+      await this.emailChangeRequestsRepository.verifyAndUpdateAccountEmail({
+        requestId: request.id,
+        accountId: userId,
+        newEmail: request.new_email,
+      });
+
+    return { account };
+  }
+
+  async resendEmailChange(userId: string, dto: ResendEmailChangeDto) {
+    const request = await this.getPendingEmailChangeRequest(
+      userId,
+      dto.requestId,
+    );
+    const now = new Date();
+    const cooldownSeconds = this.getEmailOtpConfig(
+      'EMAIL_OTP_RESEND_COOLDOWN_SECONDS',
+      60,
+    );
+    const maxResends = this.getEmailOtpConfig('EMAIL_OTP_MAX_RESENDS', 5);
+
+    if (request.resend_count >= maxResends) {
+      throw this.tooManyRequests('Maximum resend count reached');
+    }
+
+    const resendAvailableAt = request.last_sent_at
+      ? dayjs(request.last_sent_at).add(cooldownSeconds, 'second')
+      : null;
+
+    if (resendAvailableAt && dayjs(now).isBefore(resendAvailableAt)) {
+      throw this.tooManyRequests(
+        `Please wait ${resendAvailableAt.diff(dayjs(now), 'second')} seconds before requesting a new code`,
+      );
+    }
+
+    await this.assertEmailAvailable(request.new_email, userId);
+
+    const otp = this.generateOtp();
+    const otpHash = await this.hashOtp(otp);
+    const expiresInMinutes = this.getEmailOtpConfig(
+      'EMAIL_OTP_EXPIRES_MINUTES',
+      10,
+    );
+    const updated = await this.emailChangeRequestsRepository.updateForResend({
+      id: request.id,
+      otpHash,
+      expiresAt: dayjs(now).add(expiresInMinutes, 'minute').toDate(),
+      lastSentAt: now,
+    });
+
+    try {
+      const user = await this.getUser({ id: userId });
+      await this.emailService.sendEmailChangeOtpEmail({
+        to: updated.new_email,
+        otp,
+        expiresInMinutes,
+        userName: [user.first_name, user.last_name].filter(Boolean).join(' '),
+        idempotencyKey: `email-change-otp/${updated.id}/resend-${updated.resend_count}`,
+      });
+    } catch (error) {
+      await this.emailChangeRequestsRepository.update(updated.id, {
+        status: email_change_status.cancelled,
+        cancelled_at: new Date(),
+      });
+
+      throw error;
+    }
+
+    return this.toEmailChangeResponse(updated);
+  }
+
+  async cancelEmailChange(userId: string, dto: CancelEmailChangeDto) {
+    const request = await this.emailChangeRequestsRepository.findById(
+      dto.requestId,
+    );
+
+    if (!request || request.account_id !== userId) {
+      throw new NotFoundException('Email change request not found');
+    }
+
+    if (request.status !== email_change_status.pending) {
+      return this.toEmailChangeResponse(request);
+    }
+
+    const updated = await this.emailChangeRequestsRepository.update(
+      request.id,
+      {
+        status: email_change_status.cancelled,
+        cancelled_at: new Date(),
+      },
+    );
+
+    return this.toEmailChangeResponse(updated);
   }
 
   async uploadAvatar(userId: string, avatarFile: Express.Multer.File) {
@@ -351,5 +522,100 @@ export class UsersService {
     hashedPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  private async getPendingEmailChangeRequest(
+    userId: string,
+    requestId: string,
+  ) {
+    const request =
+      await this.emailChangeRequestsRepository.findById(requestId);
+
+    if (!request || request.account_id !== userId) {
+      throw new NotFoundException('Email change request not found');
+    }
+
+    if (request.status !== email_change_status.pending) {
+      throw new BadRequestException('Email change request is not pending');
+    }
+
+    if (dayjs().isAfter(request.expires_at)) {
+      await this.emailChangeRequestsRepository.update(request.id, {
+        status: email_change_status.expired,
+      });
+
+      throw new BadRequestException('OTP code has expired');
+    }
+
+    return request;
+  }
+
+  private async assertEmailAvailable(
+    newEmail: string,
+    currentAccountId: string,
+  ) {
+    const existing = await this.usersRepository.findByEmail(newEmail);
+
+    if (existing && existing.id !== currentAccountId) {
+      throw new ConflictException('Email already exists');
+    }
+  }
+
+  private generateOtp(): string {
+    return crypto.randomInt(100000, 1000000).toString();
+  }
+
+  private async hashOtp(otp: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(otp, salt);
+  }
+
+  private normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+  }
+
+  private maskEmail(email: string): string {
+    const [local, domain] = email.split('@');
+
+    if (!local || !domain) return email;
+
+    const visible = local.slice(0, Math.min(2, local.length));
+    return `${visible}${'*'.repeat(Math.max(2, local.length - visible.length))}@${domain}`;
+  }
+
+  private getEmailOtpConfig(key: string, fallback: number): number {
+    const value = process.env[key];
+    const parsed = value ? Number(value) : NaN;
+
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }
+
+  private tooManyRequests(message: string) {
+    return new HttpException(message, HttpStatus.TOO_MANY_REQUESTS);
+  }
+
+  private toEmailChangeResponse(request: {
+    id: string;
+    new_email: string;
+    expires_at: Date;
+    last_sent_at: Date | null;
+  }) {
+    const cooldownSeconds = this.getEmailOtpConfig(
+      'EMAIL_OTP_RESEND_COOLDOWN_SECONDS',
+      60,
+    );
+
+    return {
+      requestId: request.id,
+      newEmail: request.new_email,
+      maskedEmail: this.maskEmail(request.new_email),
+      expiresAt: request.expires_at.toISOString(),
+      resendAvailableAt: request.last_sent_at
+        ? dayjs(request.last_sent_at)
+            .add(cooldownSeconds, 'second')
+            .toDate()
+            .toISOString()
+        : undefined,
+    };
   }
 }

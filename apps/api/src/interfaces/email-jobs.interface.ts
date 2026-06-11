@@ -13,6 +13,7 @@ export interface EmailJobData {
   context?: Record<string, unknown>;
   accountId?: string;
   bookingId?: string;
+  idempotencyKey?: string;
 }
 
 export interface EmailJobParams extends EmailJobData {
