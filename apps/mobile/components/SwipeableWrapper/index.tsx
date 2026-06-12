@@ -205,7 +205,10 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               actionButtonStyle,
               leftActionStyle,
             ]}
-            className={cn("bg-background-positive", leftAction.className)}
+            className={cn(
+              "bg-background-positive-highlight",
+              leftAction.className,
+            )}
           >
             <TouchableOpacity
               style={{
@@ -248,7 +251,10 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               actionButtonStyle,
               rightActionStyle,
             ]}
-            className={cn("bg-background-negative", rightAction.className)}
+            className={cn(
+              "bg-background-negative-highlight",
+              rightAction.className,
+            )}
           >
             <TouchableOpacity
               style={{

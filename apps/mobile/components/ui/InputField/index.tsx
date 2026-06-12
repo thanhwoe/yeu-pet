@@ -100,7 +100,6 @@ export const InputField = forwardRef(
             className={cn(
               "flex-1 h-full text-text-primary placeholder:text-text-tertiary selection:text-text-secondary font-regular text-body2",
               {
-                "text-text-tertiary-inverse": !focus,
                 "align-top": multiline,
               },
             )}

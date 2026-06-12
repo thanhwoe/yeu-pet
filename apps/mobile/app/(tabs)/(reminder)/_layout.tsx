@@ -1,10 +1,19 @@
 import { ReminderHeader } from "@/components/Headers/ReminderHeader";
-import { Stack } from "expo-router";
+import { ReminderFilterDrawer } from "@/features/reminders/components/ReminderFilterDrawer";
+import { Drawer } from "expo-router/drawer";
 
 export default function Layout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ header: ReminderHeader }} />
-    </Stack>
+    <Drawer
+      drawerContent={(props) => <ReminderFilterDrawer {...props} />}
+      screenOptions={{
+        drawerPosition: "right",
+        drawerType: "front",
+        drawerStyle: { width: "84%" },
+        header: (props) => <ReminderHeader {...props} />,
+      }}
+    >
+      <Drawer.Screen name="index" options={{ title: "Reminder" }} />
+    </Drawer>
   );
 }

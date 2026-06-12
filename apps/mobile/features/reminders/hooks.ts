@@ -2,6 +2,7 @@ import { Toast } from "@/components/Toast";
 import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
 import { IReminder, ReminderStatus, ReminderType } from "@/interfaces";
+import { useReminderUiStore } from "@/features/reminders/store";
 import {
   cancelReminderMutation,
   completeReminderMutation,
@@ -12,37 +13,48 @@ import {
   skipReminderMutation,
   updateReminderMutation,
 } from "@/services";
-import { getMarkedDates, groupReminder } from "@/utils/reminder";
+import {
+  getMarkedDateCounts,
+  getRemindersForDay,
+  REMINDER_DAY_KEY_FORMAT,
+  sortRemindersByTime,
+} from "@/utils/reminder";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
-import { DateData } from "react-native-calendars";
+
+const toSupportedRepeatFrequency = (
+  value: IReminder["repeatFrequency"],
+): IReminderForm["repeatFrequency"] =>
+  value && value !== "custom" ? value : "none";
 
 export function useReminderCalendar() {
   const [agendaEdit, setAgendaEdit] = useState<IReminder>();
   const [agendaDelete, setAgendaDelete] = useState<IReminder>();
-  const [calendarDate, setCalendarDate] = useState<DateData>();
-  const [statusFilter, setStatusFilter] = useState<ReminderStatus>();
-  const [typeFilter, setTypeFilter] = useState<ReminderType>();
-  const [petFilter, setPetFilter] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format(REMINDER_DAY_KEY_FORMAT),
+  );
+  const [visibleMonth, setVisibleMonth] = useState(
+    dayjs().startOf("month").format(REMINDER_DAY_KEY_FORMAT),
+  );
+  const statusFilter = useReminderUiStore((state) => state.statusFilter);
+  const typeFilter = useReminderUiStore((state) => state.typeFilter);
+  const petFilter = useReminderUiStore((state) => state.petFilter);
+  const setFilters = useReminderUiStore((state) => state.setFilters);
+  const resetFilters = useReminderUiStore((state) => state.resetFilters);
 
   const queryClient = useQueryClient();
 
   const reminderParams = useMemo(
     () => ({
-      month: calendarDate?.month,
-      year: calendarDate?.year,
+      month: dayjs(visibleMonth).month() + 1,
+      year: dayjs(visibleMonth).year(),
       status: statusFilter,
       type: typeFilter,
       petId: petFilter,
+      limit: 100,
     }),
-    [
-      calendarDate?.month,
-      calendarDate?.year,
-      petFilter,
-      statusFilter,
-      typeFilter,
-    ],
+    [petFilter, statusFilter, typeFilter, visibleMonth],
   );
 
   const { data: petData } = useQuery({
@@ -66,7 +78,7 @@ export function useReminderCalendar() {
       Toast.error({ text: e.message });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setAgendaEdit(undefined);
     },
   });
@@ -77,7 +89,7 @@ export function useReminderCalendar() {
       Toast.error({ text: e.message });
     },
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setAgendaDelete(undefined);
     },
   });
@@ -107,15 +119,20 @@ export function useReminderCalendar() {
     ...statusMutationOptions,
   });
 
-  const { groupData, marked } = useMemo(() => {
-    const groupData = groupReminder(data?.data ?? []);
-    const marked = getMarkedDates(groupData);
+  const allReminders = useMemo(
+    () => sortRemindersByTime(data?.data ?? []),
+    [data?.data],
+  );
 
-    return {
-      groupData,
-      marked,
-    };
-  }, [data]);
+  const selectedDateReminders = useMemo(
+    () => getRemindersForDay(allReminders, selectedDate),
+    [allReminders, selectedDate],
+  );
+
+  const markedDateCounts = useMemo(
+    () => getMarkedDateCounts(allReminders),
+    [allReminders],
+  );
 
   const handleUpdate = useCallback(
     async (data: IReminderForm) => {
@@ -145,41 +162,66 @@ export function useReminderCalendar() {
       type: agendaEdit.type,
       description: agendaEdit.description ?? "",
       petId: agendaEdit.petId,
+      repeatFrequency: toSupportedRepeatFrequency(agendaEdit.repeatFrequency),
+      repeatInterval: agendaEdit.repeatInterval ?? 1,
+      repeatUntil: agendaEdit.repeatUntil
+        ? dayjs(agendaEdit.repeatUntil).toDate()
+        : null,
+      timezone: agendaEdit.timezone ?? undefined,
     };
   }, [agendaEdit]);
 
   const hasFilters = !!statusFilter || !!typeFilter || !!petFilter;
   const actioningId = completingId ?? skippingId ?? cancellingId;
 
+  const handlePreviousMonth = useCallback(() => {
+    const nextMonth = dayjs(visibleMonth).subtract(1, "month").startOf("month");
+    const nextSelectedDate = nextMonth.format(REMINDER_DAY_KEY_FORMAT);
+
+    setVisibleMonth(nextSelectedDate);
+    setSelectedDate(nextSelectedDate);
+  }, [visibleMonth]);
+
+  const handleNextMonth = useCallback(() => {
+    const nextMonth = dayjs(visibleMonth).add(1, "month").startOf("month");
+    const nextSelectedDate = nextMonth.format(REMINDER_DAY_KEY_FORMAT);
+
+    setVisibleMonth(nextSelectedDate);
+    setSelectedDate(nextSelectedDate);
+  }, [visibleMonth]);
+
   return {
     actioningId,
     agendaDelete,
     agendaEdit,
-    calendarDate,
+    allReminders,
     defaultValue,
-    groupData,
     hasFilters,
     isDeleting,
     isError,
     isLoading,
     isUpdating,
-    marked,
+    markedDateCounts,
     petData,
     petFilter,
+    selectedDate,
+    selectedDateReminders,
     statusFilter,
     typeFilter,
+    visibleMonth,
     cancelReminder,
     completeReminder,
     handleCancelDelete,
     handleDelete,
+    handleNextMonth,
+    handlePreviousMonth,
     handleUpdate,
     refetch,
     setAgendaDelete,
     setAgendaEdit,
-    setCalendarDate,
-    setPetFilter,
-    setStatusFilter,
-    setTypeFilter,
+    setSelectedDate,
+    setFilters,
+    resetFilters,
     skipReminder,
   };
 }
@@ -188,15 +230,10 @@ export function useCreateReminderSheet() {
   const [openForm, setOpenForm] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: petData } = useQuery({
-    queryKey: PET_KEY.list(),
-    queryFn: getListPetQuery,
-  });
-
   const { mutateAsync: createReminder, isPending: isCreating } = useMutation({
     mutationFn: createReminderMutation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.lists() });
+      queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setOpenForm(false);
     },
     onError: (e) => {
@@ -212,13 +249,8 @@ export function useCreateReminderSheet() {
   );
 
   const handleOpenForm = useCallback(() => {
-    if (petData?.data.length) {
-      setOpenForm(true);
-      return;
-    }
-
-    Toast.warn({ text: "Please add a pet first." });
-  }, [petData?.data.length]);
+    setOpenForm(true);
+  }, []);
 
   const handleCloseForm = useCallback(() => setOpenForm(false), []);
 

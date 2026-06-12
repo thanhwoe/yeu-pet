@@ -1,110 +1,164 @@
-import { ReminderStatus, ReminderType } from "@/interfaces";
-import { cn } from "@/utils";
-import dayjs from "dayjs";
-import { ReactNode } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import { CalendarProvider } from "react-native-calendars";
 import { Popup } from "@/components/Popup";
+import { Skeleton } from "@/components/Skeleton";
+import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
-import { Body } from "@/components/ui/Typography";
-import { useReminderCalendar } from "@/features/reminders/hooks";
+import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
+import { Body, Heading } from "@/components/ui/Typography";
+import { ReminderDetailPopup } from "@/features/reminders/components/ReminderDetailPopup";
 import { ReminderForm } from "@/features/reminders/components/ReminderForm";
-import { AgendaList } from "./AgendaList";
+import {
+  useCreateReminderSheet,
+  useReminderCalendar,
+} from "@/features/reminders/hooks";
+import { IReminder } from "@/interfaces";
+import {
+  formatReminderDate,
+  REMINDER_STATUS_LABELS,
+  REMINDER_TYPE_LABELS,
+} from "@/utils/reminder";
+import { useCallback, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { AgendaItem } from "./AgendaItem";
 import { Calendar } from "./Calendar";
 
-const currentDate = dayjs().toString();
-
-const STATUS_FILTERS: { label: string; value?: ReminderStatus }[] = [
-  { label: "All" },
-  { label: "Pending", value: "pending" },
-  { label: "Done", value: "completed" },
-  { label: "Skipped", value: "skipped" },
-  { label: "Cancelled", value: "cancelled" },
-];
-
-const TYPE_FILTERS: { label: string; value?: ReminderType }[] = [
-  { label: "All types" },
-  { label: "Feeding", value: "feeding" },
-  { label: "Grooming", value: "grooming" },
-  { label: "Vaccine", value: "vaccination" },
-  { label: "Medicine", value: "medication" },
-];
-
 export const ReminderCalendar = () => {
+  const [selectedReminder, setSelectedReminder] = useState<IReminder>();
+
   const {
     actioningId,
     agendaDelete,
     agendaEdit,
-    calendarDate,
+    allReminders,
     defaultValue,
-    groupData,
     hasFilters,
     isDeleting,
     isError,
     isLoading,
     isUpdating,
-    marked,
+    markedDateCounts,
     petData,
     petFilter,
+    selectedDate,
+    selectedDateReminders,
     statusFilter,
     typeFilter,
+    visibleMonth,
     cancelReminder,
     completeReminder,
     handleCancelDelete,
     handleDelete,
+    handleNextMonth,
+    handlePreviousMonth,
     handleUpdate,
     refetch,
     setAgendaDelete,
     setAgendaEdit,
-    setCalendarDate,
-    setPetFilter,
-    setStatusFilter,
-    setTypeFilter,
+    setSelectedDate,
+    resetFilters,
     skipReminder,
   } = useReminderCalendar();
 
+  const {
+    isCreating,
+    openForm,
+    handleCloseForm,
+    handleCreateReminder,
+    handleOpenForm,
+  } = useCreateReminderSheet();
+
+  const handleEdit = useCallback(
+    (v: IReminder) => {
+      if (v.status !== "pending") {
+        Toast.warn({
+          text: "Create a new reminder if this care task already changed status.",
+          title: "Cannot edit this reminder",
+          duration: 10_000,
+        });
+        return;
+      }
+      setAgendaEdit(v);
+    },
+    [setAgendaEdit],
+  );
+
+  const handleResetFilters = useCallback(() => {
+    resetFilters();
+  }, [resetFilters]);
+
   return (
-    <View className="flex-1 mx-20">
-      <CalendarProvider date={currentDate} onMonthChange={setCalendarDate}>
-        <View className="gap-4 flex-1">
-          <ReminderFilters
-            pets={petData?.data ?? []}
+    <View className="flex-1">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="gap-12 px-20 pb-safe-offset-120"
+      >
+        {hasFilters ? (
+          <ActiveFilterSummary
+            petName={
+              petData?.data.find((pet) => pet.id === petFilter)?.name
+            }
             status={statusFilter}
             type={typeFilter}
-            petId={petFilter}
-            onStatusChange={setStatusFilter}
-            onTypeChange={setTypeFilter}
-            onPetChange={setPetFilter}
+            onReset={handleResetFilters}
           />
-          <Calendar
-            marked={marked}
-            calendarClassName="bg-background-calendar"
-            arrowClassName="text-text-secondary"
-            weekTitleClassName="text-text-primary"
-          />
-          <AgendaList
-            key={calendarDate?.month}
-            onEdit={setAgendaEdit}
-            data={groupData}
-            onDelete={setAgendaDelete}
-            deleting={isDeleting}
-            updating={isUpdating}
-            loading={isLoading}
-            error={isError}
-            hasFilters={hasFilters}
-            actioningId={actioningId}
-            onRetry={() => refetch()}
-            onComplete={(item) => completeReminder(item.id)}
-            onSkip={(item) => skipReminder(item.id)}
-            onCancelReminder={(item) => cancelReminder(item.id)}
-          />
-        </View>
-      </CalendarProvider>
+        ) : null}
+
+        <Calendar
+          visibleMonth={visibleMonth}
+          selectedDate={selectedDate}
+          markedDateCounts={markedDateCounts}
+          onSelectDate={setSelectedDate}
+          onPreviousMonth={handlePreviousMonth}
+          onNextMonth={handleNextMonth}
+        />
+
+        <SelectedDateSection
+          allCount={allReminders.length}
+          deleting={isDeleting}
+          error={isError}
+          hasFilters={hasFilters}
+          loading={isLoading}
+          reminders={selectedDateReminders}
+          selectedDate={selectedDate}
+          updating={isUpdating}
+          onAddReminder={handleOpenForm}
+          onDelete={setAgendaDelete}
+          onEdit={handleEdit}
+          onOpenReminder={setSelectedReminder}
+          onRetry={() => refetch()}
+        />
+      </ScrollView>
+
+      <ReminderDetailPopup
+        visible={!!selectedReminder}
+        reminder={selectedReminder}
+        actioning={selectedReminder?.id === actioningId}
+        onClose={() => setSelectedReminder(undefined)}
+        onComplete={async (item) => {
+          await completeReminder(item.id);
+        }}
+        onSkip={async (item) => {
+          await skipReminder(item.id);
+        }}
+        onCancelReminder={async (item) => {
+          await cancelReminder(item.id);
+        }}
+      />
+
+      <BottomSheet
+        visible={openForm}
+        onDismiss={handleCloseForm}
+        useScrollView
+        titleElement={<Body weight="semiBold">Create reminder</Body>}
+      >
+        <ReminderForm onSubmit={handleCreateReminder} loading={isCreating} />
+      </BottomSheet>
+
       <BottomSheet
         visible={!!agendaEdit}
         onDismiss={() => setAgendaEdit(undefined)}
         useScrollView
-        titleElement={<Body weight="semiBold">Edit Reminder</Body>}
+        titleElement={<Body weight="semiBold">Edit reminder</Body>}
       >
         <ReminderForm
           onSubmit={handleUpdate}
@@ -112,6 +166,7 @@ export const ReminderCalendar = () => {
           loading={isUpdating}
         />
       </BottomSheet>
+
       <Popup
         visible={!!agendaDelete}
         onCancel={handleCancelDelete}
@@ -125,102 +180,139 @@ export const ReminderCalendar = () => {
   );
 };
 
-const ReminderFilters = ({
-  pets,
+const ActiveFilterSummary = ({
   status,
   type,
-  petId,
-  onStatusChange,
-  onTypeChange,
-  onPetChange,
+  petName,
+  onReset,
 }: {
-  pets: { id: string; name: string }[];
-  status?: ReminderStatus;
-  type?: ReminderType;
-  petId?: string;
-  onStatusChange: (status?: ReminderStatus) => void;
-  onTypeChange: (type?: ReminderType) => void;
-  onPetChange: (petId?: string) => void;
-}) => (
-  <View className="gap-10">
-    <FilterRow>
-      {STATUS_FILTERS.map((item) => (
-        <FilterChip
-          key={item.label}
-          label={item.label}
-          selected={status === item.value}
-          onPress={() => onStatusChange(item.value)}
+  status?: IReminder["status"];
+  type?: IReminder["type"];
+  petName?: string;
+  onReset: () => void;
+}) => {
+  const labels = [
+    status ? REMINDER_STATUS_LABELS[status] : undefined,
+    type ? REMINDER_TYPE_LABELS[type] : undefined,
+    petName,
+  ].filter(Boolean);
+
+  return (
+    <View className="flex-row items-center justify-between gap-12 rounded-18 border border-line-subtle bg-background-card px-14 py-10">
+      <View className="flex-1">
+        <Body variant="body4" className="text-text-muted">
+          Filters
+        </Body>
+        <Body variant="body3" weight="semiBold" numberOfLines={1}>
+          {labels.join(" · ")}
+        </Body>
+      </View>
+      <Button variant="ghost" size="sm" onPress={onReset}>
+        Reset
+      </Button>
+    </View>
+  );
+};
+
+const SelectedDateSection = ({
+  selectedDate,
+  reminders,
+  allCount,
+  loading,
+  error,
+  hasFilters,
+  deleting,
+  updating,
+  onAddReminder,
+  onRetry,
+  onEdit,
+  onDelete,
+  onOpenReminder,
+}: {
+  selectedDate: string;
+  reminders: IReminder[];
+  allCount: number;
+  loading?: boolean;
+  error?: boolean;
+  hasFilters?: boolean;
+  deleting?: boolean;
+  updating?: boolean;
+  onAddReminder: () => void;
+  onRetry?: () => void;
+  onEdit: (v: IReminder) => void;
+  onDelete: (v: IReminder) => void;
+  onOpenReminder: (v: IReminder) => void;
+}) => {
+  const countLabel = `${reminders.length} care ${
+    reminders.length === 1 ? "task" : "tasks"
+  }`;
+
+  return (
+    <View className="gap-12">
+      <View className="flex-row items-start justify-between gap-12">
+        <View className="flex-1">
+          <Heading variant="h5" weight="bold">
+            {formatReminderDate(selectedDate)}
+          </Heading>
+          <Body variant="body3" className="text-text-muted">
+            {loading ? "Checking care tasks..." : countLabel}
+          </Body>
+        </View>
+        <Button size="sm" variant="secondary" onPress={onAddReminder}>
+          Add
+        </Button>
+      </View>
+
+      {loading ? (
+        <ReminderListSkeleton />
+      ) : error ? (
+        <StateView
+          variant="error"
+          title="Could not load reminders"
+          description="Please try again."
+          actionLabel="Retry"
+          onAction={onRetry}
+          className="rounded-20 bg-background-card"
         />
-      ))}
-    </FilterRow>
-    <FilterRow>
-      {TYPE_FILTERS.map((item) => (
-        <FilterChip
-          key={item.label}
-          label={item.label}
-          selected={type === item.value}
-          onPress={() => onTypeChange(item.value)}
+      ) : reminders.length ? (
+        <View className="gap-12">
+          {reminders.map((item) => (
+            <AgendaItem
+              key={item.id}
+              item={item}
+              onPress={onOpenReminder}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              editing={updating}
+              deleting={deleting}
+            />
+          ))}
+        </View>
+      ) : (
+        <StateView
+          variant="empty"
+          title={
+            allCount === 0 && !hasFilters
+              ? "No reminders yet"
+              : "No reminders for this day"
+          }
+          description={
+            allCount === 0 && !hasFilters
+              ? "Create your first care reminder for feeding, medicine, grooming, or vaccines."
+              : "Add a reminder to stay on top of your pet care."
+          }
+          actionLabel="Add reminder"
+          onAction={onAddReminder}
+          className="min-h-140 gap-8 rounded-20 bg-background-card px-20 py-20"
         />
-      ))}
-    </FilterRow>
-    {pets.length > 0 ? (
-      <FilterRow>
-        <FilterChip
-          label="All pets"
-          selected={!petId}
-          onPress={() => onPetChange(undefined)}
-        />
-        {pets.map((pet) => (
-          <FilterChip
-            key={pet.id}
-            label={pet.name}
-            selected={petId === pet.id}
-            onPress={() => onPetChange(pet.id)}
-          />
-        ))}
-      </FilterRow>
-    ) : null}
+      )}
+    </View>
+  );
+};
+
+const ReminderListSkeleton = () => (
+  <View className="gap-12">
+    <Skeleton className="h-112 rounded-20" backgroundClassName="bg-background-card" />
+    <Skeleton className="h-112 rounded-20" backgroundClassName="bg-background-card" />
   </View>
-);
-
-const FilterRow = ({ children }: { children: ReactNode }) => (
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerClassName="gap-8"
-  >
-    {children}
-  </ScrollView>
-);
-
-const FilterChip = ({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}) => (
-  <TouchableOpacity
-    accessibilityRole="button"
-    accessibilityState={{ selected }}
-    onPress={onPress}
-    className={cn(
-      "min-h-44 justify-center rounded-24 border border-line-tertiary bg-background-card px-16",
-      {
-        "border-line-secondary bg-background-secondary": selected,
-      },
-    )}
-  >
-    <Body
-      variant="body3"
-      weight="semiBold"
-      className={cn({
-        "text-text-secondary": selected,
-      })}
-    >
-      {label}
-    </Body>
-  </TouchableOpacity>
 );

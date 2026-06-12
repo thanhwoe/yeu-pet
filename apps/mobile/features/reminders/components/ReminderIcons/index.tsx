@@ -1,6 +1,7 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { ReminderStatus, ReminderType } from "@/interfaces";
 import { cn } from "@/utils";
+import { REMINDER_STATUS_LABELS } from "@/utils/reminder";
 import {
   BoneIcon as Bone,
   CheckCircleIcon,
@@ -68,7 +69,7 @@ export const ReminderTypeIcon = ({
   const bg = typeBackgroundMapping[type];
   if (circle) {
     return (
-      <View className={cn("p-10 rounded-12", bg)}>
+      <View className={cn("size-48 items-center justify-center rounded-12", bg)}>
         <Icon size={20} weight="fill" className={color} {...props} />
       </View>
     );
@@ -97,15 +98,15 @@ const statusColorMapping: Record<ReminderStatus, string> = {
   sent: "text-status-success-text",
   completed: "text-status-success-text",
   skipped: "text-text-muted",
-  cancelled: "text-text-muted",
+  cancelled: "text-status-danger-text",
   pending: "text-status-warning-text",
 };
 
 const statusBackgroundMapping: Record<ReminderStatus, string> = {
   sent: "bg-status-success-surface",
   completed: "bg-status-success-surface",
-  skipped: "bg-background-cancel",
-  cancelled: "bg-background-cancel",
+  skipped: "bg-background-surface-muted",
+  cancelled: "bg-status-danger-surface",
   pending: "bg-status-warning-surface",
 };
 interface ReminderStatusProps extends IconProps {
@@ -128,7 +129,7 @@ export const ReminderStatusChip = ({
     >
       <Icon size={20} weight="fill" className={color} {...props} />
       <Body variant="body2" className={cn("capitalize", color)} weight="semiBold">
-        {status}
+        {REMINDER_STATUS_LABELS[status]}
       </Body>
     </View>
   );

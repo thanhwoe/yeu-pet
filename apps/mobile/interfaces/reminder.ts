@@ -1,15 +1,19 @@
 export interface IReminder {
   id: string;
   accountId: string;
-  petId: string;
+  petId: string | null;
   title: string;
   description: string | null;
   type: ReminderType;
   status: ReminderStatus;
-  pets: {
+  timezone?: string | null;
+  repeatFrequency?: ReminderRepeatFrequency;
+  repeatInterval?: number | null;
+  repeatUntil?: string | null;
+  pets?: {
     name: string;
     avatarUrl: string | null;
-  };
+  } | null;
   scheduledAt: string;
   createdAt: string;
   updatedAt: string;
@@ -27,6 +31,14 @@ export type ReminderStatus =
   | "skipped"
   | "sent"
   | "cancelled";
+
+export type ReminderRepeatFrequency =
+  | "none"
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "yearly"
+  | "custom";
 
 export interface GroupedReminder {
   title: string; // 'YYYY-MM-DD'

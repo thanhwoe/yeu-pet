@@ -262,6 +262,7 @@ export const lightColorTheme = {
   "--background-positive-foreground": "--green-70",
 
   "--background-negative": "--red-5",
+  "--background-negative-highlight": "--red-15",
   "--background-negative-foreground": "--red-70",
   "--background-negative-pressed": "--red-10",
 
@@ -514,6 +515,7 @@ export const darkColorTheme = {
   "--background-positive-foreground": "--green-10",
 
   "--background-negative": "--red-90",
+  "--background-negative-highlight": "--red-80",
   "--background-negative-foreground": "--red-10",
   "--background-negative-pressed": "--red-80",
 

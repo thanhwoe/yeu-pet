@@ -57,10 +57,7 @@ export const StateView = ({
         <Heading variant="h6" weight="bold" className="text-center">
           {title}
         </Heading>
-        <Body
-          variant="body3"
-          className="text-center text-text-tertiary-inverse"
-        >
+        <Body variant="body3" className="text-center text-text-muted">
           {description}
         </Body>
       </View>

@@ -111,10 +111,13 @@ export const resetPasswordSchema = z.object({
 });
 
 export const reminderSchema = z.object({
-  title: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Reminder name"),
-  }),
-  description: z.string().optional(),
+  title: z
+    .string({
+      message: ERROR_MESSAGE.FIELD_REQUIRED("Reminder name"),
+    })
+    .trim()
+    .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Reminder name")),
+  description: z.string().trim().optional(),
   petId: z.string().optional().nullable(),
   type: z.enum(["grooming", "feeding", "vaccination", "medication"], {
     message: ERROR_MESSAGE.FIELD_REQUIRED("Type"),
@@ -122,6 +125,12 @@ export const reminderSchema = z.object({
   scheduledAt: z.date({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Schedule"),
   }),
+  repeatFrequency: z
+    .enum(["none", "daily", "weekly", "monthly", "yearly"])
+    .optional(),
+  repeatInterval: z.number().int().min(1).max(365).optional(),
+  repeatUntil: z.date().optional().nullable(),
+  timezone: z.string().optional(),
 });
 
 export const petInfoSchema = z.object({

@@ -32,7 +32,7 @@ const ReminderItem = ({ data }: { data: IReminder }) => {
       <View>
         <Avatar
           source={{
-            uri: data.pets.avatarUrl ?? "",
+            uri: data.pets?.avatarUrl ?? "",
           }}
           size="large"
         />

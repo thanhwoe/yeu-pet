@@ -1,5 +1,6 @@
 import { IPet } from "@/interfaces";
 import { cn } from "@/utils";
+import { PawPrintIcon } from "phosphor-react-native";
 import {
   Control,
   FieldValues,
@@ -11,6 +12,9 @@ import {
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Body } from "../ui/Typography";
+import { withIconClassName } from "@/hocs/withIconClassName";
+
+const PawPrint = withIconClassName(PawPrintIcon);
 
 interface IPetPickerControllerProps<T extends FieldValues, TTransformedValues = T> {
   label?: string;
@@ -18,6 +22,7 @@ interface IPetPickerControllerProps<T extends FieldValues, TTransformedValues = 
   control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   options: IPet[];
+  allowNone?: boolean;
 }
 
 export const PetPickerController = <
@@ -29,6 +34,7 @@ export const PetPickerController = <
   label,
   rules,
   options,
+  allowNone,
 }: IPetPickerControllerProps<T, TTransformedValues>) => {
   const {
     field: { value, onChange },
@@ -36,7 +42,7 @@ export const PetPickerController = <
     name,
     control,
     rules,
-    defaultValue: options[0]?.id as PathValue<T, Path<T>>,
+    defaultValue: (allowNone ? null : options[0]?.id) as PathValue<T, Path<T>>,
   });
 
   return (
@@ -51,6 +57,30 @@ export const PetPickerController = <
         showsHorizontalScrollIndicator={false}
         contentContainerClassName="gap-20"
       >
+        {allowNone ? (
+          <TouchableOpacity
+            onPress={() => {
+              onChange(null);
+            }}
+            className="max-w-68 items-center gap-4"
+          >
+            <View
+              className={cn(
+                "items-center justify-center rounded-full border-[1.5px] border-line-secondary-inverse p-4",
+                {
+                  "border-line-secondary": !value,
+                },
+              )}
+            >
+              <View className="size-56 items-center justify-center rounded-full bg-background-surface-muted">
+                <PawPrint size={24} className="text-icon-secondary" weight="duotone" />
+              </View>
+            </View>
+            <Body variant="body3" numberOfLines={1}>
+              No pet
+            </Body>
+          </TouchableOpacity>
+        ) : null}
         {options.map((item, index) => (
           <TouchableOpacity
             onPress={() => {
