@@ -110,32 +110,6 @@ export const resetPasswordSchema = z.object({
     .transform((v) => String(v)),
 });
 
-export const profileSchema = z.object({
-  firstName: z
-    .string({
-      message: ERROR_MESSAGE.FIELD_REQUIRED("First name"),
-    })
-    .trim()
-    .min(2, ERROR_MESSAGE.FIELD_INVALID("First name"))
-    .max(50, ERROR_MESSAGE.FIELD_INVALID("First name")),
-  lastName: z
-    .string({
-      message: ERROR_MESSAGE.FIELD_REQUIRED("Last name"),
-    })
-    .trim()
-    .min(2, ERROR_MESSAGE.FIELD_INVALID("Last name"))
-    .max(50, ERROR_MESSAGE.FIELD_INVALID("Last name")),
-  email: z
-    .string()
-    .trim()
-    .optional()
-    .refine(
-      (value) => !value || z.email().safeParse(value).success,
-      ERROR_MESSAGE.FIELD_INVALID("Email"),
-    )
-    .transform((value) => value || undefined),
-});
-
 export const reminderSchema = z.object({
   title: z.string({
     message: ERROR_MESSAGE.FIELD_REQUIRED("Reminder name"),
@@ -414,9 +388,6 @@ export const shippingAddressSchema = z.object({
 
 export type IPetInfoForm = z.output<typeof petInfoSchema>;
 export type IPetInfoFormInput = z.input<typeof petInfoSchema>;
-
-export type IProfileForm = z.output<typeof profileSchema>;
-export type IProfileFormInput = z.input<typeof profileSchema>;
 
 export type IBudgetCategoryForm = z.infer<typeof budgetCategorySchema>;
 

@@ -9,6 +9,10 @@ export const API_ROUTES = {
   VERIFY_OTP: "/users/verify",
   ME: "/me",
   ME_AVATAR: "/me/avatar",
+  ME_EMAIL_CHANGE_REQUEST: "/me/email-change/request",
+  ME_EMAIL_CHANGE_VERIFY: "/me/email-change/verify",
+  ME_EMAIL_CHANGE_RESEND: "/me/email-change/resend",
+  ME_EMAIL_CHANGE_CANCEL: "/me/email-change/cancel",
   DEACTIVATE_ME: "/me",
   DEVICE: "/devices",
 

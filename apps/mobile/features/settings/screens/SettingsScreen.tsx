@@ -1,16 +1,10 @@
 import { Toast } from "@/components/Toast";
-import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { StateView } from "@/components/ui/StateView";
 import { Text } from "@/components/ui/Text";
-import {
-  SETTINGS_KEY,
-  SUBSCRIPTION_KEY,
-  USER_KEY,
-} from "@/constants/query-keys";
-import { IProfileForm } from "@/constants/validation";
-import { ProfileForm } from "@/features/settings/components/ProfileForm";
+import { SETTINGS_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { SegmentedSetting } from "@/features/settings/components/SegmentedSetting";
 import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
@@ -23,12 +17,12 @@ import {
   getUserSettingsQuery,
   mockDowngradeSubscriptionMutation,
   mockUpgradeSubscriptionMutation,
-  updateUserProfileMutation,
   updateUserSettingsMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { router } from "expo-router";
+import { useCallback } from "react";
 import { Alert, Linking, View } from "react-native";
 
 const THEME_OPTIONS = [
@@ -75,19 +69,25 @@ const getInitials = (name: string) => {
 function ProfileCard({
   name,
   contact,
+  avatarUrl,
   onEdit,
 }: {
   name: string;
   contact: string;
+  avatarUrl?: string | null;
   onEdit: () => void;
 }) {
   return (
     <View className="flex-row items-center gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-16 py-14 shadow-sm">
-      <View className="h-56 w-56 items-center justify-center rounded-full bg-background-surface-muted">
-        <Text variant="heading" className="font-bold text-text-accent">
-          {getInitials(name)}
-        </Text>
-      </View>
+      {avatarUrl ? (
+        <Avatar size="large" source={{ uri: avatarUrl }} />
+      ) : (
+        <View className="h-56 w-56 items-center justify-center rounded-full bg-background-surface-muted">
+          <Text variant="heading" className="font-bold text-text-accent">
+            {getInitials(name)}
+          </Text>
+        </View>
+      )}
       <View className="flex-1 gap-2">
         <Text variant="title3" className="font-bold" numberOfLines={1}>
           {name}
@@ -213,8 +213,6 @@ export function SettingsScreen() {
   const { loading, logout } = useLogout();
   const { setColorScheme } = useColorScheme();
   const user = useUserInfoStore.use.user();
-  const updateUser = useUserInfoStore.use.updateUser();
-  const [isProfileFormOpen, setIsProfileFormOpen] = useState(false);
   const queryClient = useQueryClient();
   const {
     data: settings,
@@ -260,21 +258,6 @@ export function SettingsScreen() {
     mutationFn: mockDowngradeSubscriptionMutation,
     onSuccess: invalidateSubscription,
   });
-  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } =
-    useMutation({
-      mutationFn: updateUserProfileMutation,
-      onSuccess: (updatedUser) => {
-        updateUser(updatedUser);
-        queryClient.setQueryData(USER_KEY.detail(updatedUser.id), updatedUser);
-        setIsProfileFormOpen(false);
-      },
-      onError: (error: Error) => {
-        Toast.error({
-          text: error.message || "Could not update profile. Please try again.",
-        });
-      },
-    });
-
   const handleUpdateSettings = useCallback(
     async (params: IUserSettingsForm) => {
       await updateSettings(params);
@@ -303,13 +286,6 @@ export function SettingsScreen() {
       Toast.error({ text: "Could not open this link. Please try again." });
     }
   }, []);
-
-  const handleProfileSubmit = useCallback(
-    async (data: IProfileForm) => {
-      await updateProfile(data);
-    },
-    [updateProfile],
-  );
 
   const handleSubscriptionAction = useCallback(() => {
     Toast.warn({
@@ -386,7 +362,8 @@ export function SettingsScreen() {
         <ProfileCard
           name={displayName}
           contact={contact}
-          onEdit={() => setIsProfileFormOpen(true)}
+          avatarUrl={user?.avatarUrl}
+          onEdit={() => router.push("/profile")}
         />
 
         <SettingsSection title="Subscription">
@@ -586,24 +563,6 @@ export function SettingsScreen() {
           </SettingsRow>
         </SettingsSection>
       </View>
-
-      {user ? (
-        <BottomSheet
-          visible={isProfileFormOpen}
-          titleElement={<Text className="font-semibold">Edit profile</Text>}
-          onDismiss={() => setIsProfileFormOpen(false)}
-        >
-          <ProfileForm
-            defaultValues={{
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email ?? undefined,
-            }}
-            isSubmitting={isUpdatingProfile}
-            onSubmit={handleProfileSubmit}
-          />
-        </BottomSheet>
-      ) : null}
     </ScreenContainer>
   );
 }

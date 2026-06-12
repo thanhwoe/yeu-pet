@@ -21,3 +21,25 @@ export interface IDeviceResponse {
   osVersion: string | null;
   platform: "unknown" | "android" | "ios" | null;
 }
+
+export interface IUpdateProfileParams {
+  firstName?: string;
+  lastName?: string;
+}
+
+export interface IEmailChangeRequest {
+  requestId: string;
+  newEmail: string;
+  maskedEmail: string;
+  expiresAt: string;
+  resendAvailableAt?: string;
+}
+
+export interface IVerifyEmailChangeResponse {
+  account: IUser;
+}
+
+export interface IAvatarUploadResponse {
+  queued: boolean;
+  profile: IUser;
+}

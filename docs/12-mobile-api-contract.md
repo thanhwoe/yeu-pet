@@ -43,7 +43,55 @@ PATCH  /me
 DELETE /me
 POST   /me/avatar
 DELETE /me/avatar
+POST   /me/email-change/request
+POST   /me/email-change/verify
+POST   /me/email-change/resend
+POST   /me/email-change/cancel
 ```
+
+`PATCH /me` only accepts safe profile fields such as `firstName` and `lastName`.
+Email changes must use the OTP flow below.
+
+Request email change:
+
+```ts
+POST /me/email-change/request
+{
+  newEmail: string
+}
+```
+
+Response:
+
+```ts
+{
+  requestId: string
+  newEmail: string
+  maskedEmail: string
+  expiresAt: string
+  resendAvailableAt?: string
+}
+```
+
+Verify email change:
+
+```ts
+POST /me/email-change/verify
+{
+  requestId: string
+  otp: string // 6 digits
+}
+```
+
+Response:
+
+```ts
+{
+  account: IUser
+}
+```
+
+Resend/cancel both accept `{ requestId: string }`. Resend returns the same request metadata shape as request.
 
 ## Settings
 

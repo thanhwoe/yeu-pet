@@ -8,6 +8,7 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
+import type { ReactNode } from "react";
 import { TextInputProps, TouchableOpacity } from "react-native";
 import { InputField } from "../ui/InputField";
 
@@ -23,6 +24,7 @@ export interface InputControllerProps<
   control: Control<T, any, TTransformedValues>;
   rules?: RegisterOptions<T>;
   format?: (value: string) => string;
+  prefix?: ReactNode;
 }
 
 export const InputController = <

@@ -102,6 +102,11 @@ const RootNavigation = () => {
             title: "Notifications",
           }}
         />
+        <Stack.Screen name="profile" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="profile/verify-email"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="doctor-ai"
           options={{
