@@ -58,6 +58,7 @@ const CalendarCheck = withIconClassName(CalendarCheckIcon);
 const Clock = withIconClassName(ClockIcon);
 const PencilSimple = withIconClassName(PencilSimpleIcon);
 const SlidersHorizontal = withIconClassName(SlidersHorizontalIcon);
+const Star = withIconClassName(StarIcon);
 
 const SCREEN_TABS = [
   { title: "Find care", value: 0 },
@@ -158,7 +159,7 @@ const ExternalPaymentNotice = () => (
     <Body variant="body3" weight="semiBold">
       Payment is arranged directly
     </Body>
-    <Body variant="body4" className="mt-4 text-text-tertiary-inverse">
+    <Body variant="body4" className="mt-4 text-text-muted">
       Payment and final service details are arranged directly between pet owner
       and sitter.
     </Body>
@@ -175,13 +176,13 @@ const SitterProfileStatus = ({
   <View className="mb-16 gap-12 rounded-20 bg-background-card px-16 py-16">
     <View className="flex-row items-start justify-between gap-12">
       <View className="flex-1">
-        <Body variant="body5" caps className="text-text-tertiary-inverse">
+        <Body variant="body5" caps className="text-text-muted">
           Your sitter profile
         </Body>
         <Heading variant="h6" weight="bold" numberOfLines={1}>
           {profile.isAvailable ? "Available for requests" : "Paused"}
         </Heading>
-        <Body variant="body3" className="text-text-tertiary-inverse">
+        <Body variant="body3" className="text-text-muted">
           {profile.address}
         </Body>
       </View>
@@ -189,7 +190,7 @@ const SitterProfileStatus = ({
         Edit
       </Button>
     </View>
-    <Body variant="body4" className="text-text-tertiary-inverse">
+    <Body variant="body4" className="text-text-muted">
       {profile.isAvailable
         ? "Owners can discover your profile and send booking requests."
         : "Your profile is hidden from discovery until you become available again."}
@@ -215,7 +216,7 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
         <Heading variant="h6" weight="bold">
           Recent reviews
         </Heading>
-        <Body variant="body4" className="text-text-tertiary-inverse">
+        <Body variant="body4" className="text-text-muted">
           {sitter.totalReviews || 0} total
         </Body>
       </View>
@@ -252,14 +253,14 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
                   {getReviewerName(review)}
                 </Body>
                 <View className="flex-row items-center gap-4">
-                  <StarIcon size={14} weight="fill" color="#F0C400" />
+                  <Star size={14} weight="fill" className="text-status-warning-icon" />
                   <Body variant="body4" weight="semiBold">
                     {review.rating}
                   </Body>
                 </View>
               </View>
               {review.comment ? (
-                <Body variant="body4" className="text-text-tertiary-inverse">
+                <Body variant="body4" className="text-text-muted">
                   {review.comment}
                 </Body>
               ) : null}
@@ -320,7 +321,7 @@ const SitterCard = memo(
                 {getSitterName(sitter)}
               </Heading>
               <View className="flex-row items-center gap-4">
-                <StarIcon size={16} weight="fill" color="#F0C400" />
+                <Star size={16} weight="fill" className="text-status-warning-icon" />
                 <Body variant="body3" weight="semiBold">
                   {rating}
                 </Body>
@@ -329,7 +330,7 @@ const SitterCard = memo(
             <Body
               variant="body3"
               numberOfLines={1}
-              className="text-text-tertiary-inverse"
+              className="text-text-muted"
             >
               {sitter.address}
             </Body>
@@ -338,7 +339,7 @@ const SitterCard = memo(
 
         <View className="mt-14 flex-row gap-12">
           <View className="flex-1 rounded-14 bg-background-card-highlight px-12 py-10">
-            <Body variant="body5" caps className="text-text-tertiary-inverse">
+            <Body variant="body5" caps className="text-text-muted">
               Hourly
             </Body>
             <Body variant="body3" weight="bold">
@@ -346,7 +347,7 @@ const SitterCard = memo(
             </Body>
           </View>
           <View className="flex-1 rounded-14 bg-background-card-highlight px-12 py-10">
-            <Body variant="body5" caps className="text-text-tertiary-inverse">
+            <Body variant="body5" caps className="text-text-muted">
               Daily
             </Body>
             <Body variant="body3" weight="bold">
@@ -358,7 +359,7 @@ const SitterCard = memo(
         <Body
           variant="body3"
           numberOfLines={2}
-          className={cn("mt-14 text-text-tertiary-inverse", {
+          className={cn("mt-14 text-text-muted", {
             "italic opacity-70": !sitter.bio,
           })}
         >
@@ -406,7 +407,7 @@ const BookingCard = ({
           <Heading variant="h6" weight="bold" numberOfLines={1}>
             {getBookingTitle(booking, role)}
           </Heading>
-          <Body variant="body3" className="text-text-tertiary-inverse">
+          <Body variant="body3" className="text-text-muted">
             {booking.pet?.name ?? "Pet"} • {booking.type}
           </Body>
         </View>
@@ -689,7 +690,7 @@ const SitterProfileForm = ({
             <Body variant="body3" weight="semiBold">
               Accept new requests
             </Body>
-            <Body variant="body4" className="text-text-tertiary-inverse">
+            <Body variant="body4" className="text-text-muted">
               Turn this off to pause your sitter profile in discovery.
             </Body>
           </View>
@@ -850,7 +851,7 @@ const MessageThread = ({
               key={message.id}
               className="rounded-16 bg-background-card-highlight px-12 py-10"
             >
-              <Body variant="body4" className="text-text-tertiary-inverse">
+              <Body variant="body4" className="text-text-muted">
                 {message.createdAt ? dayjs(message.createdAt).format("DD MMM, HH:mm") : "Just now"}
               </Body>
               <Body variant="body3">{message.content}</Body>
@@ -1016,7 +1017,7 @@ export const SitterScreen = () => {
             <Heading variant="h4" weight="bold">
               Sitter
             </Heading>
-            <Body variant="body3" className="text-text-tertiary-inverse">
+            <Body variant="body3" className="text-text-muted">
               Find trusted care and manage booking requests.
             </Body>
           </View>
@@ -1053,7 +1054,7 @@ export const SitterScreen = () => {
           </View>
         </View>
         {hasActiveFilters ? (
-          <Body variant="body4" className="text-text-tertiary-inverse">
+          <Body variant="body4" className="text-text-muted">
             Filtered by{" "}
             {[filters.city, filters.district, filters.minRating && `${filters.minRating}+ stars`, filters.maxPrice && `under ${formatRate(filters.maxPrice)}`]
               .filter(Boolean)
@@ -1215,13 +1216,13 @@ export const SitterScreen = () => {
                 <Heading variant="h5" weight="bold">
                   {getSitterName(selectedSitter)}
                 </Heading>
-                <Body variant="body3" className="text-text-tertiary-inverse">
+                <Body variant="body3" className="text-text-muted">
                   {selectedSitter.address}
                 </Body>
               </View>
             </View>
             <ExternalPaymentNotice />
-            <Body variant="body3" className="text-text-tertiary-inverse">
+            <Body variant="body3" className="text-text-muted">
               {selectedSitter.bio || "This sitter has not added a bio yet."}
             </Body>
             <RecentSitterReviews sitter={selectedSitter} />

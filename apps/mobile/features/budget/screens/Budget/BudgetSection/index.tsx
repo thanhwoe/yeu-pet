@@ -98,7 +98,7 @@ export const BudgetSection = memo(
             >
               <EditIcon
                 weight="fill"
-                className={cn("text-grey-0", {
+                className={cn("text-icon-primary", {
                   "text-icon-negative": isOverBudget,
                 })}
                 size={50}

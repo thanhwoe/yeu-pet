@@ -41,16 +41,16 @@ const typeIconMapping: Record<
 };
 
 const typeColorMapping: Record<ReminderType, string> = {
-  feeding: "text-orange-40",
-  vaccination: "text-green-50",
-  grooming: "text-cyan-60",
-  medication: "text-red-50",
+  feeding: "text-feature-pet-accent",
+  vaccination: "text-feature-medical-accent",
+  grooming: "text-feature-sitter-accent",
+  medication: "text-status-danger-icon",
 };
 const typeBackgroundMapping: Record<ReminderType, string> = {
-  feeding: "bg-[#FF8000]/20",
-  vaccination: "bg-[#3E9A63]/20",
-  grooming: "bg-[#00C4CC]/20",
-  medication: "bg-[#C43A41]/20",
+  feeding: "bg-feature-pet-surface",
+  vaccination: "bg-feature-medical-surface",
+  grooming: "bg-feature-sitter-surface",
+  medication: "bg-status-danger-surface",
 };
 
 interface ReminderTypeProps extends IconProps {
@@ -94,19 +94,19 @@ const statusIconMapping: Record<
 };
 
 const statusColorMapping: Record<ReminderStatus, string> = {
-  sent: "text-green-70",
-  completed: "text-green-70",
-  skipped: "text-grey-70",
-  cancelled: "text-grey-70",
-  pending: "text-yellow-70",
+  sent: "text-status-success-text",
+  completed: "text-status-success-text",
+  skipped: "text-text-muted",
+  cancelled: "text-text-muted",
+  pending: "text-status-warning-text",
 };
 
 const statusBackgroundMapping: Record<ReminderStatus, string> = {
-  sent: "bg-background-positive-highlight",
-  completed: "bg-background-positive-highlight",
+  sent: "bg-status-success-surface",
+  completed: "bg-status-success-surface",
   skipped: "bg-background-cancel",
   cancelled: "bg-background-cancel",
-  pending: "bg-background-warning",
+  pending: "bg-status-warning-surface",
 };
 interface ReminderStatusProps extends IconProps {
   status: ReminderStatus;
@@ -127,7 +127,7 @@ export const ReminderStatusChip = ({
       )}
     >
       <Icon size={20} weight="fill" className={color} {...props} />
-      <Body variant="body2" className="capitalize text-black" weight="semiBold">
+      <Body variant="body2" className={cn("capitalize", color)} weight="semiBold">
         {status}
       </Body>
     </View>

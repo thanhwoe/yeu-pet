@@ -5,11 +5,11 @@ export const buttonStyles = cva(
   {
     variants: {
       variant: {
-        primary: "bg-background-primary",
-        secondary: "bg-background-secondary",
+        primary: "bg-action-primary",
+        secondary: "bg-action-secondary",
         outline: "border border-line-secondary",
-        ghost: "bg-transparent",
-        destructive: "bg-background-negative",
+        ghost: "bg-action-ghost",
+        destructive: "bg-action-danger",
         cancel: "bg-background-tertiary",
       },
       pressed: {
@@ -35,38 +35,38 @@ export const buttonStyles = cva(
       {
         variant: "primary",
         pressed: true,
-        class: "bg-background-primary-pressed",
+        class: "bg-action-primary-pressed",
       },
       {
         variant: "secondary",
         pressed: true,
-        class: "bg-background-secondary-pressed",
+        class: "bg-action-secondary-pressed",
       },
       {
         variant: "outline",
         pressed: true,
-        class: "border-[1.5px] bg-background-secondary",
+        class: "border-[1.5px] bg-action-secondary",
       },
       {
         variant: "ghost",
         pressed: true,
-        class: "bg-background-secondary",
+        class: "bg-action-ghost-pressed",
       },
       {
         variant: "destructive",
         pressed: true,
-        class: "bg-background-negative-pressed",
+        class: "bg-action-danger-pressed",
       },
       // loading
       {
         variant: "primary",
         loading: true,
-        class: "bg-background-primary-pressed",
+        class: "bg-action-primary-pressed",
       },
       {
         variant: "secondary",
         loading: true,
-        class: "bg-background-secondary-pressed",
+        class: "bg-action-secondary-pressed",
       },
       {
         variant: "outline",
@@ -84,11 +84,11 @@ export const buttonStyles = cva(
 export const textStyles = cva("text-center font-medium", {
   variants: {
     variant: {
-      primary: "text-text-primary-inverse",
-      secondary: "text-text-secondary",
+      primary: "text-action-primary-foreground",
+      secondary: "text-action-secondary-foreground",
       outline: "text-text-secondary",
-      ghost: "text-text-secondary",
-      destructive: "text-grey-0",
+      ghost: "text-action-ghost-foreground",
+      destructive: "text-action-danger-foreground",
       cancel: "text-text-tertiary-inverse",
     },
     size: {
@@ -106,11 +106,11 @@ export const textStyles = cva("text-center font-medium", {
 export const spinnerStyles = cva("", {
   variants: {
     variant: {
-      primary: "text-text-primary-inverse",
-      secondary: "text-text-secondary",
+      primary: "text-action-primary-foreground",
+      secondary: "text-action-secondary-foreground",
       outline: "text-text-secondary",
-      ghost: "text-text-secondary",
-      destructive: "text-grey-0",
+      ghost: "text-action-ghost-foreground",
+      destructive: "text-action-danger-foreground",
       cancel: "text-text-tertiary-inverse",
     },
   },

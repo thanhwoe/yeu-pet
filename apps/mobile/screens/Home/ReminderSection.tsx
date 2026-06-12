@@ -24,7 +24,7 @@ const ReminderItem = ({ data }: { data: IReminder }) => {
         <Body weight="bold" numberOfLines={1}>
           {data.title}
         </Body>
-        <Body variant="body3" className="text-text-tertiary-inverse opacity-80">
+        <Body variant="body3" className="text-text-muted">
           {dayjs(data.scheduledAt).fromNow()}
         </Body>
         {data.description && <Body variant="body2">{data.description}</Body>}

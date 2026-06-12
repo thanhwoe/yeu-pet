@@ -13,7 +13,9 @@ import Animated, {
 import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { darkColorTheme, lightColorTheme } from "@/theme/colors";
 import { nativeShadows } from "@/theme/shadows";
+import { getColors } from "@/theme/utils";
 import { cn } from "@/utils";
 import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import {
@@ -178,14 +180,17 @@ const iconProps = (
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
+  const themeColors = getColors(
+    colorScheme === "dark" ? darkColorTheme : lightColorTheme,
+  );
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: colorScheme === "dark" ? "#1F2937" : "#FFFFFF",
-          borderTopColor: colorScheme === "dark" ? "#374151" : "#E5E7EB",
+          backgroundColor: themeColors["--background-surface"],
+          borderTopColor: themeColors["--line-subtle"],
           borderTopWidth: 1,
           paddingTop: 20,
           paddingHorizontal: 10,

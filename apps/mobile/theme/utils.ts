@@ -52,14 +52,21 @@ export function generateThemeKeys(input: ThemeObject): GeneratedConfig {
 export function getColors(data: ThemeObject): ThemeObject {
   const result: ThemeObject = {};
 
-  for (const key in data) {
-    const value = data[key] as keyof typeof colorPalette;
-
-    if (colorPalette[value]) {
-      result[key] = `${colorPalette[value]}`;
-    } else {
-      result[key] = value;
+  const resolveColor = (value: string, seen = new Set<string>()): string => {
+    if (colorPalette[value as keyof typeof colorPalette]) {
+      return colorPalette[value as keyof typeof colorPalette];
     }
+
+    if (data[value] && !seen.has(value)) {
+      seen.add(value);
+      return resolveColor(data[value], seen);
+    }
+
+    return value;
+  };
+
+  for (const key in data) {
+    result[key] = resolveColor(data[key]);
   }
 
   return result;
