@@ -21,6 +21,61 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
+const emptyStringToUndefined = (value: unknown) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const trimmedValue = value.trim();
+
+  return trimmedValue ? trimmedValue : undefined;
+};
+
+const optionalPetTextField = (maxLength = 100) =>
+  z.preprocess(
+    emptyStringToUndefined,
+    z.string().max(maxLength).optional().nullable(),
+  );
+
+const optionalPetDate = z.preprocess(
+  (value) => {
+    if (!value) {
+      return null;
+    }
+
+    if (value instanceof Date) {
+      return value;
+    }
+
+    const parsedDate = new Date(value as string | number);
+
+    return Number.isNaN(parsedDate.getTime()) ? value : parsedDate;
+  },
+  z
+    .date({ message: ERROR_MESSAGE.FIELD_INVALID("Birthdate") })
+    .nullable()
+    .optional()
+    .refine((value) => !value || value.getTime() <= Date.now(), {
+      message: "Birthdate cannot be in the future",
+    }),
+);
+
+const petAvatarSchema = z
+  .object({
+    uri: z.string().min(1),
+    name: z.string().min(1),
+    type: z.string().min(1),
+    size: z.number().optional(),
+  })
+  .nullable()
+  .optional()
+  .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), {
+    message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
+  })
+  .refine((val) => !val || !val.size || val.size <= MAX_FILE_SIZE, {
+    message: "File size must be less than 5MB",
+  });
+
 export const signUpSchema = z.object({
   phone: z
     .string({
@@ -138,51 +193,32 @@ export const petInfoSchema = z.object({
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
     })
-    .nonempty({
-      message: ERROR_MESSAGE.FIELD_REQUIRED("Name"),
-    }),
+    .trim()
+    .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Name"))
+    .max(100, "Name must be at most 100 characters"),
   age: z
     .string()
     .optional()
-    .refine((val) => Number(val) >= 0 && Number(val) <= 100, {
-      message: ERROR_MESSAGE.FIELD_INVALID("Age"),
-    })
-    .nullable(),
-  birthdate: z.any().optional().nullable(),
-  breed: z.string().optional().nullable(),
-  weight: z.string().optional().nullable(),
-  color: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Color"),
-  }),
-  avatar: z
-    .object({
-      uri: z.string().min(1),
-      name: z.string().min(1),
-      type: z.string().min(1),
-      size: z.number().optional(),
-    })
     .nullable()
-    .refine((val) => val !== null, {
-      message: ERROR_MESSAGE.FIELD_REQUIRED("Avatar"),
-    })
-    .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), {
-      message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
-    })
-    .refine((val) => !val || !val.size || val.size <= MAX_FILE_SIZE, {
-      message: "File size must be less than 5MB",
+    .refine((val) => !val || (Number(val) >= 0 && Number(val) <= 100), {
+      message: ERROR_MESSAGE.FIELD_INVALID("Age"),
     }),
-  gender: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Gender"),
-  }),
-  species: z.string({
-    message: ERROR_MESSAGE.FIELD_REQUIRED("Species"),
-  }),
-  notes: z
-    .string()
-    .max(250, { message: "Notes must be at most 250 characters" })
-    .trim()
-    .optional()
-    .nullable(),
+  birthdate: optionalPetDate,
+  breed: optionalPetTextField(),
+  weight: optionalPetTextField(),
+  color: optionalPetTextField(),
+  avatar: petAvatarSchema,
+  gender: z.preprocess(
+    emptyStringToUndefined,
+    z.enum(["male", "female", "unknown"]).optional().nullable(),
+  ),
+  species: z.preprocess(
+    emptyStringToUndefined,
+    z.enum(["dog", "cat", "bird", "rabbit", "hamster", "other"])
+      .optional()
+      .nullable(),
+  ),
+  notes: optionalPetTextField(250),
 });
 
 export const budgetCategorySchema = z.object({
@@ -307,21 +343,55 @@ const sitterRateSchema = (label: string) =>
     })
     .transform((val) => parseLocalNumber(val));
 
+const optionalTrimmedString = (max: number, message: string) =>
+  z
+    .string()
+    .trim()
+    .max(max, message)
+    .optional()
+    .transform((value) => value || undefined);
+
 export const sitterProfileSchema = z.object({
+  displayName: optionalTrimmedString(
+    100,
+    "Display name must be at most 100 characters.",
+  ),
   address: z
     .string({
       message: ERROR_MESSAGE.FIELD_REQUIRED("Service area"),
     })
     .trim()
     .min(3, ERROR_MESSAGE.FIELD_INVALID("Service area")),
-  bio: z
-    .string()
-    .trim()
-    .max(200, "Bio must be at most 200 characters.")
-    .optional()
-    .transform((value) => value || undefined),
+  city: optionalTrimmedString(100, "City must be at most 100 characters."),
+  district: optionalTrimmedString(
+    100,
+    "District must be at most 100 characters.",
+  ),
+  ward: optionalTrimmedString(100, "Ward must be at most 100 characters."),
+  experience: optionalTrimmedString(
+    200,
+    "Experience must be at most 200 characters.",
+  ),
+  bio: optionalTrimmedString(200, "Bio must be at most 200 characters."),
+  serviceNotes: optionalTrimmedString(
+    400,
+    "Service notes must be at most 400 characters.",
+  ),
   hourlyRate: sitterRateSchema("Hourly rate"),
   dailyRate: sitterRateSchema("Daily rate"),
+  maxConcurrentBookings: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => (value ? Number(value) : undefined))
+    .refine(
+      (value) =>
+        value === undefined ||
+        (Number.isInteger(value) && value >= 1 && value <= 10),
+      {
+        message: "Max bookings must be between 1 and 10.",
+      },
+    ),
   isAvailable: z.boolean().optional(),
 });
 
@@ -339,6 +409,14 @@ export const sitterBookingSchema = z
     endTime: z.date({
       message: ERROR_MESSAGE.FIELD_REQUIRED("End time"),
     }),
+    ownerNotes: optionalTrimmedString(
+      500,
+      "Owner notes must be at most 500 characters.",
+    ),
+    careInstructions: optionalTrimmedString(
+      500,
+      "Care instructions must be at most 500 characters.",
+    ),
   })
   .refine((data) => data.startTime.getTime() > Date.now(), {
     message: "Start time must be in the future.",
@@ -415,7 +493,8 @@ export type IMedicalRecordForm = z.infer<typeof medicalRecordSchema>;
 export type ISitterProfileForm = z.output<typeof sitterProfileSchema>;
 export type ISitterProfileFormInput = z.input<typeof sitterProfileSchema>;
 
-export type ISitterBookingFormValues = z.infer<typeof sitterBookingSchema>;
+export type ISitterBookingFormInput = z.input<typeof sitterBookingSchema>;
+export type ISitterBookingFormValues = z.output<typeof sitterBookingSchema>;
 export type ISitterCancelForm = z.infer<typeof sitterCancelSchema>;
 export type ISitterMessageForm = z.infer<typeof sitterMessageSchema>;
 export type ISitterReviewFormValues = z.infer<typeof sitterReviewSchema>;

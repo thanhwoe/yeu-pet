@@ -5,12 +5,34 @@ import { parsePetWeight } from "@/utils/pet";
 import dayjs from "dayjs";
 import { APIs } from "./api-helper";
 
+const appendTextField = (
+  formData: FormData,
+  key: string,
+  value?: string | null,
+) => {
+  const trimmedValue = value?.trim();
+
+  if (trimmedValue) {
+    formData.append(key, trimmedValue);
+  }
+};
+
+const appendEditableTextField = (
+  formData: FormData,
+  key: string,
+  value?: string | null,
+) => {
+  formData.append(key, value?.trim() ?? "");
+};
+
 const appendWeightFields = (formData: FormData, weight?: string | null) => {
-  if (weight) {
-    formData.append("weight", weight);
+  const trimmedWeight = weight?.trim();
+
+  if (trimmedWeight) {
+    formData.append("weight", trimmedWeight);
   }
 
-  const parsedWeight = parsePetWeight(weight);
+  const parsedWeight = parsePetWeight(trimmedWeight);
 
   if (!parsedWeight) {
     return;
@@ -24,19 +46,15 @@ export const createPetMutation = (params: IPetInfoForm) => {
   const formData = new FormData();
 
   formData.append("name", params.name);
-  formData.append("color", params.color);
-  formData.append("gender", params.gender);
-  formData.append("species", params.species);
+  appendTextField(formData, "color", params.color);
+  appendTextField(formData, "gender", params.gender);
+  appendTextField(formData, "species", params.species);
   if (params.birthdate) {
     formData.append("birthdate", dayjs(params.birthdate).toISOString());
   }
-  if (params.breed) {
-    formData.append("breed", params.breed);
-  }
+  appendTextField(formData, "breed", params.breed);
   appendWeightFields(formData, params.weight);
-  if (params.notes) {
-    formData.append("notes", params.notes);
-  }
+  appendTextField(formData, "notes", params.notes);
 
   if (params.avatar) {
     formData.append("avatar", {
@@ -63,17 +81,17 @@ export const updatePetMutation = ({
   const formData = new FormData();
 
   formData.append("name", params.name);
-  formData.append("color", params.color);
-  formData.append("gender", params.gender);
-  formData.append("species", params.species);
+  appendEditableTextField(formData, "color", params.color);
+  appendTextField(formData, "gender", params.gender);
+  appendTextField(formData, "species", params.species);
 
-  formData.append("breed", params.breed ?? "");
+  appendEditableTextField(formData, "breed", params.breed);
   if (params.weight) {
     appendWeightFields(formData, params.weight);
   } else {
     formData.append("weight", "");
   }
-  formData.append("notes", params.notes ?? "");
+  appendEditableTextField(formData, "notes", params.notes);
 
   if (params.birthdate) {
     formData.append("birthdate", dayjs(params.birthdate).toISOString());

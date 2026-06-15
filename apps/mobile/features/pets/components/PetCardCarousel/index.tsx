@@ -33,7 +33,9 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
     queryFn: getListPetQuery,
   });
 
-  const allCards = [...(petData?.data ?? []), { id: "add" } as any];
+  const pets = petData?.data ?? [];
+  const currentPetCount = pets.length;
+  const allCards = [...pets, { id: "add" } as any];
 
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollX = useSharedValue(0);
@@ -88,7 +90,11 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
       {isSingleCard ? (
         <View className="items-center justify-center">
           {allCards[0].id === "add" ? (
-            <AddCard index={0} scrollX={staticScrollX} />
+            <AddCard
+              index={0}
+              scrollX={staticScrollX}
+              currentPetCount={currentPetCount}
+            />
           ) : (
             <DetailCard
               pet={allCards[0]}
@@ -121,7 +127,11 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
               }}
             >
               {item.id === "add" ? (
-                <AddCard index={idx} scrollX={scrollX} />
+                <AddCard
+                  index={idx}
+                  scrollX={scrollX}
+                  currentPetCount={currentPetCount}
+                />
               ) : (
                 <DetailCard
                   pet={item}

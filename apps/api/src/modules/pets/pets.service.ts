@@ -87,6 +87,7 @@ export class PetsService {
     avatarFile?: Express.Multer.File,
   ) {
     const pet = await this.assertPetOwner(user, id);
+    const shouldClearWeightMeta = updatePetDto.weight === '';
 
     if (avatarFile) {
       await this.fileUploadService.addUploadJob({
@@ -114,8 +115,8 @@ export class PetsService {
       notes: updatePetDto.notes,
       species: updatePetDto.species,
       weight: updatePetDto.weight,
-      weight_value: updatePetDto.weightValue,
-      weight_unit: updatePetDto.weightUnit,
+      weight_value: shouldClearWeightMeta ? null : updatePetDto.weightValue,
+      weight_unit: shouldClearWeightMeta ? null : updatePetDto.weightUnit,
     });
   }
 

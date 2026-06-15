@@ -37,10 +37,17 @@ export interface IPetSitter {
 }
 
 export interface IPetSitterForm {
+  displayName?: string;
   bio?: string;
   address: string;
+  city?: string;
+  district?: string;
+  ward?: string;
+  experience?: string;
+  serviceNotes?: string;
   hourlyRate: string | number;
   dailyRate: string | number;
+  maxConcurrentBookings?: string | number;
   isAvailable?: boolean;
 }
 

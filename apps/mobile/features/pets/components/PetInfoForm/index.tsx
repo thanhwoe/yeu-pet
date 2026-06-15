@@ -13,7 +13,7 @@ import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEve
 import { date } from "@/utils";
 import { calculateAnimalAge } from "@/utils/pet";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
@@ -37,8 +37,8 @@ export const PetInfoForm = ({
   const {
     control,
     handleSubmit,
+    reset,
     watch,
-    formState: { isDirty },
   } = useForm<IPetInfoFormInput, unknown, IPetInfoForm>({
     resolver: zodResolver(petInfoSchema),
     mode: "onBlur",
@@ -47,8 +47,20 @@ export const PetInfoForm = ({
   });
   const [birthdate, species] = watch(["birthdate", "species"]);
 
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
+
   const age = useMemo(() => {
-    const result = calculateAnimalAge(birthdate, species);
+    const birthdateValue =
+      birthdate instanceof Date || typeof birthdate === "string"
+        ? birthdate
+        : null;
+    const speciesValue = typeof species === "string" ? species : null;
+    const result = calculateAnimalAge(birthdateValue, speciesValue);
+
     if (!result) {
       return "";
     }
@@ -133,6 +145,7 @@ export const PetInfoForm = ({
         label="Birthdate"
         placeholder="Select date"
         mode="date"
+        maximumDate={new Date()}
         format={(val) => date(val).format("LL")}
         supportText={age}
       />
@@ -147,7 +160,7 @@ export const PetInfoForm = ({
 
       <Button
         wrapperClassName="mt-12"
-        disabled={!isDirty || disabled}
+        disabled={disabled || isSubmitting}
         onPress={() => handleSubmit(onSubmit)()}
         loading={isSubmitting}
       >

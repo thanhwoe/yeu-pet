@@ -13,6 +13,19 @@ export function IsDecimal(validationOptions?: ValidationOptions) {
       if (value instanceof Decimal) return value;
       if (value === null || value === undefined) return value;
       if (typeof value === 'number') return new Decimal(value);
+      if (typeof value === 'string') {
+        const trimmedValue = value.trim();
+
+        if (!trimmedValue) {
+          return undefined;
+        }
+
+        try {
+          return new Decimal(trimmedValue);
+        } catch {
+          return value;
+        }
+      }
       return value;
     }),
     // @ts-expect-error ----

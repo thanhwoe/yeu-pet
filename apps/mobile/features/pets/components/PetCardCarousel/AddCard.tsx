@@ -1,12 +1,13 @@
-import { PET_KEY } from "@/constants/query-keys";
-import { IPetInfoForm } from "@/constants/validation";
 import { PaywallNotice } from "@/components/PaywallNotice";
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Body } from "@/components/ui/Typography";
+import { PET_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
+import { IPetInfoForm } from "@/constants/validation";
+import { PetInfoForm } from "@/features/pets/components/PetInfoForm";
 import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { IPagination, IPet } from "@/interfaces";
+import { IPagination, IPet, SubscriptionEntitlements } from "@/interfaces";
 import { createPetMutation } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "phosphor-react-native";
@@ -18,7 +19,6 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { PetInfoForm } from "@/features/pets/components/PetInfoForm";
 import { CARD_HEIGHT, CARD_WIDTH, SCALE_CENTER, SCALE_SIDE } from "./utils";
 
 const Plus = withIconClassName(PlusIcon);
@@ -27,14 +27,16 @@ const CardWrapper = Animated.createAnimatedComponent(TouchableOpacity);
 export const AddCard = ({
   index,
   scrollX,
+  currentPetCount,
 }: {
   index: number;
   scrollX: SharedValue<number>;
+  currentPetCount: number;
 }) => {
   const [showForm, setShowForm] = useState(false);
   const { entitlements, getLimitState, isUpgrading, upgrade } =
     useEntitlements();
-  const petLimit = getLimitState("maxPets");
+  const petLimit = getLimitState("maxPets", currentPetCount);
 
   const zoomStyle = useAnimatedStyle(() => {
     const inputRange = [
@@ -77,9 +79,28 @@ export const AddCard = ({
 
         return {
           ...old,
+          meta: {
+            ...old.meta,
+            total: old.meta.total + 1,
+          },
           data,
         };
       });
+      queryClient.setQueryData(
+        SUBSCRIPTION_KEY.entitlements(),
+        (old: SubscriptionEntitlements | undefined) =>
+          old
+            ? {
+                ...old,
+                usage: {
+                  ...old.usage,
+                  pets: old.usage.pets + 1,
+                },
+              }
+            : old,
+      );
+      queryClient.invalidateQueries({ queryKey: PET_KEY.list() });
+      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
       setShowForm(false);
     },
   });
@@ -92,7 +113,7 @@ export const AddCard = ({
       return;
     }
 
-    mutateAsync(data);
+    await mutateAsync(data);
   };
 
   return (
@@ -149,7 +170,7 @@ export const AddCard = ({
           {!petLimit.allowed && (
             <PaywallNotice
               title="Pet limit reached"
-              description={`You have ${entitlements?.usage.pets ?? petLimit.usage} of ${petLimit.limit} pets. Upgrade to Premium to add more pets.`}
+              description={`You have ${petLimit.usage ?? entitlements?.usage.pets ?? currentPetCount} of ${petLimit.limit} pets. Upgrade to Premium to add more pets.`}
               loading={isUpgrading}
               onAction={() => upgrade()}
             />

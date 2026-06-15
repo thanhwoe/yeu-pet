@@ -18,8 +18,8 @@ const HUMAN_YEAR_RATIO: Record<string, number> = {
 };
 
 export function calculateAnimalAge(
-  birthdate: string | Date,
-  animalType: string,
+  birthdate?: string | Date | null,
+  animalType?: string | null,
 ) {
   const now = dayjs();
   const birth = dayjs(birthdate);
@@ -33,9 +33,10 @@ export function calculateAnimalAge(
   const days = now.diff(afterMonths, "day");
   const totalMonths = now.diff(birth, "month");
 
+  const animalTypeKey = animalType ?? "other";
   const ratio =
-    animalType in HUMAN_YEAR_RATIO
-      ? HUMAN_YEAR_RATIO[animalType]
+    animalTypeKey in HUMAN_YEAR_RATIO
+      ? HUMAN_YEAR_RATIO[animalTypeKey]
       : HUMAN_YEAR_RATIO.other;
   const humanYears = Math.round((totalMonths / 12) * ratio);
 

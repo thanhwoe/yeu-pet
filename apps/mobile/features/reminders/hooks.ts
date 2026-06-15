@@ -1,7 +1,7 @@
 import { Toast } from "@/components/Toast";
 import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
-import { IReminder, ReminderStatus, ReminderType } from "@/interfaces";
+import { IReminder } from "@/interfaces";
 import { useReminderUiStore } from "@/features/reminders/store";
 import {
   cancelReminderMutation,
