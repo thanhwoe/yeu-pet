@@ -351,6 +351,13 @@ const optionalTrimmedString = (max: number, message: string) =>
     .optional()
     .transform((value) => value || undefined);
 
+const startOfLocalDayTime = (date: Date) => {
+  const localDate = new Date(date);
+  localDate.setHours(0, 0, 0, 0);
+
+  return localDate.getTime();
+};
+
 export const sitterProfileSchema = z.object({
   displayName: optionalTrimmedString(
     100,
@@ -418,14 +425,40 @@ export const sitterBookingSchema = z
       "Care instructions must be at most 500 characters.",
     ),
   })
-  .refine((data) => data.startTime.getTime() > Date.now(), {
-    message: "Start time must be in the future.",
-    path: ["startTime"],
-  })
-  .refine((data) => data.endTime.getTime() > data.startTime.getTime(), {
-    message: "End time must be after start time.",
-    path: ["endTime"],
-  });
+  .refine(
+    (data) =>
+      data.type !== "hourly" || data.startTime.getTime() > Date.now(),
+    {
+      message: "Start time must be in the future.",
+      path: ["startTime"],
+    },
+  )
+  .refine(
+    (data) =>
+      data.type !== "daily" ||
+      startOfLocalDayTime(data.startTime) >
+        startOfLocalDayTime(new Date()),
+    {
+      message: "Start date must be tomorrow or later for daily care.",
+      path: ["startTime"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.type === "daily") {
+        return (
+          startOfLocalDayTime(data.endTime) >=
+          startOfLocalDayTime(data.startTime)
+        );
+      }
+
+      return data.endTime.getTime() > data.startTime.getTime();
+    },
+    {
+      message: "End must be after the start.",
+      path: ["endTime"],
+    },
+  );
 
 export const sitterCancelSchema = z.object({
   reason: z.string().trim().max(240, "Reason must be at most 240 characters.").optional(),

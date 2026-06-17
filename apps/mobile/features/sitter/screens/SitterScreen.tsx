@@ -99,7 +99,6 @@ export const SitterScreen = () => {
     isCreatingReview,
   } = useSitters(filters, bookingStatus);
 
-  const activeBookings = bookingRoleTab === 0 ? ownerBookings : sitterBookings;
   const activeBookingRole = bookingRoleTab === 0 ? "owner" : "sitter";
   const hasActiveFilters = hasSitterFilters(filters);
   const isActiveBookingsLoading =
@@ -109,6 +108,38 @@ export const SitterScreen = () => {
   const canRequestSelectedSitterCare =
     Boolean(selectedSitter?.isAvailable) &&
     selectedSitter?.accountId !== currentUser?.id;
+
+  const petById = useMemo(
+    () => new Map(pets.map((pet) => [pet.id, pet])),
+    [pets],
+  );
+
+  const sitterById = useMemo(() => {
+    const mappedSitters = new Map(sitters.map((sitter) => [sitter.id, sitter]));
+
+    if (mySitterProfile) {
+      mappedSitters.set(mySitterProfile.id, mySitterProfile);
+    }
+
+    return mappedSitters;
+  }, [mySitterProfile, sitters]);
+
+  const hydrateBooking = useCallback(
+    (booking: ISitterBooking): ISitterBooking => ({
+      ...booking,
+      pet: booking.pet ?? petById.get(booking.petId),
+      sitter: booking.sitter ?? sitterById.get(booking.sitterId),
+    }),
+    [petById, sitterById],
+  );
+
+  const activeBookings = useMemo(
+    () =>
+      (bookingRoleTab === 0 ? ownerBookings : sitterBookings).map(
+        hydrateBooking,
+      ),
+    [bookingRoleTab, hydrateBooking, ownerBookings, sitterBookings],
+  );
 
   const filterSummary = useMemo(
     () =>
@@ -181,6 +212,21 @@ export const SitterScreen = () => {
       content: data.content,
     });
   };
+
+  const openBookingMessages = useCallback((booking: ISitterBooking) => {
+    setSelectedBooking(null);
+    setBookingForMessages(booking);
+  }, []);
+
+  const openCancelBooking = useCallback((booking: ISitterBooking) => {
+    setSelectedBooking(null);
+    setBookingForCancel(booking);
+  }, []);
+
+  const openBookingReview = useCallback((booking: ISitterBooking) => {
+    setSelectedBooking(null);
+    setBookingForReview(booking);
+  }, []);
 
   return (
     <ScreenContainer>
@@ -297,7 +343,7 @@ export const SitterScreen = () => {
           <FlashList
             data={activeBookings}
             keyExtractor={(item) => item.id}
-            contentContainerClassName="gap-16 pb-safe"
+            contentContainerClassName="pb-safe"
             estimatedItemSize={154}
             showsVerticalScrollIndicator={false}
             renderItem={renderBooking}
@@ -370,8 +416,6 @@ export const SitterScreen = () => {
         onDismiss={() => setSelectedSitter(null)}
         titleElement={<Body weight="semiBold">Sitter profile</Body>}
         useScrollView
-        enableDynamicSizing={false}
-        snapPoints={["88%"]}
       >
         {selectedSitter ? (
           <SitterDetail
@@ -393,8 +437,6 @@ export const SitterScreen = () => {
         onDismiss={() => setBookingSitter(null)}
         titleElement={<Body weight="semiBold">Request care</Body>}
         useScrollView
-        enableDynamicSizing={false}
-        snapPoints={["88%"]}
       >
         {bookingSitter ? (
           <BookingRequestForm
@@ -415,8 +457,6 @@ export const SitterScreen = () => {
           </Body>
         }
         useScrollView
-        enableDynamicSizing={false}
-        snapPoints={["90%"]}
       >
         <SitterProfileForm
           defaultValues={mySitterProfile}
@@ -439,9 +479,9 @@ export const SitterScreen = () => {
             booking={selectedBooking}
             role={activeBookingRole}
             loading={isMutatingBooking}
-            onOpenMessages={setBookingForMessages}
-            onCancel={setBookingForCancel}
-            onReview={setBookingForReview}
+            onOpenMessages={openBookingMessages}
+            onCancel={openCancelBooking}
+            onReview={openBookingReview}
             onAccept={(booking) => {
               void acceptBooking(booking.id).then(() =>
                 setSelectedBooking(null),

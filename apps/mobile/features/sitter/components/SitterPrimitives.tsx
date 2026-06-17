@@ -89,8 +89,10 @@ export const InfoRow = ({
 
 export const ExternalPaymentNotice = ({
   compact = false,
+  note,
 }: {
   compact?: boolean;
+  note?: string | null;
 }) => (
   <View className="flex-row gap-10 rounded-18 border border-line-subtle bg-background-surface-muted px-14 py-12">
     <CurrencyCircleDollar
@@ -102,10 +104,10 @@ export const ExternalPaymentNotice = ({
       <Body variant="body3" weight="semiBold">
         Payment arranged directly
       </Body>
-      {!compact ? (
+      {note || !compact ? (
         <Body variant="body4" className="mt-2 text-text-muted">
-          YeuPet connects owners and sitters in this phase. Final payment and
-          care arrangements happen between both sides.
+          {note ??
+            "YeuPet connects owners and sitters in this phase. Final payment and care arrangements happen between both sides."}
         </Body>
       ) : null}
     </View>

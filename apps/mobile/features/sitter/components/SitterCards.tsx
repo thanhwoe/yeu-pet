@@ -12,8 +12,11 @@ import { memo } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { BOOKING_STATUS_FILTERS } from "../constants";
 import {
+  formatBookingHold,
   formatDateRange,
   formatRate,
+  getBookingPetName,
+  getBookingServiceLabel,
   getBookingTitle,
   getLocationLine,
   getPetAvatar,
@@ -127,7 +130,7 @@ export const BookingCard = ({
     accessibilityRole="button"
     accessibilityLabel={`Open ${getBookingTitle(booking, role)} booking`}
     onPress={() => onPress(booking)}
-    className="rounded-24 border border-line-subtle bg-background-surface px-16 py-16"
+    className="rounded-24 border border-line-subtle mb-8 bg-background-surface px-16 py-16"
   >
     <View className="flex-row items-start gap-12">
       <Avatar size="medium" source={getPetAvatar(booking.pet)} />
@@ -138,8 +141,7 @@ export const BookingCard = ({
               {getBookingTitle(booking, role)}
             </Heading>
             <Body variant="body4" className="text-text-muted">
-              {booking.pet?.name ?? "Pet"} ·{" "}
-              {booking.type === "hourly" ? "Hourly care" : "Daily care"}
+              {getBookingPetName(booking)} · {getBookingServiceLabel(booking)}
             </Body>
           </View>
           <StatusBadge status={booking.status} />
@@ -159,6 +161,11 @@ export const BookingCard = ({
               · External payment
             </Body>
           </View>
+          {formatBookingHold(booking) ? (
+            <Body variant="body5" className="text-text-muted">
+              {formatBookingHold(booking)}
+            </Body>
+          ) : null}
         </View>
       </View>
     </View>

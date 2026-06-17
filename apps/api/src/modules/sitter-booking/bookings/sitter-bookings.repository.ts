@@ -19,6 +19,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
   create(data: sitter_bookingsCreateInput) {
     return this.prisma.sitter_bookings.create({
       data,
+      include: this.include(),
     });
   }
   createInTx(
@@ -27,6 +28,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
   ) {
     return tx.sitter_bookings.create({
       data,
+      include: this.include(),
     });
   }
   update(id: string, data: sitter_bookingsUpdateInput) {
@@ -49,6 +51,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         cancelled_by: cancelledBy,
         updated_at: new Date(),
       },
+      include: this.include(),
     });
   }
 
@@ -58,6 +61,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         account_id: accountId,
         idempotency_key: idempotencyKey,
       },
+      include: this.include(),
     });
   }
 
@@ -71,6 +75,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         account_id: accountId,
         idempotency_key: idempotencyKey,
       },
+      include: this.include(),
     });
   }
 
@@ -154,6 +159,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         expires_at: null,
         updated_at: now,
       },
+      include: this.include(),
     });
   }
 
@@ -181,6 +187,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         skip: params?.skip,
         take: params?.take,
         orderBy: { created_at: 'desc' },
+        include: this.include(),
       }),
       this.prisma.sitter_bookings.count({ where }),
     ]);
@@ -201,6 +208,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         skip: params?.skip,
         take: params?.take,
         orderBy: { created_at: 'desc' },
+        include: this.include(),
       }),
       this.prisma.sitter_bookings.count({ where }),
     ]);
@@ -270,9 +278,54 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
 
   private include() {
     return {
+      accounts: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          avatar_url: true,
+        },
+      },
+      pets: {
+        select: {
+          id: true,
+          name: true,
+          age: true,
+          birthdate: true,
+          breed: true,
+          weight: true,
+          weight_value: true,
+          weight_unit: true,
+          color: true,
+          avatar_url: true,
+          gender: true,
+          species: true,
+          notes: true,
+        },
+      },
       pet_sitters: {
         select: {
+          id: true,
           account_id: true,
+          display_name: true,
+          bio: true,
+          address: true,
+          city: true,
+          district: true,
+          ward: true,
+          experience: true,
+          service_notes: true,
+          hourly_rate: true,
+          daily_rate: true,
+          max_concurrent_bookings: true,
+          active_bookings_count: true,
+          completed_bookings_count: true,
+          avg_rating: true,
+          total_reviews: true,
+          is_available: true,
+          is_verified: true,
+          created_at: true,
+          updated_at: true,
           accounts: {
             select: {
               first_name: true,

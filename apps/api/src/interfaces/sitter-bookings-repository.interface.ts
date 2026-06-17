@@ -1,5 +1,8 @@
 import {
   PrismaClient,
+  accounts,
+  pet_sitters,
+  pets,
   sitter_bookings,
   sitter_bookings_status,
 } from '@app/generated/prisma/client';
@@ -13,8 +16,45 @@ import { ITXClientDenyList } from '@prisma/client/runtime/client';
 export const ISitterBookingsRepository = Symbol('ISitterBookingsRepository');
 
 export interface SitterInformation {
+  accounts: Pick<accounts, 'id' | 'first_name' | 'last_name' | 'avatar_url'>;
+  pets: Pick<
+    pets,
+    | 'id'
+    | 'name'
+    | 'age'
+    | 'birthdate'
+    | 'breed'
+    | 'weight'
+    | 'weight_value'
+    | 'weight_unit'
+    | 'color'
+    | 'avatar_url'
+    | 'gender'
+    | 'species'
+    | 'notes'
+  >;
   pet_sitters: {
+    id: pet_sitters['id'];
     account_id: string;
+    display_name: string | null;
+    bio: string | null;
+    address: string;
+    city: string | null;
+    district: string | null;
+    ward: string | null;
+    experience: string | null;
+    service_notes: string | null;
+    hourly_rate: pet_sitters['hourly_rate'];
+    daily_rate: pet_sitters['daily_rate'];
+    max_concurrent_bookings: number;
+    active_bookings_count: number;
+    completed_bookings_count: number;
+    avg_rating: pet_sitters['avg_rating'];
+    total_reviews: number;
+    is_available: boolean;
+    is_verified: boolean;
+    created_at: Date | null;
+    updated_at: Date | null;
     accounts: {
       first_name: string | null;
       last_name: string | null;
@@ -22,6 +62,8 @@ export interface SitterInformation {
     };
   };
 }
+
+export type SitterBookingWithRelations = sitter_bookings & SitterInformation;
 
 export type ExpiredSitterBooking = sitter_bookings & {
   accounts: {
@@ -41,42 +83,42 @@ export type ExpiredSitterBooking = sitter_bookings & {
 };
 
 export interface ISitterBookingsRepository {
-  create(data: sitter_bookingsCreateInput): Promise<sitter_bookings>;
+  create(data: sitter_bookingsCreateInput): Promise<SitterBookingWithRelations>;
   createInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     data: sitter_bookingsCreateInput,
-  ): Promise<sitter_bookings>;
+  ): Promise<SitterBookingWithRelations>;
   update(
     id: string,
     data: sitter_bookingsUpdateInput,
-  ): Promise<sitter_bookings & SitterInformation>;
+  ): Promise<SitterBookingWithRelations>;
   cancel(
     id: string,
     cancelledBy: string,
     reason?: string,
-  ): Promise<sitter_bookings>;
-  findById(id: string): Promise<(sitter_bookings & SitterInformation) | null>;
+  ): Promise<SitterBookingWithRelations>;
+  findById(id: string): Promise<SitterBookingWithRelations | null>;
   findByIdempotencyKey(
     accountId: string,
     idempotencyKey: string,
-  ): Promise<sitter_bookings | null>;
+  ): Promise<SitterBookingWithRelations | null>;
   findByIdempotencyKeyInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     accountId: string,
     idempotencyKey: string,
-  ): Promise<sitter_bookings | null>;
+  ): Promise<SitterBookingWithRelations | null>;
   findAllByUser(params?: {
     skip?: number;
     take?: number;
     account_id: string;
     status?: sitter_bookings_status;
-  }): Promise<[sitter_bookings[], number]>;
+  }): Promise<[SitterBookingWithRelations[], number]>;
   findAllBySitter(params?: {
     skip?: number;
     take?: number;
     sitter_id: string;
     status?: sitter_bookings_status;
-  }): Promise<[sitter_bookings[], number]>;
+  }): Promise<[SitterBookingWithRelations[], number]>;
   findOverlappingInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     sitter_id: string,
@@ -95,7 +137,7 @@ export interface ISitterBookingsRepository {
   confirmInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     id: string,
-  ): Promise<sitter_bookings>;
+  ): Promise<SitterBookingWithRelations>;
   runSerializable<T>(
     fn: (tx: Omit<PrismaClient, ITXClientDenyList>) => Promise<T>,
   ): Promise<T>;

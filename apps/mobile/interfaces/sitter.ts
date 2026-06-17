@@ -11,6 +11,13 @@ export type SitterBookingStatus =
 
 export type SitterBookingType = "hourly" | "daily";
 
+export interface ISitterBookingParty {
+  id: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  avatarUrl?: string | null;
+}
+
 export interface IPetSitter {
   id: string;
   accountId: string;
@@ -65,6 +72,7 @@ export interface ISitterBooking {
   ownerNotes?: string | null;
   sitterNotes?: string | null;
   careInstructions?: string | null;
+  paymentNote?: string | null;
   payment?: {
     inApp?: boolean;
     note?: string | null;
@@ -78,6 +86,7 @@ export interface ISitterBooking {
   updatedAt: string | null;
   pet?: IPet;
   sitter?: IPetSitter;
+  owner?: ISitterBookingParty | null;
 }
 
 export interface ISitterBookingForm {

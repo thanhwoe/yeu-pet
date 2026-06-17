@@ -12,6 +12,7 @@ import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import {
   ExpiredSitterBooking,
   ISitterBookingsRepository,
+  SitterBookingWithRelations,
 } from '@app/interfaces/sitter-bookings-repository.interface';
 import { paginate } from '@app/utils/pagination';
 import {
@@ -42,10 +43,63 @@ const BOOKING_HOLD_MINUTES = 15;
 const EXTERNAL_PAYMENT_NOTE =
   'Payment is handled outside YeuPet in Phase 1. Coordinate directly with the sitter.';
 
-type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> = T & {
+type SitterBookingRelationSource = sitter_bookings &
+  Partial<SitterBookingWithRelations>;
+
+type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> =
+  Omit<T, 'accounts' | 'pets' | 'pet_sitters'> & {
   payment: {
     inApp: false;
     note: string;
+  };
+  owner?: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    avatarUrl: string | null;
+  };
+  pet?: {
+    id: string;
+    name: string;
+    age: number | null;
+    birthdate: Date | null;
+    breed: string | null;
+    weight: string | null;
+    weightValue: Decimal | null;
+    weightUnit: string | null;
+    color: string | null;
+    avatarUrl: string | null;
+    gender: string | null;
+    species: string | null;
+    notes: string | null;
+  };
+  sitter?: {
+    id: string;
+    accountId: string;
+    displayName: string | null;
+    bio: string | null;
+    address: string;
+    city: string | null;
+    district: string | null;
+    ward: string | null;
+    experience: string | null;
+    serviceNotes: string | null;
+    hourlyRate: Decimal;
+    dailyRate: Decimal;
+    maxConcurrentBookings: number;
+    activeBookingsCount: number;
+    completedBookingsCount: number;
+    avgRating: Decimal;
+    totalReviews: number;
+    isAvailable: boolean;
+    isVerified: boolean;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    account: {
+      firstName: string | null;
+      lastName: string | null;
+      avatarUrl: string | null;
+    };
   };
 };
 
@@ -219,7 +273,7 @@ export class SitterBookingsService {
     accountId: string,
     idempotencyKey: string,
     error: unknown,
-  ): Promise<{ booking: sitter_bookings; created: false }> {
+  ): Promise<{ booking: SitterBookingWithRelations; created: false }> {
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === 'P2002'
@@ -571,14 +625,76 @@ export class SitterBookingsService {
   }
 
   private toBookingResponse<T extends sitter_bookings>(
-    booking: T,
+    booking: T | SitterBookingWithRelations,
   ): SitterBookingResponse<T> {
+    const {
+      accounts: owner,
+      pet_sitters: sitter,
+      pets: pet,
+      ...baseBooking
+    } = booking as SitterBookingRelationSource;
+
     return {
-      ...booking,
+      ...baseBooking,
       payment: {
-        inApp: false,
-        note: booking.payment_note ?? EXTERNAL_PAYMENT_NOTE,
+        inApp: false as const,
+        note: baseBooking.payment_note ?? EXTERNAL_PAYMENT_NOTE,
       },
-    };
+      owner: owner
+        ? {
+            id: owner.id,
+            firstName: owner.first_name,
+            lastName: owner.last_name,
+            avatarUrl: owner.avatar_url,
+          }
+        : undefined,
+      pet: pet
+        ? {
+            id: pet.id,
+            name: pet.name,
+            age: pet.age,
+            birthdate: pet.birthdate,
+            breed: pet.breed,
+            weight: pet.weight,
+            weightValue: pet.weight_value,
+            weightUnit: pet.weight_unit,
+            color: pet.color,
+            avatarUrl: pet.avatar_url,
+            gender: pet.gender,
+            species: pet.species,
+            notes: pet.notes,
+          }
+        : undefined,
+      sitter: sitter
+        ? {
+            id: sitter.id,
+            accountId: sitter.account_id,
+            displayName: sitter.display_name,
+            bio: sitter.bio,
+            address: sitter.address,
+            city: sitter.city,
+            district: sitter.district,
+            ward: sitter.ward,
+            experience: sitter.experience,
+            serviceNotes: sitter.service_notes,
+            hourlyRate: sitter.hourly_rate,
+            dailyRate: sitter.daily_rate,
+            maxConcurrentBookings: sitter.max_concurrent_bookings,
+            activeBookingsCount: sitter.active_bookings_count,
+            completedBookingsCount: sitter.completed_bookings_count,
+            avgRating: sitter.avg_rating,
+            totalReviews: sitter.total_reviews,
+            isAvailable: sitter.is_available,
+            isVerified: sitter.is_verified,
+            createdAt: sitter.created_at,
+            updatedAt: sitter.updated_at,
+            account: {
+              firstName: sitter.accounts.first_name,
+              lastName: sitter.accounts.last_name,
+              avatarUrl: sitter.accounts.avatar_url,
+            },
+          }
+        : undefined,
+    } as SitterBookingResponse<T>;
   }
 }

@@ -67,6 +67,59 @@ const booking = {
   expires_at: new Date('2026-06-02T10:15:00.000Z'),
 };
 
+const bookingWithRelations = {
+  ...booking,
+  accounts: {
+    id: accountId,
+    first_name: 'Owner',
+    last_name: 'One',
+    avatar_url: 'https://example.com/owner.png',
+  },
+  pets: {
+    id: petId,
+    name: 'Mochi',
+    age: 3,
+    birthdate: null,
+    breed: 'Shiba',
+    weight: '8 kg',
+    weight_value: new Decimal(8),
+    weight_unit: 'kg',
+    color: null,
+    avatar_url: 'https://example.com/mochi.png',
+    gender: 'unknown',
+    species: 'dog',
+    notes: null,
+  },
+  pet_sitters: {
+    id: sitterId,
+    account_id: sitterAccountId,
+    display_name: 'Sitter One',
+    bio: 'Pet care',
+    address: 'District 1',
+    city: 'Ho Chi Minh City',
+    district: 'District 1',
+    ward: null,
+    experience: null,
+    service_notes: null,
+    hourly_rate: new Decimal(20),
+    daily_rate: new Decimal(100),
+    max_concurrent_bookings: 2,
+    active_bookings_count: 0,
+    completed_bookings_count: 4,
+    avg_rating: new Decimal(4.8),
+    total_reviews: 5,
+    is_available: true,
+    is_verified: false,
+    created_at: null,
+    updated_at: null,
+    accounts: {
+      first_name: 'Sitter',
+      last_name: 'One',
+      avatar_url: 'https://example.com/sitter.png',
+    },
+  },
+};
+
 const expiredBooking = {
   ...booking,
   status: sitter_bookings_status.cancelled,
@@ -313,24 +366,44 @@ describe('SitterBookingsService', () => {
 
   it('lists current user bookings by owner or sitter role', async () => {
     sitterBookingsRepository.findAllByUser.mockResolvedValue([
-      [booking as never],
+      [bookingWithRelations as never],
       1,
     ]);
     sitterBookingsRepository.findAllBySitter.mockResolvedValue([
-      [booking as never],
+      [bookingWithRelations as never],
       1,
     ]);
     petSittersRepository.findByUser.mockResolvedValue({
       id: sitterId,
     } as never);
 
-    await service.findAllMe(user, { page: 1, limit: 10 }, 'owner');
+    const ownerResult = await service.findAllMe(
+      user,
+      { page: 1, limit: 10 },
+      'owner',
+    );
     await service.findAllMe(
       { id: sitterAccountId } as accounts,
       { page: 1, limit: 10 },
       'sitter',
     );
 
+    expect(ownerResult.data[0]).toMatchObject({
+      owner: {
+        id: accountId,
+        firstName: 'Owner',
+        lastName: 'One',
+      },
+      pet: {
+        id: petId,
+        name: 'Mochi',
+      },
+      sitter: {
+        id: sitterId,
+        accountId: sitterAccountId,
+        displayName: 'Sitter One',
+      },
+    });
     expect(sitterBookingsRepository.findAllByUser.mock.calls).toEqual([
       [
         expect.objectContaining({

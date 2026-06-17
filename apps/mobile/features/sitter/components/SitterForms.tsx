@@ -21,12 +21,84 @@ import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
 import { cn } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useController, useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { RATING_OPTIONS, SERVICE_TYPE_OPTIONS } from "../constants";
-import { createIdempotencyKey, getLocationLine, getSitterName } from "../utils";
-import { ExternalPaymentNotice, SectionLabel } from "./SitterPrimitives";
+import {
+  createIdempotencyKey,
+  formatRate,
+  getLocationLine,
+  getSitterName,
+} from "../utils";
+import { SectionLabel } from "./SitterPrimitives";
+
+const HOUR_MS = 1000 * 60 * 60;
+const DAY_MS = HOUR_MS * 24;
+
+const getDefaultHourlyStart = () =>
+  dayjs().add(1, "hour").second(0).millisecond(0);
+
+const getDefaultHourlyEnd = () => getDefaultHourlyStart().add(1, "hour");
+
+const getDefaultDailyStart = () => dayjs().add(1, "day").startOf("day");
+
+const getDefaultDailyEnd = () => getDefaultDailyStart().endOf("day");
+
+const getNumberRate = (value: string | number) => {
+  const rate = Number(value || 0);
+
+  return Number.isFinite(rate) ? rate : 0;
+};
+
+const getBookingEstimate = ({
+  dailyRate,
+  endTime,
+  hourlyRate,
+  startTime,
+  type,
+}: {
+  dailyRate: string | number;
+  endTime?: Date;
+  hourlyRate: string | number;
+  startTime?: Date;
+  type?: "hourly" | "daily";
+}) => {
+  if (!type || !startTime || !endTime) {
+    return null;
+  }
+
+  const start =
+    type === "daily" ? dayjs(startTime).startOf("day") : dayjs(startTime);
+  const end = type === "daily" ? dayjs(endTime).endOf("day") : dayjs(endTime);
+  const diffMs = end.diff(start);
+
+  if (diffMs <= 0) {
+    return null;
+  }
+
+  if (type === "daily") {
+    const days = Math.ceil(diffMs / DAY_MS);
+    const rate = getNumberRate(dailyRate);
+
+    return {
+      total: rate * days,
+      summary: `${days} day${days > 1 ? "s" : ""} · ${formatRate(rate)} / day`,
+      range: `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`,
+    };
+  }
+
+  const hours = diffMs / HOUR_MS;
+  const normalizedHours = Number(hours.toFixed(2));
+  const rate = getNumberRate(hourlyRate);
+  const hourLabel = `hour${normalizedHours > 1 ? "s" : ""}`;
+
+  return {
+    total: rate * normalizedHours,
+    summary: `${normalizedHours} ${hourLabel} · ${formatRate(rate)} / hour`,
+    range: `${start.format("DD MMM, HH:mm")} - ${end.format("HH:mm")}`,
+  };
+};
 
 export const BookingRequestForm = ({
   sitter,
@@ -44,7 +116,7 @@ export const BookingRequestForm = ({
     [pets],
   );
 
-  const { control, handleSubmit } = useForm<
+  const { control, handleSubmit, setValue } = useForm<
     ISitterBookingFormInput,
     unknown,
     ISitterBookingFormValues
@@ -53,14 +125,108 @@ export const BookingRequestForm = ({
     defaultValues: {
       petId: petOptions[0]?.value,
       type: "hourly",
-      startTime: dayjs().add(1, "hour").toDate(),
-      endTime: dayjs().add(2, "hour").toDate(),
+      startTime: getDefaultHourlyStart().toDate(),
+      endTime: getDefaultHourlyEnd().toDate(),
       ownerNotes: "",
       careInstructions: "",
     },
   });
 
   const serviceType = useWatch({ control, name: "type" });
+  const startTime = useWatch({ control, name: "startTime" });
+  const endTime = useWatch({ control, name: "endTime" });
+  const previousServiceTypeRef = useRef(serviceType);
+
+  useEffect(() => {
+    if (previousServiceTypeRef.current === serviceType) {
+      return;
+    }
+
+    previousServiceTypeRef.current = serviceType;
+
+    if (serviceType === "daily") {
+      setValue("startTime", getDefaultDailyStart().toDate(), {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue("endTime", getDefaultDailyEnd().toDate(), {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      return;
+    }
+
+    setValue("startTime", getDefaultHourlyStart().toDate(), {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    setValue("endTime", getDefaultHourlyEnd().toDate(), {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }, [serviceType, setValue]);
+
+  useEffect(() => {
+    if (!startTime || !endTime) {
+      return;
+    }
+
+    if (serviceType === "daily") {
+      const minimumStart = getDefaultDailyStart();
+      const selectedStart = dayjs(startTime).startOf("day");
+      const selectedEnd = dayjs(endTime).startOf("day");
+      const safeStart = selectedStart.isBefore(minimumStart)
+        ? minimumStart
+        : selectedStart;
+
+      if (!safeStart.isSame(selectedStart)) {
+        setValue("startTime", safeStart.toDate(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      if (selectedEnd.isBefore(safeStart)) {
+        setValue("endTime", safeStart.endOf("day").toDate(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      return;
+    }
+
+    if (!dayjs(endTime).isAfter(dayjs(startTime))) {
+      setValue("endTime", dayjs(startTime).add(1, "hour").toDate(), {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  }, [endTime, serviceType, setValue, startTime]);
+
+  const estimate = useMemo(
+    () =>
+      getBookingEstimate({
+        dailyRate: sitter.dailyRate,
+        endTime,
+        hourlyRate: sitter.hourlyRate,
+        startTime,
+        type: serviceType,
+      }),
+    [endTime, serviceType, sitter.dailyRate, sitter.hourlyRate, startTime],
+  );
+
+  const dailyMinimumDate = useMemo(() => getDefaultDailyStart().toDate(), []);
+  const startMinimumDate =
+    serviceType === "daily" ? dailyMinimumDate : new Date();
+  const endMinimumDate =
+    serviceType === "daily"
+      ? dayjs(startTime ?? dailyMinimumDate)
+          .startOf("day")
+          .toDate()
+      : dayjs(startTime ?? new Date())
+          .add(1, "minute")
+          .toDate();
 
   const submit = (data: ISitterBookingFormValues) => {
     const isDaily = data.type === "daily";
@@ -95,7 +261,7 @@ export const BookingRequestForm = ({
   }
 
   return (
-    <View className="gap-16">
+    <View className="gap-16 px-16">
       <View className="flex-row items-center gap-12 rounded-20 border border-line-subtle bg-background-surface px-14 py-14">
         <Avatar
           size="medium"
@@ -110,8 +276,6 @@ export const BookingRequestForm = ({
           </Body>
         </View>
       </View>
-
-      <ExternalPaymentNotice />
 
       <OptionInputController<ISitterBookingFormInput, ISitterBookingFormValues>
         control={control}
@@ -133,7 +297,7 @@ export const BookingRequestForm = ({
         name="startTime"
         label={serviceType === "daily" ? "Start date" : "Start time"}
         mode={serviceType === "daily" ? "date" : "datetime"}
-        minimumDate={new Date()}
+        minimumDate={startMinimumDate}
       />
       <DateTimePickerController<
         ISitterBookingFormInput,
@@ -143,8 +307,28 @@ export const BookingRequestForm = ({
         name="endTime"
         label={serviceType === "daily" ? "End date" : "End time"}
         mode={serviceType === "daily" ? "date" : "datetime"}
-        minimumDate={new Date()}
+        minimumDate={endMinimumDate}
       />
+      <View className="gap-6 rounded-20 border border-line-subtle bg-background-surface px-14 py-12">
+        <View className="flex-row items-start justify-between gap-12">
+          <View className="flex-1">
+            <Body variant="body4" className="text-text-muted">
+              Estimated total
+            </Body>
+            <Body variant="body3" weight="semiBold">
+              {estimate ? estimate.summary : "Select a valid care time"}
+            </Body>
+          </View>
+          <Heading variant="h6" weight="bold">
+            {estimate ? formatRate(estimate.total) : "—"}
+          </Heading>
+        </View>
+        {estimate ? (
+          <Body variant="body4" className="text-text-muted">
+            {estimate.range}
+          </Body>
+        ) : null}
+      </View>
       <InputController<ISitterBookingFormInput, ISitterBookingFormValues>
         control={control}
         name="careInstructions"
@@ -356,7 +540,7 @@ export const CancelForm = ({
   });
 
   return (
-    <View className="gap-16">
+    <View className="gap-16 px-16">
       <InputController<ISitterCancelForm>
         control={control}
         name="reason"
@@ -389,7 +573,7 @@ export const ReviewForm = ({
   });
 
   return (
-    <View className="gap-16">
+    <View className="gap-16 px-16">
       <OptionInputController<ISitterReviewFormValues>
         control={control}
         name="rating"
