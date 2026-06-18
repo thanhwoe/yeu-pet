@@ -6,7 +6,9 @@ import {
   BottomSheetScrollView,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { Toast } from "@/components/Toast";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { themes } from "@/theme";
 import {
   ComponentRef,
   PropsWithChildren,
@@ -71,6 +73,7 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
+  const themeVariables = themes[colorScheme] ?? themes.light;
   const bottomSheetRef = useRef<ComponentRef<typeof GorhomBottomSheet>>(null);
   const sheetBackgroundColor = colorScheme === "dark" ? "#0A0B0D" : "#FFFFFF";
 
@@ -162,7 +165,7 @@ export const BottomSheet = ({
       statusBarTranslucent
       onRequestClose={handleRequestClose}
     >
-      <View style={styles.modalRoot}>
+      <View style={[styles.modalRoot, themeVariables]}>
         <GorhomBottomSheet
           ref={bottomSheetRef}
           topInset={topInset}
@@ -202,6 +205,7 @@ export const BottomSheet = ({
             </BottomSheetView>
           )}
         </GorhomBottomSheet>
+        <Toast />
       </View>
     </Modal>
   );

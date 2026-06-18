@@ -281,7 +281,7 @@ export const NotificationsScreen = () => {
       return { previousBadge, previousNotificationQueries };
     },
     onSuccess() {
-      Toast.success({ text: "Notifications marked as read" });
+      Toast.success({ text: "Notifications marked as read." });
     },
     onError(error: MutationError, _variables, context) {
       context?.previousNotificationQueries.forEach(([queryKey, data]) => {

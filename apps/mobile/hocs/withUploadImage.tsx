@@ -34,7 +34,9 @@ export const withUploadImage =
     };
 
     const handleError = useCallback((err: unknown) => {
-      Toast.error({ text: (err as Error).message ?? "Select image error" });
+      Toast.error({
+        text: (err as Error).message ?? "Could not select image.",
+      });
     }, []);
 
     // Take a photo from camera

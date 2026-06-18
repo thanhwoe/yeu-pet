@@ -55,7 +55,7 @@ export default function WelcomeScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: completeOnboardingMutation,
     onSuccess: (res) => {
-      Toast.success({ text: "Onboarding successfully" });
+      Toast.success({ text: "Onboarding completed." });
       updateUser(res);
     },
     onError: (e) => {

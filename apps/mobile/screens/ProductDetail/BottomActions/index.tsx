@@ -29,7 +29,7 @@ export const BottomActions = ({ loading }: IProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.all });
 
-      Toast.success({ text: "Item added to cart" });
+      Toast.success({ text: "Item added to cart." });
     },
     onError: (e) => {
       Toast.error({

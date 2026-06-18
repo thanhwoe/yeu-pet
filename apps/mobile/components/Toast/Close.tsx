@@ -6,14 +6,22 @@ import { Pressable, PressableProps, View } from "react-native";
 const CloseIcon = withIconClassName(XIcon);
 
 export const Close = (props: PressableProps) => (
-  <Pressable {...props}>
+  <Pressable
+    accessibilityLabel="Dismiss notification"
+    accessibilityRole="button"
+    hitSlop={8}
+    {...props}
+  >
     {({ pressed }) => (
       <View
-        className={cn("p-2 rounded-full", {
-          "border border-line-primary-foreground opacity-5": pressed,
-        })}
+        className={cn(
+          "-mr-4 -mt-4 h-36 w-36 items-center justify-center rounded-full",
+          {
+            "bg-background-surface-muted": pressed,
+          },
+        )}
       >
-        <CloseIcon size={16} weight="bold" className="text-icon-foreground" />
+        <CloseIcon size={16} weight="bold" className="text-icon-secondary" />
       </View>
     )}
   </Pressable>

@@ -96,7 +96,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoMutation,
     onSuccess() {
-      Toast.success({ text: "Delete photo successfully" });
+      Toast.success({ text: "Photo deleted." });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss?.();
     },

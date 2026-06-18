@@ -22,13 +22,17 @@ const iconMapping = {
   [ToastVariants.WARNING]: WarningIcon,
 };
 
-const styles = cva("rounded-full p-2", {
+const containerStyles = cva(
+  "mt-1 h-30 w-30 items-center justify-center rounded-full bg-background-surface-muted",
+);
+
+const iconStyles = cva("", {
   variants: {
     variant: {
-      [ToastVariants.DEFAULT]: "bg-[#3287ea]",
-      [ToastVariants.ERROR]: "bg-[#941d03]",
-      [ToastVariants.SUCCESS]: "bg-[#02956a]",
-      [ToastVariants.WARNING]: "bg-[#945701]",
+      [ToastVariants.DEFAULT]: "text-status-info-icon",
+      [ToastVariants.ERROR]: "text-status-danger-icon",
+      [ToastVariants.SUCCESS]: "text-status-success-icon",
+      [ToastVariants.WARNING]: "text-status-warning-icon",
     },
   },
   defaultVariants: {
@@ -36,13 +40,13 @@ const styles = cva("rounded-full p-2", {
   },
 });
 
-type Variants = VariantProps<typeof styles>;
+type Variants = VariantProps<typeof iconStyles>;
 
 export const ToastIcon = ({ variant }: Variants) => {
   const Icon = iconMapping[variant ?? ToastVariants.DEFAULT];
   return (
-    <View className={cn(styles({ variant }))}>
-      <Icon className="text-icon-foreground" />
+    <View className={cn(containerStyles())}>
+      <Icon size={18} weight="fill" className={cn(iconStyles({ variant }))} />
     </View>
   );
 };

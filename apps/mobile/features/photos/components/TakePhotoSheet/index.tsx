@@ -41,7 +41,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
     onSuccess() {
-      Toast.success({ text: "Upload photo successfully" });
+      Toast.success({ text: "Photo uploaded." });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       setCaption("");
       onDismiss();
@@ -92,7 +92,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
     const trimmedCaption = caption.trim();
 
     if (!trimmedCaption) {
-      Toast.error({ text: "Please enter a caption" });
+      Toast.warn({ text: "Caption is required." });
       return;
     }
 

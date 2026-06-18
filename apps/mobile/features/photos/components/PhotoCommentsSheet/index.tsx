@@ -260,7 +260,7 @@ export const PhotoCommentsSheet = ({
   const { mutate: deleteComment, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoCommentMutation,
     onSuccess(result) {
-      Toast.success({ text: "Comment deleted" });
+      Toast.success({ text: "Comment deleted." });
       setActionComment(null);
       applyDeletedCommentResult(result);
       invalidateComments();
@@ -629,7 +629,7 @@ const CommentComposer = memo(
       const trimmedContent = content.trim();
 
       if (!trimmedContent) {
-        Toast.error({ text: "Please enter a comment" });
+        Toast.warn({ text: "Comment is required." });
         return;
       }
 

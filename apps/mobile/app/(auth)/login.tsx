@@ -14,7 +14,7 @@ export default function LoginScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: signInMutation,
     onSuccess: (res) => {
-      Toast.success({ text: "Sign in successfully" });
+      Toast.success({ text: "Signed in." });
       updateUser(res.user);
       updateTokens({
         refreshToken: res.refreshToken,

@@ -4,9 +4,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
+  cancelAnimation,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -15,6 +17,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { Text } from "../ui/Text";
 import { Background } from "./Background";
 import { Close } from "./Close";
@@ -29,58 +32,84 @@ import {
   ToastVariants,
 } from "./utils";
 
-const TOAST_INIT_POSITION = -200;
+const TOAST_HIDDEN_TRANSLATE_Y = -160;
+const TOAST_VISIBLE_OFFSET = 8;
+const TOAST_SPRING_CONFIG = {
+  damping: 18,
+  stiffness: 180,
+};
+const TOAST_DISMISS_DURATION = 180;
 
 type ToastRootProps = {
   ref: (ref: ToastRef | null) => void;
 };
 
 export const ToastRoot = ({ ref }: ToastRootProps) => {
-  const toastTopAnimation = useSharedValue(TOAST_INIT_POSITION);
+  const insets = useSafeAreaInsets();
+  const { isDarkColorScheme } = useColorScheme();
+  const toastTranslateY = useSharedValue(TOAST_HIDDEN_TRANSLATE_Y);
   const context = useSharedValue(0);
   const [showing, setShowing] = useState(false);
   const [toastType, setToastType] = useState<ToastVariants>(
-    ToastVariants.DEFAULT
+    ToastVariants.DEFAULT,
   );
   const [toastText, setToastText] = useState("");
   const [toastTitle, setToastTitle] = useState("");
   const [toastDuration, setToastDuration] = useState(0);
 
+  const handleHidden = useCallback(() => {
+    setShowing(false);
+    setToastTitle("");
+    setToastText("");
+  }, []);
+
+  const animateInAndScheduleHide = useCallback(
+    (duration: number) => {
+      toastTranslateY.value = withSequence(
+        withSpring(0, TOAST_SPRING_CONFIG),
+        withDelay(
+          duration,
+          withTiming(
+            TOAST_HIDDEN_TRANSLATE_Y,
+            { duration: TOAST_DISMISS_DURATION },
+            (finish) => {
+              if (finish) {
+                runOnJS(handleHidden)();
+              }
+            },
+          ),
+        ),
+      );
+    },
+    [handleHidden, toastTranslateY],
+  );
+
   const show = useCallback(
     ({ type, text, title, duration = 2000 }: ToastProps) => {
+      cancelAnimation(toastTranslateY);
       setShowing(true);
       setToastType(type);
       setToastText(text);
       setToastDuration(duration);
-      title && setToastTitle(title);
-
-      toastTopAnimation.value = withSequence(
-        withTiming(60),
-        withDelay(
-          duration,
-          withTiming(TOAST_INIT_POSITION, undefined, (finish) => {
-            if (finish) {
-              runOnJS(setShowing)(false);
-            }
-          })
-        )
-      );
+      setToastTitle(title ?? "");
+      toastTranslateY.value = TOAST_HIDDEN_TRANSLATE_Y;
+      animateInAndScheduleHide(duration);
     },
-    [toastTopAnimation]
+    [animateInAndScheduleHide, toastTranslateY],
   );
 
   const hide = useCallback(() => {
-    toastTopAnimation.value = withTiming(
-      TOAST_INIT_POSITION,
-      undefined,
+    cancelAnimation(toastTranslateY);
+    toastTranslateY.value = withTiming(
+      TOAST_HIDDEN_TRANSLATE_Y,
+      { duration: TOAST_DISMISS_DURATION },
       (finish) => {
         if (finish) {
-          runOnJS(setShowing)(false);
-          runOnJS(setToastTitle)("");
+          runOnJS(handleHidden)();
         }
-      }
+      },
     );
-  }, [toastTopAnimation]);
+  }, [handleHidden, toastTranslateY]);
 
   useImperativeHandle(
     ref,
@@ -88,94 +117,117 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
       () => ({
         show,
       }),
-      [show]
-    )
+      [show],
+    ),
   );
 
-  const animatedTopStyles = useAnimatedStyle(() => {
+  const animatedToastStyles = useAnimatedStyle(() => {
     return {
-      top: toastTopAnimation.value,
+      transform: [{ translateY: toastTranslateY.value }],
     };
   });
 
   const pan = Gesture.Pan()
     .onBegin(() => {
-      context.value = toastTopAnimation.value;
+      cancelAnimation(toastTranslateY);
+      context.value = toastTranslateY.value;
     })
     .onUpdate((event) => {
-      if (event.translationY < 100) {
-        toastTopAnimation.value = withSpring(
-          context.value + event.translationY,
-          {
-            damping: 600,
-            stiffness: 100,
-          }
-        );
-      }
+      const nextValue = context.value + event.translationY;
+      toastTranslateY.value = Math.min(
+        20,
+        Math.max(TOAST_HIDDEN_TRANSLATE_Y, nextValue),
+      );
     })
     .onEnd((event) => {
-      if (event.translationY < 0) {
-        toastTopAnimation.value = withTiming(
-          TOAST_INIT_POSITION,
-          undefined,
+      if (event.translationY < -20 || event.velocityY < -450) {
+        toastTranslateY.value = withTiming(
+          TOAST_HIDDEN_TRANSLATE_Y,
+          { duration: TOAST_DISMISS_DURATION },
           (finish) => {
             if (finish) {
-              runOnJS(setShowing)(false);
-              runOnJS(setToastTitle)("");
+              runOnJS(handleHidden)();
             }
-          }
+          },
         );
-      } else if (event.translationY > 0) {
-        toastTopAnimation.value = withSequence(
-          withTiming(60),
+      } else {
+        toastTranslateY.value = withSequence(
+          withSpring(0, TOAST_SPRING_CONFIG),
           withDelay(
             toastDuration,
-            withTiming(TOAST_INIT_POSITION, undefined, (finish) => {
-              if (finish) {
-                runOnJS(setShowing)(false);
-                runOnJS(setToastTitle)("");
-              }
-            })
-          )
+            withTiming(
+              TOAST_HIDDEN_TRANSLATE_Y,
+              { duration: TOAST_DISMISS_DURATION },
+              (finish) => {
+                if (finish) {
+                  runOnJS(handleHidden)();
+                }
+              },
+            ),
+          ),
         );
       }
     });
+  if (!showing) {
+    return null;
+  }
+
   return (
-    <>
-      {showing && (
-        <GestureDetector gesture={pan}>
-          <Animated.View
-            className="absolute left-0 right-0 top-0"
-            style={animatedTopStyles}
+    <View pointerEvents="box-none" style={styles.overlayRoot}>
+      <GestureDetector gesture={pan}>
+        <Animated.View
+          accessibilityLiveRegion="polite"
+          accessibilityRole="alert"
+          className="absolute left-0 right-0"
+          pointerEvents="box-none"
+          style={[
+            styles.toastContainer,
+            { top: insets.top + TOAST_VISIBLE_OFFSET },
+            animatedToastStyles,
+          ]}
+        >
+          <Background
+            tone={isDarkColorScheme ? "dark" : "light"}
+            variant={toastType}
           >
-            <Background variant={toastType}>
-              <ToastIcon variant={toastType} />
-              <View className="flex-1">
-                {toastTitle && (
-                  <Text
-                    variant="body2"
-                    numberOfLines={1}
-                    className="text-text-primary-inverse font-semibold"
-                  >
-                    {toastTitle}
-                  </Text>
-                )}
+            <ToastIcon variant={toastType} />
+            <View className="flex-1 gap-2 py-1">
+              {toastTitle && (
                 <Text
-                  variant={toastTitle ? "caption1" : "body2"}
-                  className="text-text-primary-inverse"
-                  numberOfLines={2}
+                  variant="footnote"
+                  numberOfLines={1}
+                  className="font-semibold text-text-primary"
                 >
-                  {toastText}
+                  {toastTitle}
                 </Text>
-              </View>
-              <Close onPress={hide} />
-            </Background>
-          </Animated.View>
-        </GestureDetector>
-      )}
-    </>
+              )}
+              <Text
+                variant={toastTitle ? "caption1" : "footnote"}
+                className="text-text-secondary"
+                numberOfLines={2}
+              >
+                {toastText}
+              </Text>
+            </View>
+            <Close onPress={hide} />
+          </Background>
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overlayRoot: {
+    ...StyleSheet.absoluteFillObject,
+    elevation: 9999,
+    zIndex: 9999,
+  },
+  toastContainer: {
+    elevation: 9999,
+    zIndex: 9999,
+  },
+});
 
 export function Toast() {
   const toastRef = useRef<ToastRef | null>(null);

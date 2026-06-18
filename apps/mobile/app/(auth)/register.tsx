@@ -16,7 +16,9 @@ export default function RegisterScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: signUpMutation,
     onSuccess: (res) => {
-      Toast.success({ text: "Sign up successfully" });
+      Toast.success({
+        text: "Account created. Verify your email to continue.",
+      });
       updateUser(res.user);
       updateTokens({
         accessToken: res.accessToken,

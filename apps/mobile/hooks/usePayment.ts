@@ -79,7 +79,7 @@ export const usePayment = () => {
         handlePayWithZaloPay();
         break;
       default:
-        Toast.error({ text: "Unknown payment method" });
+        Toast.error({ text: "Choose a supported payment method." });
         break;
     }
   };
@@ -89,25 +89,25 @@ export const usePayment = () => {
     // https://sandbox.vnpayment.vn/apis/docs/thanh-toan-token/token.html
     switch (data) {
       case "00":
-        Toast.success({ text: "Payment successful" });
+        Toast.success({ text: "Payment successful." });
         break;
       case "24":
-        Toast.error({ text: "Payment cancelled" });
+        Toast.warn({ text: "Payment cancelled." });
         break;
       case "99":
-        Toast.error({ text: "VNPAY error" });
+        Toast.error({ text: "Payment provider error. Please try again." });
         break;
       case "08":
-        Toast.error({ text: "Bank maintenance" });
+        Toast.error({ text: "Bank is under maintenance. Try again later." });
         break;
       case "79":
-        Toast.error({ text: "Bank maintenance" });
+        Toast.error({ text: "Bank is under maintenance. Try again later." });
         break;
       case "02":
-        Toast.error({ text: "Transaction failed" });
+        Toast.error({ text: "Transaction failed." });
         break;
       default:
-        Toast.error({ text: "Payment failed" });
+        Toast.error({ text: "Payment failed." });
         break;
     }
   };

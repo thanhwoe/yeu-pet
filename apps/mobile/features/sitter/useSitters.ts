@@ -110,7 +110,7 @@ export const useSitters = (
   const createBooking = useMutation({
     mutationFn: createSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking request sent" });
+      Toast.success({ text: "Booking request sent." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -119,7 +119,7 @@ export const useSitters = (
   const registerProfile = useMutation({
     mutationFn: registerSitterMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Sitter profile saved" });
+      Toast.success({ text: "Sitter profile saved." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -128,7 +128,7 @@ export const useSitters = (
   const updateProfile = useMutation({
     mutationFn: updateSitterMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Sitter profile updated" });
+      Toast.success({ text: "Sitter profile updated." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -137,7 +137,7 @@ export const useSitters = (
   const acceptBooking = useMutation({
     mutationFn: confirmSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking confirmed" });
+      Toast.success({ text: "Booking confirmed." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -146,7 +146,7 @@ export const useSitters = (
   const rejectBooking = useMutation({
     mutationFn: rejectSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking rejected" });
+      Toast.success({ text: "Booking rejected." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -155,7 +155,7 @@ export const useSitters = (
   const completeBooking = useMutation({
     mutationFn: completeSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking completed" });
+      Toast.success({ text: "Booking completed." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -164,7 +164,7 @@ export const useSitters = (
   const cancelBooking = useMutation({
     mutationFn: cancelSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking cancelled" });
+      Toast.success({ text: "Booking cancelled." });
       await invalidateSitterData();
     },
     onError: showError,
@@ -183,7 +183,7 @@ export const useSitters = (
   const createReview = useMutation({
     mutationFn: createSitterReviewMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Review submitted" });
+      Toast.success({ text: "Review submitted." });
       await invalidateSitterData();
     },
     onError: showError,
