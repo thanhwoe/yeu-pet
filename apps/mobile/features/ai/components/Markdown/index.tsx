@@ -1,5 +1,8 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { darkColorTheme, lightColorTheme } from "@/theme/colors";
+import { getColors } from "@/theme/utils";
 import { PropsWithChildren } from "react";
+import { useMemo } from "react";
 import RNMarkdown, { MarkdownProps } from "react-native-markdown-display";
 
 export const Markdown = ({
@@ -7,7 +10,12 @@ export const Markdown = ({
   ...props
 }: PropsWithChildren<MarkdownProps>) => {
   const { colorScheme } = useColorScheme();
-  const styles = createMarkdownStyles(colorScheme === "dark");
+  const theme = useMemo(
+    () =>
+      getColors(colorScheme === "dark" ? darkColorTheme : lightColorTheme),
+    [colorScheme],
+  );
+  const styles = useMemo(() => createMarkdownStyles(theme), [theme]);
 
   return (
     <RNMarkdown style={styles} {...props}>
@@ -16,52 +24,15 @@ export const Markdown = ({
   );
 };
 
-const colors = {
-  light: {
-    text: "#111827",
-    textHeading: "#111827",
-    textSecondary: "#374151",
-    textTertiary: "#4b5563",
-    textMuted: "#6b7280",
-    link: "#2563eb",
-    codeInlineBg: "#f3f4f6",
-    codeInlineText: "#dc2626",
-    codeBlockBg: "#1f2937",
-    codeBlockText: "#f9fafb",
-    blockquoteBg: "#f9fafb",
-    blockquoteBorder: "#3b82f6",
-    tableBorder: "#e5e7eb",
-    tableHeaderBg: "#f9fafb",
-    hr: "#e5e7eb",
-  },
-  dark: {
-    text: "#e5e7eb",
-    textHeading: "#f9fafb",
-    textSecondary: "#d1d5db",
-    textTertiary: "#9ca3af",
-    textMuted: "#6b7280",
-    link: "#60a5fa",
-    codeInlineBg: "#374151",
-    codeInlineText: "#fca5a5",
-    codeBlockBg: "#111827",
-    codeBlockText: "#e5e7eb",
-    blockquoteBg: "#1f2937",
-    blockquoteBorder: "#3b82f6",
-    tableBorder: "#374151",
-    tableHeaderBg: "#1f2937",
-    hr: "#374151",
-  },
-};
-
-const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
-  const theme = isDark ? colors.dark : colors.light;
-
+const createMarkdownStyles = (
+  theme: ReturnType<typeof getColors>,
+): MarkdownProps["style"] => {
   return {
     // Body text
     body: {
       fontSize: 16,
       lineHeight: 20,
-      color: theme.text,
+      color: theme["--text-primary"],
       marginVertical: 0,
     },
 
@@ -70,7 +41,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 28,
       lineHeight: 36,
       fontWeight: "700",
-      color: theme.textHeading,
+      color: theme["--text-primary"],
       marginTop: 24,
       marginBottom: 16,
     },
@@ -78,7 +49,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 24,
       lineHeight: 32,
       fontWeight: "700",
-      color: theme.textHeading,
+      color: theme["--text-primary"],
       marginTop: 20,
       marginBottom: 12,
     },
@@ -86,7 +57,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 20,
       lineHeight: 28,
       fontWeight: "600",
-      color: theme.textHeading,
+      color: theme["--text-primary"],
       marginTop: 16,
       marginBottom: 10,
     },
@@ -94,7 +65,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 18,
       lineHeight: 26,
       fontWeight: "600",
-      color: theme.textSecondary,
+      color: theme["--text-secondary"],
       marginTop: 14,
       marginBottom: 8,
     },
@@ -102,7 +73,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 16,
       lineHeight: 24,
       fontWeight: "600",
-      color: theme.textSecondary,
+      color: theme["--text-secondary"],
       marginTop: 12,
       marginBottom: 6,
     },
@@ -110,7 +81,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontSize: 14,
       lineHeight: 22,
       fontWeight: "600",
-      color: theme.textTertiary,
+      color: theme["--text-muted"],
       marginTop: 10,
       marginBottom: 6,
     },
@@ -128,7 +99,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
     // Text styles
     strong: {
       fontWeight: "700",
-      color: theme.textHeading,
+      color: theme["--text-primary"],
     },
     em: {
       fontStyle: "italic",
@@ -139,7 +110,7 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
 
     // Links
     link: {
-      color: theme.link,
+      color: theme["--text-link"],
       textDecorationLine: "underline",
     },
 
@@ -164,14 +135,14 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       width: 6,
       height: 6,
       borderRadius: 3,
-      backgroundColor: theme.textMuted,
+      backgroundColor: theme["--text-muted"],
     },
     ordered_list_icon: {
       marginLeft: 8,
       marginRight: 8,
       fontSize: 16,
       lineHeight: 24,
-      color: theme.textMuted,
+      color: theme["--text-muted"],
     },
     bullet_list_content: {
       flex: 1,
@@ -182,8 +153,8 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
 
     // Code blocks
     code_inline: {
-      backgroundColor: theme.codeInlineBg,
-      color: theme.codeInlineText,
+      backgroundColor: theme["--background-surface-muted"],
+      color: theme["--status-danger-text"],
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 4,
@@ -191,16 +162,16 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
       fontFamily: "Courier",
     },
     code_block: {
-      backgroundColor: theme.codeBlockBg,
-      color: theme.codeBlockText,
+      backgroundColor: theme["--background-surface-muted"],
+      color: theme["--text-primary"],
       padding: 12,
       borderRadius: 8,
       marginTop: 8,
       marginBottom: 12,
     },
     fence: {
-      backgroundColor: theme.codeBlockBg,
-      color: theme.codeBlockText,
+      backgroundColor: theme["--background-surface-muted"],
+      color: theme["--text-primary"],
       padding: 12,
       borderRadius: 8,
       marginTop: 8,
@@ -209,8 +180,8 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
 
     // Blockquote
     blockquote: {
-      backgroundColor: theme.blockquoteBg,
-      borderLeftColor: theme.blockquoteBorder,
+      backgroundColor: theme["--status-info-surface"],
+      borderLeftColor: theme["--status-info-border"],
       borderLeftWidth: 4,
       marginLeft: 0,
       marginTop: 8,
@@ -222,38 +193,38 @@ const createMarkdownStyles = (isDark: boolean): MarkdownProps["style"] => {
     // Table
     table: {
       borderWidth: 1,
-      borderColor: theme.tableBorder,
+      borderColor: theme["--line-subtle"],
       borderRadius: 8,
       marginTop: 8,
       marginBottom: 12,
     },
     thead: {
-      backgroundColor: theme.tableHeaderBg,
+      backgroundColor: theme["--background-surface-muted"],
     },
     tbody: {},
     th: {
       flex: 1,
       padding: 12,
       fontWeight: "600",
-      color: theme.textHeading,
+      color: theme["--text-primary"],
       borderRightWidth: 1,
-      borderRightColor: theme.tableBorder,
+      borderRightColor: theme["--line-subtle"],
     },
     tr: {
       flexDirection: "row",
       borderBottomWidth: 1,
-      borderBottomColor: theme.tableBorder,
+      borderBottomColor: theme["--line-subtle"],
     },
     td: {
       flex: 1,
       padding: 12,
       borderRightWidth: 1,
-      borderRightColor: theme.tableBorder,
+      borderRightColor: theme["--line-subtle"],
     },
 
     // Horizontal rule
     hr: {
-      backgroundColor: theme.hr,
+      backgroundColor: theme["--line-subtle"],
       height: 1,
       marginTop: 16,
       marginBottom: 16,

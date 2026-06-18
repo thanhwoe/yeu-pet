@@ -1,21 +1,26 @@
-import { PaywallNotice } from "@/components/PaywallNotice";
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { Body } from "@/components/ui/Typography";
 import { PET_KEY } from "@/constants/query-keys";
 import { ChatMessage } from "@/features/ai/components/ChatMessage";
 import { LoadingMessage } from "@/features/ai/components/LoadingMessage";
+import { useDoctorAiChat } from "@/features/ai/hooks";
 import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IChatMessage, IPet } from "@/interfaces";
 import { getListPetQuery } from "@/services";
-import { useChatStore, useUserInfoStore } from "@/stores";
+import { useUserInfoStore } from "@/stores";
 import { cn } from "@/utils";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { useQuery } from "@tanstack/react-query";
-import { PaperPlaneTiltIcon } from "phosphor-react-native";
-import { useEffect, useRef, useState } from "react";
+import {
+  LockKeyIcon,
+  PaperPlaneTiltIcon,
+  PawPrintIcon,
+  WarningCircleIcon,
+} from "phosphor-react-native";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -26,258 +31,579 @@ import {
   View,
 } from "react-native";
 
+const SendIcon = withIconClassName(PaperPlaneTiltIcon);
+const LockKey = withIconClassName(LockKeyIcon);
+const WarningCircle = withIconClassName(WarningCircleIcon);
+const PawPrint = withIconClassName(PawPrintIcon);
+
+const SUGGESTED_PROMPTS = [
+  "My pet is not eating",
+  "Is this symptom urgent?",
+  "Build a feeding routine",
+  "Explain vaccine schedule",
+  "Grooming tips",
+  "Medication reminder help",
+];
+
+const URGENT_KEYWORDS =
+  /\b(can'?t breathe|difficulty breathing|gasping|choking|seizure|convulsion|poison|toxin|ate chocolate|xylitol|rat bait|bleeding heavily|won'?t stop bleeding|collapsed|unconscious|extreme weakness|hit by car)\b/i;
+
+type LoadingItem = { id: "loading"; type: "loading" };
+type ChatListItem = IChatMessage | LoadingItem;
+
 export const DoctorAIScreen = () => {
-  const flatListRef = useRef<FlatList>(null);
-  const { messages, sendMessage, markTypingComplete, loading } = useChatStore();
+  const flatListRef = useRef<FlatList<ChatListItem>>(null);
   const userInfo = useUserInfoStore.use.user();
+  const [composerValue, setComposerValue] = useState("");
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+
   const petsQuery = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
   const pets = petsQuery.data?.data ?? [];
-  const selectedPet = pets.find((pet) => pet.id === selectedPetId);
-  const { entitlements, getLimitState, isPremium, isUpgrading, upgrade } =
-    useEntitlements();
+  const {
+    entitlements,
+    getLimitState,
+    isPremium,
+    isLoading: isEntitlementsLoading,
+    isUpgrading,
+    upgrade,
+  } = useEntitlements();
   const aiLimit = getLimitState("aiMessagesPerMonth");
-
-  const handleSendMessage = async (message: string) => {
-    if (!aiLimit.allowed) {
-      return;
-    }
-
-    try {
-      await sendMessage(message, {
-        petId: selectedPetId,
-        context: selectedPet ? `Pet context: ${selectedPet.name}` : undefined,
-      });
-    } catch (e) {
-      console.log({ e });
-    }
-  };
-
-  const handleTypingComplete = (id: string) => {
-    markTypingComplete(id);
-  };
-
-  const renderMessage = ({ item }: { item: IChatMessage | boolean }) => {
-    if (typeof item === "boolean") {
-      return item ? <LoadingMessage /> : null;
-    }
-    return <ChatMessage message={item} onComplete={handleTypingComplete} />;
-  };
-
-  const renderListEmptyComponent = () => {
-    return (
-      <View className="items-center gap-3">
-        <Image
-          contentFit="contain"
-          className="size-56"
-          source={require("@/assets/images/ai-doctor.png")}
-        />
-        <Text variant="title2" className="text-center">
-          Hi {userInfo?.firstName} {userInfo?.lastName}, what would you like
-          help with today?
-        </Text>
-        <Body variant="body3" className="text-center text-text-tertiary-inverse">
-          Ask about feeding, grooming, behavior, medication reminders, or
-          symptoms. For urgent symptoms, contact a veterinarian immediately.
-        </Body>
-      </View>
+  const canUsePetContext = Boolean(
+    isPremium && entitlements?.limits.aiWithPetContext,
+  );
+  const effectivePetId = canUsePetContext ? selectedPetId : null;
+  const {
+    isLoadingHistory,
+    loading,
+    markTypingComplete,
+    messages,
+    sendMessage,
+  } = useDoctorAiChat({ petId: effectivePetId });
+  const isGeneratingMessage =
+    loading ||
+    isLoadingHistory ||
+    messages.some(
+      (message) =>
+        message.role === "assistant" && message.typingCompleted === false,
     );
-  };
+  const quotaExhausted = !aiLimit.allowed;
+
+  const listData = useMemo<ChatListItem[]>(
+    () =>
+      loading || (isLoadingHistory && !messages.length)
+        ? [...messages, { id: "loading", type: "loading" }]
+        : messages,
+    [isLoadingHistory, loading, messages],
+  );
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (selectedPetId && !pets.some((pet) => pet.id === selectedPetId)) {
+      setSelectedPetId(null);
+    }
+  }, [pets, selectedPetId]);
+
+  useEffect(() => {
+    if (listData.length > 0) {
       requestAnimationFrame(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       });
     }
-  }, [messages]);
+  }, [listData.length]);
 
-  return (
-    <View className="flex-1 bg-background-screen px-5 pb-safe-or-2">
-      <SafetyNotice />
-      <PetContextSelector
-        pets={pets}
-        loading={petsQuery.isLoading}
-        selectedPetId={selectedPetId}
-        onChange={setSelectedPetId}
+  const handleSendMessage = useCallback(
+    async (message: string) => {
+      const trimmedMessage = message.trim();
+
+      if (!trimmedMessage || quotaExhausted || isGeneratingMessage) {
+        return;
+      }
+
+      await sendMessage(trimmedMessage);
+    },
+    [isGeneratingMessage, quotaExhausted, sendMessage],
+  );
+
+  const handleSubmitComposer = useCallback(async () => {
+    const nextMessage = composerValue.trim();
+    if (!nextMessage) {
+      return;
+    }
+
+    setComposerValue("");
+    await handleSendMessage(nextMessage);
+  }, [composerValue, handleSendMessage]);
+
+  const handlePromptPress = useCallback((prompt: string) => {
+    setComposerValue(prompt);
+  }, []);
+
+  const handleTypingComplete = useCallback(
+    (id: string) => {
+      markTypingComplete(id);
+    },
+    [markTypingComplete],
+  );
+
+  const renderMessage = useCallback(
+    ({ item }: { item: ChatListItem }) => {
+      if ("type" in item) {
+        return <LoadingMessage />;
+      }
+
+      return <ChatMessage message={item} onComplete={handleTypingComplete} />;
+    },
+    [handleTypingComplete],
+  );
+
+  const listHeader = useMemo(
+    () => (
+      <View className="gap-12 pb-14">
+        <PetContextSelector
+          canUsePetContext={canUsePetContext}
+          loading={petsQuery.isLoading}
+          onChange={setSelectedPetId}
+          onLockedPress={() => upgrade()}
+          pets={pets}
+          selectedPetId={canUsePetContext ? selectedPetId : null}
+        />
+        <QuotaCard
+          exhausted={quotaExhausted}
+          isPremium={isPremium}
+          limit={aiLimit.limit}
+          loading={isEntitlementsLoading}
+          onUpgrade={() => upgrade()}
+          remaining={aiLimit.remaining}
+          upgrading={isUpgrading}
+          usage={aiLimit.usage}
+        />
+      </View>
+    ),
+    [
+      aiLimit.limit,
+      aiLimit.remaining,
+      aiLimit.usage,
+      canUsePetContext,
+      isEntitlementsLoading,
+      isPremium,
+      isUpgrading,
+      pets,
+      petsQuery.isLoading,
+      quotaExhausted,
+      selectedPetId,
+      upgrade,
+    ],
+  );
+
+  const emptyState = useMemo(
+    () => (
+      <EmptyChatState
+        firstName={userInfo?.firstName}
+        onPromptPress={handlePromptPress}
       />
-      {!isPremium && (
-        <View className="pb-12">
-          <PaywallNotice
-            compact
-            title={
-              aiLimit.allowed
-                ? "Limited AI quota"
-                : "AI message limit reached"
-            }
-            description={
-              aiLimit.allowed
-                ? `${aiLimit.remaining ?? 0} of ${aiLimit.limit ?? entitlements?.limits.aiMessagesPerMonth ?? 0} free AI messages remaining this month. Premium unlocks pet context and medical history.`
-                : `You have used ${entitlements?.usage.aiMessagesThisMonth ?? aiLimit.usage} of ${aiLimit.limit} free AI messages this month.`
-            }
-            loading={isUpgrading}
-            onAction={() => upgrade()}
-          />
-        </View>
-      )}
-      <FlatList
-        ref={flatListRef}
-        className="flex-1"
-        contentContainerClassName="pb-16"
-        showsVerticalScrollIndicator={false}
-        data={loading ? [...messages, true] : messages}
-        renderItem={renderMessage}
-        bounces={false}
-        keyExtractor={(item, index) => String(item) + String(index)}
-        ListEmptyComponent={renderListEmptyComponent}
-      />
-      <MessageInput onSubmit={handleSendMessage} disabled={!aiLimit.allowed} />
-    </View>
+    ),
+    [handlePromptPress, userInfo?.firstName],
   );
-};
-
-const SendIcon = withIconClassName(PaperPlaneTiltIcon);
-
-const SafetyNotice = () => (
-  <View className="mb-12 rounded-20 bg-background-card-highlight px-14 py-12">
-    <Body variant="body3" weight="semiBold">
-      Pet Care AI is guidance, not a diagnosis
-    </Body>
-    <Body variant="body4" className="mt-4 text-text-tertiary-inverse">
-      If your pet has trouble breathing, seizures, poisoning, heavy bleeding, or
-      extreme weakness, contact a veterinarian or emergency clinic now.
-    </Body>
-  </View>
-);
-
-const PetContextSelector = ({
-  pets,
-  loading,
-  selectedPetId,
-  onChange,
-}: {
-  pets: IPet[];
-  loading: boolean;
-  selectedPetId: string | null;
-  onChange: (petId: string | null) => void;
-}) => {
-  if (loading || !pets.length) {
-    return null;
-  }
-
-  return (
-    <View className="mb-12 gap-8">
-      <Body variant="body3" weight="semiBold">
-        Pet context
-      </Body>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName="gap-10"
-      >
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel="Ask without pet context"
-          accessibilityState={{ selected: selectedPetId === null }}
-          onPress={() => onChange(null)}
-          className={cn(
-            "h-42 justify-center rounded-full border border-line-secondary px-14",
-            selectedPetId === null && "bg-background-primary",
-          )}
-        >
-          <Body
-            variant="body3"
-            weight="semiBold"
-            className={cn(selectedPetId === null && "text-text-primary-inverse")}
-          >
-            General
-          </Body>
-        </TouchableOpacity>
-        {pets.map((pet) => {
-          const selected = selectedPetId === pet.id;
-
-          return (
-            <TouchableOpacity
-              key={pet.id}
-              accessibilityRole="button"
-              accessibilityLabel={`Use ${pet.name} as AI pet context`}
-              accessibilityState={{ selected }}
-              onPress={() => onChange(pet.id)}
-              className={cn(
-                "h-42 flex-row items-center gap-8 rounded-full border border-line-secondary px-10",
-                selected && "bg-background-primary",
-              )}
-            >
-              <Avatar size="small" source={{ uri: pet.avatarUrl ?? "" }} />
-              <Body
-                variant="body3"
-                weight="semiBold"
-                className={cn(selected && "text-text-primary-inverse")}
-              >
-                {pet.name}
-              </Body>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-};
-
-interface MessageInputProps {
-  onSubmit: (message: string) => void;
-  disabled?: boolean;
-}
-const MessageInput = ({ onSubmit, disabled }: MessageInputProps) => {
-  const [value, setValue] = useState("");
-  const headerHeight = useHeaderHeight();
-  const { messages, loading } = useChatStore();
-  const trimmedValue = value.trim();
-
-  const isGeneratingMessage = messages.some(
-    (message) => message.role === "assistant" && !message.typingCompleted
-  );
-  const inputDisabled =
-    disabled || loading || isGeneratingMessage || !trimmedValue;
 
   return (
     <KeyboardAvoidingView
-      keyboardVerticalOffset={headerHeight}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-background"
     >
-      <View className="flex-row gap-3 items-center justify-between pr-1 border border-line-secondary rounded-3xl bg-background-white">
-        <View className="flex-1">
-          <TextInput
-            className="px-3 py-3 text-base placeholder:text-text-secondary selection:text-text-link"
-            multiline
-            placeholder={loading ? "Thinking..." : "Ask me anything..."}
-            value={value}
-            onChangeText={setValue}
-            autoCorrect={false}
-            textAlignVertical="top"
-            editable={!disabled && (!loading || !isGeneratingMessage)}
-          />
-        </View>
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel="Send AI message"
-          accessibilityState={{ disabled: inputDisabled }}
-          onPress={() => {
-            onSubmit(trimmedValue);
-            setValue("");
-          }}
-          disabled={inputDisabled}
-          className={cn(
-            "self-end mb-1 items-center justify-center rounded-full bg-background-secondary p-2",
-            inputDisabled && "opacity-50",
-          )}
-        >
-          <SendIcon className="text-icon-foreground" />
-        </TouchableOpacity>
+      <View className="flex-1 px-16">
+        <FlatList
+          ref={flatListRef}
+          className="flex-1"
+          contentContainerClassName="pb-18"
+          data={listData}
+          keyExtractor={(item, index) =>
+            ("type" in item ? item.id : item.id) + index
+          }
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={emptyState}
+          ListHeaderComponent={listHeader}
+          renderItem={renderMessage}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
+      <MessageComposer
+        disabled={quotaExhausted || isGeneratingMessage}
+        loading={isGeneratingMessage}
+        onChangeText={setComposerValue}
+        onSubmit={handleSubmitComposer}
+        quotaExhausted={quotaExhausted}
+        value={composerValue}
+      />
     </KeyboardAvoidingView>
   );
 };
+
+const PetContextSelector = memo(
+  ({
+    pets,
+    loading,
+    selectedPetId,
+    canUsePetContext,
+    onChange,
+    onLockedPress,
+  }: {
+    pets: IPet[];
+    loading: boolean;
+    selectedPetId: string | null;
+    canUsePetContext: boolean;
+    onChange: (petId: string | null) => void;
+    onLockedPress: () => void;
+  }) => (
+    <View className="gap-8">
+      <View className="flex-row items-center justify-between">
+        <Body variant="body3" weight="semiBold" className="text-text-primary">
+          Pet context
+        </Body>
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerClassName="gap-8 pr-16"
+      >
+        <PetContextChip
+          label="General"
+          selected={selectedPetId === null}
+          onPress={() => onChange(null)}
+          accessibilityLabel="Use general AI context"
+        />
+        {loading ? (
+          <View className="h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14">
+            <Body variant="body4" className="text-text-muted">
+              Loading pets...
+            </Body>
+          </View>
+        ) : pets.length ? (
+          pets.map((pet) => {
+            const locked = !canUsePetContext;
+            const selected = selectedPetId === pet.id && canUsePetContext;
+
+            return (
+              <PetContextChip
+                key={pet.id}
+                avatarUrl={pet.avatarUrl}
+                label={pet.name}
+                locked={locked}
+                selected={selected}
+                onPress={() => (locked ? onLockedPress() : onChange(pet.id))}
+                accessibilityLabel={
+                  locked
+                    ? `${pet.name} pet context requires Premium`
+                    : `Use ${pet.name} as AI pet context`
+                }
+              />
+            );
+          })
+        ) : (
+          <View className="h-44 flex-row items-center gap-8 rounded-full border border-line-subtle bg-background-surface px-14">
+            <PawPrint size={18} className="text-icon-secondary" />
+            <Body variant="body4" className="text-text-muted">
+              No pets yet
+            </Body>
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  ),
+);
+
+PetContextSelector.displayName = "PetContextSelector";
+
+const PetContextChip = memo(
+  ({
+    label,
+    selected,
+    locked,
+    avatarUrl,
+    onPress,
+    accessibilityLabel,
+  }: {
+    label: string;
+    selected: boolean;
+    locked?: boolean;
+    avatarUrl?: string | null;
+    onPress: () => void;
+    accessibilityLabel: string;
+  }) => (
+    <TouchableOpacity
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="button"
+      accessibilityState={{ selected, disabled: locked }}
+      activeOpacity={0.82}
+      className={cn(
+        "h-44 flex-row items-center gap-8 rounded-full border border-line-subtle bg-background-surface px-12",
+        selected && "border-line-highlight bg-action-primary",
+        locked && "bg-background-surface-muted",
+      )}
+      onPress={onPress}
+    >
+      {avatarUrl ? (
+        <View>
+          <Avatar size="small" source={{ uri: avatarUrl }} />
+        </View>
+      ) : (
+        <View
+          className={cn(
+            "h-28 w-28 items-center justify-center rounded-full bg-feature-ai-surface",
+            selected && "bg-action-primary-foreground",
+          )}
+        >
+          <PawPrint
+            size={16}
+            weight="fill"
+            className={
+              selected ? "text-action-primary" : "text-feature-ai-accent"
+            }
+          />
+        </View>
+      )}
+      <Body
+        variant="body4"
+        weight="semiBold"
+        className={cn(
+          "text-text-primary",
+          selected && "text-action-primary-foreground",
+        )}
+        numberOfLines={1}
+      >
+        {label}
+      </Body>
+      {locked ? <LockKey size={14} className="text-icon-secondary" /> : null}
+    </TouchableOpacity>
+  ),
+);
+
+PetContextChip.displayName = "PetContextChip";
+
+const QuotaCard = memo(
+  ({
+    usage,
+    limit,
+    remaining,
+    isPremium,
+    exhausted,
+    loading,
+    upgrading,
+    onUpgrade,
+  }: {
+    usage?: number;
+    limit?: number;
+    remaining?: number;
+    isPremium: boolean;
+    exhausted: boolean;
+    loading: boolean;
+    upgrading: boolean;
+    onUpgrade: () => void;
+  }) => {
+    const safeLimit = limit ?? 0;
+    const safeUsage = usage ?? 0;
+    const safeRemaining = remaining ?? Math.max(0, safeLimit - safeUsage);
+    const progress =
+      safeLimit > 0 ? Math.min(100, (safeUsage / safeLimit) * 100) : 0;
+
+    return (
+      <View
+        className={cn(
+          "gap-10 rounded-20 border border-line-subtle bg-background-surface px-14 py-12 shadow-sm",
+          exhausted && "border-status-danger-border bg-status-danger-surface",
+        )}
+      >
+        <View className="flex-row items-start justify-between gap-12">
+          <View className="flex-1 gap-2">
+            <Body
+              variant="body3"
+              weight="semiBold"
+              className="text-text-primary"
+            >
+              {loading
+                ? "Checking AI messages"
+                : isPremium
+                  ? "Premium AI"
+                  : exhausted
+                    ? "AI message limit reached"
+                    : `${safeRemaining} of ${safeLimit} free messages remaining`}
+            </Body>
+            <Body variant="body4" className="text-text-muted">
+              {isPremium
+                ? `${Math.max(0, safeLimit - safeUsage)} messages remaining this month with pet context.`
+                : "Premium unlocks more messages, pet context, and recent medical history."}
+            </Body>
+          </View>
+          {!isPremium ? (
+            <Button
+              accessibilityLabel="Upgrade for more Doctor AI messages"
+              size="sm"
+              variant={exhausted ? "primary" : "secondary"}
+              loading={upgrading}
+              onPress={onUpgrade}
+            >
+              Upgrade
+            </Button>
+          ) : null}
+        </View>
+        <View className="h-6 overflow-hidden rounded-full bg-background-surface-muted">
+          <View
+            className={cn(
+              "h-full rounded-full bg-feature-ai-accent",
+              exhausted && "bg-status-danger-icon",
+            )}
+            style={{ width: `${progress}%` }}
+          />
+        </View>
+      </View>
+    );
+  },
+);
+
+QuotaCard.displayName = "QuotaCard";
+
+const EmptyChatState = memo(
+  ({
+    firstName,
+    onPromptPress,
+  }: {
+    firstName?: string | null;
+    onPromptPress: (prompt: string) => void;
+  }) => (
+    <View className="items-center gap-14 px-8 py-16">
+      <Image
+        contentFit="contain"
+        className="h-78 w-78"
+        source={require("@/assets/images/ai-doctor.png")}
+      />
+      <View className="gap-6">
+        <Text variant="heading" className="text-center text-text-primary">
+          Hi{firstName ? ` ${firstName}` : ""}, how can I help your pet today?
+        </Text>
+        <Text variant="body2" className="text-center text-text-muted">
+          Ask for care information about feeding, grooming, behavior, medication
+          routines, or symptoms.
+        </Text>
+      </View>
+      <View className="flex-row flex-wrap justify-center gap-8">
+        {SUGGESTED_PROMPTS.map((prompt) => (
+          <TouchableOpacity
+            key={prompt}
+            accessibilityLabel={`Use suggested prompt: ${prompt}`}
+            accessibilityRole="button"
+            activeOpacity={0.82}
+            className="min-h-38 justify-center rounded-full border border-line-subtle bg-background-surface px-12"
+            onPress={() => onPromptPress(prompt)}
+          >
+            <Body
+              variant="body4"
+              weight="semiBold"
+              className="text-text-primary"
+            >
+              {prompt}
+            </Body>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  ),
+);
+
+EmptyChatState.displayName = "EmptyChatState";
+
+const MessageComposer = memo(
+  ({
+    value,
+    disabled,
+    loading,
+    quotaExhausted,
+    onChangeText,
+    onSubmit,
+  }: {
+    value: string;
+    disabled: boolean;
+    loading: boolean;
+    quotaExhausted: boolean;
+    onChangeText: (value: string) => void;
+    onSubmit: () => void;
+  }) => {
+    const trimmedValue = value.trim();
+    const inputHasUrgentConcern = URGENT_KEYWORDS.test(value);
+    const sendDisabled = disabled || !trimmedValue;
+
+    return (
+      <View className="gap-8 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
+        {quotaExhausted ? (
+          <InlineWarning text="You have used your free AI messages this month. Upgrade to continue chatting." />
+        ) : inputHasUrgentConcern ? (
+          <InlineWarning text="This may be urgent. Contact a veterinarian or emergency clinic now if your pet is in distress." />
+        ) : null}
+        <View
+          className={cn(
+            "min-h-54 flex-row items-end gap-10 rounded-24 border border-line-subtle bg-background-surface px-14 py-8",
+            sendDisabled && "opacity-90",
+          )}
+        >
+          <TextInput
+            accessibilityLabel="Doctor AI message"
+            autoCorrect
+            className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
+            editable={!quotaExhausted && !loading}
+            multiline
+            onChangeText={onChangeText}
+            placeholder={
+              quotaExhausted
+                ? "Upgrade to continue chatting"
+                : loading
+                  ? "Pet Care AI is thinking..."
+                  : "Ask about feeding, grooming, behavior, symptoms..."
+            }
+            textAlignVertical="top"
+            value={value}
+          />
+          <TouchableOpacity
+            accessibilityLabel="Send Doctor AI message"
+            accessibilityRole="button"
+            accessibilityState={{ disabled: sendDisabled, busy: loading }}
+            activeOpacity={0.82}
+            className={cn(
+              "h-42 w-42 items-center justify-center rounded-full bg-action-primary",
+              sendDisabled && "bg-background-surface-muted",
+            )}
+            disabled={sendDisabled}
+            onPress={onSubmit}
+          >
+            <SendIcon
+              size={20}
+              weight="fill"
+              className={
+                sendDisabled
+                  ? "text-icon-secondary"
+                  : "text-action-primary-foreground"
+              }
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  },
+);
+
+MessageComposer.displayName = "MessageComposer";
+
+const InlineWarning = memo(({ text }: { text: string }) => (
+  <View className="flex-row items-center gap-8 rounded-16 border border-status-warning-border bg-status-warning-surface px-12 py-9">
+    <WarningCircle
+      size={18}
+      weight="fill"
+      className="text-status-warning-icon"
+    />
+    <Body variant="body4" className="flex-1 text-status-warning-text">
+      {text}
+    </Body>
+  </View>
+));
+
+InlineWarning.displayName = "InlineWarning";

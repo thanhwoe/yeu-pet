@@ -68,18 +68,18 @@ export const LoadingMessage = () => {
   }));
 
   return (
-    <View className="flex-row items-center justify-start pb-2 pt-3 pr-4 pl-3 bg-background-chat-left rounded-3xl self-start max-w-[60px]">
+    <View className="mb-12 flex-row items-center gap-6 self-start rounded-22 rounded-bl-8 border border-line-subtle bg-background-surface px-14 py-12">
       <Animated.View
         style={dot1Style}
-        className="w-2 h-2 bg-icon-secondary rounded-full mr-1.5"
+        className="h-6 w-6 rounded-full bg-feature-ai-accent"
       />
       <Animated.View
         style={dot2Style}
-        className="w-2 h-2 bg-icon-secondary rounded-full mr-1.5"
+        className="h-6 w-6 rounded-full bg-feature-ai-accent"
       />
       <Animated.View
         style={dot3Style}
-        className="w-2 h-2 bg-icon-secondary rounded-full"
+        className="h-6 w-6 rounded-full bg-feature-ai-accent"
       />
     </View>
   );

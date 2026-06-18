@@ -1,6 +1,6 @@
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
-import { Markdown } from "@/features/ai/components/Markdown";
+import { Body } from "@/components/ui/Typography";
 import { TypingMessage } from "@/features/ai/components/TypingMessage";
 import { ChatRole, IChatMessage } from "@/interfaces";
 import { cn, date } from "@/utils";
@@ -16,40 +16,48 @@ export const ChatMessage = ({ message, onComplete }: IProps) => {
   const isAssistant = message.role === ChatRole.ASSISTANT;
   return (
     <View
-      className={cn("mb-4 items-start", {
+      className={cn("mb-12 items-start", {
         "items-end": isUser,
       })}
     >
-      <View className={cn("flex-row items-end max-w-[80%] gap-1")}>
+      <View
+        className={cn("max-w-[86%] flex-row items-end gap-8", {
+          "flex-row-reverse": isUser,
+        })}
+      >
         {isAssistant && (
-          <Image
-            contentFit="contain"
-            className="size-6"
-            source={require("@/assets/images/doctor-avatar.png")}
-          />
+          <View className="h-32 w-32 items-center justify-center rounded-full bg-feature-ai-surface">
+            <Image
+              contentFit="contain"
+              className="h-24 w-24"
+              source={require("@/assets/images/doctor-avatar.png")}
+            />
+          </View>
         )}
         <View
-          className={cn("rounded-2xl px-4 py-3", {
-            "bg-background-chat-right rounded-br-md": isUser,
-            "bg-background-chat-left rounded-bl-md": isAssistant,
+          className={cn("rounded-22 px-14 py-10", {
+            "rounded-br-0 rounded-8 bg-action-primary": isUser,
+            "rounded-bl-0 rounded-8 border border-line-subtle bg-background-surface":
+              isAssistant,
           })}
         >
           {isAssistant ? (
             <TypingMessage
               value={message.content}
-              isTyping={!message.typingCompleted}
+              isTyping={message.typingCompleted === false}
               onComplete={() => onComplete?.(message.id)}
               speed={250}
             />
           ) : (
-            <Markdown>{message.content}</Markdown>
+            <Body variant="body3" className="text-action-primary-foreground">
+              {message.content}
+            </Body>
           )}
           <Text
             variant="caption2"
-            className={cn("self-end mt-2", {
-              "self-start": isUser,
+            className={cn("mt-6 self-end text-text-subtle", {
+              "text-action-primary-foreground opacity-80": isUser,
             })}
-            color="secondary"
           >
             {date(message.timestamp).fromNow()}
           </Text>

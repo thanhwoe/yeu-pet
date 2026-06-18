@@ -51,7 +51,7 @@ export const TypingMessage = ({
   }, [isTyping, value, speed, onComplete]);
 
   if (!isCompleted) {
-    return <Text>{display}</Text>;
+    return <Text className="text-text-primary">{display}</Text>;
   }
   return <Markdown>{value}</Markdown>;
 };

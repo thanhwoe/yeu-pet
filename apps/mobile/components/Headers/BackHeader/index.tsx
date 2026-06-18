@@ -44,6 +44,8 @@ export const BackHeader = ({ options, navigation }: BackHeaderProps) => {
         navigation.canGoBack() && (
           <TouchableOpacity
             onPress={navigation.goBack}
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
             style={{ width: MAX_TITLE_WIDTH, height: 27 }}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >

@@ -226,7 +226,7 @@ Search notes:
 - Pet creation/edit/delete logic is now owned by `features/pets/components/PetCardCarousel/AddCard.tsx` and `features/pets/usePetCardSection.ts`; continue consolidating shared pet hooks in `features/pets`.
 - Main medical record list/create/delete, per-pet list/delete, detail update/delete, and collapsible preview query orchestration now lives in `features/medical-records/hooks.ts`. Shared attachment/media components can be consolidated later.
 - Notifications mutations live directly in `screens/Notifications`; move to `features/notifications`.
-- AI chat state should be checked against `stores/chat.ts`; server conversations/messages belong in React Query, while local draft UI state can stay local or in client-only store.
+- AI chat state now lives in `features/ai/hooks.ts` with React Query conversation/message caches; the old durable `stores/chat.ts` Zustand store has been removed.
 - `stores/shop-store.ts` is frozen with commerce.
 - `stores/user-info.ts` owns auth/session tokens and is appropriate durable app state.
 

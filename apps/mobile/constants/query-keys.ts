@@ -125,6 +125,15 @@ export const SUBSCRIPTION_KEY = {
   entitlements: () => [...SUBSCRIPTION_KEY.all, "entitlements"] as const,
 };
 
+export const AI_KEY = {
+  all: [{ scope: "ai" }] as const,
+  conversations: () => [...AI_KEY.all, "conversations"] as const,
+  conversationList: (params?: IQueryParams) =>
+    [...AI_KEY.conversations(), { params }] as const,
+  messages: (conversationId?: string, params?: IQueryParams) =>
+    [...AI_KEY.all, "messages", conversationId, { params }] as const,
+};
+
 export const SITTER_KEY = {
   all: [{ scope: "sitter" }] as const,
   lists: () => [...SITTER_KEY.all, "list"] as const,
