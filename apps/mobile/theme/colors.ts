@@ -554,7 +554,7 @@ export const darkColorTheme = {
   "--icon-secondary": "--slate-30",
   "--icon-tertiary": "--slate-40",
   "--icon-muted": "--slate-50",
-  "--icon-primary-highlight": "--orange-30",
+  "--icon-primary-highlight": "--blue-30",
   "--icon-primary-inverse": "--grey-90",
 
   "--icon-warning": "--yellow-30",
@@ -565,10 +565,10 @@ export const darkColorTheme = {
   // ---------------------------------------------------------------------------
   // ACTION
   // ---------------------------------------------------------------------------
-  "--action-primary": "--orange-40",
-  "--action-primary-pressed": "--orange-30",
-  "--action-primary-foreground": "--orange-100",
-  "--action-primary-disabled": "--orange-80",
+  "--action-primary": "--blue-40",
+  "--action-primary-pressed": "--blue-30",
+  "--action-primary-foreground": "--blue-100",
+  "--action-primary-disabled": "--blue-80",
 
   "--action-secondary": "--blue-80",
   "--action-secondary-pressed": "--blue-70",
@@ -648,9 +648,9 @@ export const darkColorTheme = {
   "--accent-pink-foreground": "--pink-100",
 
   "--feature-pet-surface": "--orange-90",
-  "--feature-pet-accent": "--orange-30",
+  "--feature-pet-accent": "--blue-30",
   "--feature-reminder-surface": "--yellow-90",
-  "--feature-reminder-accent": "--yellow-30",
+  "--feature-reminder-accent": "--purple-30",
   "--feature-medical-surface": "--green-90",
   "--feature-medical-accent": "--green-30",
   "--feature-budget-surface": "--amber-90",

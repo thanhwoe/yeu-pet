@@ -60,11 +60,11 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
       <View className="flex-1 mt-40 items-center">
         <Skeleton
           className="rounded-28"
-          backgroundClassName="bg-background-secondary-highlight"
+          backgroundClassName="bg-background-surface-muted"
           style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}
         />
         <View className="flex-row items-center justify-center gap-6 mt-18 mb-8">
-          <View className="h-6 w-18 rounded-5 bg-background-secondary-highlight" />
+          <View className="h-6 w-18 rounded-5 bg-feature-pet-accent" />
         </View>
       </View>
     );
@@ -72,7 +72,7 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
 
   if (isError) {
     return (
-      <View className="mx-20 mt-40 rounded-24 bg-background-card-highlight">
+      <View className="mx-20 mt-40 rounded-24 border border-line-subtle bg-background-surface">
         <StateView
           variant="error"
           title="Pets could not load"
@@ -152,8 +152,8 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
         {allCards.map((_, idx) => (
           <View
             key={idx}
-            className={cn("size-6 rounded-5 bg-background-secondary-pressed", {
-              "w-18 bg-background-secondary-highlight": idx === activeIndex,
+            className={cn("size-6 rounded-5 bg-line-subtle", {
+              "w-18 bg-feature-pet-accent": idx === activeIndex,
             })}
           />
         ))}

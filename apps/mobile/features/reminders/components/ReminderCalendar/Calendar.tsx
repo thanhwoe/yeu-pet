@@ -1,10 +1,7 @@
 import { Body, Heading } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cn } from "@/utils";
-import {
-  formatReminderMonth,
-  REMINDER_DAY_KEY_FORMAT,
-} from "@/utils/reminder";
+import { formatReminderMonth, REMINDER_DAY_KEY_FORMAT } from "@/utils/reminder";
 import dayjs from "dayjs";
 import {
   CaretLeftIcon,
@@ -85,7 +82,9 @@ export const Calendar = memo(
           <IconButton
             label="Previous month"
             onPress={onPreviousMonth}
-            icon={<PrevIcon size={20} weight="bold" className="text-icon-primary" />}
+            icon={
+              <PrevIcon size={20} weight="bold" className="text-icon-primary" />
+            }
           />
           <Heading variant="h6" weight="bold" className="capitalize">
             {formatReminderMonth(visibleMonth)}
@@ -93,7 +92,9 @@ export const Calendar = memo(
           <IconButton
             label="Next month"
             onPress={onNextMonth}
-            icon={<NextIcon size={20} weight="bold" className="text-icon-primary" />}
+            icon={
+              <NextIcon size={20} weight="bold" className="text-icon-primary" />
+            }
           />
         </View>
 
@@ -125,10 +126,13 @@ export const Calendar = memo(
               style={{ width: `${100 / 7}%` }}
             >
               <View
-                className={cn("h-28 w-28 items-center justify-center rounded-full", {
-                  "bg-action-primary": item.isSelected,
-                  "bg-background-secondary": item.isToday && !item.isSelected,
-                })}
+                className={cn(
+                  "h-28 w-28 items-center justify-center rounded-full",
+                  {
+                    "bg-action-primary": item.isSelected,
+                    "bg-background-secondary": item.isToday && !item.isSelected,
+                  },
+                )}
               >
                 <Body
                   variant="body3"

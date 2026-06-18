@@ -56,6 +56,10 @@ const getDisplayName = (firstName?: string, lastName?: string) =>
 export function ProfileDetailScreen() {
   const user = useUserInfoStore.use.user();
   const updateUser = useUserInfoStore.use.updateUser();
+  const setOptimisticUserAvatar =
+    useUserInfoStore.use.setOptimisticUserAvatar();
+  const rollbackOptimisticUserAvatar =
+    useUserInfoStore.use.rollbackOptimisticUserAvatar();
   const queryClient = useQueryClient();
   const [avatar, setAvatar] = useState<UploadFileParam | null>(null);
 
@@ -82,7 +86,9 @@ export function ProfileDetailScreen() {
   const syncUser = useCallback(
     (updatedUser: IUser) => {
       updateUser(updatedUser);
-      queryClient.setQueryData(USER_KEY.detail(updatedUser.id), updatedUser);
+      const effectiveUser = useUserInfoStore.getState().user ?? updatedUser;
+
+      queryClient.setQueryData(USER_KEY.detail(effectiveUser.id), effectiveUser);
     },
     [queryClient, updateUser],
   );
@@ -96,8 +102,41 @@ export function ProfileDetailScreen() {
   const { mutateAsync: uploadAvatar, isPending: isUploadingAvatar } =
     useMutation({
       mutationFn: uploadMeAvatarMutation,
+      onMutate: async (nextAvatar) => {
+        if (!user) return undefined;
+
+        await queryClient.cancelQueries({
+          queryKey: USER_KEY.detail(user.id),
+        });
+
+        const previousUser = queryClient.getQueryData<IUser>(
+          USER_KEY.detail(user.id),
+        );
+
+        setOptimisticUserAvatar(nextAvatar.uri);
+
+        const optimisticUser = useUserInfoStore.getState().user;
+        if (optimisticUser) {
+          queryClient.setQueryData(
+            USER_KEY.detail(optimisticUser.id),
+            optimisticUser,
+          );
+        }
+
+        return { previousUser };
+      },
       onSuccess: ({ profile }) => {
         syncUser(profile);
+      },
+      onError: (_error, _nextAvatar, context) => {
+        rollbackOptimisticUserAvatar();
+
+        if (context?.previousUser) {
+          queryClient.setQueryData(
+            USER_KEY.detail(context.previousUser.id),
+            context.previousUser,
+          );
+        }
       },
     });
 

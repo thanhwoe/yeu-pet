@@ -10,9 +10,9 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPagination, IPet, SubscriptionEntitlements } from "@/interfaces";
 import { createPetMutation } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PlusIcon } from "phosphor-react-native";
+import { PawPrintIcon, PlusIcon } from "phosphor-react-native";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -22,6 +22,7 @@ import Animated, {
 import { CARD_HEIGHT, CARD_WIDTH, SCALE_CENTER, SCALE_SIDE } from "./utils";
 
 const Plus = withIconClassName(PlusIcon);
+const PawPrint = withIconClassName(PawPrintIcon);
 const CardWrapper = Animated.createAnimatedComponent(TouchableOpacity);
 
 export const AddCard = ({
@@ -122,43 +123,32 @@ export const AddCard = ({
         onPress={() => setShowForm(true)}
         accessibilityLabel="Add new pet"
         accessibilityRole="button"
-        className="relative bg-background-card rounded-28 justify-center items-center border-2 border-dashed border-line-primary overflow-hidden"
+        className="relative items-center justify-center overflow-hidden rounded-28 border-[1.5px] border-dashed border-line-subtle bg-background-surface shadow-sm"
         style={[{ width: CARD_WIDTH, height: CARD_HEIGHT }, zoomStyle]}
       >
-        <View className="size-68 rounded-full bg-background-card border-2 border-line-primary border-dashed justify-center items-center mb-14">
-          <Plus size={30} className="text-line-secondary" />
+        <View className="mb-14 size-68 items-center justify-center rounded-full border-[1.5px] border-dashed border-line-subtle ">
+          <Plus size={30} className="text-feature-pet-accent" />
         </View>
-        <Body weight="bold">Add New Pet</Body>
-        <Body variant="body2" className="text-text-tertiary-inverse opacity-80">
+        <Body weight="bold" className="text-text-primary">
+          Add New Pet
+        </Body>
+        <Body variant="body2" className="text-text-muted">
           Tap to register your furry friend
         </Body>
-        {/* Decorative paws */}
-        <Text
-          style={[
-            {
-              top: 20,
-              right: 24,
-              opacity: 0.15,
-              fontSize: 40,
-              position: "absolute",
-            },
-          ]}
-        >
-          🐾
-        </Text>
-        <Text
-          style={[
-            {
-              bottom: 30,
-              left: 18,
-              opacity: 0.1,
-              fontSize: 28,
-              position: "absolute",
-            },
-          ]}
-        >
-          🐾
-        </Text>
+        <View className="absolute right-24 top-20" style={{ opacity: 0.12 }}>
+          <PawPrint
+            size={46}
+            weight="duotone"
+            className="text-feature-pet-accent"
+          />
+        </View>
+        <View className="absolute bottom-30 left-18" style={{ opacity: 0.1 }}>
+          <PawPrint
+            size={34}
+            weight="duotone"
+            className="text-feature-pet-accent"
+          />
+        </View>
       </CardWrapper>
       <BottomSheet
         stackBehavior="push"
