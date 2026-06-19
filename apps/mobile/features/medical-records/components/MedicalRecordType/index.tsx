@@ -7,17 +7,24 @@ interface IProps {
   type: IMedicalRecord["recordType"];
 }
 
-const wrapperStyle = cva("px-12 py-6 rounded-18", {
+const TYPE_LABEL: Record<IMedicalRecord["recordType"], string> = {
+  vaccination: "Vaccination",
+  checkup: "Checkup",
+  surgery: "Surgery",
+  medication: "Medication",
+};
+
+const wrapperStyle = cva("self-start rounded-full border px-10 py-5", {
   variants: {
     type: {
-      vaccination: "bg-accent-cyan-foreground",
-      checkup: "bg-accent-blue-foreground",
-      surgery: "bg-accent-red-foreground",
-      medication: "bg-accent-green-foreground",
+      vaccination: "border-line-info bg-accent-cyan",
+      checkup: "border-line-info bg-accent-blue",
+      surgery: "border-line-negative bg-accent-red",
+      medication: "border-line-positive bg-accent-green",
     },
   },
 });
-const textStyle = cva("", {
+const textStyle = cva("font-semiBold", {
   variants: {
     type: {
       vaccination: "text-accent-cyan-bold",
@@ -31,8 +38,8 @@ const textStyle = cva("", {
 export const MedicalRecordType = ({ type }: IProps) => {
   return (
     <View className={wrapperStyle({ type })}>
-      <Body variant="body3" caps className={textStyle({ type })}>
-        {type}
+      <Body variant="body5" className={textStyle({ type })}>
+        {TYPE_LABEL[type]}
       </Body>
     </View>
   );

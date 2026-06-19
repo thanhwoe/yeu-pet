@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body } from "@/components/ui/Typography";
 import { MedicalRecordListItem } from "@/features/medical-records/components/MedicalRecordListItem";
@@ -6,7 +7,7 @@ import { useMedicalRecordPreview } from "@/features/medical-records/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IMedicalRecord, IPet } from "@/interfaces";
 import { cn } from "@/utils";
-import { CaretDownIcon } from "phosphor-react-native";
+import { CaretDownIcon, FileTextIcon } from "phosphor-react-native";
 import React, { memo, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -17,16 +18,22 @@ import Animated, {
 } from "react-native-reanimated";
 
 const ExpandIcon = withIconClassName(CaretDownIcon);
+const EmptyRecordIcon = withIconClassName(FileTextIcon);
+
+const RECORD_ITEM_HEIGHT = 104;
+const RECORD_LIST_VERTICAL_SPACE = 36;
+const EMPTY_STATE_HEIGHT = 172;
 
 interface MedicalRecordContainerProps {
   pet: IPet;
   onRecordPress?: (record: IMedicalRecord) => void;
   onMorePress?: (record: IMedicalRecord) => void;
   onSeeAllPress?: (pet: IPet) => void;
+  onAddPress?: () => void;
 }
 
 export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
-  ({ pet, onRecordPress, onMorePress, onSeeAllPress }) => {
+  ({ pet, onRecordPress, onMorePress, onSeeAllPress, onAddPress }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     // Animated values
@@ -53,8 +60,9 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
           });
 
           const recordsHeight = medicalRecords?.data?.length
-            ? medicalRecords?.data?.length * 85 + 40 // 85px per item + padding
-            : 60;
+            ? medicalRecords.data.length * RECORD_ITEM_HEIGHT +
+              RECORD_LIST_VERTICAL_SPACE
+            : EMPTY_STATE_HEIGHT;
 
           animatedHeight.value = withSpring(recordsHeight, {
             damping: 20,
@@ -100,7 +108,7 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
       <View className="mb-16">
         {/* Parent Header - Pet Info */}
         <TouchableOpacity
-          className="flex-row items-center shadow-sm elevation justify-between rounded-16 p-16 bg-background-card-highlight"
+          className="flex-row items-center justify-between rounded-20 border border-line-subtle bg-background-surface p-14 shadow-sm"
           onPress={toggleExpand}
           activeOpacity={0.7}
         >
@@ -110,7 +118,13 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
                 uri: pet.avatarUrl ?? "",
               }}
             />
-            <Body weight="semiBold">{pet.name}</Body>
+            <Body
+              weight="semiBold"
+              numberOfLines={1}
+              className="min-w-0 flex-1"
+            >
+              {pet.name}
+            </Body>
           </View>
 
           <TouchableOpacity
@@ -138,7 +152,7 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
         <View className="relative">
           <Animated.View style={dropdownAnimatedStyle}>
             {(medicalRecords?.data?.length ?? 0) > 0 ? (
-              <View className="py-16">
+              <View className="py-14">
                 {medicalRecords?.data?.map((record, index) => (
                   <MedicalRecordItem
                     key={record.id}
@@ -151,8 +165,41 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
                 ))}
               </View>
             ) : (
-              <View className="py-16 items-center">
-                <Body>No medical records yet</Body>
+              <View className="mt-12 rounded-20 border border-dashed border-line-subtle bg-background-surface-muted px-14 py-14">
+                <View className="flex-row gap-12">
+                  <View className="h-42 w-42 items-center justify-center rounded-14 bg-feature-medical-surface">
+                    <EmptyRecordIcon
+                      size={21}
+                      className="text-feature-medical-accent"
+                    />
+                  </View>
+
+                  <View className="min-w-0 flex-1">
+                    <Body variant="body3" weight="semiBold">
+                      No medical records yet
+                    </Body>
+                    <Body
+                      variant="body4"
+                      className="mt-4 text-text-muted"
+                      numberOfLines={2}
+                    >
+                      Add vaccines, checkups, medicine, or surgery notes for{" "}
+                      {pet.name}.
+                    </Body>
+
+                    {!!onAddPress && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="mt-12 self-start rounded-full px-14"
+                        onPress={onAddPress}
+                        accessibilityLabel={`Add first medical record for ${pet.name}`}
+                      >
+                        Add first record
+                      </Button>
+                    )}
+                  </View>
+                </View>
               </View>
             )}
           </Animated.View>
@@ -208,7 +255,7 @@ const MedicalRecordItem: React.FC<MedicalRecordItemProps> = ({
 
       <MedicalRecordListItem
         record={record}
-        className="ml-68 mr-16"
+        className="ml-68 mr-4"
         onPress={onPress}
         onMorePress={onMorePress}
       />

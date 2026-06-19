@@ -1,13 +1,15 @@
 import { Body } from "@/components/ui/Typography";
+import { MedicalRecordStatusChip } from "@/features/medical-records/components/MedicalRecordStatusChip";
+import { MedicalRecordType } from "@/features/medical-records/components/MedicalRecordType";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IMedicalRecord } from "@/interfaces";
 import { cn, date } from "@/utils";
-import { cva } from "class-variance-authority";
-import { DotsThreeVerticalIcon } from "phosphor-react-native";
+import { DotsThreeVerticalIcon, FileTextIcon } from "phosphor-react-native";
 import { memo, useCallback } from "react";
 import { GestureResponderEvent, TouchableOpacity, View } from "react-native";
 
 const MoreIcon = withIconClassName(DotsThreeVerticalIcon);
+const RecordIcon = withIconClassName(FileTextIcon);
 
 interface MedicalRecordListItemProps {
   record: IMedicalRecord;
@@ -16,91 +18,75 @@ interface MedicalRecordListItemProps {
   className?: string;
 }
 
-export const MedicalRecordListItem = memo(({
-  record,
-  onPress,
-  onMorePress,
-  className,
-}: MedicalRecordListItemProps) => {
-  const isProcessing = record.attachmentStatus === "processing";
-  const isFailed = record.attachmentStatus === "failed";
+export const MedicalRecordListItem = memo(
+  ({ record, onPress, onMorePress, className }: MedicalRecordListItemProps) => {
+    const handlePress = useCallback(() => {
+      onPress?.();
+    }, [onPress]);
 
-  const handlePress = useCallback(() => {
-    if (isProcessing || isFailed) return;
-    onPress?.();
-  }, [isFailed, isProcessing, onPress]);
+    const handleMorePress = useCallback(
+      (event: GestureResponderEvent) => {
+        event.stopPropagation();
+        onMorePress?.();
+      },
+      [onMorePress],
+    );
 
-  const handleMorePress = useCallback(
-    (event: GestureResponderEvent) => {
-      event.stopPropagation();
-      onMorePress?.();
-    },
-    [onMorePress],
-  );
-
-  return (
-    <TouchableOpacity
-      className={cn(
-        "flex-row bg-background-card rounded-16 p-16 elevation-sm shadow-sm",
-        className,
-      )}
-      onPress={handlePress}
-      activeOpacity={0.7}
-      disabled={!onPress && !onMorePress}
-    >
-      <View className="flex-1 flex-row items-center justify-between">
-        <View className="flex-1 mr-12 gap-4">
-          <Body weight="semiBold" numberOfLines={1}>
-            {record.title}
-          </Body>
-          <Body variant="body3" className="text-text-primary-disabled">
-            {date(record.date).format("L")}
-          </Body>
+    return (
+      <TouchableOpacity
+        className={cn(
+          "flex-row items-center gap-12 rounded-20 border border-line-subtle bg-background-surface px-14 py-14 shadow-sm",
+          className,
+        )}
+        onPress={handlePress}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={`${record.title}, ${date(record.date).format("L")}, ${record.attachmentStatus}`}
+        disabled={!onPress}
+      >
+        <View className="h-42 w-42 items-center justify-center rounded-14 bg-feature-medical-surface">
+          <RecordIcon size={20} className="text-feature-medical-accent" />
         </View>
-        <View className="flex-row items-center gap-8">
-          <StatusChip status={record.attachmentStatus} />
-          <TouchableOpacity
-            onPress={handleMorePress}
-          >
-            <MoreIcon size={24} className="text-icon-primary" weight="bold" />
-          </TouchableOpacity>
+
+        <View className="min-w-0 flex-1 gap-7">
+          <View className="flex-row items-start justify-between gap-10">
+            <Body
+              weight="semiBold"
+              numberOfLines={1}
+              className="min-w-0 flex-1"
+            >
+              {record.title}
+            </Body>
+            <MedicalRecordStatusChip status={record.attachmentStatus} />
+          </View>
+
+          <View className="flex-row items-center gap-8">
+            <MedicalRecordType type={record.recordType} />
+            <Body variant="body4" className="text-text-muted">
+              {date(record.date).format("L")}
+            </Body>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
-});
+
+        {!!onMorePress && (
+          <View className="items-center justify-center">
+            <TouchableOpacity
+              onPress={handleMorePress}
+              accessibilityRole="button"
+              accessibilityLabel={`More options for ${record.title}`}
+              className="h-44 w-36 items-center justify-center rounded-full"
+            >
+              <MoreIcon
+                size={22}
+                className="text-icon-secondary"
+                weight="bold"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  },
+);
 
 MedicalRecordListItem.displayName = "MedicalRecordListItem";
-
-const statusWrapperStyle = cva("px-12 py-6 rounded-18", {
-  variants: {
-    status: {
-      ready: "bg-background-positive-foreground",
-      processing: "bg-background-warning-foreground",
-      failed: "bg-background-negative-foreground",
-    },
-  },
-});
-const statusTextStyle = cva("", {
-  variants: {
-    status: {
-      ready: "text-text-positive",
-      processing: "text-text-warning",
-      failed: "text-text-negative",
-    },
-  },
-});
-
-const StatusChip = ({
-  status,
-}: {
-  status: IMedicalRecord["attachmentStatus"];
-}) => {
-  return (
-    <View className={statusWrapperStyle({ status })}>
-      <Body variant="body3" className={statusTextStyle({ status })}>
-        {status}
-      </Body>
-    </View>
-  );
-};
