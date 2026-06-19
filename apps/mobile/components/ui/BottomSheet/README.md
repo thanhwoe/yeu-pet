@@ -18,7 +18,8 @@ const [visible, setVisible] = useState(false);
 
 - Render the sheet while the owning screen is mounted.
 - Control visibility from parent state with `visible` and close by setting that state to `false`.
-- The shared component owns the native modal layer and Gorhom sheet instance; callers should not call `present()` or manage refs.
+- The shared component wraps Gorhom `BottomSheetModal`; callers should not call `present()`, `dismiss()`, or manage refs.
+- `BottomSheetModalProvider` is mounted once in `components/Providers`, so do not add another provider around feature screens.
 - Use the existing form inputs inside sheet forms; `withBottomSheetKeyboardEvents` swaps them to `BottomSheetTextInput`.
 - Leave `enableDynamicSizing` on for normal forms and option lists. The shared component will omit `snapPoints` so Gorhom sizes the sheet from content height.
 - Pass explicit `snapPoints` only for fixed-height or full-screen sheets.

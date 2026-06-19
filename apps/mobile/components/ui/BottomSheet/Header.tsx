@@ -31,6 +31,8 @@ export const BottomSheetHeader = ({
       {headerMode === "back" ? (
         <TouchableOpacity
           onPress={handleDismiss}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
           className="w-[50px] h-[50px] flex-row items-center justify-center"
         >
           <ArrowLeftIcon
@@ -48,6 +50,8 @@ export const BottomSheetHeader = ({
       {headerMode === "close" ? (
         <TouchableOpacity
           onPress={handleDismiss}
+          accessibilityRole="button"
+          accessibilityLabel="Close sheet"
           className="w-[50px] h-[50px] flex-row items-center justify-center"
         >
           <XIcon size={18} weight="bold" className="text-icon-primary" />

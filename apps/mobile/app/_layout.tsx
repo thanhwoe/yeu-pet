@@ -7,7 +7,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { BackHeader } from "@/components/Headers/BackHeader";
 import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
 import { Providers } from "@/components/Providers";
-import { Toast } from "@/components/Toast";
 import { UserSync } from "@/components/UserSync";
 import { useUserInfoStore } from "@/stores/user-info";
 import "../global.css";
@@ -22,7 +21,6 @@ export default function RootLayout() {
     <Providers>
       <UserSync />
       <RootNavigation />
-      <Toast />
     </Providers>
   );
 }

@@ -2,6 +2,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
 import { date } from "@/utils";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
@@ -11,6 +12,7 @@ import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppLoader } from "../AppLoader";
+import { Toast } from "../Toast";
 
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
@@ -88,7 +90,10 @@ const InitialProvider = ({ children }: Children) => {
 
   return (
     <>
-      <View style={[{ flex: 1 }, themeVariables]}>{children}</View>
+      <View style={[{ flex: 1 }, themeVariables]}>
+        <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+        <Toast />
+      </View>
       <StatusBar
         key={`root-status-bar-${isDarkColorScheme ? "light" : "dark"}`}
         style={isDarkColorScheme ? "light" : "dark"}

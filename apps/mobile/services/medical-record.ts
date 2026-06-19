@@ -33,7 +33,6 @@ export const getMedicalRecordDetailQuery = (id: string) =>
 export const createMedicalRecordMutation = (data: IMedicalRecordForm) => {
   const formData = new FormData();
 
-  formData.append("petId", data.petId);
   formData.append("recordType", data.recordType);
   formData.append("title", data.title);
   formData.append("date", dayjs(data.date).toISOString());

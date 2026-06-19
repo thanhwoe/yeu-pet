@@ -34,7 +34,7 @@ This checklist tracks the Phase 1 mobile refactor against `docs/12-mobile-api-co
 - [x] Sitter registration uses `/sitters/register`; canonical route is `POST /sitters/me`.
 - [x] Sitter booking owner/sitter lists use legacy split routes; canonical route is `GET /sitter-bookings/me?role=owner|sitter`.
 - [x] Sitter booking actions use PATCH compatibility routes; canonical mobile routes are POST actions.
-- [x] Medical record create uses `/medical-records`; canonical mobile route is `/pets/:id/medical-records`.
+- [x] Medical record create uses the canonical `/pets/:id/medical-records` route with `petId` in the path, not the body.
 - [x] Medical attachment add/remove endpoints are not exposed in mobile services.
 - [x] Reports/blocks/subscriptions APIs are missing from mobile services.
 
