@@ -44,6 +44,21 @@ export const createPhotoCommentMutation = ({
     data: params,
   });
 
+export const createPhotoReplyMutation = ({
+  photoId,
+  commentId,
+  content,
+}: Pick<IPhotoCommentForm, "content"> & {
+  photoId: string;
+  commentId: string;
+}) =>
+  APIs.post<IPhotoComment>(
+    API_ROUTES.PHOTO_COMMENT_REPLIES(photoId, commentId),
+    {
+      data: { content },
+    },
+  );
+
 export const deletePhotoCommentMutation = ({
   photoId,
   commentId,

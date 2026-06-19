@@ -1,6 +1,8 @@
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@/constants/common";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Pressable, Modal as RNModal, StatusBar, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -146,41 +148,51 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
       animationType="none"
       onRequestClose={handleClose}
     >
-      <View className="flex-1">
-        <StatusBar
-          backgroundColor="transparent"
-          barStyle="light-content"
-          translucent
-        />
+      <GestureHandlerRootView style={styles.modalRoot}>
+        <BottomSheetModalProvider>
+          <View className="flex-1">
+            <StatusBar
+              backgroundColor="transparent"
+              barStyle="light-content"
+              translucent
+            />
 
-        {/* Animated Backdrop */}
-        <Animated.View
-          style={animatedBackdropStyle}
-          className="absolute inset-0 bg-black/90"
-        />
+            {/* Animated Backdrop */}
+            <Animated.View
+              style={animatedBackdropStyle}
+              className="absolute inset-0 bg-black/90"
+            />
 
-        {/* Pressable overlay for closing */}
-        <Pressable
-          className="flex-1 justify-center items-center"
-          onPress={handleClose}
-        >
-          {/* Image Container */}
-          <Animated.View
-            style={[
-              animatedImageStyle,
-              {
-                width: animationFrame.targetWidth,
-                height: animationFrame.targetHeight,
-              },
-            ]}
-            className="justify-center items-center"
-          >
-            <Pressable onPress={(e) => e.stopPropagation()}>
-              {children}
+            {/* Pressable overlay for closing */}
+            <Pressable
+              className="flex-1 justify-center items-center"
+              onPress={handleClose}
+            >
+              {/* Image Container */}
+              <Animated.View
+                style={[
+                  animatedImageStyle,
+                  {
+                    width: animationFrame.targetWidth,
+                    height: animationFrame.targetHeight,
+                  },
+                ]}
+                className="justify-center items-center"
+              >
+                <Pressable onPress={(e) => e.stopPropagation()}>
+                  {children}
+                </Pressable>
+              </Animated.View>
             </Pressable>
-          </Animated.View>
-        </Pressable>
-      </View>
+          </View>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </RNModal>
   );
+};
+
+const styles = {
+  modalRoot: {
+    flex: 1,
+  },
 };

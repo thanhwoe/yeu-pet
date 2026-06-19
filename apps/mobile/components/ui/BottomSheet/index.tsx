@@ -35,6 +35,8 @@ export interface BottomSheetProps extends PropsWithChildren<BottomSheetModalProp
    */
   useScrollView?: boolean;
   footer?: ReactNode;
+  footerBottomInset?: number;
+  useContentWrapper?: boolean;
 }
 
 export const BottomSheet = ({
@@ -46,6 +48,8 @@ export const BottomSheet = ({
   className,
   useScrollView = true,
   footer,
+  footerBottomInset,
+  useContentWrapper = true,
   enableDynamicSizing = true,
   backdropComponent,
   handleComponent,
@@ -153,13 +157,13 @@ export const BottomSheet = ({
       return (
         <GorhomBottomSheetFooter
           {...props}
-          bottomInset={insets.bottom || 12}
+          bottomInset={footerBottomInset ?? (insets.bottom || 12)}
         >
           {footer}
         </GorhomBottomSheetFooter>
       );
     },
-    [footer, insets.bottom],
+    [footer, footerBottomInset, insets.bottom],
   );
 
   return (
@@ -193,7 +197,9 @@ export const BottomSheet = ({
       animateOnMount={animateOnMount}
       {...rest}
     >
-      {useScrollView ? (
+      {!useContentWrapper ? (
+        children
+      ) : useScrollView ? (
         <BottomSheetScrollView
           contentContainerStyle={contentContainerStyle}
           className={className}
