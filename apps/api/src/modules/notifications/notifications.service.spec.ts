@@ -148,4 +148,51 @@ describe('NotificationsService booking notifications', () => {
     expect(mockFirebaseSend).not.toHaveBeenCalled();
     expect(notificationDeliveriesRepository.create).not.toHaveBeenCalled();
   });
+
+  it('creates an owner status notification with an owner booking deep link', async () => {
+    mockFirebaseSend.mockResolvedValue('firebase-message-id');
+    notificationsRepository.create.mockResolvedValueOnce({
+      id: 'status-notification-id',
+      account_id: recipientAccountId,
+      title: 'Booking confirmed',
+      body: "Mochi's booking request was accepted.",
+      data: {
+        bookingId,
+        bookingStatus: 'confirmed',
+        notificationType: 'sitter_booking_status',
+      },
+      deep_link: `/sitter?tab=bookings&role=owner&bookingId=${bookingId}`,
+      image_url: null,
+    });
+
+    await service.sendSitterBookingStatusNotification({
+      recipientAccountId,
+      bookingId,
+      petName: 'Mochi',
+      status: 'confirmed',
+    });
+
+    expect(notificationsRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        account_id: recipientAccountId,
+        title: 'Booking confirmed',
+        body: "Mochi's booking request was accepted.",
+        deep_link: `/sitter?tab=bookings&role=owner&bookingId=${bookingId}`,
+        data: {
+          bookingId,
+          bookingStatus: 'confirmed',
+          notificationType: 'sitter_booking_status',
+        },
+      }),
+    );
+    expect(mockFirebaseSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        token: pushToken,
+        data: expect.objectContaining({
+          bookingStatus: 'confirmed',
+          notificationType: 'sitter_booking_status',
+        }) as Record<string, string>,
+      }),
+    );
+  });
 });

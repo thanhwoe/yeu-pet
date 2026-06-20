@@ -358,44 +358,46 @@ export class SitterBookingsService {
       throw new BadRequestException('This booking hold has expired');
     }
 
-    return this.sitterBookingsRepository.runSerializable(async (tx) => {
-      const sitter = await this.petSittersRepository.lock(
-        tx,
-        booking.sitter_id,
-      );
-
-      if (!sitter) {
-        throw new NotFoundException(
-          `Pet sitter with ID ${booking.sitter_id} not found`,
-        );
-      }
-
-      if (!sitter.is_available) {
-        throw new BadRequestException(
-          'This pet sitter is currently not available',
-        );
-      }
-
-      const heldOverlappingBookings =
-        await this.sitterBookingsRepository.countHeldOverlappingInTx(
+    const confirmedBooking =
+      await this.sitterBookingsRepository.runSerializable(async (tx) => {
+        const sitter = await this.petSittersRepository.lock(
           tx,
-          sitter.id,
-          booking.start_time,
-          booking.end_time,
-          new Date(),
-          id,
+          booking.sitter_id,
         );
 
-      if (heldOverlappingBookings >= sitter.max_concurrent_bookings) {
-        throw new ConflictException(
-          `This pet sitter is fully booked for the selected timeframe`,
-        );
-      }
+        if (!sitter) {
+          throw new NotFoundException(
+            `Pet sitter with ID ${booking.sitter_id} not found`,
+          );
+        }
 
-      return this.toBookingResponse(
-        await this.sitterBookingsRepository.confirmInTx(tx, id),
-      );
-    });
+        if (!sitter.is_available) {
+          throw new BadRequestException(
+            'This pet sitter is currently not available',
+          );
+        }
+
+        const heldOverlappingBookings =
+          await this.sitterBookingsRepository.countHeldOverlappingInTx(
+            tx,
+            sitter.id,
+            booking.start_time,
+            booking.end_time,
+            new Date(),
+            id,
+          );
+
+        if (heldOverlappingBookings >= sitter.max_concurrent_bookings) {
+          throw new ConflictException(
+            `This pet sitter is fully booked for the selected timeframe`,
+          );
+        }
+
+        return this.sitterBookingsRepository.confirmInTx(tx, id);
+      });
+
+    this.notifyOwnerOfBookingStatus(confirmedBooking, 'confirmed');
+    return this.toBookingResponse(confirmedBooking);
   }
 
   async reject(user: accounts, id: string) {
@@ -404,11 +406,11 @@ export class SitterBookingsService {
       throw new BadRequestException('Only PENDING bookings can be reject');
     }
 
-    return this.toBookingResponse(
-      await this.sitterBookingsRepository.update(id, {
-        status: sitter_bookings_status.rejected,
-      }),
-    );
+    const rejectedBooking = await this.sitterBookingsRepository.update(id, {
+      status: sitter_bookings_status.rejected,
+    });
+    this.notifyOwnerOfBookingStatus(rejectedBooking, 'rejected');
+    return this.toBookingResponse(rejectedBooking);
   }
 
   async complete(user: accounts, id: string) {
@@ -422,11 +424,11 @@ export class SitterBookingsService {
       );
     }
 
-    return this.toBookingResponse(
-      await this.sitterBookingsRepository.update(id, {
-        status: sitter_bookings_status.completed,
-      }),
-    );
+    const completedBooking = await this.sitterBookingsRepository.update(id, {
+      status: sitter_bookings_status.completed,
+    });
+    this.notifyOwnerOfBookingStatus(completedBooking, 'completed');
+    return this.toBookingResponse(completedBooking);
   }
 
   async cancel(user: accounts, id: string, dto: CancelSitterBookingDto) {
@@ -455,9 +457,15 @@ export class SitterBookingsService {
       );
     }
 
-    return this.toBookingResponse(
-      await this.sitterBookingsRepository.cancel(id, user.id, dto.reason),
+    const cancelledBooking = await this.sitterBookingsRepository.cancel(
+      id,
+      user.id,
+      dto.reason,
     );
+    if (isSitter) {
+      this.notifyOwnerOfBookingStatus(cancelledBooking, 'cancelled');
+    }
+    return this.toBookingResponse(cancelledBooking);
   }
 
   async findAll(
@@ -564,6 +572,7 @@ export class SitterBookingsService {
       });
 
       this.dispatchExpiryEmails(booking);
+      this.notifyOwnerOfBookingStatus(booking, 'expired');
     }
 
     return {
@@ -594,6 +603,24 @@ export class SitterBookingsService {
         text: `A pending booking hold for ${booking.pets.name} has expired and no longer reserves capacity.`,
       });
     }
+  }
+
+  private notifyOwnerOfBookingStatus(
+    booking: { id: string; account_id: string; pets: { name: string } },
+    status: 'confirmed' | 'rejected' | 'completed' | 'cancelled' | 'expired',
+  ): void {
+    this.notificationsService
+      .sendSitterBookingStatusNotification({
+        recipientAccountId: booking.account_id,
+        bookingId: booking.id,
+        petName: booking.pets.name,
+        status,
+      })
+      .catch((error) => {
+        this.logger.error(
+          `Failed to notify booking owner of status change: ${(error as Error).message}`,
+        );
+      });
   }
 
   private async checkActiveById(id: string) {

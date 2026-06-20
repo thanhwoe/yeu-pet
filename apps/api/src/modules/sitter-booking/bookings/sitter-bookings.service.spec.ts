@@ -183,6 +183,7 @@ const createEventBus = () =>
 const createNotificationsService = () =>
   ({
     sendSitterBookingRequestNotification: jest.fn(() => Promise.resolve()),
+    sendSitterBookingStatusNotification: jest.fn(() => Promise.resolve()),
   }) as unknown as jest.Mocked<NotificationsService>;
 
 describe('SitterBookingsService', () => {
@@ -334,6 +335,139 @@ describe('SitterBookingsService', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
 
     expect(sitterBookingsRepository.runSerializable.mock.calls).toHaveLength(0);
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toHaveLength(0);
+  });
+
+  it('notifies the owner when the sitter confirms a booking', async () => {
+    petSittersRepository.findByUser.mockResolvedValue({
+      id: sitterId,
+    } as never);
+    petSittersRepository.lock.mockResolvedValue(lockedSitter);
+    sitterBookingsRepository.findById.mockResolvedValue({
+      ...bookingWithRelations,
+      expires_at: null,
+    } as never);
+    sitterBookingsRepository.confirmInTx.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.confirmed,
+    } as never);
+
+    await service.confirm({ id: sitterAccountId } as accounts, bookingId);
+
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: accountId,
+          bookingId,
+          petName: 'Mochi',
+          status: 'confirmed',
+        },
+      ],
+    ]);
+  });
+
+  it('notifies the owner when the sitter rejects a booking', async () => {
+    petSittersRepository.findByUser.mockResolvedValue({
+      id: sitterId,
+    } as never);
+    sitterBookingsRepository.findById.mockResolvedValue(
+      bookingWithRelations as never,
+    );
+    sitterBookingsRepository.update.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.rejected,
+    } as never);
+
+    await service.reject({ id: sitterAccountId } as accounts, bookingId);
+
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: accountId,
+          bookingId,
+          petName: 'Mochi',
+          status: 'rejected',
+        },
+      ],
+    ]);
+  });
+
+  it('notifies the owner when the sitter completes a booking', async () => {
+    petSittersRepository.findByUser.mockResolvedValue({
+      id: sitterId,
+    } as never);
+    sitterBookingsRepository.findById.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.active,
+    } as never);
+    sitterBookingsRepository.update.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.completed,
+    } as never);
+
+    await service.complete({ id: sitterAccountId } as accounts, bookingId);
+
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: accountId,
+          bookingId,
+          petName: 'Mochi',
+          status: 'completed',
+        },
+      ],
+    ]);
+  });
+
+  it('notifies the owner when the sitter cancels a booking', async () => {
+    sitterBookingsRepository.findById.mockResolvedValue(
+      bookingWithRelations as never,
+    );
+    sitterBookingsRepository.cancel.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.cancelled,
+    } as never);
+
+    await service.cancel({ id: sitterAccountId } as accounts, bookingId, {
+      reason: 'Unavailable',
+    });
+
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: accountId,
+          bookingId,
+          petName: 'Mochi',
+          status: 'cancelled',
+        },
+      ],
+    ]);
+  });
+
+  it('does not notify the owner about their own cancellation', async () => {
+    sitterBookingsRepository.findById.mockResolvedValue(
+      bookingWithRelations as never,
+    );
+    sitterBookingsRepository.cancel.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.cancelled,
+    } as never);
+
+    await service.cancel(user, bookingId, { reason: 'Plans changed' });
+
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toHaveLength(0);
   });
 
   it('returns not found when the booking sitter is missing on confirmation', async () => {
@@ -381,6 +515,18 @@ describe('SitterBookingsService', () => {
           subject: 'A YeuPet booking hold expired',
           to: 'sitter@example.com',
         }),
+      ],
+    ]);
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: accountId,
+          bookingId,
+          petName: 'Mochi',
+          status: 'expired',
+        },
       ],
     ]);
   });

@@ -4,6 +4,7 @@ import {
   notifications,
   notifications_status,
   reminders,
+  sitter_bookings_status,
 } from '@app/generated/prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -131,6 +132,48 @@ export class NotificationsService {
       data: {
         bookingId: params.bookingId,
         notificationType: 'sitter_booking_request',
+      },
+    });
+  }
+
+  async sendSitterBookingStatusNotification(params: {
+    recipientAccountId: string;
+    bookingId: string;
+    petName: string;
+    status: 'confirmed' | 'rejected' | 'completed' | 'cancelled' | 'expired';
+  }) {
+    const copy = {
+      [sitter_bookings_status.confirmed]: {
+        title: 'Booking confirmed',
+        body: `${params.petName}'s booking request was accepted.`,
+      },
+      [sitter_bookings_status.rejected]: {
+        title: 'Booking request declined',
+        body: `${params.petName}'s booking request was declined.`,
+      },
+      [sitter_bookings_status.completed]: {
+        title: 'Booking completed',
+        body: `${params.petName}'s booking was marked as completed.`,
+      },
+      [sitter_bookings_status.cancelled]: {
+        title: 'Booking cancelled',
+        body: `${params.petName}'s booking was cancelled by the sitter.`,
+      },
+      expired: {
+        title: 'Booking request expired',
+        body: `${params.petName}'s booking request expired before it was accepted.`,
+      },
+    }[params.status];
+
+    await this.sendBookingNotification({
+      recipientAccountId: params.recipientAccountId,
+      title: copy.title,
+      body: copy.body,
+      deepLink: `/sitter?tab=bookings&role=owner&bookingId=${encodeURIComponent(params.bookingId)}`,
+      data: {
+        bookingId: params.bookingId,
+        bookingStatus: params.status,
+        notificationType: 'sitter_booking_status',
       },
     });
   }

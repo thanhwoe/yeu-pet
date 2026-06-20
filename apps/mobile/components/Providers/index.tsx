@@ -69,14 +69,18 @@ const InitialProvider = ({ children }: Children) => {
           queryKey: NOTIFICATIONS_KEY.all,
         });
 
+        const notificationType =
+          notification.request.content.data.notificationType;
         if (
-          notification.request.content.data.notificationType ===
-          "sitter_booking_request"
+          notificationType !== "sitter_booking_request" &&
+          notificationType !== "sitter_booking_status"
         ) {
-          void queryClient.invalidateQueries({
-            queryKey: SITTER_BOOKING_KEY.all,
-          });
+          return;
         }
+
+        void queryClient.invalidateQueries({
+          queryKey: SITTER_BOOKING_KEY.all,
+        });
       },
     );
 
