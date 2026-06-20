@@ -46,8 +46,10 @@ const EXTERNAL_PAYMENT_NOTE =
 type SitterBookingRelationSource = sitter_bookings &
   Partial<SitterBookingWithRelations>;
 
-type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> =
-  Omit<T, 'accounts' | 'pets' | 'pet_sitters'> & {
+type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> = Omit<
+  T,
+  'accounts' | 'pets' | 'pet_sitters'
+> & {
   payment: {
     inApp: false;
     note: string;
@@ -504,7 +506,7 @@ export class SitterBookingsService {
     throw new BadRequestException('role must be one of: owner, sitter');
   }
 
-  async findOne(user: accounts, id: string) {
+  async findOne(user: Pick<accounts, 'id'>, id: string) {
     const booking = await this.checkActiveById(id);
     if (!booking) {
       throw new NotFoundException(`Bookings with ID ${id} not found`);

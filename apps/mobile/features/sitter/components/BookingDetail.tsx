@@ -54,7 +54,9 @@ export const BookingDetail = ({
   const canComplete =
     role === "sitter" && ["confirmed", "active"].includes(booking.status);
   const canCancel = ["pending", "confirmed"].includes(booking.status);
-  const canMessage = !["cancelled", "rejected"].includes(booking.status);
+  const canMessage = ["confirmed", "active", "completed"].includes(
+    booking.status,
+  );
   const canReview = role === "owner" && booking.status === "completed";
 
   const holdLabel = formatBookingHold(booking);

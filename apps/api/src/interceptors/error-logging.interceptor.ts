@@ -17,6 +17,8 @@ export class ErrorLoggingInterceptor implements NestInterceptor {
   constructor(private readonly trackService: TrackService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    if (context.getType() !== 'http') return next.handle();
+
     const request = context.switchToHttp().getRequest<any>();
     const { method, url, body } = request;
 

@@ -113,6 +113,13 @@ const RootNavigation = () => {
           }}
         />
         <Stack.Screen
+          name="sitter-bookings/[id]/chat"
+          options={{
+            header: BackHeader,
+            title: "Booking messages",
+          }}
+        />
+        <Stack.Screen
           name="products/[productId]"
           options={{
             header: ProductDetailHeader,

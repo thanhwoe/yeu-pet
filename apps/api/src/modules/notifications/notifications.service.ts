@@ -19,6 +19,7 @@ import { NotificationDeliveriesRepository } from './notification-deliveries.repo
 import { jsonValueToStringMap } from '@app/utils/transform';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
+import { UserSettingsRepository } from '../user-settings/user-settings.repository';
 
 @Injectable()
 export class NotificationsService {
@@ -27,6 +28,7 @@ export class NotificationsService {
     private readonly notificationsRepository: NotificationsRepository,
     private readonly notificationDeliveriesRepository: NotificationDeliveriesRepository,
     private readonly userDevicesRepository: UserDevicesRepository,
+    private readonly userSettingsRepository: UserSettingsRepository,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {
     if (!admin.apps.length) {
@@ -98,6 +100,52 @@ export class NotificationsService {
     await Promise.allSettled(
       devices.map((pt) => this.processNotification(pt, notification)),
     );
+  }
+
+  async sendSitterBookingMessageNotification(params: {
+    recipientAccountId: string;
+    bookingId: string;
+  }) {
+    const notification = await this.notificationsRepository.create({
+      account_id: params.recipientAccountId,
+      body: 'You have a new message about your booking.',
+      data: {
+        bookingId: params.bookingId,
+      },
+      title: 'New sitter message',
+      deep_link: `/sitter-bookings/${params.bookingId}/chat`,
+      image_url: null,
+      image_id: null,
+    });
+
+    const settings = await this.userSettingsRepository.findById(
+      params.recipientAccountId,
+    );
+    if (
+      settings &&
+      (!settings.notification_enable || !settings.booking_notifications)
+    ) {
+      return;
+    }
+
+    const [devices] = await this.userDevicesRepository.findAll({
+      account_id: params.recipientAccountId,
+    });
+
+    const firebaseDevices = devices.filter(
+      (device) =>
+        device.is_active !== false && !this.isExpoPushToken(device.push_token),
+    );
+
+    await Promise.allSettled(
+      firebaseDevices.map((device) =>
+        this.processNotification(device, notification),
+      ),
+    );
+  }
+
+  private isExpoPushToken(token: string) {
+    return /^(Expo|Exponent)PushToken\[/.test(token);
   }
 
   private async processNotification(

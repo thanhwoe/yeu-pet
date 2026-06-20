@@ -17,6 +17,11 @@ export class CreateSitterBookingMessageDto {
   @IsOptional()
   content?: string;
 
+  @IsString()
+  @MaxLength(128)
+  @IsOptional()
+  clientMessageId?: string;
+
   @IsUrl()
   @IsOptional()
   imageUrl?: string;

@@ -16,6 +16,11 @@ export interface ISitterBookingMessagesRepository {
   create(
     data: sitter_booking_messagesCreateInput,
   ): Promise<SitterBookingMessageWithSender>;
+  findByClientMessageId(params: {
+    booking_id: string;
+    sender_id: string;
+    client_message_id: string;
+  }): Promise<SitterBookingMessageWithSender | null>;
   findAll(params: {
     booking_id: string;
     skip?: number;

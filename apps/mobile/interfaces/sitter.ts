@@ -113,13 +113,21 @@ export interface ISitterBookingMessage {
   type: SitterBookingMessageType;
   content: string | null;
   imageUrl: string | null;
-  createdAt: string | null;
+  clientMessageId: string | null;
+  createdAt: string;
+  readAt: string | null;
+  sender?: {
+    id: string;
+    displayName?: string | null;
+    avatarUrl?: string | null;
+  };
 }
 
 export interface ISitterBookingMessageForm {
   content?: string;
   imageUrl?: string;
   type?: SitterBookingMessageType;
+  clientMessageId?: string;
 }
 
 export interface ISitterReview {

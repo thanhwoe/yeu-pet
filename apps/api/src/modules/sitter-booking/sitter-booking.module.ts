@@ -18,9 +18,12 @@ import { ISitterBookingMessagesRepository } from '@app/interfaces/sitter-booking
 import { SitterBookingMessagesController } from './bookings/messages/sitter-booking-messages.controller';
 import { SitterBookingMessagesRepository } from './bookings/messages/sitter-booking-messages.repository';
 import { SitterBookingMessagesService } from './bookings/messages/sitter-booking-messages.service';
+import { SitterBookingChatGateway } from './bookings/messages/sitter-booking-chat.gateway';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [CaslModule, PetsModule],
+  imports: [CaslModule, PetsModule, NotificationsModule, UsersModule],
   controllers: [
     PetSittersController,
     SitterBookingsController,
@@ -43,6 +46,7 @@ import { SitterBookingMessagesService } from './bookings/messages/sitter-booking
       useExisting: SitterBookingMessagesRepository,
     },
     SitterBookingMessagesService,
+    SitterBookingChatGateway,
     ActiveBookingsTask,
     SitterReviewsRepository,
     { provide: ISitterReviewsRepository, useExisting: SitterReviewsRepository },

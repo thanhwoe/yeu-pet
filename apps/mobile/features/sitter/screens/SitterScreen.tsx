@@ -5,7 +5,6 @@ import { StateView } from "@/components/ui/StateView";
 import { Body, Heading } from "@/components/ui/Typography";
 import {
   ISitterCancelForm,
-  ISitterMessageForm,
   ISitterReviewFormValues,
 } from "@/constants/validation";
 import {
@@ -14,7 +13,6 @@ import {
   BookingRequestForm,
   CancelForm,
   hasSitterFilters,
-  MessageThread,
   ReviewForm,
   SitterCard,
   SitterDetail,
@@ -37,6 +35,7 @@ import {
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import { useRouter } from "expo-router";
 import { PencilSimpleIcon, SlidersHorizontalIcon } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
@@ -45,6 +44,7 @@ const PencilSimple = withIconClassName(PencilSimpleIcon);
 const SlidersHorizontal = withIconClassName(SlidersHorizontalIcon);
 
 export const SitterScreen = () => {
+  const router = useRouter();
   const currentUser = useUserInfoStore.use.user();
   const [activeTab, setActiveTab] = useState(SCREEN_TABS[0].value);
   const [bookingRoleTab, setBookingRoleTab] = useState(
@@ -61,8 +61,6 @@ export const SitterScreen = () => {
   const [selectedBooking, setSelectedBooking] = useState<ISitterBooking | null>(
     null,
   );
-  const [bookingForMessages, setBookingForMessages] =
-    useState<ISitterBooking | null>(null);
   const [bookingForCancel, setBookingForCancel] =
     useState<ISitterBooking | null>(null);
   const [bookingForReview, setBookingForReview] =
@@ -90,12 +88,10 @@ export const SitterScreen = () => {
     rejectBooking,
     completeBooking,
     cancelBooking,
-    sendMessage,
     createReview,
     isCreatingBooking,
     isSavingProfile,
     isMutatingBooking,
-    isSendingMessage,
     isCreatingReview,
   } = useSitters(filters, bookingStatus);
 
@@ -203,20 +199,16 @@ export const SitterScreen = () => {
     setSelectedBooking(null);
   };
 
-  const handleSendMessage = async (data: ISitterMessageForm) => {
-    if (!bookingForMessages) return;
-
-    await sendMessage({
-      bookingId: bookingForMessages.id,
-      type: "text",
-      content: data.content,
-    });
-  };
-
-  const openBookingMessages = useCallback((booking: ISitterBooking) => {
-    setSelectedBooking(null);
-    setBookingForMessages(booking);
-  }, []);
+  const openBookingMessages = useCallback(
+    (booking: ISitterBooking) => {
+      setSelectedBooking(null);
+      router.push({
+        pathname: "/sitter-bookings/[id]/chat",
+        params: { id: booking.id },
+      });
+    },
+    [router],
+  );
 
   const openCancelBooking = useCallback((booking: ISitterBooking) => {
     setSelectedBooking(null);
@@ -510,22 +502,6 @@ export const SitterScreen = () => {
                 ],
               );
             }}
-          />
-        ) : null}
-      </BottomSheet>
-
-      <BottomSheet
-        visible={!!bookingForMessages}
-        onDismiss={() => setBookingForMessages(null)}
-        titleElement={<Body weight="semiBold">Booking messages</Body>}
-        useScrollView
-      >
-        {bookingForMessages ? (
-          <MessageThread
-            booking={bookingForMessages}
-            currentUserId={currentUser?.id}
-            loading={isSendingMessage}
-            onSend={handleSendMessage}
           />
         ) : null}
       </BottomSheet>

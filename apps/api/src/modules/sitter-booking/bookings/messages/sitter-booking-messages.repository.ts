@@ -25,6 +25,17 @@ export class SitterBookingMessagesRepository implements ISitterBookingMessagesRe
     });
   }
 
+  findByClientMessageId(params: {
+    booking_id: string;
+    sender_id: string;
+    client_message_id: string;
+  }) {
+    return this.prisma.sitter_booking_messages.findFirst({
+      where: params,
+      include: MESSAGE_SENDER_INCLUDE,
+    });
+  }
+
   findAll(params: { booking_id: string; skip?: number; take?: number }) {
     const where = {
       booking_id: params.booking_id,
@@ -35,7 +46,7 @@ export class SitterBookingMessagesRepository implements ISitterBookingMessagesRe
         where,
         skip: params.skip,
         take: params.take,
-        orderBy: { created_at: 'asc' },
+        orderBy: [{ created_at: 'desc' }, { id: 'desc' }],
         include: MESSAGE_SENDER_INCLUDE,
       }),
       this.prisma.sitter_booking_messages.count({ where }),

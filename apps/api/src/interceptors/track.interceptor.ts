@@ -12,6 +12,8 @@ export class TrackInterceptor implements NestInterceptor {
   constructor(private trackService: TrackService) {}
 
   intercept(context: ExecutionContext, next: CallHandler) {
+    if (context.getType() !== 'http') return next.handle();
+
     const req = context.switchToHttp().getRequest();
 
     const start = Date.now();

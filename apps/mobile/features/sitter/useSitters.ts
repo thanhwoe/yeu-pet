@@ -22,6 +22,7 @@ import {
   createSitterReviewMutation,
   getListPetQuery,
   getMySitterProfileQuery,
+  getSitterBookingDetailQuery,
   getSitterBookingMessagesQuery,
   getSitterBookingsForSitterQuery,
   getSitterBookingsQuery,
@@ -221,7 +222,8 @@ export const useSitters = (
         sitterBookingsQuery.refetch(),
       ]);
     },
-    createBooking: (data: ISitterBookingForm) => createBooking.mutateAsync(data),
+    createBooking: (data: ISitterBookingForm) =>
+      createBooking.mutateAsync(data),
     saveProfile: (data: IPetSitterForm) =>
       mySitterProfileQuery.data
         ? updateProfile.mutateAsync(data)
@@ -254,6 +256,14 @@ export const useSitterBookingMessages = (bookingId?: string) => {
         bookingId: bookingId ?? "",
         limit: MESSAGE_LIMIT,
       }),
+    enabled: Boolean(bookingId),
+  });
+};
+
+export const useSitterBookingDetail = (bookingId?: string) => {
+  return useQuery({
+    queryKey: SITTER_BOOKING_KEY.detail(bookingId),
+    queryFn: () => getSitterBookingDetailQuery(bookingId ?? ""),
     enabled: Boolean(bookingId),
   });
 };

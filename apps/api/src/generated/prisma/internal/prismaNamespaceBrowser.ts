@@ -637,8 +637,10 @@ export const Sitter_booking_messagesScalarFieldEnum = {
   type: 'type',
   content: 'content',
   image_url: 'image_url',
+  client_message_id: 'client_message_id',
   read_at: 'read_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type Sitter_booking_messagesScalarFieldEnum = (typeof Sitter_booking_messagesScalarFieldEnum)[keyof typeof Sitter_booking_messagesScalarFieldEnum]

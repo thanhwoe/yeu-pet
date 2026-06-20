@@ -31,8 +31,10 @@ export type Sitter_booking_messagesMinAggregateOutputType = {
   type: $Enums.booking_message_type | null
   content: string | null
   image_url: string | null
+  client_message_id: string | null
   read_at: Date | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type Sitter_booking_messagesMaxAggregateOutputType = {
@@ -42,8 +44,10 @@ export type Sitter_booking_messagesMaxAggregateOutputType = {
   type: $Enums.booking_message_type | null
   content: string | null
   image_url: string | null
+  client_message_id: string | null
   read_at: Date | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type Sitter_booking_messagesCountAggregateOutputType = {
@@ -53,8 +57,10 @@ export type Sitter_booking_messagesCountAggregateOutputType = {
   type: number
   content: number
   image_url: number
+  client_message_id: number
   read_at: number
   created_at: number
+  updated_at: number
   _all: number
 }
 
@@ -66,8 +72,10 @@ export type Sitter_booking_messagesMinAggregateInputType = {
   type?: true
   content?: true
   image_url?: true
+  client_message_id?: true
   read_at?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type Sitter_booking_messagesMaxAggregateInputType = {
@@ -77,8 +85,10 @@ export type Sitter_booking_messagesMaxAggregateInputType = {
   type?: true
   content?: true
   image_url?: true
+  client_message_id?: true
   read_at?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type Sitter_booking_messagesCountAggregateInputType = {
@@ -88,8 +98,10 @@ export type Sitter_booking_messagesCountAggregateInputType = {
   type?: true
   content?: true
   image_url?: true
+  client_message_id?: true
   read_at?: true
   created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -172,8 +184,10 @@ export type Sitter_booking_messagesGroupByOutputType = {
   type: $Enums.booking_message_type
   content: string | null
   image_url: string | null
+  client_message_id: string | null
   read_at: Date | null
   created_at: Date | null
+  updated_at: Date | null
   _count: Sitter_booking_messagesCountAggregateOutputType | null
   _min: Sitter_booking_messagesMinAggregateOutputType | null
   _max: Sitter_booking_messagesMaxAggregateOutputType | null
@@ -204,8 +218,10 @@ export type sitter_booking_messagesWhereInput = {
   type?: Prisma.Enumbooking_message_typeFilter<"sitter_booking_messages"> | $Enums.booking_message_type
   content?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   image_url?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
+  client_message_id?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   read_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
   sitter_bookings?: Prisma.XOR<Prisma.Sitter_bookingsScalarRelationFilter, Prisma.sitter_bookingsWhereInput>
   sender?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
 }
@@ -217,14 +233,17 @@ export type sitter_booking_messagesOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   image_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  client_message_id?: Prisma.SortOrderInput | Prisma.SortOrder
   read_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   sitter_bookings?: Prisma.sitter_bookingsOrderByWithRelationInput
   sender?: Prisma.accountsOrderByWithRelationInput
 }
 
 export type sitter_booking_messagesWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  booking_id_sender_id_client_message_id?: Prisma.sitter_booking_messagesBooking_idSender_idClient_message_idCompoundUniqueInput
   AND?: Prisma.sitter_booking_messagesWhereInput | Prisma.sitter_booking_messagesWhereInput[]
   OR?: Prisma.sitter_booking_messagesWhereInput[]
   NOT?: Prisma.sitter_booking_messagesWhereInput | Prisma.sitter_booking_messagesWhereInput[]
@@ -233,11 +252,13 @@ export type sitter_booking_messagesWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.Enumbooking_message_typeFilter<"sitter_booking_messages"> | $Enums.booking_message_type
   content?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   image_url?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
+  client_message_id?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   read_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
   sitter_bookings?: Prisma.XOR<Prisma.Sitter_bookingsScalarRelationFilter, Prisma.sitter_bookingsWhereInput>
   sender?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
-}, "id">
+}, "id" | "booking_id_sender_id_client_message_id">
 
 export type sitter_booking_messagesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -246,8 +267,10 @@ export type sitter_booking_messagesOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   image_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  client_message_id?: Prisma.SortOrderInput | Prisma.SortOrder
   read_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.sitter_booking_messagesCountOrderByAggregateInput
   _max?: Prisma.sitter_booking_messagesMaxOrderByAggregateInput
   _min?: Prisma.sitter_booking_messagesMinOrderByAggregateInput
@@ -263,8 +286,10 @@ export type sitter_booking_messagesScalarWhereWithAggregatesInput = {
   type?: Prisma.Enumbooking_message_typeWithAggregatesFilter<"sitter_booking_messages"> | $Enums.booking_message_type
   content?: Prisma.StringNullableWithAggregatesFilter<"sitter_booking_messages"> | string | null
   image_url?: Prisma.StringNullableWithAggregatesFilter<"sitter_booking_messages"> | string | null
+  client_message_id?: Prisma.StringNullableWithAggregatesFilter<"sitter_booking_messages"> | string | null
   read_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_booking_messages"> | Date | string | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_booking_messages"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"sitter_booking_messages"> | Date | string | null
 }
 
 export type sitter_booking_messagesCreateInput = {
@@ -272,8 +297,10 @@ export type sitter_booking_messagesCreateInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
   sitter_bookings: Prisma.sitter_bookingsCreateNestedOneWithoutSitter_booking_messagesInput
   sender: Prisma.accountsCreateNestedOneWithoutSent_sitter_messagesInput
 }
@@ -285,8 +312,10 @@ export type sitter_booking_messagesUncheckedCreateInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesUpdateInput = {
@@ -294,8 +323,10 @@ export type sitter_booking_messagesUpdateInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUpdateOneRequiredWithoutSitter_booking_messagesNestedInput
   sender?: Prisma.accountsUpdateOneRequiredWithoutSent_sitter_messagesNestedInput
 }
@@ -307,8 +338,10 @@ export type sitter_booking_messagesUncheckedUpdateInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_booking_messagesCreateManyInput = {
@@ -318,8 +351,10 @@ export type sitter_booking_messagesCreateManyInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesUpdateManyMutationInput = {
@@ -327,8 +362,10 @@ export type sitter_booking_messagesUpdateManyMutationInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_booking_messagesUncheckedUpdateManyInput = {
@@ -338,8 +375,10 @@ export type sitter_booking_messagesUncheckedUpdateManyInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type Sitter_booking_messagesListRelationFilter = {
@@ -352,6 +391,12 @@ export type sitter_booking_messagesOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type sitter_booking_messagesBooking_idSender_idClient_message_idCompoundUniqueInput = {
+  booking_id: string
+  sender_id: string
+  client_message_id: string
+}
+
 export type sitter_booking_messagesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   booking_id?: Prisma.SortOrder
@@ -359,8 +404,10 @@ export type sitter_booking_messagesCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   content?: Prisma.SortOrder
   image_url?: Prisma.SortOrder
+  client_message_id?: Prisma.SortOrder
   read_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type sitter_booking_messagesMaxOrderByAggregateInput = {
@@ -370,8 +417,10 @@ export type sitter_booking_messagesMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   content?: Prisma.SortOrder
   image_url?: Prisma.SortOrder
+  client_message_id?: Prisma.SortOrder
   read_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type sitter_booking_messagesMinOrderByAggregateInput = {
@@ -381,8 +430,10 @@ export type sitter_booking_messagesMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   content?: Prisma.SortOrder
   image_url?: Prisma.SortOrder
+  client_message_id?: Prisma.SortOrder
   read_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type sitter_booking_messagesCreateNestedManyWithoutSenderInput = {
@@ -478,8 +529,10 @@ export type sitter_booking_messagesCreateWithoutSenderInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
   sitter_bookings: Prisma.sitter_bookingsCreateNestedOneWithoutSitter_booking_messagesInput
 }
 
@@ -489,8 +542,10 @@ export type sitter_booking_messagesUncheckedCreateWithoutSenderInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesCreateOrConnectWithoutSenderInput = {
@@ -529,8 +584,10 @@ export type sitter_booking_messagesScalarWhereInput = {
   type?: Prisma.Enumbooking_message_typeFilter<"sitter_booking_messages"> | $Enums.booking_message_type
   content?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   image_url?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
+  client_message_id?: Prisma.StringNullableFilter<"sitter_booking_messages"> | string | null
   read_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
   created_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
+  updated_at?: Prisma.DateTimeNullableFilter<"sitter_booking_messages"> | Date | string | null
 }
 
 export type sitter_booking_messagesCreateWithoutSitter_bookingsInput = {
@@ -538,8 +595,10 @@ export type sitter_booking_messagesCreateWithoutSitter_bookingsInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
   sender: Prisma.accountsCreateNestedOneWithoutSent_sitter_messagesInput
 }
 
@@ -549,8 +608,10 @@ export type sitter_booking_messagesUncheckedCreateWithoutSitter_bookingsInput = 
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesCreateOrConnectWithoutSitter_bookingsInput = {
@@ -585,8 +646,10 @@ export type sitter_booking_messagesCreateManySenderInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesUpdateWithoutSenderInput = {
@@ -594,8 +657,10 @@ export type sitter_booking_messagesUpdateWithoutSenderInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sitter_bookings?: Prisma.sitter_bookingsUpdateOneRequiredWithoutSitter_booking_messagesNestedInput
 }
 
@@ -605,8 +670,10 @@ export type sitter_booking_messagesUncheckedUpdateWithoutSenderInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_booking_messagesUncheckedUpdateManyWithoutSenderInput = {
@@ -615,8 +682,10 @@ export type sitter_booking_messagesUncheckedUpdateManyWithoutSenderInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_booking_messagesCreateManySitter_bookingsInput = {
@@ -625,8 +694,10 @@ export type sitter_booking_messagesCreateManySitter_bookingsInput = {
   type?: $Enums.booking_message_type
   content?: string | null
   image_url?: string | null
+  client_message_id?: string | null
   read_at?: Date | string | null
   created_at?: Date | string | null
+  updated_at?: Date | string | null
 }
 
 export type sitter_booking_messagesUpdateWithoutSitter_bookingsInput = {
@@ -634,8 +705,10 @@ export type sitter_booking_messagesUpdateWithoutSitter_bookingsInput = {
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sender?: Prisma.accountsUpdateOneRequiredWithoutSent_sitter_messagesNestedInput
 }
 
@@ -645,8 +718,10 @@ export type sitter_booking_messagesUncheckedUpdateWithoutSitter_bookingsInput = 
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type sitter_booking_messagesUncheckedUpdateManyWithoutSitter_bookingsInput = {
@@ -655,8 +730,10 @@ export type sitter_booking_messagesUncheckedUpdateManyWithoutSitter_bookingsInpu
   type?: Prisma.Enumbooking_message_typeFieldUpdateOperationsInput | $Enums.booking_message_type
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  client_message_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   read_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -668,8 +745,10 @@ export type sitter_booking_messagesSelect<ExtArgs extends runtime.Types.Extensio
   type?: boolean
   content?: boolean
   image_url?: boolean
+  client_message_id?: boolean
   read_at?: boolean
   created_at?: boolean
+  updated_at?: boolean
   sitter_bookings?: boolean | Prisma.sitter_bookingsDefaultArgs<ExtArgs>
   sender?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sitter_booking_messages"]>
@@ -681,8 +760,10 @@ export type sitter_booking_messagesSelectCreateManyAndReturn<ExtArgs extends run
   type?: boolean
   content?: boolean
   image_url?: boolean
+  client_message_id?: boolean
   read_at?: boolean
   created_at?: boolean
+  updated_at?: boolean
   sitter_bookings?: boolean | Prisma.sitter_bookingsDefaultArgs<ExtArgs>
   sender?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sitter_booking_messages"]>
@@ -694,8 +775,10 @@ export type sitter_booking_messagesSelectUpdateManyAndReturn<ExtArgs extends run
   type?: boolean
   content?: boolean
   image_url?: boolean
+  client_message_id?: boolean
   read_at?: boolean
   created_at?: boolean
+  updated_at?: boolean
   sitter_bookings?: boolean | Prisma.sitter_bookingsDefaultArgs<ExtArgs>
   sender?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sitter_booking_messages"]>
@@ -707,11 +790,13 @@ export type sitter_booking_messagesSelectScalar = {
   type?: boolean
   content?: boolean
   image_url?: boolean
+  client_message_id?: boolean
   read_at?: boolean
   created_at?: boolean
+  updated_at?: boolean
 }
 
-export type sitter_booking_messagesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "booking_id" | "sender_id" | "type" | "content" | "image_url" | "read_at" | "created_at", ExtArgs["result"]["sitter_booking_messages"]>
+export type sitter_booking_messagesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "booking_id" | "sender_id" | "type" | "content" | "image_url" | "client_message_id" | "read_at" | "created_at" | "updated_at", ExtArgs["result"]["sitter_booking_messages"]>
 export type sitter_booking_messagesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sitter_bookings?: boolean | Prisma.sitter_bookingsDefaultArgs<ExtArgs>
   sender?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -738,8 +823,10 @@ export type $sitter_booking_messagesPayload<ExtArgs extends runtime.Types.Extens
     type: $Enums.booking_message_type
     content: string | null
     image_url: string | null
+    client_message_id: string | null
     read_at: Date | null
     created_at: Date | null
+    updated_at: Date | null
   }, ExtArgs["result"]["sitter_booking_messages"]>
   composites: {}
 }
@@ -1171,8 +1258,10 @@ export interface sitter_booking_messagesFieldRefs {
   readonly type: Prisma.FieldRef<"sitter_booking_messages", 'booking_message_type'>
   readonly content: Prisma.FieldRef<"sitter_booking_messages", 'String'>
   readonly image_url: Prisma.FieldRef<"sitter_booking_messages", 'String'>
+  readonly client_message_id: Prisma.FieldRef<"sitter_booking_messages", 'String'>
   readonly read_at: Prisma.FieldRef<"sitter_booking_messages", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"sitter_booking_messages", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"sitter_booking_messages", 'DateTime'>
 }
     
 
