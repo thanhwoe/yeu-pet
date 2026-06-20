@@ -1,5 +1,5 @@
-import { StateView } from "@/components/ui/StateView";
 import { Spinner } from "@/components/ui/Spinner";
+import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
 import { STATUS_COPY } from "@/features/sitter/constants";
 import { useSitterBookingDetail } from "@/features/sitter/useSitters";
@@ -30,8 +30,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSitterChat } from "../chat/useSitterChat";
 import type { LocalChatMessage } from "../chat/sitterChat.types";
+import { useSitterChat } from "../chat/useSitterChat";
 
 const ArrowDown = withIconClassName(ArrowDownIcon);
 const Check = withIconClassName(CheckIcon);
@@ -187,12 +187,19 @@ export const SitterBookingChatScreen = () => {
         variant="error"
         title="Booking chat unavailable"
         description="Open this chat again from a booking."
+        className="flex-1 bg-background"
       />
     );
   }
 
   if (bookingQuery.isLoading)
-    return <StateView variant="loading" title="Opening booking chat" />;
+    return (
+      <StateView
+        variant="loading"
+        title="Opening booking chat"
+        className="flex-1 bg-background"
+      />
+    );
 
   if (bookingQuery.isError || !booking) {
     return (
@@ -201,6 +208,7 @@ export const SitterBookingChatScreen = () => {
         title="Booking chat could not open"
         description="Check the booking and try again."
         actionLabel="Retry"
+        className="flex-1 bg-background"
         onAction={() => bookingQuery.refetch()}
       />
     );

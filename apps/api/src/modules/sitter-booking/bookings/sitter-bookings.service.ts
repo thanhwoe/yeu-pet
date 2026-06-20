@@ -38,6 +38,7 @@ import {
   SitterBookingExpiredEvent,
 } from './sitter-booking.events';
 import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
+import { NotificationsService } from '../../notifications/notifications.service';
 
 const BOOKING_HOLD_MINUTES = 15;
 const EXTERNAL_PAYMENT_NOTE =
@@ -118,6 +119,7 @@ export class SitterBookingsService {
     private readonly petSittersRepository: IPetSittersRepository,
     @Inject(IEventBusService)
     private readonly eventBusService: IEventBusService,
+    private readonly notificationsService: NotificationsService,
   ) {}
   async create(user: accounts, createSitterBookingDto: CreateSitterBookingDto) {
     const idempotencyKey = createSitterBookingDto.idempotencyKey.trim();
@@ -266,6 +268,11 @@ export class SitterBookingsService {
         startTime: result.booking.start_time.toISOString(),
         type: result.booking.type,
       });
+      this.notifySitterOfBookingRequest({
+        recipientAccountId: result.booking.pet_sitters.account_id,
+        bookingId: result.booking.id,
+        petName: result.booking.pets.name,
+      });
     }
 
     return this.toBookingResponse(result.booking);
@@ -303,6 +310,20 @@ export class SitterBookingsService {
       .catch((error) => {
         this.logger.error(
           `Failed to publish booking created event: ${(error as Error).message}`,
+        );
+      });
+  }
+
+  private notifySitterOfBookingRequest(params: {
+    recipientAccountId: string;
+    bookingId: string;
+    petName: string;
+  }): void {
+    this.notificationsService
+      .sendSitterBookingRequestNotification(params)
+      .catch((error) => {
+        this.logger.error(
+          `Failed to notify sitter of booking request: ${(error as Error).message}`,
         );
       });
   }

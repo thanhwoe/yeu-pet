@@ -16,6 +16,7 @@ import { Decimal } from '@prisma/client/runtime/client';
 import { SitterBookingsService } from './sitter-bookings.service';
 import { SITTER_BOOKING_EVENT_CHANNELS } from './sitter-booking.events';
 import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
+import { NotificationsService } from '../../notifications/notifications.service';
 
 const accountId = '123e4567-e89b-42d3-a456-426614174000';
 const sitterAccountId = '123e4567-e89b-42d3-a456-426614174001';
@@ -179,6 +180,11 @@ const createEventBus = () =>
     subscribe: jest.fn(),
   }) as unknown as jest.Mocked<IEventBusService>;
 
+const createNotificationsService = () =>
+  ({
+    sendSitterBookingRequestNotification: jest.fn(() => Promise.resolve()),
+  }) as unknown as jest.Mocked<NotificationsService>;
+
 describe('SitterBookingsService', () => {
   let sitterBookingsRepository: ReturnType<
     typeof createSitterBookingsRepository
@@ -186,6 +192,7 @@ describe('SitterBookingsService', () => {
   let petSittersRepository: ReturnType<typeof createPetSittersRepository>;
   let petsRepository: ReturnType<typeof createPetsRepository>;
   let eventBus: ReturnType<typeof createEventBus>;
+  let notificationsService: ReturnType<typeof createNotificationsService>;
   let service: SitterBookingsService;
 
   beforeEach(() => {
@@ -193,17 +200,21 @@ describe('SitterBookingsService', () => {
     petSittersRepository = createPetSittersRepository();
     petsRepository = createPetsRepository();
     eventBus = createEventBus();
+    notificationsService = createNotificationsService();
     service = new SitterBookingsService(
       sitterBookingsRepository,
       petsRepository,
       petSittersRepository,
       eventBus,
+      notificationsService,
     );
 
     sitterBookingsRepository.findByIdempotencyKey.mockResolvedValue(null);
     sitterBookingsRepository.findByIdempotencyKeyInTx.mockResolvedValue(null);
     sitterBookingsRepository.countHeldOverlappingInTx.mockResolvedValue(0);
-    sitterBookingsRepository.createInTx.mockResolvedValue(booking as never);
+    sitterBookingsRepository.createInTx.mockResolvedValue(
+      bookingWithRelations as never,
+    );
     sitterBookingsRepository.expirePending.mockResolvedValue([]);
     petSittersRepository.findById.mockResolvedValue(sitter as never);
     petSittersRepository.lock.mockResolvedValue(lockedSitter);
@@ -225,9 +236,12 @@ describe('SitterBookingsService', () => {
     });
     expect(sitterBookingsRepository.runSerializable.mock.calls).toHaveLength(0);
     expect(eventBus.publish.mock.calls).toHaveLength(0);
+    expect(
+      notificationsService.sendSitterBookingRequestNotification.mock.calls,
+    ).toHaveLength(0);
   });
 
-  it('creates a pending hold under a sitter row lock and publishes a domain event', async () => {
+  it('creates a pending hold, publishes an event, and notifies the sitter', async () => {
     const result = await service.create(user, dto);
 
     expect(result).toMatchObject({
@@ -263,6 +277,17 @@ describe('SitterBookingsService', () => {
         }),
       ],
     ]);
+    expect(
+      notificationsService.sendSitterBookingRequestNotification.mock.calls,
+    ).toEqual([
+      [
+        {
+          recipientAccountId: sitterAccountId,
+          bookingId,
+          petName: 'Mochi',
+        },
+      ],
+    ]);
   });
 
   it('rejects creation when overlapping held bookings reach sitter capacity', async () => {
@@ -274,6 +299,9 @@ describe('SitterBookingsService', () => {
 
     expect(sitterBookingsRepository.createInTx.mock.calls).toHaveLength(0);
     expect(eventBus.publish.mock.calls).toHaveLength(0);
+    expect(
+      notificationsService.sendSitterBookingRequestNotification.mock.calls,
+    ).toHaveLength(0);
   });
 
   it('rejects self-booking before opening a transaction', async () => {

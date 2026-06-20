@@ -106,14 +106,48 @@ export class NotificationsService {
     recipientAccountId: string;
     bookingId: string;
   }) {
-    const notification = await this.notificationsRepository.create({
-      account_id: params.recipientAccountId,
+    await this.sendBookingNotification({
+      recipientAccountId: params.recipientAccountId,
+      title: 'New sitter message',
       body: 'You have a new message about your booking.',
+      deepLink: `/sitter-bookings/${params.bookingId}/chat`,
       data: {
         bookingId: params.bookingId,
+        notificationType: 'sitter_booking_message',
       },
-      title: 'New sitter message',
-      deep_link: `/sitter-bookings/${params.bookingId}/chat`,
+    });
+  }
+
+  async sendSitterBookingRequestNotification(params: {
+    recipientAccountId: string;
+    bookingId: string;
+    petName: string;
+  }) {
+    await this.sendBookingNotification({
+      recipientAccountId: params.recipientAccountId,
+      title: 'New booking request',
+      body: `You have a new booking request for ${params.petName}.`,
+      deepLink: `/sitter?tab=bookings&role=sitter&bookingId=${encodeURIComponent(params.bookingId)}`,
+      data: {
+        bookingId: params.bookingId,
+        notificationType: 'sitter_booking_request',
+      },
+    });
+  }
+
+  private async sendBookingNotification(params: {
+    recipientAccountId: string;
+    title: string;
+    body: string;
+    deepLink: string;
+    data: Record<string, string>;
+  }) {
+    const notification = await this.notificationsRepository.create({
+      account_id: params.recipientAccountId,
+      body: params.body,
+      data: params.data,
+      title: params.title,
+      deep_link: params.deepLink,
       image_url: null,
       image_id: null,
     });
@@ -179,14 +213,14 @@ export class NotificationsService {
             ),
             // behavior: how notification show on device: with sound or silent
             priority: 'max',
-            notificationCount: badge + 1,
+            notificationCount: badge,
           },
         },
         apns: {
           payload: {
             aps: {
               sound: 'default',
-              badge: badge + 1,
+              badge,
               interruptionLevel: 'time-sensitive',
               'mutable-content': 1,
             },

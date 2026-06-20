@@ -1,8 +1,10 @@
 import "react-native-gesture-handler";
 import "react-native-reanimated";
 
-import { Stack } from "expo-router";
+import { Href, Stack, useRouter } from "expo-router";
+import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 
 import { BackHeader } from "@/components/Headers/BackHeader";
 import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
@@ -21,6 +23,7 @@ export default function RootLayout() {
     <Providers>
       <UserSync />
       <RootNavigation />
+      <NotificationNavigationHandler />
     </Providers>
   );
 }
@@ -157,4 +160,34 @@ const RootNavigation = () => {
       />
     </Stack>
   );
+};
+
+const NotificationNavigationHandler = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const openNotification = (response: Notifications.NotificationResponse) => {
+      const deepLink = response.notification.request.content.data.deepLink;
+
+      if (typeof deepLink === "string" && deepLink.startsWith("/")) {
+        router.push(deepLink as Href);
+      }
+    };
+
+    const responseSubscription =
+      Notifications.addNotificationResponseReceivedListener(openNotification);
+
+    void Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!response) {
+        return;
+      }
+
+      openNotification(response);
+      void Notifications.clearLastNotificationResponseAsync();
+    });
+
+    return () => responseSubscription.remove();
+  }, [router]);
+
+  return null;
 };

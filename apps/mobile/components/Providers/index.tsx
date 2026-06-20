@@ -2,6 +2,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
 import { date } from "@/utils";
+import { NOTIFICATIONS_KEY, SITTER_BOOKING_KEY } from "@/constants/query-keys";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
@@ -16,12 +17,7 @@ import { Toast } from "../Toast";
 
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
-    [
-      GestureHandlerProvider,
-      SafeAreaProvider,
-      QueryProvider,
-      InitialProvider,
-    ],
+    [GestureHandlerProvider, SafeAreaProvider, QueryProvider, InitialProvider],
     children,
   );
 
@@ -69,18 +65,23 @@ const InitialProvider = ({ children }: Children) => {
   useEffect(() => {
     const notificationListener = Notifications.addNotificationReceivedListener(
       (notification) => {
-        console.log(notification);
+        void queryClient.invalidateQueries({
+          queryKey: NOTIFICATIONS_KEY.all,
+        });
+
+        if (
+          notification.request.content.data.notificationType ===
+          "sitter_booking_request"
+        ) {
+          void queryClient.invalidateQueries({
+            queryKey: SITTER_BOOKING_KEY.all,
+          });
+        }
       },
     );
 
-    const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
     return () => {
       notificationListener.remove();
-      responseListener.remove();
     };
   }, []);
 

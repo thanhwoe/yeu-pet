@@ -23,7 +23,11 @@ import {
   StatusFilterRow,
 } from "@/features/sitter/components";
 import { BOOKING_ROLE_TABS, SCREEN_TABS } from "@/features/sitter/constants";
-import { SitterFilters, useSitters } from "@/features/sitter/useSitters";
+import {
+  SitterFilters,
+  useSitterBookingDetail,
+  useSitters,
+} from "@/features/sitter/useSitters";
 import { formatRate } from "@/features/sitter/utils";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import {
@@ -35,9 +39,9 @@ import {
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { PencilSimpleIcon, SlidersHorizontalIcon } from "phosphor-react-native";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
 
 const PencilSimple = withIconClassName(PencilSimpleIcon);
@@ -45,6 +49,13 @@ const SlidersHorizontal = withIconClassName(SlidersHorizontalIcon);
 
 export const SitterScreen = () => {
   const router = useRouter();
+  const { tab, role, bookingId } = useLocalSearchParams<{
+    tab?: string;
+    role?: string;
+    bookingId?: string;
+  }>();
+  const openedBookingIdRef = useRef<string | undefined>(undefined);
+  const { data: linkedBooking } = useSitterBookingDetail(bookingId);
   const currentUser = useUserInfoStore.use.user();
   const [activeTab, setActiveTab] = useState(SCREEN_TABS[0].value);
   const [bookingRoleTab, setBookingRoleTab] = useState(
@@ -136,6 +147,28 @@ export const SitterScreen = () => {
       ),
     [bookingRoleTab, hydrateBooking, ownerBookings, sitterBookings],
   );
+
+  useEffect(() => {
+    if (tab === "bookings" || bookingId) {
+      setActiveTab(SCREEN_TABS[1].value);
+    }
+    if (role === "sitter" || bookingId) {
+      setBookingRoleTab(BOOKING_ROLE_TABS[1].value);
+    }
+  }, [bookingId, role, tab]);
+
+  useEffect(() => {
+    if (!bookingId || openedBookingIdRef.current === bookingId) {
+      return;
+    }
+
+    const booking =
+      linkedBooking ?? activeBookings.find((item) => item.id === bookingId);
+    if (booking) {
+      openedBookingIdRef.current = bookingId;
+      setSelectedBooking(hydrateBooking(booking));
+    }
+  }, [activeBookings, bookingId, hydrateBooking, linkedBooking]);
 
   const filterSummary = useMemo(
     () =>
