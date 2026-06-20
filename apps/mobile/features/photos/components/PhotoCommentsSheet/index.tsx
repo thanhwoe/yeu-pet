@@ -2,11 +2,12 @@ import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body } from "@/components/ui/Typography";
 import { IPhotoComment } from "@/interfaces";
-import { BottomSheetFlashList } from "@gorhom/bottom-sheet";
+import { useBottomSheetScrollableCreator } from "@gorhom/bottom-sheet";
+import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { useCallback, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  ListRenderItem,
+  type ScrollViewProps,
   StyleSheet,
   View,
 } from "react-native";
@@ -36,6 +37,8 @@ export const PhotoCommentsSheet = ({
 }: PhotoCommentsSheetProps) => {
   const [composerHeight, setComposerHeight] = useState(0);
   const insets = useSafeAreaInsets();
+  const BottomSheetScrollable =
+    useBottomSheetScrollableCreator<ScrollViewProps>();
   const {
     actionComment,
     canDeleteActionComment,
@@ -155,10 +158,11 @@ export const PhotoCommentsSheet = ({
           {error && !comments.length ? (
             <CommentErrorState />
           ) : (
-            <BottomSheetFlashList<IPhotoComment>
+            <FlashList<IPhotoComment>
               data={comments}
               extraData={listExtraData}
               style={styles.commentsList}
+              renderScrollComponent={BottomSheetScrollable}
               keyExtractor={keyExtractor}
               renderItem={renderItem}
               estimatedItemSize={118}

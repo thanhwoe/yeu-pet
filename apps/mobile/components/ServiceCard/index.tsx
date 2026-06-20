@@ -53,7 +53,7 @@ const ServiceCardBase = ({
         <Icon size={24} className="text-icon-primary" weight="bold" />
       </View>
       <Body weight="semiBold">{title}</Body>
-      {subTitle && <Body variant="body2">{subTitle}</Body>}
+      {subTitle && <Body variant="body4">{subTitle}</Body>}
       <View
         className="absolute bottom-4 right-4 opacity-50"
         style={{ transform: [{ rotate: "45deg" }], zIndex: -1 }}

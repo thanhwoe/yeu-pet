@@ -1,7 +1,7 @@
-import { ISignUpForm, signUpSchema } from "@/constants/validation";
 import { InputController } from "@/components/InputController";
 import { PhoneInputController } from "@/components/PhoneInputController";
 import { Button } from "@/components/ui/Button";
+import { ISignUpForm, signUpSchema } from "@/constants/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform } from "react-native";
@@ -35,12 +35,6 @@ export const SignUpForm = ({ onSubmit, isSubmitting }: IProps) => {
         label="Password"
         placeholder="Password"
         secureTextEntry
-      />
-      <InputController<ISignUpForm>
-        control={control}
-        name="email"
-        label="Email (Optional)"
-        placeholder="Email"
       />
       <InputController<ISignUpForm>
         control={control}

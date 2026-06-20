@@ -90,7 +90,7 @@ export const CommentComposer = memo(
         onLayout={onLayout}
         style={{ paddingBottom: Math.max(bottomInset, 12) }}
       >
-        <View className="min-h-46 flex-row items-end gap-8 rounded-24 border border-line-subtle bg-background-surface px-12 pb-6">
+        <View className="min-h-46 flex-row items-end gap-8 rounded-24 border border-line-subtle bg-background-surface px-12">
           <BottomSheetTextInput
             ref={inputRef}
             value={content}
@@ -104,14 +104,14 @@ export const CommentComposer = memo(
             placeholderTextColor={themeColors["--text-subtle"]}
             multiline
             maxLength={300}
-            className="max-h-72 min-h-30 flex-1 text-body3 text-text-primary"
+            className="max-h-72 min-h-30 flex-1 text-body3 text-text-primary mb-6"
           />
           <TouchableOpacity
             accessibilityLabel="Send comment"
             accessibilityRole="button"
             activeOpacity={0.82}
             className={cn(
-              "h-38 w-38 items-center justify-center rounded-full bg-action-primary",
+              "h-38 w-38 items-center justify-center rounded-full bg-action-primary self-center",
               isDisabled && "opacity-50",
             )}
             disabled={isDisabled}

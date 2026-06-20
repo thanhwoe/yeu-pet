@@ -48,6 +48,7 @@ export const Popup = memo<IProps>(
     loading,
   }) => {
     const isDelete = variant === "delete";
+    const showStatusIcon = variant !== "alert";
 
     const backdropOpacity = useSharedValue(0);
     const cardScale = useSharedValue(0.82);
@@ -122,10 +123,11 @@ export const Popup = memo<IProps>(
         animationType="none"
         visible={visible}
         onRequestClose={handleCancel}
+        presentationStyle="overFullScreen"
       >
         {/* Backdrop */}
         <Animated.View
-          className="flex-1 items-center justify-center px-24 bg-black/50"
+          className="flex-1 items-center justify-center bg-background-scrim/55 px-24"
           style={[backdropStyle]}
         >
           <TouchableOpacity
@@ -136,44 +138,58 @@ export const Popup = memo<IProps>(
 
           {/* Card */}
           <Animated.View
-            className="w-full max-w-[360px] bg-background-foreground rounded-18 py-24 items-center elevation-xl"
+            className="w-full max-w-[360px] items-center rounded-24 border border-line-subtle bg-background-surface px-20 py-24 shadow-card"
             style={[cardStyle]}
           >
             {/* Icon badge */}
             <View
               className={cn(
-                "size-64 rounded-full items-center justify-center mb-20",
+                "mb-18 size-60 items-center justify-center rounded-full border",
                 {
-                  "bg-background-negative-foreground": isDelete,
-                  "bg-background-positive-foreground": !isDelete,
-                  hidden: variant === "alert",
+                  "border-status-danger-border bg-status-danger-surface":
+                    isDelete,
+                  "border-status-success-border bg-status-success-surface":
+                    !isDelete,
+                  hidden: !showStatusIcon,
                 },
               )}
             >
               {isDelete ? (
-                <DeleteIcon className="text-icon-negative" size={26} />
+                <DeleteIcon className="text-status-danger-icon" size={26} />
               ) : (
-                <ConfirmIcon className="text-icon-positive" size={28} />
+                <ConfirmIcon className="text-status-success-icon" size={28} />
               )}
             </View>
 
             {/* Text */}
-            <View className="px-24 items-center">
-              <Body weight="bold" numberOfLines={1}>
+            <View className="items-center px-4">
+              <Body
+                weight="bold"
+                numberOfLines={2}
+                center
+                className="text-text-primary"
+              >
                 {title}
               </Body>
-              <Body variant="body3" center numberOfLines={3}>
-                {description}
-              </Body>
+              {!!description && (
+                <Body
+                  variant="body3"
+                  center
+                  numberOfLines={4}
+                  className="mt-8 text-text-muted"
+                >
+                  {description}
+                </Body>
+              )}
             </View>
 
             {/* Actions */}
-            <View className="flex-row gap-12 mt-40 px-24">
+            <View className="mt-28 flex-row gap-12 self-stretch">
               <Button
                 onPress={handleCancel}
                 disabled={loading}
                 wrapperClassName="flex-1"
-                variant="cancel"
+                variant={onConfirm ? "cancel" : "secondary"}
               >
                 {cancelLabel}
               </Button>
