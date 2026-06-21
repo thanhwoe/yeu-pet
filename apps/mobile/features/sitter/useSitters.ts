@@ -199,9 +199,13 @@ export const useSitters = (
     isLoading: sittersQuery.isLoading,
     isError: sittersQuery.isError,
     isOwnerBookingsLoading: ownerBookingsQuery.isLoading,
+    isOwnerBookingsFetching: ownerBookingsQuery.isFetching,
     isSitterBookingsLoading:
       mySitterProfileQuery.isLoading ||
       (Boolean(mySitterProfileQuery.data) && sitterBookingsQuery.isLoading),
+    isSitterBookingsFetching:
+      mySitterProfileQuery.isFetching ||
+      (Boolean(mySitterProfileQuery.data) && sitterBookingsQuery.isFetching),
     isOwnerBookingsError: ownerBookingsQuery.isError,
     isSitterBookingsError:
       Boolean(mySitterProfileQuery.data) && sitterBookingsQuery.isError,

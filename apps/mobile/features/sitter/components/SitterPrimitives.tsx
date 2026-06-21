@@ -115,8 +115,28 @@ export const ExternalPaymentNotice = ({
 );
 
 export const SitterSkeleton = () => (
-  <View className="gap-16 mt-20">
+  <View
+    accessibilityRole="progressbar"
+    accessibilityLabel="Loading sitters"
+    className="gap-16 mt-20"
+  >
     {SITTER_SKELETON_ITEMS.map((index) => (
+      <Skeleton
+        key={index}
+        className="h-136 rounded-24"
+        backgroundClassName="bg-background-surface"
+      />
+    ))}
+  </View>
+);
+
+export const BookingListSkeleton = () => (
+  <View
+    accessibilityRole="progressbar"
+    accessibilityLabel="Loading bookings"
+    className="flex-1 gap-12 overflow-hidden pt-8 pb-safe"
+  >
+    {SITTER_SKELETON_ITEMS.slice(0, 3).map((index) => (
       <Skeleton
         key={index}
         className="h-136 rounded-24"

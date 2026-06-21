@@ -10,6 +10,7 @@ import {
 import {
   BookingCard,
   BookingDetail,
+  BookingListSkeleton,
   BookingRequestForm,
   CancelForm,
   hasSitterFilters,
@@ -86,7 +87,9 @@ export const SitterScreen = () => {
     isLoading,
     isError,
     isOwnerBookingsLoading,
+    isOwnerBookingsFetching,
     isSitterBookingsLoading,
+    isSitterBookingsFetching,
     isOwnerBookingsError,
     isSitterBookingsError,
     hasSitterProfile,
@@ -110,6 +113,8 @@ export const SitterScreen = () => {
   const hasActiveFilters = hasSitterFilters(filters);
   const isActiveBookingsLoading =
     bookingRoleTab === 0 ? isOwnerBookingsLoading : isSitterBookingsLoading;
+  const isActiveBookingsFetching =
+    bookingRoleTab === 0 ? isOwnerBookingsFetching : isSitterBookingsFetching;
   const isActiveBookingsError =
     bookingRoleTab === 0 ? isOwnerBookingsError : isSitterBookingsError;
   const canRequestSelectedSitterCare =
@@ -365,55 +370,55 @@ export const SitterScreen = () => {
             className="mb-14 self-center"
           />
           <StatusFilterRow value={bookingStatus} onChange={setBookingStatus} />
-          <FlashList
-            data={activeBookings}
-            keyExtractor={(item) => item.id}
-            contentContainerClassName="pb-safe"
-            estimatedItemSize={154}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderBooking}
-            refreshing={isRefreshing}
-            onRefresh={refetchAll}
-            ListEmptyComponent={() => {
-              if (isActiveBookingsLoading) {
-                return <SitterSkeleton />;
-              }
+          {isActiveBookingsLoading || isActiveBookingsFetching ? (
+            <BookingListSkeleton />
+          ) : (
+            <FlashList
+              data={activeBookings}
+              keyExtractor={(item) => item.id}
+              contentContainerClassName="pb-safe"
+              estimatedItemSize={154}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderBooking}
+              refreshing={isRefreshing}
+              onRefresh={refetchAll}
+              ListEmptyComponent={() => {
+                if (isActiveBookingsError) {
+                  return (
+                    <StateView
+                      variant="error"
+                      title="Bookings could not load"
+                      description="Try again to refresh your sitter bookings."
+                      actionLabel="Retry"
+                      onAction={refetchAll}
+                    />
+                  );
+                }
 
-              if (isActiveBookingsError) {
-                return (
-                  <StateView
-                    variant="error"
-                    title="Bookings could not load"
-                    description="Try again to refresh your sitter bookings."
-                    actionLabel="Retry"
-                    onAction={refetchAll}
-                  />
-                );
-              }
+                if (activeBookingRole === "sitter" && !hasSitterProfile) {
+                  return (
+                    <StateView
+                      variant="empty"
+                      title="Create your sitter profile"
+                      description="Use the pencil in the header to create your sitter profile before receiving requests."
+                    />
+                  );
+                }
 
-              if (activeBookingRole === "sitter" && !hasSitterProfile) {
                 return (
                   <StateView
                     variant="empty"
-                    title="Create your sitter profile"
-                    description="Use the pencil in the header to create your sitter profile before receiving requests."
+                    title="No bookings yet"
+                    description={
+                      activeBookingRole === "owner"
+                        ? "Requests you send to sitters will appear here."
+                        : "Requests from pet owners will appear here after your profile is available."
+                    }
                   />
                 );
-              }
-
-              return (
-                <StateView
-                  variant="empty"
-                  title="No bookings yet"
-                  description={
-                    activeBookingRole === "owner"
-                      ? "Requests you send to sitters will appear here."
-                      : "Requests from pet owners will appear here after your profile is available."
-                  }
-                />
-              );
-            }}
-          />
+              }}
+            />
+          )}
         </View>
       )}
 

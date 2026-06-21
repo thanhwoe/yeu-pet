@@ -1,15 +1,15 @@
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Body, Heading } from "@/components/ui/Typography";
+import { DonutChart } from "@/features/budget/components/chart/DonutChart";
 import { IBudgetSpendingByCategory } from "@/interfaces";
 import { hexToRgba } from "@/utils";
 import { Link } from "expo-router";
 import { memo, useMemo } from "react";
 import { View } from "react-native";
-import { DonutChart } from "@/features/budget/components/chart/DonutChart";
-import { ProgressBar } from "@/components/ui/ProgressBar";
-import { Body, Heading } from "@/components/ui/Typography";
 
 interface IProps {
   data: IBudgetSpendingByCategory[];
-  title: string;
+  title?: string;
   allowManage?: boolean;
 }
 
@@ -30,9 +30,11 @@ export const BudgetCategoryStatistic = memo<IProps>(
     return (
       <View className="p-20 bg-background-card-highlight rounded-24 gap-24">
         <View className="flex-row justify-between items-center">
-          <Heading variant="h4" weight="bold">
-            {title}
-          </Heading>
+          {title && (
+            <Heading variant="h4" weight="bold">
+              {title}
+            </Heading>
+          )}
           {allowManage && (
             <Link href="/budget/categories">
               <Body className="text-text-link">Manage</Body>

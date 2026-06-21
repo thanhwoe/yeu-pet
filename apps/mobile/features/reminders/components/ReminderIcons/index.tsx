@@ -57,11 +57,13 @@ const typeBackgroundMapping: Record<ReminderType, string> = {
 interface ReminderTypeProps extends IconProps {
   type: ReminderType;
   circle?: boolean;
+  containerClassName?: string;
 }
 
 export const ReminderTypeIcon = ({
   type,
   circle,
+  containerClassName,
   ...props
 }: ReminderTypeProps) => {
   const Icon = typeIconMapping[type];
@@ -69,7 +71,13 @@ export const ReminderTypeIcon = ({
   const bg = typeBackgroundMapping[type];
   if (circle) {
     return (
-      <View className={cn("size-48 items-center justify-center rounded-12", bg)}>
+      <View
+        className={cn(
+          "size-48 items-center justify-center rounded-12",
+          bg,
+          containerClassName,
+        )}
+      >
         <Icon size={20} weight="fill" className={color} {...props} />
       </View>
     );

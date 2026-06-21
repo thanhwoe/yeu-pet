@@ -235,6 +235,7 @@ export function useCreateReminderSheet() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setOpenForm(false);
+      Toast.success({ text: "Reminder added." });
     },
     onError: (e) => {
       Toast.error({ text: e.message });

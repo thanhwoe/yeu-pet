@@ -2,8 +2,11 @@ import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { InputField } from "@/components/ui/InputField";
 import { SitterFilters } from "@/features/sitter/useSitters";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { useState } from "react";
 import { View } from "react-native";
+
+const BottomSheetInputField = withBottomSheetKeyboardEvents(InputField);
 
 const normalizeFilters = (filters: SitterFilters): SitterFilters | null => {
   const next: SitterFilters = {
@@ -67,26 +70,26 @@ export const SitterFilterSheet = ({
   return (
     <View className="gap-16">
       <View className="gap-12 rounded-24  bg-background-surface px-14 py-14">
-        <InputField
+        <BottomSheetInputField
           label="City"
           placeholder="Ho Chi Minh City"
           value={city}
           onChangeText={setCity}
         />
-        <InputField
+        <BottomSheetInputField
           label="District"
           placeholder="District 1"
           value={district}
           onChangeText={setDistrict}
         />
-        <InputField
+        <BottomSheetInputField
           label="Minimum rating"
           placeholder="4"
           keyboardType="numeric"
           value={minRating}
           onChangeText={setMinRating}
         />
-        <InputField
+        <BottomSheetInputField
           label="Max price"
           placeholder="500000"
           keyboardType="numeric"

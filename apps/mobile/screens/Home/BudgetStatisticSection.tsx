@@ -1,16 +1,33 @@
 import { Skeleton } from "@/components/Skeleton";
-import { StateView } from "@/components/ui/StateView";
 import { BUDGET_STATISTIC_KEY } from "@/constants/query-keys";
 import { BudgetCategoryStatistic } from "@/features/budget/components/BudgetCategoryStatistic";
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { getBudgetMonthlyStatisticsQuery } from "@/services";
+import { formatCurrency } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import {
+  ReceiptIcon,
+  WalletIcon,
+  WarningCircleIcon,
+} from "phosphor-react-native";
 import { memo } from "react";
 import { View } from "react-native";
+import {
+  DashboardAction,
+  DashboardCard,
+  DashboardState,
+} from "./DashboardCard";
 import {
   HOME_BUDGET_MONTHLY_KEY,
   HOME_BUDGET_MONTHLY_PARAMS,
 } from "./homeQueries";
+
+const Wallet = withIconClassName(WalletIcon);
+const Receipt = withIconClassName(ReceiptIcon);
+const WarningCircle = withIconClassName(WarningCircleIcon);
+
+const formatSpending = (value: number) => formatCurrency(value, "₫", "vi-VN");
 
 export const BudgetStatisticSection = memo(() => {
   const router = useRouter();
@@ -25,73 +42,81 @@ export const BudgetStatisticSection = memo(() => {
   });
 
   const spendingByCategory = statisticMonthly?.spendingByCategory ?? [];
-
-  if (isLoading) {
-    return (
-      <View className="px-20 mt-20">
-        <View className="p-20 bg-background-card-highlight rounded-24 gap-20">
-          <Skeleton
-            className="h-28 w-160 rounded-12"
-            backgroundClassName="bg-background-secondary-highlight"
-          />
-          <Skeleton
-            className="self-center size-160 rounded-full"
-            backgroundClassName="bg-background-secondary-highlight"
-          />
-          <View className="gap-14">
-            <Skeleton
-              className="h-52 rounded-16"
-              backgroundClassName="bg-background-secondary-highlight"
-            />
-            <Skeleton
-              className="h-52 rounded-16"
-              backgroundClassName="bg-background-secondary-highlight"
-            />
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View className="px-20 mt-20">
-        <View className="bg-background-card-highlight rounded-24">
-          <StateView
-            variant="error"
-            title="Spending could not load"
-            description="Try again to refresh this month's care spending."
-            actionLabel="Retry"
-            onAction={() => refetch()}
-          />
-        </View>
-      </View>
-    );
-  }
-
-  if (spendingByCategory.length <= 0) {
-    return (
-      <View className="px-20 mt-20">
-        <View className="bg-background-card-highlight rounded-24">
-          <StateView
-            variant="empty"
-            title="No spending yet"
-            description="Track food, vet visits, and supplies to see this month's care costs."
-            actionLabel="Open budget"
-            onAction={() => router.push("/budget")}
-          />
-        </View>
-      </View>
-    );
-  }
+  const openBudget = () => router.push("/budget");
 
   return (
-    <View className="px-20 mt-20">
-      <BudgetCategoryStatistic
-        data={spendingByCategory}
-        title="Monthly Spending"
-      />
-    </View>
+    <DashboardCard
+      title="Budget Summary"
+      subtitle="This month's care spending"
+      icon={
+        <View className="size-40 items-center justify-center rounded-14 bg-feature-budget-surface">
+          <Wallet
+            size={21}
+            weight="duotone"
+            className="text-feature-budget-accent"
+          />
+        </View>
+      }
+    >
+      {isLoading ? (
+        <View
+          accessibilityRole="progressbar"
+          accessibilityLabel="Loading budget summary"
+          className="gap-10"
+        >
+          <Skeleton
+            className="h-52 rounded-16"
+            backgroundClassName="bg-background-surface-muted"
+          />
+          <Skeleton
+            className="h-44 rounded-16"
+            backgroundClassName="bg-background-surface-muted"
+          />
+        </View>
+      ) : isError ? (
+        <DashboardState
+          icon={
+            <View className="size-44 items-center justify-center rounded-full bg-status-danger-surface">
+              <WarningCircle
+                size={24}
+                weight="duotone"
+                className="text-status-danger-icon"
+              />
+            </View>
+          }
+          title="Spending could not load"
+          description="Try again to refresh this month's care spending."
+          actionLabel="Retry"
+          onAction={() => refetch()}
+        />
+      ) : spendingByCategory.length === 0 ? (
+        <DashboardState
+          icon={
+            <View className="size-44 items-center justify-center rounded-full bg-feature-budget-surface">
+              <Receipt
+                size={24}
+                weight="duotone"
+                className="text-feature-budget-accent"
+              />
+            </View>
+          }
+          title="No spending recorded this month"
+          description="Track food, clinic visits, medication and grooming costs."
+          actionLabel="Open Budget"
+          onAction={openBudget}
+        />
+      ) : (
+        <View>
+          <BudgetCategoryStatistic data={spendingByCategory} />
+
+          <DashboardAction
+            label="Open Budget"
+            accessibilityLabel="Open budget"
+            onPress={openBudget}
+          />
+        </View>
+      )}
+    </DashboardCard>
   );
 });
 

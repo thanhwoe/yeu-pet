@@ -1,41 +1,129 @@
-import { ReminderTypeIcon } from "@/features/reminders/components/ReminderIcons";
 import { Skeleton } from "@/components/Skeleton";
-import { Avatar } from "@/components/ui/Avatar";
-import { StateView } from "@/components/ui/StateView";
-import { Body, Heading } from "@/components/ui/Typography";
+import { Body } from "@/components/ui/Typography";
 import { REMINDER_KEY } from "@/constants/query-keys";
+import { ReminderTypeIcon } from "@/features/reminders/components/ReminderIcons";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminder } from "@/interfaces";
 import { getUpcomingReminderQuery } from "@/services";
+import { cn } from "@/utils";
+import {
+  formatReminderRepeat,
+  REMINDER_TYPE_LABELS,
+  sortRemindersByTime,
+  toReminderDate,
+} from "@/utils/reminder";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "expo-router";
-import { CalendarCheckIcon } from "phosphor-react-native";
-import { TouchableOpacity, View } from "react-native";
+import {
+  CalendarCheckIcon,
+  CalendarPlusIcon,
+  CaretRightIcon,
+  ClockIcon,
+  WarningCircleIcon,
+} from "phosphor-react-native";
+import { View } from "react-native";
+import {
+  DashboardAction,
+  DashboardCard,
+  DashboardState,
+} from "./DashboardCard";
 import { HOME_REMINDER_PARAMS } from "./homeQueries";
 
 const CalendarIcon = withIconClassName(CalendarCheckIcon);
+const CalendarPlus = withIconClassName(CalendarPlusIcon);
+const CaretRight = withIconClassName(CaretRightIcon);
+const Clock = withIconClassName(ClockIcon);
+const WarningCircle = withIconClassName(WarningCircleIcon);
 
-const ReminderItem = ({ data }: { data: IReminder }) => {
+const formatDashboardDueTime = (value: string) => {
+  const dueAt = toReminderDate(value);
+
+  if (!dueAt) return "Time not set";
+
+  const today = dayjs();
+  const time = dueAt.format("HH:mm");
+
+  if (dueAt.isSame(today, "day")) return `Today · ${time}`;
+  if (dueAt.isSame(today.add(1, "day"), "day")) {
+    return `Tomorrow · ${time}`;
+  }
+
+  const date = new Intl.DateTimeFormat("en", {
+    day: "numeric",
+    month: "short",
+  }).format(dueAt.toDate());
+
+  return `${date} · ${time}`;
+};
+
+const ReminderItem = ({
+  data,
+  isNext,
+}: {
+  data: IReminder;
+  isNext: boolean;
+}) => {
+  const petName = data.pets?.name?.trim() || "All pets";
+  const repeatSummary = formatReminderRepeat(
+    data.repeatFrequency,
+    data.repeatUntil,
+  );
+  const repeats = data.repeatFrequency && data.repeatFrequency !== "none";
+
   return (
-    <View className="flex-row p-12 bg-background-card items-center rounded-16 gap-12">
-      <ReminderTypeIcon type={data.type} size={30} circle />
-      <View className="flex-1 ">
-        <Body weight="bold" numberOfLines={1}>
-          {data.title}
+    <View
+      className={cn("flex-row gap-10 border-b border-line-subtle pb-2 pt-12")}
+    >
+      <ReminderTypeIcon
+        type={data.type}
+        size={16}
+        weight="duotone"
+        circle
+        containerClassName="size-32 rounded-10"
+      />
+
+      <View className="flex-1 gap-3">
+        <View className="flex-row items-center gap-8">
+          {isNext ? (
+            <View className="rounded-full bg-feature-reminder-surface px-8 py-2">
+              <Body
+                variant="body5"
+                weight="bold"
+                caps
+                className="text-feature-reminder-accent"
+              >
+                Next
+              </Body>
+            </View>
+          ) : null}
+          <Body
+            variant={isNext ? "body2" : "body3"}
+            weight="semiBold"
+            numberOfLines={1}
+            className="flex-1"
+          >
+            {data.title}
+          </Body>
+        </View>
+
+        <Body variant="body4" className="text-text-muted" numberOfLines={1}>
+          {petName} · {REMINDER_TYPE_LABELS[data.type]}
         </Body>
-        <Body variant="body3" className="text-text-muted">
-          {dayjs(data.scheduledAt).fromNow()}
-        </Body>
-        {data.description && <Body variant="body2">{data.description}</Body>}
-      </View>
-      <View>
-        <Avatar
-          source={{
-            uri: data.pets?.avatarUrl ?? "",
-          }}
-          size="large"
-        />
+
+        <View className="flex-row flex-wrap items-center gap-x-6 gap-y-2">
+          <View className="flex-row items-center gap-4">
+            <Clock size={14} weight="bold" className="text-icon-secondary" />
+            <Body variant="body4" weight="semiBold">
+              {formatDashboardDueTime(data.scheduledAt)}
+            </Body>
+          </View>
+          {repeats ? (
+            <Body variant="body5" className="text-text-muted">
+              · {repeatSummary}
+            </Body>
+          ) : null}
+        </View>
       </View>
     </View>
   );
@@ -49,63 +137,88 @@ export const ReminderSection = () => {
     queryFn: () => getUpcomingReminderQuery(HOME_REMINDER_PARAMS),
   });
 
-  const reminders = data?.data ?? [];
+  const reminders = sortRemindersByTime(data?.data ?? []);
   const openReminders = () => router.push("/(tabs)/(reminder)");
 
   return (
-    <View className="mx-20 p-20 mt-10 bg-background-card-highlight rounded-24">
-      <View className="flex-row items-center gap-8 mb-16">
-        <CalendarIcon className="text-icon-primary" weight="bold" />
-        <Heading variant="h4" weight="bold">
-          Upcoming
-        </Heading>
-      </View>
-      <View className="gap-12">
+    <DashboardCard
+      title="Upcoming Reminders"
+      subtitle="Next care tasks"
+      icon={
+        <View className="size-40 items-center justify-center rounded-14 bg-feature-reminder-surface">
+          <CalendarIcon
+            size={21}
+            weight="duotone"
+            className="text-feature-reminder-accent"
+          />
+        </View>
+      }
+    >
+      <View>
         {isLoading ? (
-          <>
+          <View
+            accessibilityRole="progressbar"
+            accessibilityLabel="Loading upcoming reminders"
+            className="gap-10"
+          >
             <Skeleton
-              className="h-80 rounded-16"
-              backgroundClassName="bg-background-secondary-highlight"
+              className="h-76 rounded-16"
+              backgroundClassName="bg-background-surface-muted"
             />
             <Skeleton
-              className="h-80 rounded-16"
-              backgroundClassName="bg-background-secondary-highlight"
+              className="h-60 rounded-16"
+              backgroundClassName="bg-background-surface-muted"
             />
-          </>
+          </View>
         ) : isError ? (
-          <StateView
-            variant="error"
+          <DashboardState
+            icon={
+              <View className="size-44 items-center justify-center rounded-full bg-status-danger-surface">
+                <WarningCircle
+                  size={24}
+                  weight="duotone"
+                  className="text-status-danger-icon"
+                />
+              </View>
+            }
             title="Reminders could not load"
             description="Try again to see the next care tasks."
             actionLabel="Retry"
             onAction={() => refetch()}
-            className="min-h-140 rounded-16 bg-background-card px-16 py-20"
           />
         ) : reminders.length === 0 ? (
-          <StateView
-            variant="empty"
+          <DashboardState
+            icon={
+              <View className="size-44 items-center justify-center rounded-full bg-feature-reminder-surface">
+                <CalendarPlus
+                  size={24}
+                  weight="duotone"
+                  className="text-feature-reminder-accent"
+                />
+              </View>
+            }
             title="No upcoming reminders"
-            description="Add the next vaccine, meal, or grooming task when you are ready."
-            actionLabel="Add reminder"
+            description="Add the next vaccine, medication, feeding or grooming reminder."
+            actionLabel="Add Reminder"
             onAction={openReminders}
-            className="min-h-140 rounded-16 bg-background-card px-16 py-20"
           />
         ) : (
-          reminders.map((i) => <ReminderItem data={i} key={i.id} />)
+          <>
+            {reminders.slice(0, 2).map((reminder, index) => (
+              <ReminderItem
+                data={reminder}
+                key={reminder.id}
+                isNext={index === 0}
+              />
+            ))}
+            <DashboardAction
+              label="View all reminders"
+              accessibilityLabel="View all reminders"
+              onPress={openReminders}
+            />
+          </>
         )}
-        {!isError && !isLoading && reminders.length > 0 ? (
-          <TouchableOpacity
-            accessibilityLabel="Open reminders"
-            accessibilityRole="button"
-            onPress={openReminders}
-            className="mt-16 border-[1.5px] border-dashed rounded-32 p-16 items-center border-line-secondary"
-          >
-            <Body weight="bold" className="text-text-link">
-              Open reminders
-            </Body>
-          </TouchableOpacity>
-        ) : null}
       </View>
-    </View>
+    </DashboardCard>
   );
 };

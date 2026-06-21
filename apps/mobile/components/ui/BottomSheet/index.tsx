@@ -75,8 +75,7 @@ export const BottomSheet = ({
   const bottomSheetRef = useRef<GorhomBottomSheetModal>(null);
   const isPresentedRef = useRef(false);
   const themeColors = useMemo(
-    () =>
-      getColors(colorScheme === "dark" ? darkColorTheme : lightColorTheme),
+    () => getColors(colorScheme === "dark" ? darkColorTheme : lightColorTheme),
     [colorScheme],
   );
   const sheetBackgroundColor = themeColors["--background-surface"];
@@ -203,6 +202,10 @@ export const BottomSheet = ({
         <BottomSheetScrollView
           contentContainerStyle={contentContainerStyle}
           className={className}
+          keyboardDismissMode={
+            Platform.OS === "ios" ? "interactive" : "on-drag"
+          }
+          keyboardShouldPersistTaps="handled"
         >
           {children}
         </BottomSheetScrollView>

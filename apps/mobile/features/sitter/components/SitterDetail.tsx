@@ -6,11 +6,7 @@ import { Body, Heading } from "@/components/ui/Typography";
 import { useSitterReviews } from "@/features/sitter/useSitters";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPetSitter, ISitterReview } from "@/interfaces";
-import {
-  MapPinIcon,
-  PawPrintIcon,
-  StarIcon,
-} from "phosphor-react-native";
+import { MapPinIcon, PawPrintIcon, StarIcon } from "phosphor-react-native";
 import { View } from "react-native";
 import { formatRate, getLocationLine, getSitterName } from "../utils";
 import {
@@ -46,15 +42,19 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
         </Body>
       </View>
 
-      {reviewsQuery.isLoading ? (
-        <View className="gap-10">
+      {reviewsQuery.isFetching ? (
+        <View
+          accessibilityRole="progressbar"
+          accessibilityLabel="Loading sitter reviews"
+          className="gap-10"
+        >
           <Skeleton
             className="h-74 rounded-18"
-            backgroundClassName="bg-background-surface"
+            backgroundClassName="bg-background-surface-muted"
           />
           <Skeleton
             className="h-74 rounded-18"
-            backgroundClassName="bg-background-surface"
+            backgroundClassName="bg-background-surface-muted"
           />
         </View>
       ) : reviewsQuery.isError ? (

@@ -18,6 +18,7 @@ import {
   sitterReviewSchema,
 } from "@/constants/validation";
 import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
+import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { cn } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -32,6 +33,9 @@ import {
   getSitterName,
 } from "../utils";
 import { SectionLabel } from "./SitterPrimitives";
+
+const BottomSheetInputController =
+  withBottomSheetKeyboardEvents(InputController);
 
 const HOUR_MS = 1000 * 60 * 60;
 const DAY_MS = HOUR_MS * 24;
@@ -329,7 +333,7 @@ export const BookingRequestForm = ({
           </Body>
         ) : null}
       </View>
-      <InputController<ISitterBookingFormInput, ISitterBookingFormValues>
+      <BottomSheetInputController
         control={control}
         name="careInstructions"
         label="Care instructions"
@@ -337,7 +341,7 @@ export const BookingRequestForm = ({
         multiline
         numberOfLines={3}
       />
-      <InputController<ISitterBookingFormInput, ISitterBookingFormValues>
+      <BottomSheetInputController
         control={control}
         name="ownerNotes"
         label="Owner notes"
@@ -425,13 +429,13 @@ export const SitterProfileForm = ({
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
         <SectionLabel>Profile</SectionLabel>
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="displayName"
           label="Display name"
           placeholder="How owners will see you"
         />
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="bio"
           label="Bio"
@@ -439,7 +443,7 @@ export const SitterProfileForm = ({
           multiline
           numberOfLines={3}
         />
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="experience"
           label="Experience"
@@ -449,21 +453,21 @@ export const SitterProfileForm = ({
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
         <SectionLabel>Service area</SectionLabel>
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="address"
           label="Service area"
           placeholder="District, city, or neighborhood"
         />
         <View className="flex-row gap-12">
-          <InputController<ISitterProfileFormInput, ISitterProfileForm>
+          <BottomSheetInputController
             control={control}
             name="city"
             label="City"
             placeholder="Da Nang"
             className="flex-1"
           />
-          <InputController<ISitterProfileFormInput, ISitterProfileForm>
+          <BottomSheetInputController
             control={control}
             name="district"
             label="District"
@@ -471,7 +475,7 @@ export const SitterProfileForm = ({
             className="flex-1"
           />
         </View>
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="ward"
           label="Ward"
@@ -482,7 +486,7 @@ export const SitterProfileForm = ({
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
         <SectionLabel>Services</SectionLabel>
         <View className="flex-row gap-12">
-          <InputController<ISitterProfileFormInput, ISitterProfileForm>
+          <BottomSheetInputController
             control={control}
             name="hourlyRate"
             label="Hourly rate"
@@ -490,7 +494,7 @@ export const SitterProfileForm = ({
             placeholder="100000"
             className="flex-1"
           />
-          <InputController<ISitterProfileFormInput, ISitterProfileForm>
+          <BottomSheetInputController
             control={control}
             name="dailyRate"
             label="Daily rate"
@@ -499,14 +503,14 @@ export const SitterProfileForm = ({
             className="flex-1"
           />
         </View>
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="maxConcurrentBookings"
           label="Max bookings"
           keyboardType="numeric"
           placeholder="1"
         />
-        <InputController<ISitterProfileFormInput, ISitterProfileForm>
+        <BottomSheetInputController
           control={control}
           name="serviceNotes"
           label="Service notes"
@@ -541,7 +545,7 @@ export const CancelForm = ({
 
   return (
     <View className="gap-16 px-16">
-      <InputController<ISitterCancelForm>
+      <BottomSheetInputController
         control={control}
         name="reason"
         label="Reason"
@@ -580,7 +584,7 @@ export const ReviewForm = ({
         label="Rating"
         options={RATING_OPTIONS}
       />
-      <InputController<ISitterReviewFormValues>
+      <BottomSheetInputController
         control={control}
         name="comment"
         label="Review"

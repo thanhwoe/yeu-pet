@@ -183,7 +183,11 @@ export const StatusFilterRow = ({
     horizontal
     showsHorizontalScrollIndicator={false}
     className="mb-12 max-h-44"
-    contentContainerStyle={{ flexDirection: "row", gap: 8 }}
+    contentContainerStyle={{
+      alignItems: "flex-start",
+      flexDirection: "row",
+      gap: 8,
+    }}
   >
     {BOOKING_STATUS_FILTERS.map((item) => {
       const active = item.value === value;
@@ -195,7 +199,7 @@ export const StatusFilterRow = ({
           accessibilityState={{ selected: active }}
           onPress={() => onChange(item.value)}
           className={cn(
-            "h-40 justify-center rounded-full border border-line-subtle bg-background-surface px-14",
+            "h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14",
             active && "border-action-primary bg-action-primary",
           )}
         >

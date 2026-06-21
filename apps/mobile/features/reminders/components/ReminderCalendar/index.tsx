@@ -94,9 +94,7 @@ export const ReminderCalendar = () => {
       >
         {hasFilters ? (
           <ActiveFilterSummary
-            petName={
-              petData?.data.find((pet) => pet.id === petFilter)?.name
-            }
+            petName={petData?.data.find((pet) => pet.id === petFilter)?.name}
             status={statusFilter}
             type={typeFilter}
             onReset={handleResetFilters}
@@ -275,7 +273,7 @@ const SelectedDateSection = ({
           className="rounded-20 bg-background-card"
         />
       ) : reminders.length ? (
-        <View className="gap-12">
+        <View>
           {reminders.map((item) => (
             <AgendaItem
               key={item.id}
@@ -312,7 +310,13 @@ const SelectedDateSection = ({
 
 const ReminderListSkeleton = () => (
   <View className="gap-12">
-    <Skeleton className="h-112 rounded-20" backgroundClassName="bg-background-card" />
-    <Skeleton className="h-112 rounded-20" backgroundClassName="bg-background-card" />
+    <Skeleton
+      className="h-112 rounded-20"
+      backgroundClassName="bg-background-card"
+    />
+    <Skeleton
+      className="h-112 rounded-20"
+      backgroundClassName="bg-background-card"
+    />
   </View>
 );
