@@ -7,8 +7,8 @@ import {
 } from "@/constants/query-keys";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
-import { themes } from "@/theme";
 import { markNotificationReadMutation } from "@/services";
+import { themes } from "@/theme";
 import {
   date,
   isViewingForegroundNotificationTarget,

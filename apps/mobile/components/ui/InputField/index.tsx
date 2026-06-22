@@ -4,9 +4,12 @@ import {
   useState,
   type ElementType,
   type Ref,
+  type RefAttributes,
 } from "react";
 import {
   NativeSyntheticEvent,
+  Platform,
+  StyleSheet,
   TextInput,
   TextInputFocusEventData,
   TextInputProps,
@@ -16,6 +19,8 @@ import {
 import { cn } from "@/utils";
 import { Body } from "../Typography";
 import { InputVariants, inputVariants, supportTextVariants } from "./styles";
+
+type InputComponentProps = TextInputProps & RefAttributes<TextInput>;
 
 export interface InputFieldProps
   extends TextInputProps, Omit<InputVariants, "multiline"> {
@@ -27,7 +32,7 @@ export interface InputFieldProps
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   inputClassName?: string;
-  inputComponent?: ElementType<TextInputProps>;
+  inputComponent?: ElementType<InputComponentProps>;
 }
 
 export const InputField = forwardRef(
@@ -47,12 +52,13 @@ export const InputField = forwardRef(
       multiline,
       inputClassName,
       inputComponent,
+      style,
       ...props
     }: InputFieldProps,
     forwardedRef: Ref<TextInput>,
   ) => {
     const [focus, setFocus] = useState(false);
-    const InputComponent = (inputComponent ?? TextInput) as any;
+    const InputComponent = inputComponent ?? TextInput;
 
     const handleFocus = useCallback(
       (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -96,9 +102,9 @@ export const InputField = forwardRef(
           <InputComponent
             autoComplete="off"
             autoCorrect={false}
-            ref={forwardedRef as any}
+            ref={forwardedRef}
             className={cn(
-              "flex-1 h-full text-text-primary placeholder:text-text-tertiary selection:text-text-secondary font-regular text-body2",
+              "flex-1 self-stretch text-text-primary placeholder:text-text-tertiary selection:text-text-secondary font-regular text-body2",
               {
                 "align-top": multiline,
               },
@@ -109,6 +115,14 @@ export const InputField = forwardRef(
             editable={!disabled}
             maxFontSizeMultiplier={24 / 16}
             {...props}
+            style={[
+              Platform.OS === "android"
+                ? multiline
+                  ? styles.androidMultiline
+                  : styles.androidSingleLine
+                : undefined,
+              style,
+            ]}
           />
           {suffix && <View>{suffix}</View>}
         </View>
@@ -132,3 +146,17 @@ export const InputField = forwardRef(
 );
 
 InputField.displayName = "InputField";
+
+const styles = StyleSheet.create({
+  androidSingleLine: {
+    includeFontPadding: false,
+    paddingVertical: 0,
+    textAlignVertical: "center",
+  },
+  androidMultiline: {
+    includeFontPadding: false,
+    paddingBottom: 0,
+    paddingTop: 0,
+    textAlignVertical: "top",
+  },
+});

@@ -20,6 +20,7 @@ export function SettingToggle({
       accessibilityLabel={label}
       accessibilityState={{ checked: value, disabled }}
       disabled={disabled}
+      hitSlop={{ top: 6, bottom: 6 }}
       onPress={() => onChange(!value)}
       className={cn(
         "h-32 w-56 justify-center rounded-full p-3",

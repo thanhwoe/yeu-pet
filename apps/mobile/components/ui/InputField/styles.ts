@@ -1,7 +1,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 
 export const inputVariants = cva(
-  "h-40 rounded-8 bg-background-foreground flex-row items-center gap-8 border px-16",
+  "min-h-44 rounded-8 bg-background-foreground flex-row items-center gap-8 border px-16",
   {
     variants: {
       variant: {

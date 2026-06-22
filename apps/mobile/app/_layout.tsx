@@ -112,6 +112,13 @@ const RootNavigation = () => {
           }}
         />
         <Stack.Screen
+          name="notification-settings"
+          options={{
+            header: BackHeader,
+            title: "Notification settings",
+          }}
+        />
+        <Stack.Screen
           name="subscription"
           options={{
             header: BackHeader,

@@ -5,7 +5,7 @@ import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { Body, Heading } from "@/components/ui/Typography";
-import { ReminderDetailPopup } from "@/features/reminders/components/ReminderDetailPopup";
+import { ReminderDetailSheet } from "@/features/reminders/components/ReminderDetailSheet";
 import { ReminderForm } from "@/features/reminders/components/ReminderForm";
 import {
   useCreateReminderSheet,
@@ -127,11 +127,11 @@ export const ReminderCalendar = () => {
         />
       </ScrollView>
 
-      <ReminderDetailPopup
+      <ReminderDetailSheet
         visible={!!selectedReminder}
         reminder={selectedReminder}
         actioning={selectedReminder?.id === actioningId}
-        onClose={() => setSelectedReminder(undefined)}
+        onDismiss={() => setSelectedReminder(undefined)}
         onComplete={async (item) => {
           await completeReminder(item.id);
         }}

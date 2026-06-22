@@ -1,5 +1,4 @@
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body } from "@/components/ui/Typography";
 import { MedicalRecordListItem } from "@/features/medical-records/components/MedicalRecordListItem";
@@ -22,18 +21,17 @@ const EmptyRecordIcon = withIconClassName(FileTextIcon);
 
 const RECORD_ITEM_HEIGHT = 104;
 const RECORD_LIST_VERTICAL_SPACE = 36;
-const EMPTY_STATE_HEIGHT = 172;
+const EMPTY_STATE_HEIGHT = 132;
 
 interface MedicalRecordContainerProps {
   pet: IPet;
   onRecordPress?: (record: IMedicalRecord) => void;
   onMorePress?: (record: IMedicalRecord) => void;
   onSeeAllPress?: (pet: IPet) => void;
-  onAddPress?: () => void;
 }
 
 export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
-  ({ pet, onRecordPress, onMorePress, onSeeAllPress, onAddPress }) => {
+  ({ pet, onRecordPress, onMorePress, onSeeAllPress }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     // Animated values
@@ -165,8 +163,13 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
                 ))}
               </View>
             ) : (
-              <View className="mt-12 rounded-20 border border-dashed border-line-subtle bg-background-surface-muted px-14 py-14">
-                <View className="flex-row gap-12">
+              <View className="relative py-14">
+                <View
+                  className="absolute left-42 top-0 bottom-[50%] w-24 border-l-[3px] border-b-[3px] border-line-primary"
+                  style={{ borderBottomLeftRadius: 16 }}
+                />
+
+                <View className="ml-68 mr-4 flex-row items-center gap-12 rounded-20 border border-line-subtle bg-background-surface px-14 py-14 shadow-sm">
                   <View className="h-42 w-42 items-center justify-center rounded-14 bg-feature-medical-surface">
                     <EmptyRecordIcon
                       size={21}
@@ -178,26 +181,6 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
                     <Body variant="body3" weight="semiBold">
                       No medical records yet
                     </Body>
-                    <Body
-                      variant="body4"
-                      className="mt-4 text-text-muted"
-                      numberOfLines={2}
-                    >
-                      Add vaccines, checkups, medicine, or surgery notes for{" "}
-                      {pet.name}.
-                    </Body>
-
-                    {!!onAddPress && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="mt-12 self-start rounded-full px-14"
-                        onPress={onAddPress}
-                        accessibilityLabel={`Add first medical record for ${pet.name}`}
-                      >
-                        Add first record
-                      </Button>
-                    )}
                   </View>
                 </View>
               </View>

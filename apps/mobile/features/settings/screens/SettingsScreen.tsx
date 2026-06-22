@@ -8,7 +8,6 @@ import { SETTINGS_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { SegmentedSetting } from "@/features/settings/components/SegmentedSetting";
 import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
-import { SettingToggle } from "@/features/settings/components/SettingToggle";
 import { getPlanPeriodCopy } from "@/features/subscriptions/utils";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -17,21 +16,14 @@ import { IUserSettingsForm, SubscriptionEntitlements } from "@/interfaces";
 import {
   getEntitlementsQuery,
   getUserSettingsQuery,
-  saveDeviceInfoMutation,
   updateUserSettingsMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
-import {
-  getPushInstallationIdAsync,
-  getPushRegistrationGenerationAsync,
-  registerForFirebasePushNotificationsAsync,
-} from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as Device from "expo-device";
 import { router } from "expo-router";
 import { CaretRightIcon } from "phosphor-react-native";
-import { useCallback, useState } from "react";
-import { Alert, Linking, Platform, Pressable, View } from "react-native";
+import { useCallback } from "react";
+import { Alert, Linking, Pressable, View } from "react-native";
 
 const CaretRight = withIconClassName(CaretRightIcon);
 
@@ -188,9 +180,7 @@ export function SettingsScreen() {
   const { loading, logout } = useLogout();
   const { setColorScheme } = useColorScheme();
   const user = useUserInfoStore.use.user();
-  const updateDeviceInfo = useUserInfoStore.use.updateDeviceInfo();
   const queryClient = useQueryClient();
-  const [isRegisteringPush, setIsRegisteringPush] = useState(false);
   const {
     data: settings,
     isError: isSettingsError,
@@ -228,69 +218,6 @@ export function SettingsScreen() {
       await updateSettings(params);
     },
     [updateSettings],
-  );
-
-  const handlePushNotificationsChange = useCallback(
-    async (notificationEnable: boolean) => {
-      if (!notificationEnable) {
-        try {
-          await handleUpdateSettings({ notificationEnable: false });
-        } catch {
-          // The settings mutation already shows the save error.
-        }
-        return;
-      }
-
-      setIsRegisteringPush(true);
-      let registrationComplete = false;
-      try {
-        const pushToken = await registerForFirebasePushNotificationsAsync();
-        if (!pushToken) {
-          Toast.warn({
-            text: "Push notifications require a physical device.",
-          });
-          return;
-        }
-
-        const [installationId, registrationGeneration] = await Promise.all([
-          getPushInstallationIdAsync(),
-          getPushRegistrationGenerationAsync(),
-        ]);
-        const device = await saveDeviceInfoMutation({
-          pushToken,
-          installationId,
-          registrationGeneration,
-          platform: Platform.select({
-            android: "android",
-            ios: "ios",
-            default: "unknown",
-          }),
-          deviceName: Device.deviceName ?? undefined,
-          osVersion: Device.osVersion ?? undefined,
-        });
-        updateDeviceInfo({
-          deviceName: device.deviceName,
-          id: device.id,
-          isActive: device.isActive,
-          osVersion: device.osVersion,
-        });
-        registrationComplete = true;
-        await handleUpdateSettings({ notificationEnable: true });
-        Toast.success({ text: "Push notifications enabled." });
-      } catch (error: unknown) {
-        if (!registrationComplete) {
-          Toast.warn({
-            text:
-              error instanceof Error
-                ? error.message
-                : "Could not enable push notifications.",
-          });
-        }
-      } finally {
-        setIsRegisteringPush(false);
-      }
-    },
-    [handleUpdateSettings, updateDeviceInfo],
   );
 
   const handleThemeChange = useCallback(
@@ -363,7 +290,6 @@ export function SettingsScreen() {
   }
 
   const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ");
-  const notificationsMuted = !settings.notificationEnable;
   const displayName = fullName || "YeuPet owner";
   const contact = user?.email || user?.phone || "Account details synced";
 
@@ -401,76 +327,11 @@ export function SettingsScreen() {
 
         <SettingsSection title="Notifications">
           <SettingsRow
-            title="Push notifications"
-            description="Master notification switch"
-            loading={isUpdatingSettings || isRegisteringPush}
+            title="Notification settings"
+            onPress={() => router.push("/notification-settings")}
+            accessibilityLabel="Open notification settings"
           >
-            <SettingToggle
-              label="Push notifications"
-              value={settings.notificationEnable}
-              disabled={isUpdatingSettings || isRegisteringPush}
-              onChange={handlePushNotificationsChange}
-            />
-          </SettingsRow>
-          <SettingsRow
-            title="Care reminders"
-            description="Vaccines, medicine, grooming"
-            value={notificationsMuted ? "Muted" : undefined}
-            disabled={notificationsMuted}
-          >
-            <SettingToggle
-              label="Care reminders"
-              value={settings.reminderNotifications}
-              disabled={isUpdatingSettings || !settings.notificationEnable}
-              onChange={(reminderNotifications) =>
-                handleUpdateSettings({ reminderNotifications })
-              }
-            />
-          </SettingsRow>
-          <SettingsRow
-            title="Sitter booking"
-            description="Requests and messages"
-            value={notificationsMuted ? "Muted" : undefined}
-            disabled={notificationsMuted}
-          >
-            <SettingToggle
-              label="Sitter booking notifications"
-              value={settings.bookingNotifications}
-              disabled={isUpdatingSettings || !settings.notificationEnable}
-              onChange={(bookingNotifications) =>
-                handleUpdateSettings({ bookingNotifications })
-              }
-            />
-          </SettingsRow>
-          <SettingsRow
-            title="Photos/social"
-            description="Comments and activity"
-            value={notificationsMuted ? "Muted" : undefined}
-            disabled={notificationsMuted}
-          >
-            <SettingToggle
-              label="Photos social notifications"
-              value={settings.socialNotifications}
-              disabled={isUpdatingSettings || !settings.notificationEnable}
-              onChange={(socialNotifications) =>
-                handleUpdateSettings({ socialNotifications })
-              }
-            />
-          </SettingsRow>
-          <SettingsRow
-            title="Pet Care AI"
-            description="Usage and care tips"
-            value={notificationsMuted ? "Muted" : undefined}
-            disabled={notificationsMuted}
-          >
-            <SettingToggle
-              label="Pet Care AI notifications"
-              value={settings.aiNotifications}
-              disabled={isUpdatingSettings || !settings.notificationEnable}
-              onChange={(aiNotifications) =>
-                handleUpdateSettings({ aiNotifications })
-              }
-            />
+            <CaretRight size={20} className="text-icon-secondary" />
           </SettingsRow>
         </SettingsSection>
 

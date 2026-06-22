@@ -1,3 +1,4 @@
+import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body, Heading } from "@/components/ui/Typography";
 import {
@@ -19,107 +20,95 @@ import {
   XCircleIcon,
 } from "phosphor-react-native";
 import type { ReactNode } from "react";
-import { Modal, Pressable, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, View } from "react-native";
 
 const DoneIcon = withIconClassName(CheckCircleIcon);
 const SkipIcon = withIconClassName(ProhibitIcon);
 const CancelIcon = withIconClassName(XCircleIcon);
 
-interface ReminderDetailPopupProps {
+interface ReminderDetailSheetProps {
   reminder?: IReminder;
   visible: boolean;
   actioning?: boolean;
-  onClose: () => void;
+  onDismiss: () => void;
   onComplete: (item: IReminder) => Promise<void> | void;
   onSkip: (item: IReminder) => Promise<void> | void;
   onCancelReminder: (item: IReminder) => Promise<void> | void;
 }
 
-export const ReminderDetailPopup = ({
+export const ReminderDetailSheet = ({
   reminder,
   visible,
   actioning,
-  onClose,
+  onDismiss,
   onComplete,
   onSkip,
   onCancelReminder,
-}: ReminderDetailPopupProps) => {
-  if (!reminder) return null;
-
-  const petName = reminder.pets?.name ?? "No pet";
-  const canChangeStatus = reminder.status === "pending";
-
+}: ReminderDetailSheetProps) => {
   const runAction = async (
     action: (item: IReminder) => Promise<void> | void,
   ) => {
+    if (!reminder) return;
+
     await action(reminder);
-    onClose();
+    onDismiss();
   };
 
   return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={visible}
-      onRequestClose={onClose}
+    <BottomSheet
+      name="reminder-detail"
+      visible={visible && Boolean(reminder)}
+      onDismiss={onDismiss}
+      titleElement={<Body weight="semiBold">Reminder details</Body>}
+      useScrollView
     >
-      <View className="flex-1 justify-end bg-black/50">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close reminder detail"
-          className="flex-1"
-          onPress={onClose}
-        />
-
-        <SafeAreaView className="rounded-t-28 bg-background-card">
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerClassName="gap-20 px-20 pb-safe-offset-20 pt-20"
-          >
-            <View className="gap-14">
-              <View className="flex-row items-start justify-between gap-12">
-                <View className="flex-1 flex-row gap-12">
-                  <ReminderTypeIcon type={reminder.type} circle />
-                  <View className="flex-1 gap-4">
-                    <Heading variant="h5" weight="bold" numberOfLines={2}>
-                      {reminder.title}
-                    </Heading>
-                    <Body variant="body3" className="text-text-muted">
-                      {petName} · {REMINDER_TYPE_LABELS[reminder.type]}
-                    </Body>
-                  </View>
+      {reminder ? (
+        <View className="gap-20 px-20">
+          <View className="gap-14">
+            <View className="flex-row items-start justify-between gap-12">
+              <View className="flex-1 flex-row gap-12">
+                <ReminderTypeIcon type={reminder.type} circle />
+                <View className="flex-1 gap-4">
+                  <Heading variant="h5" weight="bold" numberOfLines={2}>
+                    {reminder.title}
+                  </Heading>
+                  <Body variant="body3" className="text-text-muted">
+                    {reminder.pets?.name ?? "No pet"} ·{" "}
+                    {REMINDER_TYPE_LABELS[reminder.type]}
+                  </Body>
                 </View>
-                <ReminderStatusChip status={reminder.status} />
               </View>
-
-              {reminder.description ? (
-                <Body variant="body3" className="text-text-muted">
-                  {reminder.description}
-                </Body>
-              ) : null}
+              <ReminderStatusChip status={reminder.status} />
             </View>
 
-            <View className="gap-10 rounded-20 bg-background-surface-muted p-14">
-              <DetailRow
-                label="Date"
-                value={formatReminderDate(reminder.scheduledAt)}
-              />
-              <DetailRow
-                label="Time"
-                value={formatReminderTime(reminder.scheduledAt)}
-              />
-              <DetailRow
-                label="Repeat"
-                value={formatReminderRepeat(
-                  reminder.repeatFrequency,
-                  reminder.repeatUntil,
-                )}
-              />
-            </View>
+            {reminder.description ? (
+              <Body variant="body3" className="text-text-muted">
+                {reminder.description}
+              </Body>
+            ) : null}
+          </View>
 
-            {canChangeStatus ? (
-              <View className="flex-row flex-wrap gap-16 justify-center pt-16">
+          <View className="gap-10 rounded-20 bg-background-surface-muted p-14">
+            <DetailRow
+              label="Date"
+              value={formatReminderDate(reminder.scheduledAt)}
+            />
+            <DetailRow
+              label="Time"
+              value={formatReminderTime(reminder.scheduledAt)}
+            />
+            <DetailRow
+              label="Repeat"
+              value={formatReminderRepeat(
+                reminder.repeatFrequency,
+                reminder.repeatUntil,
+              )}
+            />
+          </View>
+
+          {reminder.status === "pending" ? (
+            <View className="items-center gap-12 pt-4">
+              <View className="flex-row flex-wrap justify-center gap-12">
                 <DetailActionButton
                   label="Done"
                   disabled={actioning}
@@ -132,7 +121,7 @@ export const ReminderDetailPopup = ({
                       className="text-status-success-icon"
                     />
                   }
-                  onPress={() => runAction(onComplete)}
+                  onPress={() => void runAction(onComplete)}
                 />
                 <DetailActionButton
                   label="Skip"
@@ -146,7 +135,7 @@ export const ReminderDetailPopup = ({
                       className="text-icon-muted"
                     />
                   }
-                  onPress={() => runAction(onSkip)}
+                  onPress={() => void runAction(onSkip)}
                 />
                 <DetailActionButton
                   label="Cancel"
@@ -160,17 +149,17 @@ export const ReminderDetailPopup = ({
                       className="text-status-danger-icon"
                     />
                   }
-                  onPress={() => runAction(onCancelReminder)}
+                  onPress={() => void runAction(onCancelReminder)}
                 />
-                {actioning ? (
-                  <Spinner size={20} className="text-icon-primary" />
-                ) : null}
               </View>
-            ) : null}
-          </ScrollView>
-        </SafeAreaView>
-      </View>
-    </Modal>
+              {actioning ? (
+                <Spinner size={20} className="text-icon-primary" />
+              ) : null}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+    </BottomSheet>
   );
 };
 
@@ -203,10 +192,11 @@ const DetailActionButton = ({
   <Pressable
     accessibilityRole="button"
     accessibilityLabel={`${label} reminder`}
+    accessibilityState={{ disabled, busy: disabled }}
     disabled={disabled}
     onPress={onPress}
     className={cn(
-      "min-h-40 flex-row items-center justify-center gap-6 rounded-14 px-12",
+      "min-h-44 flex-row items-center justify-center gap-6 rounded-14 px-14",
       disabled && "opacity-60",
       className,
     )}

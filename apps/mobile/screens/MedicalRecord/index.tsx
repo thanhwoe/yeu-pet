@@ -88,7 +88,6 @@ export const MedicalRecordScreen = () => {
                 )}` as Href,
               );
             }}
-            onAddPress={handleOpenForm}
             onMorePress={(record) => {
               handleSelectRecord(record);
             }}
