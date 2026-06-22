@@ -123,7 +123,45 @@ POST /subscriptions/mock-upgrade
 POST /subscriptions/mock-downgrade
 ```
 
-Use `/subscriptions/entitlements` for feature gating in the app. Mock upgrade/downgrade routes are development helpers.
+`GET /subscriptions/me` is the canonical plan-and-usage response:
+
+```ts
+{
+  tier: "free" | "premium";
+  status: "free" |
+    "trialing" |
+    "active" |
+    "grace_period" |
+    "expired" |
+    "cancelled";
+  planCode: string;
+  expiresAt: string | null;
+  usage: {
+    pets: number;
+    activeReminders: number;
+    medicalRecords: number;
+    budgetTransactionsThisMonth: number;
+    photos: number;
+    aiMessagesThisMonth: number;
+  }
+  limits: {
+    maxPets: number;
+    maxActiveReminders: number;
+    recurringReminders: boolean;
+    maxMedicalRecords: number;
+    maxImagesPerMedicalRecord: number;
+    maxBudgetTransactionsPerMonth: number;
+    yearlyBudgetStats: boolean;
+    maxPhotos: number;
+    aiMessagesPerMonth: number;
+    aiWithPetContext: boolean;
+    aiWithMedicalHistory: boolean;
+    exportMedicalSummary: boolean;
+  }
+}
+```
+
+A numeric limit of `-1` means unlimited. `expiresAt` is the current access boundary when known; it does not by itself indicate whether store billing will renew. Use `/subscriptions/entitlements` for feature gating in the app. Mock upgrade/downgrade routes are development helpers and are rejected by the API in production.
 
 ## Pets
 

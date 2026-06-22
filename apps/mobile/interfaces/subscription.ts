@@ -1,13 +1,16 @@
 export interface SubscriptionLimits {
   maxPets: number;
   maxActiveReminders: number;
+  recurringReminders: boolean;
   maxMedicalRecords: number;
   maxImagesPerMedicalRecord: number;
   maxBudgetTransactionsPerMonth: number;
+  yearlyBudgetStats: boolean;
   maxPhotos: number;
   aiMessagesPerMonth: number;
   aiWithPetContext: boolean;
   aiWithMedicalHistory: boolean;
+  exportMedicalSummary: boolean;
 }
 
 export interface SubscriptionUsage {
@@ -31,5 +34,5 @@ export interface SubscriptionEntitlements {
   planCode: string;
   limits: SubscriptionLimits;
   usage: SubscriptionUsage;
-  currentPeriodEnd?: string | null;
+  expiresAt: string | null;
 }

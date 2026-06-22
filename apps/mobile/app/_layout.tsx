@@ -111,6 +111,13 @@ const RootNavigation = () => {
             title: "Notifications",
           }}
         />
+        <Stack.Screen
+          name="subscription"
+          options={{
+            header: BackHeader,
+            title: "Plan & Usage",
+          }}
+        />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen
           name="profile/verify-email"

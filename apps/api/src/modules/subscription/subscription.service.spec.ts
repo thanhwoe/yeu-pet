@@ -1,6 +1,13 @@
-import { subscription_tier } from '@app/generated/prisma/client';
+import {
+  subscription_status,
+  subscription_tier,
+} from '@app/generated/prisma/client';
 import { ConfigService } from '@nestjs/config';
-import { HttpException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SubscriptionRepository } from './subscription.repository';
 import { SubscriptionService } from './subscription.service';
 
@@ -97,6 +104,75 @@ describe('SubscriptionService', () => {
         aiMessagesThisMonth: 1,
       },
     });
+  });
+
+  it('returns the Premium access boundary with live usage', async () => {
+    const expiresAt = new Date('2099-07-20T00:00:00.000Z');
+    repository.findAccountById.mockResolvedValue({
+      id: accountId,
+      subscription: subscription_tier.premium,
+      subscription_expires_at: expiresAt,
+    } as never);
+    repository.findLatestUserSubscription.mockResolvedValue({
+      plan_code: 'premium_monthly',
+      status: subscription_status.active,
+      expires_at: expiresAt,
+    } as never);
+    mockUsage({ pets: 2, activeReminders: 4 });
+
+    await expect(service.getEntitlements(accountId)).resolves.toMatchObject({
+      tier: 'premium',
+      status: 'active',
+      planCode: 'premium_monthly',
+      expiresAt,
+      limits: {
+        maxPets: -1,
+        recurringReminders: true,
+        exportMedicalSummary: true,
+      },
+      usage: {
+        pets: 2,
+        activeReminders: 4,
+      },
+    });
+  });
+
+  it('keeps mock subscription changes disabled in production', async () => {
+    service = createService(repository, { NODE_ENV: 'production' });
+
+    await expect(service.mockUpgrade(accountId)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+    await expect(service.mockDowngrade(accountId)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+    expect(repository.setManualSubscription).not.toHaveBeenCalled();
+  });
+
+  it('applies a mock upgrade in development and returns refreshed usage', async () => {
+    repository.setManualSubscription.mockResolvedValue({
+      id: 'subscription-id',
+    } as never);
+    repository.findAccountById.mockResolvedValue({
+      id: accountId,
+      subscription: subscription_tier.premium,
+      subscription_expires_at: null,
+    } as never);
+    repository.findLatestUserSubscription.mockResolvedValue({
+      plan_code: 'premium_monthly',
+      status: subscription_status.active,
+      expires_at: null,
+    } as never);
+    mockUsage({ pets: 2, aiMessagesThisMonth: 3 });
+
+    await expect(service.mockUpgrade(accountId)).resolves.toMatchObject({
+      tier: 'premium',
+      usage: { pets: 2, aiMessagesThisMonth: 3 },
+    });
+    expect(repository.setManualSubscription).toHaveBeenCalledWith(
+      accountId,
+      subscription_tier.premium,
+    );
   });
 
   it('blocks pet creation when the free pet limit is reached', async () => {

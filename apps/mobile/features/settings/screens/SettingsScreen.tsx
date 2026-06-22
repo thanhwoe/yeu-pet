@@ -9,14 +9,14 @@ import { SegmentedSetting } from "@/features/settings/components/SegmentedSettin
 import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
 import { SettingToggle } from "@/features/settings/components/SettingToggle";
+import { getPlanPeriodCopy } from "@/features/subscriptions/utils";
+import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useLogout } from "@/hooks/useLogout";
 import { IUserSettingsForm, SubscriptionEntitlements } from "@/interfaces";
 import {
   getEntitlementsQuery,
   getUserSettingsQuery,
-  mockDowngradeSubscriptionMutation,
-  mockUpgradeSubscriptionMutation,
   saveDeviceInfoMutation,
   updateUserSettingsMutation,
 } from "@/services";
@@ -29,8 +29,11 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Device from "expo-device";
 import { router } from "expo-router";
+import { CaretRightIcon } from "phosphor-react-native";
 import { useCallback, useState } from "react";
-import { Alert, Linking, Platform, View } from "react-native";
+import { Alert, Linking, Platform, Pressable, View } from "react-native";
+
+const CaretRight = withIconClassName(CaretRightIcon);
 
 const THEME_OPTIONS = [
   { label: "System", value: "system" },
@@ -46,21 +49,6 @@ const LANGUAGE_OPTIONS = [
 const SUPPORT_EMAIL = "support@yeupet.app";
 const PRIVACY_URL = "https://yeupet.app/privacy";
 const TERMS_URL = "https://yeupet.app/terms";
-
-const formatUsage = (usage: number, limit: number) =>
-  limit < 0 ? `${usage} used` : `${usage}/${limit}`;
-
-const formatStatus = (status: SubscriptionEntitlements["status"]) =>
-  status
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-
-const getUsagePercent = (usage: number, limit: number) => {
-  if (limit < 0) return 100;
-  if (limit === 0) return 0;
-  return Math.min(100, Math.round((usage / limit) * 100));
-};
 
 const getInitials = (name: string) => {
   const initials = name
@@ -110,43 +98,18 @@ function ProfileCard({
   );
 }
 
-function UsageMeter({
-  label,
-  usage,
-  limit,
-}: {
-  label: string;
-  usage: number;
-  limit: number;
-}) {
-  const percent = getUsagePercent(usage, limit);
-
-  return (
-    <View className="gap-6">
-      <View className="flex-row items-center justify-between gap-12">
-        <Text variant="footnote" className="font-semibold">
-          {label}
-        </Text>
-        <Text variant="footnote" className="text-text-muted">
-          {formatUsage(usage, limit)}
-        </Text>
-      </View>
-      <View className="h-6 overflow-hidden rounded-full bg-background-surface-muted">
-        <View
-          className="h-full rounded-full bg-background-primary"
-          style={{ width: `${percent}%` }}
-        />
-      </View>
-    </View>
-  );
-}
-
 function SubscriptionSummary({
   entitlements,
   loading,
+  error,
+  onOpen,
+  onRetry,
 }: {
   entitlements?: SubscriptionEntitlements;
   loading: boolean;
+  error: boolean;
+  onOpen: () => void;
+  onRetry: () => void;
 }) {
   if (loading && !entitlements) {
     return (
@@ -155,6 +118,19 @@ function SubscriptionSummary({
         description="Checking plan and usage."
         loading
       />
+    );
+  }
+
+  if (error && !entitlements) {
+    return (
+      <SettingsRow
+        title="Plan details could not load"
+        description="Retry to refresh your subscription status."
+      >
+        <Button size="sm" variant="outline" onPress={onRetry}>
+          Retry
+        </Button>
+      </SettingsRow>
     );
   }
 
@@ -168,50 +144,42 @@ function SubscriptionSummary({
   }
 
   const planLabel = entitlements.tier === "premium" ? "Premium" : "Free";
-  const summary = `${formatUsage(
-    entitlements.usage.pets,
-    entitlements.limits.maxPets,
-  )} pets · ${formatUsage(
-    entitlements.usage.aiMessagesThisMonth,
-    entitlements.limits.aiMessagesPerMonth,
-  )} AI messages · ${formatUsage(
-    entitlements.usage.photos,
-    entitlements.limits.maxPhotos,
-  )} photos`;
+  const isPremium = entitlements.tier === "premium";
 
   return (
-    <View className="gap-14 border-b border-line-subtle px-16 py-14">
-      <View className="flex-row items-start justify-between gap-12">
+    <View className="gap-12 border-b border-line-subtle px-16 py-14">
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`View ${planLabel} plan usage`}
+        className="min-h-44 flex-row items-center gap-12"
+        onPress={onOpen}
+      >
         <View className="flex-1 gap-2">
           <Text variant="body2" className="font-semibold">
             {planLabel} plan
           </Text>
           <Text variant="footnote" className="text-text-muted">
-            {summary}
+            {getPlanPeriodCopy(entitlements)}
           </Text>
         </View>
-        <View className="rounded-full bg-background-surface-muted px-10 py-5">
-          <Text variant="caption1" className="font-semibold text-text-accent">
-            {formatStatus(entitlements.status)}
-          </Text>
-        </View>
-      </View>
+        <CaretRight size={20} className="text-icon-secondary" />
+      </Pressable>
 
-      <UsageMeter
-        label="Pets"
-        usage={entitlements.usage.pets}
-        limit={entitlements.limits.maxPets}
-      />
-      <UsageMeter
-        label="AI messages"
-        usage={entitlements.usage.aiMessagesThisMonth}
-        limit={entitlements.limits.aiMessagesPerMonth}
-      />
-      <UsageMeter
-        label="Photos"
-        usage={entitlements.usage.photos}
-        limit={entitlements.limits.maxPhotos}
-      />
+      {!isPremium ? (
+        <View className="flex-row gap-10">
+          <Button
+            size="sm"
+            variant="outline"
+            wrapperClassName="flex-1"
+            onPress={onOpen}
+          >
+            View usage
+          </Button>
+          <Button size="sm" wrapperClassName="flex-1" onPress={onOpen}>
+            Upgrade
+          </Button>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -242,10 +210,6 @@ export function SettingsScreen() {
     queryFn: getEntitlementsQuery,
   });
 
-  const invalidateSubscription = () => {
-    queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
-  };
-
   const { mutateAsync: updateSettings, isPending: isUpdatingSettings } =
     useMutation({
       mutationFn: updateUserSettingsMutation,
@@ -259,14 +223,6 @@ export function SettingsScreen() {
       },
     });
 
-  const { mutate: mockUpgrade, isPending: isUpgrading } = useMutation({
-    mutationFn: mockUpgradeSubscriptionMutation,
-    onSuccess: invalidateSubscription,
-  });
-  const { mutate: mockDowngrade, isPending: isDowngrading } = useMutation({
-    mutationFn: mockDowngradeSubscriptionMutation,
-    onSuccess: invalidateSubscription,
-  });
   const handleUpdateSettings = useCallback(
     async (params: IUserSettingsForm) => {
       await updateSettings(params);
@@ -359,14 +315,9 @@ export function SettingsScreen() {
     }
   }, []);
 
-  const handleSubscriptionAction = useCallback(() => {
-    Toast.warn({
-      text:
-        entitlements?.tier === "premium"
-          ? "Subscription management will be available after store integration."
-          : "Premium purchase will be available after store integration.",
-    });
-  }, [entitlements?.tier]);
+  const openSubscription = useCallback(() => {
+    router.push("/subscription");
+  }, []);
 
   const handleLogoutPress = useCallback(() => {
     Alert.alert(
@@ -442,61 +393,11 @@ export function SettingsScreen() {
           <SubscriptionSummary
             entitlements={entitlements}
             loading={isLoadingEntitlements}
+            error={isEntitlementsError}
+            onOpen={openSubscription}
+            onRetry={() => void refetchEntitlements()}
           />
-          {isEntitlementsError ? (
-            <SettingsRow
-              title="Plan details could not refresh"
-              description="Retry to refresh subscription status."
-            >
-              <Button
-                size="sm"
-                variant="outline"
-                onPress={() => refetchEntitlements()}
-              >
-                Retry
-              </Button>
-            </SettingsRow>
-          ) : null}
-          <SettingsRow
-            title={entitlements?.tier === "premium" ? "Manage plan" : "Upgrade"}
-            description={
-              entitlements?.tier === "premium"
-                ? "Billing and plan changes"
-                : "More pets, photos, records, and AI"
-            }
-          >
-            <Button
-              size="sm"
-              variant={entitlements?.tier === "premium" ? "outline" : "primary"}
-              onPress={handleSubscriptionAction}
-            >
-              {entitlements?.tier === "premium" ? "Manage" : "Upgrade"}
-            </Button>
-          </SettingsRow>
         </SettingsSection>
-
-        {__DEV__ ? (
-          <SettingsSection title="Developer tools">
-            <View className="flex-row gap-10 px-16 py-14">
-              <Button
-                size="sm"
-                variant="outline"
-                loading={isUpgrading}
-                onPress={() => mockUpgrade()}
-              >
-                Mock Upgrade
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                loading={isDowngrading}
-                onPress={() => mockDowngrade()}
-              >
-                Mock Downgrade
-              </Button>
-            </View>
-          </SettingsSection>
-        ) : null}
 
         <SettingsSection title="Notifications">
           <SettingsRow

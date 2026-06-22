@@ -1,10 +1,8 @@
 import { SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { SubscriptionEntitlements } from "@/interfaces";
-import {
-  getEntitlementsQuery,
-  mockUpgradeSubscriptionMutation,
-} from "@/services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getEntitlementsQuery } from "@/services";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 
 type LimitKey = keyof Pick<
   SubscriptionEntitlements["limits"],
@@ -30,19 +28,10 @@ const USAGE_BY_LIMIT: Record<LimitKey, UsageKey> = {
 };
 
 export const useEntitlements = () => {
-  const queryClient = useQueryClient();
-
   const query = useQuery({
     queryKey: SUBSCRIPTION_KEY.entitlements(),
     queryFn: getEntitlementsQuery,
     staleTime: 60_000,
-  });
-
-  const upgradeMutation = useMutation({
-    mutationFn: mockUpgradeSubscriptionMutation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
-    },
   });
 
   const isPremium = query.data?.tier === "premium";
@@ -59,12 +48,13 @@ export const useEntitlements = () => {
     }
 
     const limit = entitlements.limits[limitKey];
+    const unlimited = limit < 0;
     const usage =
       overrideUsage ?? entitlements.usage[USAGE_BY_LIMIT[limitKey]] ?? 0;
-    const remaining = Math.max(0, limit - usage);
+    const remaining = unlimited ? undefined : Math.max(0, limit - usage);
 
     return {
-      allowed: usage < limit,
+      allowed: unlimited || usage < limit,
       limit,
       usage,
       remaining,
@@ -76,7 +66,7 @@ export const useEntitlements = () => {
     entitlements: query.data,
     getLimitState,
     isPremium,
-    upgrade: upgradeMutation.mutateAsync,
-    isUpgrading: upgradeMutation.isPending,
+    upgrade: () => router.push("/subscription"),
+    isUpgrading: false,
   };
 };

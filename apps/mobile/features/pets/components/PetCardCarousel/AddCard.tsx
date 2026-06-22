@@ -51,13 +51,8 @@ export const AddCard = ({
       [SCALE_SIDE, SCALE_CENTER, SCALE_SIDE],
       Extrapolation.CLAMP,
     );
-    const opacity = interpolate(
-      scrollX.value,
-      inputRange,
-      [0.65, 1, 0.65],
-      Extrapolation.CLAMP,
-    );
-    return { transform: [{ scale }], opacity };
+
+    return { transform: [{ scale }] };
   });
 
   const queryClient = useQueryClient();
