@@ -30,7 +30,7 @@ export class UserDevicesRepository implements IUserDevicesRepository {
     return this.prisma.$transaction(async (tx) => {
       const updatedAt = new Date();
 
-      await tx.$queryRaw`
+      await tx.$executeRaw`
         SELECT pg_advisory_xact_lock(hashtext(${data.installation_id}))
       `;
 

@@ -1,6 +1,9 @@
+import type { NotificationCategory } from "@/interfaces";
+
 export enum ToastVariants {
   DEFAULT = "default",
   ERROR = "error",
+  NOTIFICATION = "notification",
   SUCCESS = "success",
   WARNING = "warning",
 }
@@ -10,6 +13,10 @@ export interface ToastProps {
   text: string;
   title?: string;
   duration?: number;
+  notificationType?: NotificationCategory;
+  onPress?: () => void;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export interface ToastRef {

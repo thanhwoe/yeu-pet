@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { ToastVariants } from "./utils";
 
 const styles = cva(
-  "mx-20 flex-row items-start gap-10 rounded-20 border px-12 py-10 shadow-sm",
+  "mx-16 flex-row items-start gap-10 rounded-20 border px-12 py-10 shadow-card",
   {
     variants: {
       tone: {
@@ -17,6 +17,8 @@ const styles = cva(
           "border-status-info-border bg-status-info-surface",
         [ToastVariants.ERROR]:
           "border-status-danger-border bg-status-danger-surface",
+        [ToastVariants.NOTIFICATION]:
+          "border-line-subtle bg-background-surface-raised",
         [ToastVariants.SUCCESS]:
           "border-status-success-border bg-status-success-surface",
         [ToastVariants.WARNING]:
@@ -37,6 +39,11 @@ const styles = cva(
         tone: "dark",
         variant: ToastVariants.ERROR,
         class: "border-status-danger-border bg-background-surface-raised",
+      },
+      {
+        tone: "dark",
+        variant: ToastVariants.NOTIFICATION,
+        class: "border-line-subtle bg-background-surface-raised",
       },
       {
         tone: "dark",

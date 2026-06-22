@@ -16,3 +16,10 @@ export interface INotification {
 export interface INotificationBadge {
   count: number;
 }
+
+export type NotificationCategory =
+  | "reminder"
+  | "booking"
+  | "social"
+  | "ai"
+  | "system";

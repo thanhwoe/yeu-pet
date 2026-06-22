@@ -1,17 +1,31 @@
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { useInitialize } from "@/hooks/useInitialize";
-import { themes } from "@/theme";
-import { date } from "@/utils";
 import {
+  AI_KEY,
   NOTIFICATIONS_KEY,
+  PHOTOS_KEY,
   REMINDER_KEY,
   SITTER_BOOKING_KEY,
 } from "@/constants/query-keys";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { useInitialize } from "@/hooks/useInitialize";
+import { themes } from "@/theme";
+import { markNotificationReadMutation } from "@/services";
+import {
+  date,
+  isViewingForegroundNotificationTarget,
+  normalizeForegroundNotification,
+} from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { getMessaging, onMessage } from "@react-native-firebase/messaging";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Href,
+  useGlobalSearchParams,
+  usePathname,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -52,6 +66,28 @@ const InitialProvider = ({ children }: Children) => {
   const isInitialized = useInitialize();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
   const themeVariables = themes[colorScheme] ?? themes.light;
+  const router = useRouter();
+  const pathname = usePathname();
+  const segments = useSegments();
+  const { bookingId, role, tab } = useGlobalSearchParams<{
+    bookingId?: string;
+    role?: string;
+    tab?: string;
+  }>();
+  const currentRouteRef = useRef({
+    pathname,
+    segments,
+    searchParams: { bookingId, role, tab },
+  });
+  const receivedNotificationIdsRef = useRef(new Set<string>());
+
+  useEffect(() => {
+    currentRouteRef.current = {
+      pathname,
+      segments,
+      searchParams: { bookingId, role, tab },
+    };
+  }, [bookingId, pathname, role, segments, tab]);
 
   useEffect(() => {
     date.locale("vi");
@@ -72,29 +108,79 @@ const InitialProvider = ({ children }: Children) => {
         queryKey: NOTIFICATIONS_KEY.all,
       });
 
-      const notificationType = message.data?.notificationType;
-      if (notificationType === "reminder_due") {
+      const notification = normalizeForegroundNotification(message);
+      if (!notification) {
+        return;
+      }
+
+      if (notification.category === "reminder") {
         void queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       }
 
-      if (
-        notificationType === "sitter_booking_request" ||
-        notificationType === "sitter_booking_status"
-      ) {
+      if (notification.category === "booking") {
         void queryClient.invalidateQueries({
           queryKey: SITTER_BOOKING_KEY.all,
         });
       }
 
-      if (message.notification?.title || message.notification?.body) {
-        Toast.show({
-          title: message.notification.title,
-          text: message.notification.body ?? "You have a new notification.",
-          duration: 4000,
-        });
+      if (notification.category === "social") {
+        void queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.all });
       }
+
+      if (notification.category === "ai") {
+        void queryClient.invalidateQueries({ queryKey: AI_KEY.all });
+      }
+
+      if (notification.id) {
+        if (receivedNotificationIdsRef.current.has(notification.id)) {
+          return;
+        }
+
+        if (receivedNotificationIdsRef.current.size >= 100) {
+          const oldestId = receivedNotificationIdsRef.current
+            .values()
+            .next().value;
+          if (oldestId) {
+            receivedNotificationIdsRef.current.delete(oldestId);
+          }
+        }
+        receivedNotificationIdsRef.current.add(notification.id);
+      }
+
+      if (
+        isViewingForegroundNotificationTarget({
+          notification,
+          ...currentRouteRef.current,
+        })
+      ) {
+        return;
+      }
+
+      Toast.notification({
+        title: notification.title,
+        text: notification.message,
+        notificationType: notification.category,
+        accessibilityLabel: `${notification.title}. ${notification.message}`,
+        accessibilityHint: notification.deepLink
+          ? "Opens the related screen"
+          : undefined,
+        onPress: notification.deepLink
+          ? () => {
+              if (notification.notificationId) {
+                void markNotificationReadMutation(notification.notificationId)
+                  .then(() =>
+                    queryClient.invalidateQueries({
+                      queryKey: NOTIFICATIONS_KEY.all,
+                    }),
+                  )
+                  .catch(() => undefined);
+              }
+              router.push(notification.deepLink as Href);
+            }
+          : undefined,
+      });
     });
-  }, []);
+  }, [router]);
 
   if (!isInitialized) {
     return <AppLoader />;

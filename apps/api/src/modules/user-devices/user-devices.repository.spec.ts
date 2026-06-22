@@ -2,6 +2,7 @@ import { device_platform } from '@app/generated/prisma/enums';
 import { UserDevicesRepository } from './user-devices.repository';
 
 describe('UserDevicesRepository ownership safety', () => {
+  const executeRaw = jest.fn();
   const transactionDevices = {
     findFirst: jest.fn(),
     updateMany: jest.fn(),
@@ -17,12 +18,12 @@ describe('UserDevicesRepository ownership safety', () => {
     $transaction: jest.fn(
       (
         operation: (tx: {
-          $queryRaw: jest.Mock;
+          $executeRaw: jest.Mock;
           account_devices: typeof transactionDevices;
         }) => unknown,
       ) =>
         operation({
-          $queryRaw: jest.fn().mockResolvedValue([]),
+          $executeRaw: executeRaw.mockResolvedValue(0),
           account_devices: transactionDevices,
         }),
     ),
@@ -58,6 +59,7 @@ describe('UserDevicesRepository ownership safety', () => {
         updated_at: expect.any(Date) as Date,
       },
     });
+    expect(executeRaw).toHaveBeenCalledTimes(1);
     expect(transactionDevices.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { push_token: 'new-token' },

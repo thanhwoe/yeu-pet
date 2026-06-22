@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import type { NotificationCategory } from "@/interfaces";
 import { Text } from "../ui/Text";
 import { Background } from "./Background";
 import { Close } from "./Close";
@@ -56,11 +57,21 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
   const [toastText, setToastText] = useState("");
   const [toastTitle, setToastTitle] = useState("");
   const [toastDuration, setToastDuration] = useState(0);
+  const [toastNotificationType, setToastNotificationType] =
+    useState<NotificationCategory>("system");
+  const [toastInteractive, setToastInteractive] = useState(false);
+  const [toastAccessibilityLabel, setToastAccessibilityLabel] = useState("");
+  const [toastAccessibilityHint, setToastAccessibilityHint] = useState("");
+  const toastOnPressRef = useRef<(() => void) | undefined>(undefined);
 
   const handleHidden = useCallback(() => {
     setShowing(false);
     setToastTitle("");
     setToastText("");
+    setToastInteractive(false);
+    setToastAccessibilityLabel("");
+    setToastAccessibilityHint("");
+    toastOnPressRef.current = undefined;
   }, []);
 
   const animateInAndScheduleHide = useCallback(
@@ -85,13 +96,27 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
   );
 
   const show = useCallback(
-    ({ type, text, title, duration = 2000 }: ToastProps) => {
+    ({
+      type,
+      text,
+      title,
+      duration = 2000,
+      notificationType = "system",
+      onPress,
+      accessibilityLabel,
+      accessibilityHint,
+    }: ToastProps) => {
       cancelAnimation(toastTranslateY);
       setShowing(true);
       setToastType(type);
       setToastText(text);
       setToastDuration(duration);
       setToastTitle(title ?? "");
+      setToastNotificationType(notificationType);
+      setToastInteractive(Boolean(onPress));
+      setToastAccessibilityLabel(accessibilityLabel ?? "");
+      setToastAccessibilityHint(accessibilityHint ?? "");
+      toastOnPressRef.current = onPress;
       toastTranslateY.value = TOAST_HIDDEN_TRANSLATE_Y;
       animateInAndScheduleHide(duration);
     },
@@ -110,6 +135,12 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
       },
     );
   }, [handleHidden, toastTranslateY]);
+
+  const handleToastPress = useCallback(() => {
+    const onPress = toastOnPressRef.current;
+    hide();
+    onPress?.();
+  }, [hide]);
 
   useImperativeHandle(
     ref,
@@ -177,7 +208,7 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
       <GestureDetector gesture={pan}>
         <Animated.View
           accessibilityLiveRegion="polite"
-          accessibilityRole="alert"
+          accessibilityRole={toastInteractive ? undefined : "alert"}
           className="absolute left-0 right-0"
           pointerEvents="box-none"
           style={[
@@ -190,25 +221,53 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
             tone={isDarkColorScheme ? "dark" : "light"}
             variant={toastType}
           >
-            <ToastIcon variant={toastType} />
-            <View className="flex-1 gap-2 py-1">
-              {toastTitle && (
-                <Text
-                  variant="footnote"
-                  numberOfLines={1}
-                  className="font-semibold text-text-primary"
-                >
-                  {toastTitle}
-                </Text>
+            <Pressable
+              accessibilityRole={toastInteractive ? "button" : undefined}
+              accessibilityLabel={
+                toastInteractive
+                  ? toastAccessibilityLabel ||
+                    [toastTitle, toastText].filter(Boolean).join(". ")
+                  : undefined
+              }
+              accessibilityHint={
+                toastInteractive
+                  ? toastAccessibilityHint || "Opens this notification"
+                  : undefined
+              }
+              className="min-h-44 flex-1 flex-row items-start gap-10"
+              disabled={!toastInteractive}
+              onPress={handleToastPress}
+            >
+              {({ pressed }) => (
+                <>
+                  <ToastIcon
+                    variant={toastType}
+                    notificationType={toastNotificationType}
+                  />
+                  <View
+                    className="flex-1 gap-2 py-1"
+                    style={{ opacity: pressed ? 0.7 : 1 }}
+                  >
+                    {toastTitle && (
+                      <Text
+                        variant="footnote"
+                        numberOfLines={1}
+                        className="font-semibold text-text-primary"
+                      >
+                        {toastTitle}
+                      </Text>
+                    )}
+                    <Text
+                      variant={toastTitle ? "caption1" : "footnote"}
+                      className="text-text-secondary"
+                      numberOfLines={2}
+                    >
+                      {toastText}
+                    </Text>
+                  </View>
+                </>
               )}
-              <Text
-                variant={toastTitle ? "caption1" : "footnote"}
-                className="text-text-secondary"
-                numberOfLines={2}
-              >
-                {toastText}
-              </Text>
-            </View>
+            </Pressable>
             <Close onPress={hide} />
           </Background>
         </Animated.View>
@@ -253,6 +312,14 @@ Toast.error = (params: ToastParams) => {
 
 Toast.show = (params: ToastParams) => {
   getRef()?.show({ ...params, type: ToastVariants.DEFAULT });
+};
+
+Toast.notification = (params: ToastParams) => {
+  getRef()?.show({
+    ...params,
+    duration: params.duration ?? 5000,
+    type: ToastVariants.NOTIFICATION,
+  });
 };
 
 Toast.success = (params: ToastParams) => {
