@@ -25,6 +25,7 @@ The app provides the current user-facing mobile experience for:
 - Expo SDK 53
 - Expo Router
 - React Native
+- React Native Firebase Messaging
 - NativeWind
 - Zustand
 - React Query
@@ -182,6 +183,14 @@ Use query keys consistently by feature domain so cache invalidation stays predic
 The app reads these environment values:
 
 - `EXPO_PUBLIC_API_URL`
+- `FIREBASE_ANDROID_GOOGLE_SERVICES_FILE`
+- `FIREBASE_IOS_GOOGLE_SERVICES_FILE`
+
+Firebase service-file variables must point to the `google-services.json` and
+`GoogleService-Info.plist` registered for the active `APP_VARIANT` package and
+bundle identifier. Configure them as secret file variables in EAS. Local
+development requires a native development build; Firebase Messaging does not
+run inside Expo Go.
 
 Default API URL behavior:
 
@@ -202,6 +211,9 @@ pnpm --filter @yeu-pet/mobile lint
 pnpm --filter @yeu-pet/mobile android
 pnpm --filter @yeu-pet/mobile ios
 ```
+
+After adding or changing Firebase native modules, rebuild the development
+client before starting Metro so the Firebase Messaging native code is linked.
 
 ## Documentation to read first
 

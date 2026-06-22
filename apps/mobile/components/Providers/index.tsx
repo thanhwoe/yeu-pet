@@ -2,10 +2,14 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import { themes } from "@/theme";
 import { date } from "@/utils";
-import { NOTIFICATIONS_KEY, SITTER_BOOKING_KEY } from "@/constants/query-keys";
+import {
+  NOTIFICATIONS_KEY,
+  REMINDER_KEY,
+  SITTER_BOOKING_KEY,
+} from "@/constants/query-keys";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { getMessaging, onMessage } from "@react-native-firebase/messaging";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as Notifications from "expo-notifications";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { View } from "react-native";
@@ -63,30 +67,33 @@ const InitialProvider = ({ children }: Children) => {
   }, []);
 
   useEffect(() => {
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        void queryClient.invalidateQueries({
-          queryKey: NOTIFICATIONS_KEY.all,
-        });
+    return onMessage(getMessaging(), (message) => {
+      void queryClient.invalidateQueries({
+        queryKey: NOTIFICATIONS_KEY.all,
+      });
 
-        const notificationType =
-          notification.request.content.data.notificationType;
-        if (
-          notificationType !== "sitter_booking_request" &&
-          notificationType !== "sitter_booking_status"
-        ) {
-          return;
-        }
+      const notificationType = message.data?.notificationType;
+      if (notificationType === "reminder_due") {
+        void queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
+      }
 
+      if (
+        notificationType === "sitter_booking_request" ||
+        notificationType === "sitter_booking_status"
+      ) {
         void queryClient.invalidateQueries({
           queryKey: SITTER_BOOKING_KEY.all,
         });
-      },
-    );
+      }
 
-    return () => {
-      notificationListener.remove();
-    };
+      if (message.notification?.title || message.notification?.body) {
+        Toast.show({
+          title: message.notification.title,
+          text: message.notification.body ?? "You have a new notification.",
+          duration: 4000,
+        });
+      }
+    });
   }, []);
 
   if (!isInitialized) {

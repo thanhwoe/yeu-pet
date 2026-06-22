@@ -1,4 +1,9 @@
-import { notifications_status } from '@app/generated/prisma/client';
+import {
+  notifications_status,
+  reminder_repeat_frequency,
+  reminder_status,
+  reminder_type,
+} from '@app/generated/prisma/client';
 import { NotificationsService } from './notifications.service';
 
 const mockFirebaseSend = jest.fn();
@@ -126,27 +131,86 @@ describe('NotificationsService booking notifications', () => {
     });
   });
 
-  it('does not send Expo tokens through Firebase Admin', async () => {
-    userDevicesRepository.findAll.mockResolvedValue([
-      [
-        {
-          id: 'expo-device-id',
-          account_id: recipientAccountId,
-          push_token: 'ExponentPushToken[test-token]',
-          is_active: true,
-        },
-      ],
-      1,
-    ]);
-
-    await service.sendSitterBookingRequestNotification({
-      recipientAccountId,
-      bookingId,
-      petName: 'Mochi',
+  it('creates a deep-linked reminder notification and sends it', async () => {
+    mockFirebaseSend.mockResolvedValue('firebase-message-id');
+    notificationsRepository.create.mockResolvedValueOnce({
+      id: 'reminder-notification-id',
+      account_id: recipientAccountId,
+      title: 'Reminder due: Give medication',
+      body: 'Your medication care task is due now.',
+      data: {
+        reminderId: 'reminder-id',
+        reminderType: 'medication',
+        petId: null,
+        notificationType: 'reminder_due',
+      },
+      deep_link: '/(tabs)/(reminder)',
+      image_url: null,
     });
 
+    await service.sendReminderDueNotification({
+      id: 'reminder-id',
+      account_id: recipientAccountId,
+      pet_id: null,
+      title: 'Give medication',
+      description: null,
+      type: reminder_type.medication,
+      custom_type: null,
+      status: reminder_status.pending,
+      scheduled_at: new Date(),
+      timezone: 'UTC',
+      repeat_frequency: reminder_repeat_frequency.none,
+      repeat_interval: null,
+      repeat_until: null,
+      parent_reminder_id: null,
+      notification_provider_id: null,
+      completed_at: null,
+      cancelled_at: null,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    expect(notificationsRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Reminder due: Give medication',
+        body: 'Your medication care task is due now.',
+        deep_link: '/(tabs)/(reminder)',
+        data: expect.objectContaining({
+          reminderId: 'reminder-id',
+          notificationType: 'reminder_due',
+        }) as Record<string, string>,
+      }),
+    );
+    expect(mockFirebaseSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          notificationId: 'reminder-notification-id',
+          reminderId: 'reminder-id',
+          notificationType: 'reminder_due',
+          deepLink: '/(tabs)/(reminder)',
+        }) as Record<string, string>,
+      }),
+    );
+  });
+
+  it('keeps reminder notifications in-app when reminder push is muted', async () => {
+    userSettingsRepository.findById.mockResolvedValueOnce({
+      notification_enable: true,
+      reminder_notifications: false,
+    });
+
+    await service.sendReminderDueNotification({
+      id: 'reminder-id',
+      account_id: recipientAccountId,
+      pet_id: null,
+      title: 'Give medication',
+      description: null,
+      type: reminder_type.medication,
+    } as never);
+
+    expect(notificationsRepository.create).toHaveBeenCalled();
+    expect(userDevicesRepository.findAll).not.toHaveBeenCalled();
     expect(mockFirebaseSend).not.toHaveBeenCalled();
-    expect(notificationDeliveriesRepository.create).not.toHaveBeenCalled();
   });
 
   it('creates an owner status notification with an owner booking deep link', async () => {

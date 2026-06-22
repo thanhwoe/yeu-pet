@@ -1,10 +1,12 @@
 import { USER_KEY } from "@/constants/query-keys";
 import { getUserQuery, saveDeviceInfoMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
-import { registerForPushNotificationsAsync } from "@/utils";
+import {
+  registerForFirebasePushNotificationsAsync,
+  subscribeToFirebasePushTokenRefresh,
+} from "@/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
 import { InteractionManager, Platform } from "react-native";
 import { Toast } from "../Toast";
@@ -42,41 +44,53 @@ export const UserSync = () => {
     }
 
     let isActive = true;
+    let registrationPromise: Promise<void> | null = null;
+
+    const syncFirebasePushToken = (refreshedToken?: string) => {
+      if (registrationPromise) {
+        return registrationPromise;
+      }
+
+      registrationPromise = Promise.resolve(
+        refreshedToken ?? registerForFirebasePushNotificationsAsync(),
+      )
+        .then(async (token) => {
+          if (!isActive || !token) {
+            return;
+          }
+
+          await mutateAsync({
+            pushToken: token,
+            platform: Platform.select({
+              android: "android",
+              ios: "ios",
+              default: "unknown",
+            }),
+            deviceName: Device.deviceName ?? undefined,
+            osVersion: Device.osVersion ?? undefined,
+          });
+        })
+        .finally(() => {
+          registrationPromise = null;
+        });
+
+      return registrationPromise;
+    };
 
     const task = InteractionManager.runAfterInteractions(() => {
-      registerForPushNotificationsAsync().then((token) => {
-        if (!isActive || !token) {
-          return;
-        }
-
-        mutateAsync({
-          pushToken: token,
-          platform: Platform.select({
-            android: "android",
-            ios: "ios",
-            default: "unknown",
-          }),
-          deviceName: Device.deviceName ?? undefined,
-          osVersion: Device.osVersion ?? undefined,
-        });
-      });
+      void syncFirebasePushToken().catch(() => undefined);
     });
 
-    const sub = Notifications.addPushTokenListener((newToken) => {
-      mutateAsync({
-        pushToken: newToken.data,
-        platform: Platform.select({
-          android: "android",
-          ios: "ios",
-          default: "unknown",
-        }),
-      });
-    });
+    const unsubscribeTokenRefresh = subscribeToFirebasePushTokenRefresh(
+      (token) => {
+        void syncFirebasePushToken(token).catch(() => undefined);
+      },
+    );
 
     return () => {
       isActive = false;
       task.cancel();
-      sub.remove();
+      unsubscribeTokenRefresh();
     };
   }, [isAuthenticated, mutateAsync]);
 

@@ -6,7 +6,7 @@ import {
   reminders,
   sitter_bookings_status,
 } from '@app/generated/prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 import * as path from 'path';
@@ -22,8 +22,23 @@ import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { UserSettingsRepository } from '../user-settings/user-settings.repository';
 
+type NotificationPreference =
+  | 'reminder_notifications'
+  | 'booking_notifications';
+
+type CreateAndDeliverNotificationParams = {
+  accountId: string;
+  title: string;
+  body: string;
+  deepLink: string;
+  data: Record<string, string | null>;
+  preference: NotificationPreference;
+};
+
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     private readonly configService: ConfigService,
     private readonly notificationsRepository: NotificationsRepository,
@@ -75,32 +90,23 @@ export class NotificationsService {
     }
   }
 
-  async sendNotification(reminder: reminders) {
-    const notification = await this.notificationsRepository.create({
-      account_id: reminder.account_id,
-      body: reminder.description ?? 'You have a notification!',
+  async sendReminderDueNotification(reminder: reminders) {
+    const reminderType = reminder.type.toLowerCase();
+    return this.createAndDeliverNotification({
+      accountId: reminder.account_id,
+      body:
+        reminder.description?.trim() ||
+        `Your ${reminderType} care task is due now.`,
       data: {
         reminderId: reminder.id,
+        reminderType,
+        petId: reminder.pet_id,
+        notificationType: 'reminder_due',
       },
-      title: reminder.title,
-      // TODO: add logic generate deep link
-      deep_link: null,
-      // TODO: generate image url
-      image_url: null,
-      image_id: null,
+      title: `Reminder due: ${reminder.title}`,
+      deepLink: '/(tabs)/(reminder)',
+      preference: 'reminder_notifications',
     });
-
-    const [devices] = await this.userDevicesRepository.findAll({
-      account_id: reminder.account_id,
-    });
-
-    if (!devices.length) {
-      return;
-    }
-
-    await Promise.allSettled(
-      devices.map((pt) => this.processNotification(pt, notification)),
-    );
   }
 
   async sendSitterBookingMessageNotification(params: {
@@ -185,8 +191,21 @@ export class NotificationsService {
     deepLink: string;
     data: Record<string, string>;
   }) {
+    return this.createAndDeliverNotification({
+      accountId: params.recipientAccountId,
+      title: params.title,
+      body: params.body,
+      deepLink: params.deepLink,
+      data: params.data,
+      preference: 'booking_notifications',
+    });
+  }
+
+  private async createAndDeliverNotification(
+    params: CreateAndDeliverNotificationParams,
+  ) {
     const notification = await this.notificationsRepository.create({
-      account_id: params.recipientAccountId,
+      account_id: params.accountId,
       body: params.body,
       data: params.data,
       title: params.title,
@@ -196,43 +215,59 @@ export class NotificationsService {
     });
 
     const settings = await this.userSettingsRepository.findById(
-      params.recipientAccountId,
+      params.accountId,
     );
     if (
       settings &&
-      (!settings.notification_enable || !settings.booking_notifications)
+      (!settings.notification_enable || !settings[params.preference])
     ) {
+      return notification;
+    }
+
+    await this.deliverPushToAccountSafely(notification);
+
+    return notification;
+  }
+
+  private async deliverPushToAccountSafely(notification: notifications) {
+    try {
+      await this.deliverPushToAccount(notification);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Failed to dispatch notification ${notification.id}: ${message}`,
+      );
+    }
+  }
+
+  private async deliverPushToAccount(notification: notifications) {
+    const [devices] = await this.userDevicesRepository.findAll({
+      account_id: notification.account_id,
+    });
+    const activeDevices = devices.filter(
+      (device) => device.is_active !== false,
+    );
+
+    if (!activeDevices.length) {
       return;
     }
 
-    const [devices] = await this.userDevicesRepository.findAll({
-      account_id: params.recipientAccountId,
-    });
-
-    const firebaseDevices = devices.filter(
-      (device) =>
-        device.is_active !== false && !this.isExpoPushToken(device.push_token),
-    );
-
-    await Promise.allSettled(
-      firebaseDevices.map((device) =>
-        this.processNotification(device, notification),
-      ),
-    );
-  }
-
-  private isExpoPushToken(token: string) {
-    return /^(Expo|Exponent)PushToken\[/.test(token);
-  }
-
-  private async processNotification(
-    device: account_devices,
-    notification: notifications,
-  ) {
     const badge = await this.notificationsRepository.countBadge(
       notification.account_id,
     );
 
+    await Promise.allSettled(
+      activeDevices.map((device) =>
+        this.deliverFirebaseNotification(device, notification, badge),
+      ),
+    );
+  }
+
+  private async deliverFirebaseNotification(
+    device: account_devices,
+    notification: notifications,
+    badge: number,
+  ) {
     try {
       const message: admin.messaging.Message = {
         token: device.push_token,
@@ -246,6 +281,7 @@ export class NotificationsService {
         data: {
           deepLink: notification.deep_link ?? '',
           ...jsonValueToStringMap(notification.data),
+          notificationId: notification.id,
         },
         android: {
           // behavior: show immediately or delay
@@ -328,7 +364,7 @@ export class NotificationsService {
     };
   }
 
-  async maskNotificationAsRead(user: accounts, id: string) {
+  async markNotificationAsRead(user: accounts, id: string) {
     await this.assertAbility(user, id, Action.Update);
 
     await this.notificationsRepository.update(id, {
@@ -337,7 +373,7 @@ export class NotificationsService {
     });
   }
 
-  async maskAllNotificationAsRead(user: accounts) {
+  async markAllNotificationsAsRead(user: accounts) {
     await this.notificationsRepository.updateManyUnRead(user.id, {
       is_read: true,
       read_at: new Date(),

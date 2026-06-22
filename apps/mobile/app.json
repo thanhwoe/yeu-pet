@@ -5,6 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "notification": {
+      "icon": "./assets/images/notification.png",
+      "color": "#ffffff"
+    },
     "scheme": "petcare",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -74,17 +78,21 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
       [
-        "expo-notifications",
+        "expo-build-properties",
         {
-          "icon": "./assets/images/notification.png",
-          "color": "#ffffff",
-          "defaultChannel": "default",
-          "enableBackgroundRemoteNotifications": false,
-          "sounds": [
-            "./assets/sounds/notification.wav",
-            "./assets/sounds/fallback_notification.wav"
-          ]
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "./modules/firebase-messaging/withAndroidNotificationChannel.js",
+        {
+          "channelId": "yeu-pet",
+          "channelName": "YeuPet notifications"
         }
       ],
       [

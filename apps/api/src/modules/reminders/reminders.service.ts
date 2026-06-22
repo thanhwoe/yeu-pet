@@ -1,15 +1,15 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import dayjs from 'dayjs';
 import {
   accounts,
+  reminders,
   reminder_repeat_frequency,
   reminder_status,
   reminder_type,
 } from '@app/generated/prisma/client';
 import { NotificationsService } from '../notifications/notifications.service';
-import { UserSettingsRepository } from '../user-settings/user-settings.repository';
 import { paginate } from '@app/utils/pagination';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
@@ -19,13 +19,15 @@ import { SubscriptionService } from '../subscription/subscription.service';
 
 @Injectable()
 export class RemindersService {
+  private readonly logger = new Logger(RemindersService.name);
+  private isProcessingReminders = false;
+
   constructor(
     @Inject(IRemindersRepository)
     private readonly remindersRepository: IRemindersRepository,
     @Inject(IPetsRepository)
     private readonly petsRepository: IPetsRepository,
     private readonly notificationsService: NotificationsService,
-    private readonly userSettingsRepository: UserSettingsRepository,
     private readonly subscriptionService: SubscriptionService,
   ) {}
   async create(userId: string, createReminderDto: CreateReminderDto) {
@@ -213,18 +215,22 @@ export class RemindersService {
   }
 
   async complete(user: accounts, id: string) {
-    await this.assertOwner(user, id);
-    return this.remindersRepository.update(id, {
+    const reminder = await this.assertOwner(user, id);
+    const updated = await this.remindersRepository.update(id, {
       status: reminder_status.completed,
       completed_at: new Date(),
     });
+    await this.scheduleNextRecurringReminder(reminder);
+    return updated;
   }
 
   async skip(user: accounts, id: string) {
-    await this.assertOwner(user, id);
-    return this.remindersRepository.update(id, {
+    const reminder = await this.assertOwner(user, id);
+    const updated = await this.remindersRepository.update(id, {
       status: reminder_status.skipped,
     });
+    await this.scheduleNextRecurringReminder(reminder);
+    return updated;
   }
 
   async cancel(user: accounts, id: string) {
@@ -259,45 +265,148 @@ export class RemindersService {
   }
 
   async processReminders() {
-    const now = dayjs();
-    const start = now.toDate();
-    const end = now.add(1, 'minute').toDate();
+    if (this.isProcessingReminders) {
+      return;
+    }
 
-    // Regular reminders due right now (window of 1 min)
+    this.isProcessingReminders = true;
+    try {
+      await this.processDueReminders();
+    } finally {
+      this.isProcessingReminders = false;
+    }
+  }
+
+  private async processDueReminders() {
+    const now = dayjs();
     const dueReminders = await this.remindersRepository.findMany({
       where: {
         status: reminder_status.pending,
         scheduled_at: {
-          gte: start,
-          lte: end,
+          gte: now.subtract(24, 'hours').toDate(),
+          lte: now.toDate(),
         },
       },
     });
 
     for (const reminder of dueReminders) {
-      const settings = await this.userSettingsRepository.findById(
-        reminder.account_id,
+      const claimed = await this.remindersRepository.claimForNotification(
+        reminder.id,
       );
-
-      // Cancel reminder if notification disable
-      if (!settings?.notification_enable) {
-        await this.remindersRepository.update(reminder.id, {
-          status: reminder_status.cancelled,
-        });
-        return;
+      if (!claimed) {
+        continue;
       }
 
       try {
-        await this.notificationsService.sendNotification(reminder);
+        const notification =
+          await this.notificationsService.sendReminderDueNotification(reminder);
 
         await this.remindersRepository.update(reminder.id, {
           status: reminder_status.sent,
+          notification_provider_id: notification.id,
         });
-      } catch {
+        await this.scheduleNextRecurringReminder(reminder);
+      } catch (error: unknown) {
         await this.remindersRepository.update(reminder.id, {
-          status: reminder_status.cancelled,
+          notification_provider_id: null,
         });
+        const message = error instanceof Error ? error.message : String(error);
+        this.logger.error(
+          `Failed to process reminder ${reminder.id}: ${message}`,
+        );
       }
     }
+  }
+
+  private async scheduleNextRecurringReminder(reminder: reminders) {
+    try {
+      await this.createNextRecurringReminder(reminder);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Failed to schedule next occurrence for reminder ${reminder.id}: ${message}`,
+      );
+    }
+  }
+
+  private async createNextRecurringReminder(reminder: reminders) {
+    const nextScheduledAt = this.getNextScheduledAt(reminder);
+    if (!nextScheduledAt) {
+      return;
+    }
+
+    const rootReminderId = reminder.parent_reminder_id ?? reminder.id;
+    const existing = await this.remindersRepository.findMany({
+      where: {
+        parent_reminder_id: rootReminderId,
+        scheduled_at: nextScheduledAt,
+      },
+    });
+    if (existing.length) {
+      return;
+    }
+
+    await this.remindersRepository.create({
+      accounts: {
+        connect: {
+          id: reminder.account_id,
+        },
+      },
+      pets: reminder.pet_id
+        ? {
+            connect: {
+              id: reminder.pet_id,
+            },
+          }
+        : undefined,
+      parent_reminder: {
+        connect: {
+          id: rootReminderId,
+        },
+      },
+      title: reminder.title,
+      description: reminder.description,
+      type: reminder.type,
+      custom_type: reminder.custom_type,
+      status: reminder_status.pending,
+      scheduled_at: nextScheduledAt,
+      timezone: reminder.timezone,
+      repeat_frequency: reminder.repeat_frequency,
+      repeat_interval: reminder.repeat_interval,
+      repeat_until: reminder.repeat_until,
+      notification_provider_id: null,
+    });
+  }
+
+  private getNextScheduledAt(reminder: reminders) {
+    const interval = reminder.repeat_interval ?? 1;
+    const scheduledAt = dayjs(reminder.scheduled_at);
+    let nextScheduledAt: dayjs.Dayjs;
+
+    switch (reminder.repeat_frequency) {
+      case reminder_repeat_frequency.daily:
+        nextScheduledAt = scheduledAt.add(interval, 'day');
+        break;
+      case reminder_repeat_frequency.weekly:
+        nextScheduledAt = scheduledAt.add(interval, 'week');
+        break;
+      case reminder_repeat_frequency.monthly:
+        nextScheduledAt = scheduledAt.add(interval, 'month');
+        break;
+      case reminder_repeat_frequency.yearly:
+        nextScheduledAt = scheduledAt.add(interval, 'year');
+        break;
+      default:
+        return null;
+    }
+
+    if (
+      reminder.repeat_until &&
+      nextScheduledAt.isAfter(dayjs(reminder.repeat_until))
+    ) {
+      return null;
+    }
+
+    return nextScheduledAt.toDate();
   }
 }

@@ -7,6 +7,7 @@ import {
 } from '@app/generated/prisma/models';
 import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class RemindersRepository implements IRemindersRepository {
@@ -70,6 +71,29 @@ export class RemindersRepository implements IRemindersRepository {
 
   async findMany(params: { where: remindersWhereInput }) {
     return this.prisma.reminders.findMany(params);
+  }
+
+  async claimForNotification(id: string) {
+    const staleClaimBefore = new Date(Date.now() - 5 * 60 * 1000);
+    const result = await this.prisma.reminders.updateMany({
+      where: {
+        id,
+        status: reminder_status.pending,
+        OR: [
+          { notification_provider_id: null },
+          {
+            notification_provider_id: { startsWith: 'processing:' },
+            updated_at: { lt: staleClaimBefore },
+          },
+        ],
+      },
+      data: {
+        notification_provider_id: `processing:${randomUUID()}`,
+        updated_at: new Date(),
+      },
+    });
+
+    return result.count === 1;
   }
 
   async delete(id: string) {

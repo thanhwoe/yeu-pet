@@ -38,14 +38,14 @@ export class NotificationsController {
 
   @Patch(':id/read')
   @HttpCode(HttpStatus.NO_CONTENT)
-  maskNotificationAsRead(@CurrentUser() user: accounts, @IdParam() id: string) {
-    return this.notificationsService.maskNotificationAsRead(user, id);
+  markNotificationAsRead(@CurrentUser() user: accounts, @IdParam() id: string) {
+    return this.notificationsService.markNotificationAsRead(user, id);
   }
 
   @Post('read-all')
   @HttpCode(HttpStatus.NO_CONTENT)
-  maskAllNotificationAsRead(@CurrentUser() user: accounts) {
-    return this.notificationsService.maskAllNotificationAsRead(user);
+  markAllNotificationsAsRead(@CurrentUser() user: accounts) {
+    return this.notificationsService.markAllNotificationsAsRead(user);
   }
 
   @Delete(':id')

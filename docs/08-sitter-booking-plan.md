@@ -170,6 +170,7 @@ Later:
 - [x] Implement sitter search API.
 - [x] Implement booking request API.
 - [x] Implement status transition actions.
+- [x] Notify sitters about new requests and owners about sitter/system status changes.
 - [x] Implement review/rating update.
 - [x] Implement mobile sitter list/profile.
 - [x] Implement booking request form.

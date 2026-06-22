@@ -17,13 +17,16 @@ import {
   getUserSettingsQuery,
   mockDowngradeSubscriptionMutation,
   mockUpgradeSubscriptionMutation,
+  saveDeviceInfoMutation,
   updateUserSettingsMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
+import { registerForFirebasePushNotificationsAsync } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Device from "expo-device";
 import { router } from "expo-router";
-import { useCallback } from "react";
-import { Alert, Linking, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Alert, Linking, Platform, View } from "react-native";
 
 const THEME_OPTIONS = [
   { label: "System", value: "system" },
@@ -213,7 +216,9 @@ export function SettingsScreen() {
   const { loading, logout } = useLogout();
   const { setColorScheme } = useColorScheme();
   const user = useUserInfoStore.use.user();
+  const updateDeviceInfo = useUserInfoStore.use.updateDeviceInfo();
   const queryClient = useQueryClient();
+  const [isRegisteringPush, setIsRegisteringPush] = useState(false);
   const {
     data: settings,
     isError: isSettingsError,
@@ -263,6 +268,63 @@ export function SettingsScreen() {
       await updateSettings(params);
     },
     [updateSettings],
+  );
+
+  const handlePushNotificationsChange = useCallback(
+    async (notificationEnable: boolean) => {
+      if (!notificationEnable) {
+        try {
+          await handleUpdateSettings({ notificationEnable: false });
+        } catch {
+          // The settings mutation already shows the save error.
+        }
+        return;
+      }
+
+      setIsRegisteringPush(true);
+      let registrationComplete = false;
+      try {
+        const pushToken = await registerForFirebasePushNotificationsAsync();
+        if (!pushToken) {
+          Toast.warn({
+            text: "Push notifications require a physical device.",
+          });
+          return;
+        }
+
+        const device = await saveDeviceInfoMutation({
+          pushToken,
+          platform: Platform.select({
+            android: "android",
+            ios: "ios",
+            default: "unknown",
+          }),
+          deviceName: Device.deviceName ?? undefined,
+          osVersion: Device.osVersion ?? undefined,
+        });
+        updateDeviceInfo({
+          deviceName: device.deviceName,
+          id: device.id,
+          isActive: device.isActive,
+          osVersion: device.osVersion,
+        });
+        registrationComplete = true;
+        await handleUpdateSettings({ notificationEnable: true });
+        Toast.success({ text: "Push notifications enabled." });
+      } catch (error: unknown) {
+        if (!registrationComplete) {
+          Toast.warn({
+            text:
+              error instanceof Error
+                ? error.message
+                : "Could not enable push notifications.",
+          });
+        }
+      } finally {
+        setIsRegisteringPush(false);
+      }
+    },
+    [handleUpdateSettings, updateDeviceInfo],
   );
 
   const handleThemeChange = useCallback(
@@ -430,15 +492,13 @@ export function SettingsScreen() {
           <SettingsRow
             title="Push notifications"
             description="Master notification switch"
-            loading={isUpdatingSettings}
+            loading={isUpdatingSettings || isRegisteringPush}
           >
             <SettingToggle
               label="Push notifications"
               value={settings.notificationEnable}
-              disabled={isUpdatingSettings}
-              onChange={(notificationEnable) =>
-                handleUpdateSettings({ notificationEnable })
-              }
+              disabled={isUpdatingSettings || isRegisteringPush}
+              onChange={handlePushNotificationsChange}
             />
           </SettingsRow>
           <SettingsRow

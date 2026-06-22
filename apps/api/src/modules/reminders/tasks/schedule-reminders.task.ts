@@ -7,7 +7,7 @@ export class ScheduleRemindersTask {
   constructor(private remindersService: RemindersService) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
-  async handleCleanup() {
+  async handleDueReminders() {
     await this.remindersService.processReminders();
   }
 }

@@ -1,8 +1,13 @@
 import "react-native-gesture-handler";
 import "react-native-reanimated";
 
+import {
+  getInitialNotification,
+  getMessaging,
+  onNotificationOpenedApp,
+  type RemoteMessage,
+} from "@react-native-firebase/messaging";
 import { Href, Stack, useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
@@ -10,7 +15,10 @@ import { BackHeader } from "@/components/Headers/BackHeader";
 import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
 import { Providers } from "@/components/Providers";
 import { UserSync } from "@/components/UserSync";
+import { NOTIFICATIONS_KEY, REMINDER_KEY } from "@/constants/query-keys";
+import { markNotificationReadMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
+import { useQueryClient } from "@tanstack/react-query";
 import "../global.css";
 
 export { ErrorBoundary } from "expo-router";
@@ -164,30 +172,48 @@ const RootNavigation = () => {
 
 const NotificationNavigationHandler = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const openNotification = (response: Notifications.NotificationResponse) => {
-      const deepLink = response.notification.request.content.data.deepLink;
+    const openNotification = (message: RemoteMessage) => {
+      const notificationData = message.data ?? {};
+      const deepLink = notificationData.deepLink;
+      const notificationId = notificationData.notificationId;
+
+      if (typeof notificationId === "string" && notificationId) {
+        void markNotificationReadMutation(notificationId)
+          .then(async () => {
+            await queryClient.invalidateQueries({
+              queryKey: NOTIFICATIONS_KEY.all,
+            });
+          })
+          .catch(() => undefined);
+      }
+
+      if (notificationData.notificationType === "reminder_due") {
+        void queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
+      }
 
       if (typeof deepLink === "string" && deepLink.startsWith("/")) {
         router.push(deepLink as Href);
       }
     };
 
-    const responseSubscription =
-      Notifications.addNotificationResponseReceivedListener(openNotification);
+    const unsubscribeOpened = onNotificationOpenedApp(
+      getMessaging(),
+      openNotification,
+    );
 
-    void Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (!response) {
-        return;
-      }
+    void getInitialNotification(getMessaging())
+      .then((message) => {
+        if (message) {
+          openNotification(message);
+        }
+      })
+      .catch(() => undefined);
 
-      openNotification(response);
-      void Notifications.clearLastNotificationResponseAsync();
-    });
-
-    return () => responseSubscription.remove();
-  }, [router]);
+    return unsubscribeOpened;
+  }, [queryClient, router]);
 
   return null;
 };
