@@ -66,6 +66,8 @@ export const cancelEmailChangeMutation = (params: { requestId: string }) =>
 
 interface DeviceInfoParams {
   pushToken: string;
+  installationId: string;
+  registrationGeneration: number;
   platform: "unknown" | "android" | "ios";
   deviceName?: string;
   osVersion?: string;

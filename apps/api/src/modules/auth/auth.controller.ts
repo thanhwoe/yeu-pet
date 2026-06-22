@@ -42,7 +42,11 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(@CurrentUser() user: accounts, @Body() logoutDto: LogoutDto) {
-    return this.authService.logout(user.id, logoutDto.refreshToken);
+    return this.authService.logout(
+      user.id,
+      logoutDto.refreshToken,
+      logoutDto.deviceId,
+    );
   }
 
   @Post('refresh-token')

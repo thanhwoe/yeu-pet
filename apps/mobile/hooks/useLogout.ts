@@ -1,12 +1,12 @@
 import { Toast } from "@/components/Toast";
-import { deleteDeviceInfoMutation, signOutMutation } from "@/services";
+import { signOutMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
 
-  const { logout, tokens, updateDeviceInfo, deviceInfo } = useUserInfoStore();
+  const { logout, tokens, deviceInfo } = useUserInfoStore();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: signOutMutation,
@@ -19,26 +19,15 @@ export const useLogout = () => {
     },
   });
 
-  const { mutateAsync: deleteDevice, isPending: isDeletingDevice } =
-    useMutation({
-      mutationFn: deleteDeviceInfoMutation,
-      onSuccess: () => {
-        updateDeviceInfo(null);
-      },
-      onError: (e) => {
-        Toast.error({ text: e.message });
-      },
-    });
-
   const handleLogout = () => {
-    mutateAsync({ refreshToken: tokens?.refreshToken });
-    if (deviceInfo?.id) {
-      deleteDevice(deviceInfo.id);
-    }
+    void mutateAsync({
+      refreshToken: tokens?.refreshToken,
+      deviceId: deviceInfo?.id,
+    });
   };
 
   return {
     logout: handleLogout,
-    loading: isPending || isDeletingDevice,
+    loading: isPending,
   };
 };

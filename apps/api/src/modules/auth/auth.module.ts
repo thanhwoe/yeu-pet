@@ -9,6 +9,7 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { CleanupTokensTask } from './tasks/cleanup-tokens.task';
 import { LocalStrategy } from '@app/strategies/local.strategy';
 import { JwtStrategy } from '@app/strategies/jwt.strategy';
+import { UserDevicesModule } from '../user-devices/user-devices.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { JwtStrategy } from '@app/strategies/jwt.strategy';
       global: true,
     }),
     UsersModule,
+    UserDevicesModule,
   ],
   controllers: [AuthController],
   providers: [

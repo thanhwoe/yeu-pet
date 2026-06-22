@@ -20,14 +20,26 @@ export type account_devicesModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateAccount_devices = {
   _count: Account_devicesCountAggregateOutputType | null
+  _avg: Account_devicesAvgAggregateOutputType | null
+  _sum: Account_devicesSumAggregateOutputType | null
   _min: Account_devicesMinAggregateOutputType | null
   _max: Account_devicesMaxAggregateOutputType | null
+}
+
+export type Account_devicesAvgAggregateOutputType = {
+  registration_generation: number | null
+}
+
+export type Account_devicesSumAggregateOutputType = {
+  registration_generation: number | null
 }
 
 export type Account_devicesMinAggregateOutputType = {
   id: string | null
   account_id: string | null
   push_token: string | null
+  installation_id: string | null
+  registration_generation: number | null
   device_name: string | null
   os_version: string | null
   platform: $Enums.device_platform | null
@@ -40,6 +52,8 @@ export type Account_devicesMaxAggregateOutputType = {
   id: string | null
   account_id: string | null
   push_token: string | null
+  installation_id: string | null
+  registration_generation: number | null
   device_name: string | null
   os_version: string | null
   platform: $Enums.device_platform | null
@@ -52,6 +66,8 @@ export type Account_devicesCountAggregateOutputType = {
   id: number
   account_id: number
   push_token: number
+  installation_id: number
+  registration_generation: number
   device_name: number
   os_version: number
   platform: number
@@ -62,10 +78,20 @@ export type Account_devicesCountAggregateOutputType = {
 }
 
 
+export type Account_devicesAvgAggregateInputType = {
+  registration_generation?: true
+}
+
+export type Account_devicesSumAggregateInputType = {
+  registration_generation?: true
+}
+
 export type Account_devicesMinAggregateInputType = {
   id?: true
   account_id?: true
   push_token?: true
+  installation_id?: true
+  registration_generation?: true
   device_name?: true
   os_version?: true
   platform?: true
@@ -78,6 +104,8 @@ export type Account_devicesMaxAggregateInputType = {
   id?: true
   account_id?: true
   push_token?: true
+  installation_id?: true
+  registration_generation?: true
   device_name?: true
   os_version?: true
   platform?: true
@@ -90,6 +118,8 @@ export type Account_devicesCountAggregateInputType = {
   id?: true
   account_id?: true
   push_token?: true
+  installation_id?: true
+  registration_generation?: true
   device_name?: true
   os_version?: true
   platform?: true
@@ -137,6 +167,18 @@ export type Account_devicesAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: Account_devicesAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: Account_devicesSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: Account_devicesMinAggregateInputType
@@ -167,6 +209,8 @@ export type account_devicesGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: Account_devicesCountAggregateInputType | true
+  _avg?: Account_devicesAvgAggregateInputType
+  _sum?: Account_devicesSumAggregateInputType
   _min?: Account_devicesMinAggregateInputType
   _max?: Account_devicesMaxAggregateInputType
 }
@@ -175,13 +219,17 @@ export type Account_devicesGroupByOutputType = {
   id: string
   account_id: string
   push_token: string
+  installation_id: string
+  registration_generation: number
   device_name: string | null
   os_version: string | null
   platform: $Enums.device_platform | null
-  is_active: boolean | null
+  is_active: boolean
   created_at: Date | null
   updated_at: Date | null
   _count: Account_devicesCountAggregateOutputType | null
+  _avg: Account_devicesAvgAggregateOutputType | null
+  _sum: Account_devicesSumAggregateOutputType | null
   _min: Account_devicesMinAggregateOutputType | null
   _max: Account_devicesMaxAggregateOutputType | null
 }
@@ -208,10 +256,12 @@ export type account_devicesWhereInput = {
   id?: Prisma.UuidFilter<"account_devices"> | string
   account_id?: Prisma.UuidFilter<"account_devices"> | string
   push_token?: Prisma.StringFilter<"account_devices"> | string
+  installation_id?: Prisma.UuidFilter<"account_devices"> | string
+  registration_generation?: Prisma.IntFilter<"account_devices"> | number
   device_name?: Prisma.StringNullableFilter<"account_devices"> | string | null
   os_version?: Prisma.StringNullableFilter<"account_devices"> | string | null
   platform?: Prisma.Enumdevice_platformNullableFilter<"account_devices"> | $Enums.device_platform | null
-  is_active?: Prisma.BoolNullableFilter<"account_devices"> | boolean | null
+  is_active?: Prisma.BoolFilter<"account_devices"> | boolean
   created_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -222,10 +272,12 @@ export type account_devicesOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
+  installation_id?: Prisma.SortOrder
+  registration_generation?: Prisma.SortOrder
   device_name?: Prisma.SortOrderInput | Prisma.SortOrder
   os_version?: Prisma.SortOrderInput | Prisma.SortOrder
   platform?: Prisma.SortOrderInput | Prisma.SortOrder
-  is_active?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
@@ -239,10 +291,12 @@ export type account_devicesWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.account_devicesWhereInput[]
   NOT?: Prisma.account_devicesWhereInput | Prisma.account_devicesWhereInput[]
   account_id?: Prisma.UuidFilter<"account_devices"> | string
+  installation_id?: Prisma.UuidFilter<"account_devices"> | string
+  registration_generation?: Prisma.IntFilter<"account_devices"> | number
   device_name?: Prisma.StringNullableFilter<"account_devices"> | string | null
   os_version?: Prisma.StringNullableFilter<"account_devices"> | string | null
   platform?: Prisma.Enumdevice_platformNullableFilter<"account_devices"> | $Enums.device_platform | null
-  is_active?: Prisma.BoolNullableFilter<"account_devices"> | boolean | null
+  is_active?: Prisma.BoolFilter<"account_devices"> | boolean
   created_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -253,15 +307,19 @@ export type account_devicesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
+  installation_id?: Prisma.SortOrder
+  registration_generation?: Prisma.SortOrder
   device_name?: Prisma.SortOrderInput | Prisma.SortOrder
   os_version?: Prisma.SortOrderInput | Prisma.SortOrder
   platform?: Prisma.SortOrderInput | Prisma.SortOrder
-  is_active?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.account_devicesCountOrderByAggregateInput
+  _avg?: Prisma.account_devicesAvgOrderByAggregateInput
   _max?: Prisma.account_devicesMaxOrderByAggregateInput
   _min?: Prisma.account_devicesMinOrderByAggregateInput
+  _sum?: Prisma.account_devicesSumOrderByAggregateInput
 }
 
 export type account_devicesScalarWhereWithAggregatesInput = {
@@ -271,10 +329,12 @@ export type account_devicesScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"account_devices"> | string
   account_id?: Prisma.UuidWithAggregatesFilter<"account_devices"> | string
   push_token?: Prisma.StringWithAggregatesFilter<"account_devices"> | string
+  installation_id?: Prisma.UuidWithAggregatesFilter<"account_devices"> | string
+  registration_generation?: Prisma.IntWithAggregatesFilter<"account_devices"> | number
   device_name?: Prisma.StringNullableWithAggregatesFilter<"account_devices"> | string | null
   os_version?: Prisma.StringNullableWithAggregatesFilter<"account_devices"> | string | null
   platform?: Prisma.Enumdevice_platformNullableWithAggregatesFilter<"account_devices"> | $Enums.device_platform | null
-  is_active?: Prisma.BoolNullableWithAggregatesFilter<"account_devices"> | boolean | null
+  is_active?: Prisma.BoolWithAggregatesFilter<"account_devices"> | boolean
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"account_devices"> | Date | string | null
 }
@@ -282,10 +342,12 @@ export type account_devicesScalarWhereWithAggregatesInput = {
 export type account_devicesCreateInput = {
   id?: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutAccount_devicesInput
@@ -296,10 +358,12 @@ export type account_devicesUncheckedCreateInput = {
   id?: string
   account_id: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesUncheckedCreateNestedManyWithoutAccount_devicesInput
@@ -308,10 +372,12 @@ export type account_devicesUncheckedCreateInput = {
 export type account_devicesUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutAccount_devicesNestedInput
@@ -322,10 +388,12 @@ export type account_devicesUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesNestedInput
@@ -335,10 +403,12 @@ export type account_devicesCreateManyInput = {
   id?: string
   account_id: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -346,10 +416,12 @@ export type account_devicesCreateManyInput = {
 export type account_devicesUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -358,10 +430,12 @@ export type account_devicesUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -380,6 +454,8 @@ export type account_devicesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
+  installation_id?: Prisma.SortOrder
+  registration_generation?: Prisma.SortOrder
   device_name?: Prisma.SortOrder
   os_version?: Prisma.SortOrder
   platform?: Prisma.SortOrder
@@ -388,10 +464,16 @@ export type account_devicesCountOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type account_devicesAvgOrderByAggregateInput = {
+  registration_generation?: Prisma.SortOrder
+}
+
 export type account_devicesMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
+  installation_id?: Prisma.SortOrder
+  registration_generation?: Prisma.SortOrder
   device_name?: Prisma.SortOrder
   os_version?: Prisma.SortOrder
   platform?: Prisma.SortOrder
@@ -404,12 +486,18 @@ export type account_devicesMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
+  installation_id?: Prisma.SortOrder
+  registration_generation?: Prisma.SortOrder
   device_name?: Prisma.SortOrder
   os_version?: Prisma.SortOrder
   platform?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type account_devicesSumOrderByAggregateInput = {
+  registration_generation?: Prisma.SortOrder
 }
 
 export type Account_devicesScalarRelationFilter = {
@@ -480,10 +568,12 @@ export type account_devicesUpdateOneRequiredWithoutNotification_deliveriesNested
 export type account_devicesCreateWithoutAccountsInput = {
   id?: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesCreateNestedManyWithoutAccount_devicesInput
@@ -492,10 +582,12 @@ export type account_devicesCreateWithoutAccountsInput = {
 export type account_devicesUncheckedCreateWithoutAccountsInput = {
   id?: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesUncheckedCreateNestedManyWithoutAccount_devicesInput
@@ -534,10 +626,12 @@ export type account_devicesScalarWhereInput = {
   id?: Prisma.UuidFilter<"account_devices"> | string
   account_id?: Prisma.UuidFilter<"account_devices"> | string
   push_token?: Prisma.StringFilter<"account_devices"> | string
+  installation_id?: Prisma.UuidFilter<"account_devices"> | string
+  registration_generation?: Prisma.IntFilter<"account_devices"> | number
   device_name?: Prisma.StringNullableFilter<"account_devices"> | string | null
   os_version?: Prisma.StringNullableFilter<"account_devices"> | string | null
   platform?: Prisma.Enumdevice_platformNullableFilter<"account_devices"> | $Enums.device_platform | null
-  is_active?: Prisma.BoolNullableFilter<"account_devices"> | boolean | null
+  is_active?: Prisma.BoolFilter<"account_devices"> | boolean
   created_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"account_devices"> | Date | string | null
 }
@@ -545,10 +639,12 @@ export type account_devicesScalarWhereInput = {
 export type account_devicesCreateWithoutNotification_deliveriesInput = {
   id?: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutAccount_devicesInput
@@ -558,10 +654,12 @@ export type account_devicesUncheckedCreateWithoutNotification_deliveriesInput = 
   id?: string
   account_id: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -585,10 +683,12 @@ export type account_devicesUpdateToOneWithWhereWithoutNotification_deliveriesInp
 export type account_devicesUpdateWithoutNotification_deliveriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutAccount_devicesNestedInput
@@ -598,10 +698,12 @@ export type account_devicesUncheckedUpdateWithoutNotification_deliveriesInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   account_id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -609,10 +711,12 @@ export type account_devicesUncheckedUpdateWithoutNotification_deliveriesInput = 
 export type account_devicesCreateManyAccountsInput = {
   id?: string
   push_token: string
+  installation_id: string
+  registration_generation?: number
   device_name?: string | null
   os_version?: string | null
   platform?: $Enums.device_platform | null
-  is_active?: boolean | null
+  is_active?: boolean
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -620,10 +724,12 @@ export type account_devicesCreateManyAccountsInput = {
 export type account_devicesUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesUpdateManyWithoutAccount_devicesNestedInput
@@ -632,10 +738,12 @@ export type account_devicesUpdateWithoutAccountsInput = {
 export type account_devicesUncheckedUpdateWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notification_deliveries?: Prisma.notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesNestedInput
@@ -644,10 +752,12 @@ export type account_devicesUncheckedUpdateWithoutAccountsInput = {
 export type account_devicesUncheckedUpdateManyWithoutAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   push_token?: Prisma.StringFieldUpdateOperationsInput | string
+  installation_id?: Prisma.StringFieldUpdateOperationsInput | string
+  registration_generation?: Prisma.IntFieldUpdateOperationsInput | number
   device_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   os_version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableEnumdevice_platformFieldUpdateOperationsInput | $Enums.device_platform | null
-  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -687,6 +797,8 @@ export type account_devicesSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   account_id?: boolean
   push_token?: boolean
+  installation_id?: boolean
+  registration_generation?: boolean
   device_name?: boolean
   os_version?: boolean
   platform?: boolean
@@ -702,6 +814,8 @@ export type account_devicesSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   account_id?: boolean
   push_token?: boolean
+  installation_id?: boolean
+  registration_generation?: boolean
   device_name?: boolean
   os_version?: boolean
   platform?: boolean
@@ -715,6 +829,8 @@ export type account_devicesSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   account_id?: boolean
   push_token?: boolean
+  installation_id?: boolean
+  registration_generation?: boolean
   device_name?: boolean
   os_version?: boolean
   platform?: boolean
@@ -728,6 +844,8 @@ export type account_devicesSelectScalar = {
   id?: boolean
   account_id?: boolean
   push_token?: boolean
+  installation_id?: boolean
+  registration_generation?: boolean
   device_name?: boolean
   os_version?: boolean
   platform?: boolean
@@ -736,7 +854,7 @@ export type account_devicesSelectScalar = {
   updated_at?: boolean
 }
 
-export type account_devicesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "push_token" | "device_name" | "os_version" | "platform" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["account_devices"]>
+export type account_devicesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "push_token" | "installation_id" | "registration_generation" | "device_name" | "os_version" | "platform" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["account_devices"]>
 export type account_devicesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   notification_deliveries?: boolean | Prisma.account_devices$notification_deliveriesArgs<ExtArgs>
@@ -759,10 +877,12 @@ export type $account_devicesPayload<ExtArgs extends runtime.Types.Extensions.Int
     id: string
     account_id: string
     push_token: string
+    installation_id: string
+    registration_generation: number
     device_name: string | null
     os_version: string | null
     platform: $Enums.device_platform | null
-    is_active: boolean | null
+    is_active: boolean
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["account_devices"]>
@@ -1193,6 +1313,8 @@ export interface account_devicesFieldRefs {
   readonly id: Prisma.FieldRef<"account_devices", 'String'>
   readonly account_id: Prisma.FieldRef<"account_devices", 'String'>
   readonly push_token: Prisma.FieldRef<"account_devices", 'String'>
+  readonly installation_id: Prisma.FieldRef<"account_devices", 'String'>
+  readonly registration_generation: Prisma.FieldRef<"account_devices", 'Int'>
   readonly device_name: Prisma.FieldRef<"account_devices", 'String'>
   readonly os_version: Prisma.FieldRef<"account_devices", 'String'>
   readonly platform: Prisma.FieldRef<"account_devices", 'device_platform'>

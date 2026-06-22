@@ -28,6 +28,7 @@ export type Notification_deliveriesMinAggregateOutputType = {
   id: string | null
   notification_id: string | null
   device_id: string | null
+  account_id: string | null
   push_token: string | null
   status: $Enums.notifications_status | null
   sent_at: Date | null
@@ -40,6 +41,7 @@ export type Notification_deliveriesMaxAggregateOutputType = {
   id: string | null
   notification_id: string | null
   device_id: string | null
+  account_id: string | null
   push_token: string | null
   status: $Enums.notifications_status | null
   sent_at: Date | null
@@ -52,6 +54,7 @@ export type Notification_deliveriesCountAggregateOutputType = {
   id: number
   notification_id: number
   device_id: number
+  account_id: number
   push_token: number
   status: number
   sent_at: number
@@ -66,6 +69,7 @@ export type Notification_deliveriesMinAggregateInputType = {
   id?: true
   notification_id?: true
   device_id?: true
+  account_id?: true
   push_token?: true
   status?: true
   sent_at?: true
@@ -78,6 +82,7 @@ export type Notification_deliveriesMaxAggregateInputType = {
   id?: true
   notification_id?: true
   device_id?: true
+  account_id?: true
   push_token?: true
   status?: true
   sent_at?: true
@@ -90,6 +95,7 @@ export type Notification_deliveriesCountAggregateInputType = {
   id?: true
   notification_id?: true
   device_id?: true
+  account_id?: true
   push_token?: true
   status?: true
   sent_at?: true
@@ -175,7 +181,8 @@ export type Notification_deliveriesGroupByOutputType = {
   id: string
   notification_id: string
   device_id: string
-  push_token: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at: Date | null
   error: string | null
@@ -208,7 +215,8 @@ export type notification_deliveriesWhereInput = {
   id?: Prisma.UuidFilter<"notification_deliveries"> | string
   notification_id?: Prisma.UuidFilter<"notification_deliveries"> | string
   device_id?: Prisma.UuidFilter<"notification_deliveries"> | string
-  push_token?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
+  account_id?: Prisma.UuidFilter<"notification_deliveries"> | string
+  push_token?: Prisma.StringFilter<"notification_deliveries"> | string
   status?: Prisma.Enumnotifications_statusFilter<"notification_deliveries"> | $Enums.notifications_status
   sent_at?: Prisma.DateTimeNullableFilter<"notification_deliveries"> | Date | string | null
   error?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
@@ -222,7 +230,8 @@ export type notification_deliveriesOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   notification_id?: Prisma.SortOrder
   device_id?: Prisma.SortOrder
-  push_token?: Prisma.SortOrderInput | Prisma.SortOrder
+  account_id?: Prisma.SortOrder
+  push_token?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sent_at?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -239,7 +248,8 @@ export type notification_deliveriesWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.notification_deliveriesWhereInput | Prisma.notification_deliveriesWhereInput[]
   notification_id?: Prisma.UuidFilter<"notification_deliveries"> | string
   device_id?: Prisma.UuidFilter<"notification_deliveries"> | string
-  push_token?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
+  account_id?: Prisma.UuidFilter<"notification_deliveries"> | string
+  push_token?: Prisma.StringFilter<"notification_deliveries"> | string
   status?: Prisma.Enumnotifications_statusFilter<"notification_deliveries"> | $Enums.notifications_status
   sent_at?: Prisma.DateTimeNullableFilter<"notification_deliveries"> | Date | string | null
   error?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
@@ -253,7 +263,8 @@ export type notification_deliveriesOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   notification_id?: Prisma.SortOrder
   device_id?: Prisma.SortOrder
-  push_token?: Prisma.SortOrderInput | Prisma.SortOrder
+  account_id?: Prisma.SortOrder
+  push_token?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sent_at?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -271,7 +282,8 @@ export type notification_deliveriesScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"notification_deliveries"> | string
   notification_id?: Prisma.UuidWithAggregatesFilter<"notification_deliveries"> | string
   device_id?: Prisma.UuidWithAggregatesFilter<"notification_deliveries"> | string
-  push_token?: Prisma.StringNullableWithAggregatesFilter<"notification_deliveries"> | string | null
+  account_id?: Prisma.UuidWithAggregatesFilter<"notification_deliveries"> | string
+  push_token?: Prisma.StringWithAggregatesFilter<"notification_deliveries"> | string
   status?: Prisma.Enumnotifications_statusWithAggregatesFilter<"notification_deliveries"> | $Enums.notifications_status
   sent_at?: Prisma.DateTimeNullableWithAggregatesFilter<"notification_deliveries"> | Date | string | null
   error?: Prisma.StringNullableWithAggregatesFilter<"notification_deliveries"> | string | null
@@ -281,7 +293,8 @@ export type notification_deliveriesScalarWhereWithAggregatesInput = {
 
 export type notification_deliveriesCreateInput = {
   id?: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -295,7 +308,8 @@ export type notification_deliveriesUncheckedCreateInput = {
   id?: string
   notification_id: string
   device_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -305,7 +319,8 @@ export type notification_deliveriesUncheckedCreateInput = {
 
 export type notification_deliveriesUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -319,7 +334,8 @@ export type notification_deliveriesUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_id?: Prisma.StringFieldUpdateOperationsInput | string
   device_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -331,7 +347,8 @@ export type notification_deliveriesCreateManyInput = {
   id?: string
   notification_id: string
   device_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -341,7 +358,8 @@ export type notification_deliveriesCreateManyInput = {
 
 export type notification_deliveriesUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -353,7 +371,8 @@ export type notification_deliveriesUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_id?: Prisma.StringFieldUpdateOperationsInput | string
   device_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -375,6 +394,7 @@ export type notification_deliveriesCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   notification_id?: Prisma.SortOrder
   device_id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sent_at?: Prisma.SortOrder
@@ -387,6 +407,7 @@ export type notification_deliveriesMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   notification_id?: Prisma.SortOrder
   device_id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sent_at?: Prisma.SortOrder
@@ -399,6 +420,7 @@ export type notification_deliveriesMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   notification_id?: Prisma.SortOrder
   device_id?: Prisma.SortOrder
+  account_id?: Prisma.SortOrder
   push_token?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sent_at?: Prisma.SortOrder
@@ -497,7 +519,8 @@ export type Enumnotifications_statusFieldUpdateOperationsInput = {
 
 export type notification_deliveriesCreateWithoutAccount_devicesInput = {
   id?: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -509,7 +532,8 @@ export type notification_deliveriesCreateWithoutAccount_devicesInput = {
 export type notification_deliveriesUncheckedCreateWithoutAccount_devicesInput = {
   id?: string
   notification_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -550,7 +574,8 @@ export type notification_deliveriesScalarWhereInput = {
   id?: Prisma.UuidFilter<"notification_deliveries"> | string
   notification_id?: Prisma.UuidFilter<"notification_deliveries"> | string
   device_id?: Prisma.UuidFilter<"notification_deliveries"> | string
-  push_token?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
+  account_id?: Prisma.UuidFilter<"notification_deliveries"> | string
+  push_token?: Prisma.StringFilter<"notification_deliveries"> | string
   status?: Prisma.Enumnotifications_statusFilter<"notification_deliveries"> | $Enums.notifications_status
   sent_at?: Prisma.DateTimeNullableFilter<"notification_deliveries"> | Date | string | null
   error?: Prisma.StringNullableFilter<"notification_deliveries"> | string | null
@@ -560,7 +585,8 @@ export type notification_deliveriesScalarWhereInput = {
 
 export type notification_deliveriesCreateWithoutNotificationsInput = {
   id?: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -572,7 +598,8 @@ export type notification_deliveriesCreateWithoutNotificationsInput = {
 export type notification_deliveriesUncheckedCreateWithoutNotificationsInput = {
   id?: string
   device_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -609,7 +636,8 @@ export type notification_deliveriesUpdateManyWithWhereWithoutNotificationsInput 
 export type notification_deliveriesCreateManyAccount_devicesInput = {
   id?: string
   notification_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -619,7 +647,8 @@ export type notification_deliveriesCreateManyAccount_devicesInput = {
 
 export type notification_deliveriesUpdateWithoutAccount_devicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -631,7 +660,8 @@ export type notification_deliveriesUpdateWithoutAccount_devicesInput = {
 export type notification_deliveriesUncheckedUpdateWithoutAccount_devicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -642,7 +672,8 @@ export type notification_deliveriesUncheckedUpdateWithoutAccount_devicesInput = 
 export type notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   notification_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -653,7 +684,8 @@ export type notification_deliveriesUncheckedUpdateManyWithoutAccount_devicesInpu
 export type notification_deliveriesCreateManyNotificationsInput = {
   id?: string
   device_id: string
-  push_token?: string | null
+  account_id: string
+  push_token: string
   status: $Enums.notifications_status
   sent_at?: Date | string | null
   error?: string | null
@@ -663,7 +695,8 @@ export type notification_deliveriesCreateManyNotificationsInput = {
 
 export type notification_deliveriesUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -675,7 +708,8 @@ export type notification_deliveriesUpdateWithoutNotificationsInput = {
 export type notification_deliveriesUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   device_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -686,7 +720,8 @@ export type notification_deliveriesUncheckedUpdateWithoutNotificationsInput = {
 export type notification_deliveriesUncheckedUpdateManyWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   device_id?: Prisma.StringFieldUpdateOperationsInput | string
-  push_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  account_id?: Prisma.StringFieldUpdateOperationsInput | string
+  push_token?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.Enumnotifications_statusFieldUpdateOperationsInput | $Enums.notifications_status
   sent_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -700,6 +735,7 @@ export type notification_deliveriesSelect<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   notification_id?: boolean
   device_id?: boolean
+  account_id?: boolean
   push_token?: boolean
   status?: boolean
   sent_at?: boolean
@@ -714,6 +750,7 @@ export type notification_deliveriesSelectCreateManyAndReturn<ExtArgs extends run
   id?: boolean
   notification_id?: boolean
   device_id?: boolean
+  account_id?: boolean
   push_token?: boolean
   status?: boolean
   sent_at?: boolean
@@ -728,6 +765,7 @@ export type notification_deliveriesSelectUpdateManyAndReturn<ExtArgs extends run
   id?: boolean
   notification_id?: boolean
   device_id?: boolean
+  account_id?: boolean
   push_token?: boolean
   status?: boolean
   sent_at?: boolean
@@ -742,6 +780,7 @@ export type notification_deliveriesSelectScalar = {
   id?: boolean
   notification_id?: boolean
   device_id?: boolean
+  account_id?: boolean
   push_token?: boolean
   status?: boolean
   sent_at?: boolean
@@ -750,7 +789,7 @@ export type notification_deliveriesSelectScalar = {
   updated_at?: boolean
 }
 
-export type notification_deliveriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "notification_id" | "device_id" | "push_token" | "status" | "sent_at" | "error" | "created_at" | "updated_at", ExtArgs["result"]["notification_deliveries"]>
+export type notification_deliveriesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "notification_id" | "device_id" | "account_id" | "push_token" | "status" | "sent_at" | "error" | "created_at" | "updated_at", ExtArgs["result"]["notification_deliveries"]>
 export type notification_deliveriesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account_devices?: boolean | Prisma.account_devicesDefaultArgs<ExtArgs>
   notifications?: boolean | Prisma.notificationsDefaultArgs<ExtArgs>
@@ -774,7 +813,8 @@ export type $notification_deliveriesPayload<ExtArgs extends runtime.Types.Extens
     id: string
     notification_id: string
     device_id: string
-    push_token: string | null
+    account_id: string
+    push_token: string
     status: $Enums.notifications_status
     sent_at: Date | null
     error: string | null
@@ -1208,6 +1248,7 @@ export interface notification_deliveriesFieldRefs {
   readonly id: Prisma.FieldRef<"notification_deliveries", 'String'>
   readonly notification_id: Prisma.FieldRef<"notification_deliveries", 'String'>
   readonly device_id: Prisma.FieldRef<"notification_deliveries", 'String'>
+  readonly account_id: Prisma.FieldRef<"notification_deliveries", 'String'>
   readonly push_token: Prisma.FieldRef<"notification_deliveries", 'String'>
   readonly status: Prisma.FieldRef<"notification_deliveries", 'notifications_status'>
   readonly sent_at: Prisma.FieldRef<"notification_deliveries", 'DateTime'>

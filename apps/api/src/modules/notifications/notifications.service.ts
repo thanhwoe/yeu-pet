@@ -241,12 +241,10 @@ export class NotificationsService {
   }
 
   private async deliverPushToAccount(notification: notifications) {
-    const [devices] = await this.userDevicesRepository.findAll({
-      account_id: notification.account_id,
-    });
-    const activeDevices = devices.filter(
-      (device) => device.is_active !== false,
-    );
+    const activeDevices =
+      await this.userDevicesRepository.findActiveByAccountId(
+        notification.account_id,
+      );
 
     if (!activeDevices.length) {
       return;
@@ -268,6 +266,17 @@ export class NotificationsService {
     notification: notifications,
     badge: number,
   ) {
+    const currentDevice =
+      await this.userDevicesRepository.findActiveOwnedDevice({
+        id: device.id,
+        accountId: notification.account_id,
+        pushToken: device.push_token,
+      });
+
+    if (!currentDevice) {
+      return;
+    }
+
     try {
       const message: admin.messaging.Message = {
         token: device.push_token,
@@ -313,6 +322,7 @@ export class NotificationsService {
       await admin.messaging().send(message);
 
       await this.notificationDeliveriesRepository.create({
+        account_id: notification.account_id,
         device_id: device.id,
         notification_id: notification.id,
         push_token: device.push_token,
@@ -324,6 +334,7 @@ export class NotificationsService {
       const error = err as admin.FirebaseError;
 
       await this.notificationDeliveriesRepository.create({
+        account_id: notification.account_id,
         device_id: device.id,
         notification_id: notification.id,
         push_token: device.push_token,
@@ -337,9 +348,10 @@ export class NotificationsService {
         error?.code === 'messaging/registration-token-not-registered' ||
         error?.code === 'messaging/invalid-registration-token'
       ) {
-        await this.userDevicesRepository.update(device.id, {
-          is_active: false,
-        });
+        await this.userDevicesRepository.deactivateIfTokenMatches(
+          device.id,
+          device.push_token,
+        );
       }
     }
   }

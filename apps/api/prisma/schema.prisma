@@ -158,10 +158,12 @@ model account_devices {
   id                      String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   account_id              String                    @db.Uuid
   push_token              String                    @unique @db.VarChar(512)
+  installation_id         String                    @db.Uuid
+  registration_generation Int                       @default(0)
   device_name             String?                   @db.VarChar(100)
   os_version              String?                   @db.VarChar(20)
   platform                device_platform?          @default(unknown)
-  is_active               Boolean?                  @default(true)
+  is_active               Boolean                   @default(true)
   created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
   updated_at              DateTime?                 @default(now()) @db.Timestamptz(6)
   accounts                accounts                  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_devices_account_id")
@@ -170,6 +172,7 @@ model account_devices {
   @@index([account_id], map: "idx_account_account_id")
   @@index([id], map: "idx_account_devices")
   @@index([push_token], map: "idx_account_devices_push_token")
+  @@index([installation_id], map: "idx_account_devices_installation_id")
 }
 
 model account_settings {
@@ -245,7 +248,8 @@ model notification_deliveries {
   id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   notification_id String               @db.Uuid
   device_id       String               @db.Uuid
-  push_token      String?              @db.VarChar(512)
+  account_id      String               @db.Uuid
+  push_token      String               @db.VarChar(512)
   status          notifications_status
   sent_at         DateTime?            @db.Timestamptz(6)
   error           String?
@@ -258,6 +262,7 @@ model notification_deliveries {
   @@index([device_id], map: "idx_notification_deliveries_device_id")
   @@index([error], map: "idx_notification_deliveries_error")
   @@index([notification_id], map: "idx_notification_deliveries_notification_id")
+  @@index([account_id], map: "idx_notification_deliveries_account_id")
 }
 
 model budget_categories {

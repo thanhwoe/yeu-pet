@@ -64,6 +64,9 @@ export const DateTimePickerController = <
 
   const [showPicker, setShowPicker] = useState(false);
   const [tempValue, setTempValue] = useState<Date | null>(null);
+  const [androidPickerMode, setAndroidPickerMode] = useState<"date" | "time">(
+    mode === "time" ? "time" : "date",
+  );
 
   const { colorScheme } = useColorScheme();
 
@@ -76,10 +79,46 @@ export const DateTimePickerController = <
     selectedDate?: Date,
   ) => {
     if (Platform.OS === "android") {
-      setShowPicker(false);
-      if (event.type === "set" && selectedDate) {
-        onChange(selectedDate);
+      if (event.type !== "set" || !selectedDate) {
+        setTempValue(null);
+        setShowPicker(false);
+        onBlur();
+        return;
       }
+
+      if (mode === "datetime" && androidPickerMode === "date") {
+        const currentValue = new Date(tempValue || value || new Date());
+        const nextValue = new Date(selectedDate);
+
+        nextValue.setHours(
+          currentValue.getHours(),
+          currentValue.getMinutes(),
+          currentValue.getSeconds(),
+          currentValue.getMilliseconds(),
+        );
+        setTempValue(nextValue);
+        setAndroidPickerMode("time");
+        return;
+      }
+
+      const nextValue =
+        mode === "datetime"
+          ? new Date(tempValue || selectedDate)
+          : selectedDate;
+
+      if (mode === "datetime") {
+        nextValue.setHours(
+          selectedDate.getHours(),
+          selectedDate.getMinutes(),
+          selectedDate.getSeconds(),
+          selectedDate.getMilliseconds(),
+        );
+      }
+
+      onChange(nextValue);
+      setTempValue(null);
+      setShowPicker(false);
+      onBlur();
       return;
     }
 
@@ -137,6 +176,7 @@ export const DateTimePickerController = <
   const openPicker = () => {
     if (!disabled) {
       setTempValue(value || new Date());
+      setAndroidPickerMode(mode === "time" ? "time" : "date");
       setShowPicker(true);
     }
   };
@@ -212,8 +252,8 @@ export const DateTimePickerController = <
         ? renderIOSModal()
         : showPicker && (
             <DateTimePicker
-              value={value || new Date()}
-              mode={mode}
+              value={tempValue || value || new Date()}
+              mode={mode === "datetime" ? androidPickerMode : mode}
               display={display}
               onChange={handleDateChange}
               minimumDate={minimumDate}

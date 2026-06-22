@@ -29,8 +29,9 @@ describe('NotificationsService booking notifications', () => {
     create: jest.fn(),
   };
   const userDevicesRepository = {
-    findAll: jest.fn(),
-    update: jest.fn(),
+    deactivateIfTokenMatches: jest.fn(),
+    findActiveByAccountId: jest.fn(),
+    findActiveOwnedDevice: jest.fn(),
   };
   const userSettingsRepository = {
     findById: jest.fn(),
@@ -60,17 +61,16 @@ describe('NotificationsService booking notifications', () => {
     });
     notificationsRepository.countBadge.mockResolvedValue(1);
     userSettingsRepository.findById.mockResolvedValue(null);
-    userDevicesRepository.findAll.mockResolvedValue([
-      [
-        {
-          id: 'device-id',
-          account_id: recipientAccountId,
-          push_token: pushToken,
-          is_active: true,
-        },
-      ],
-      1,
+    const activeDevice = {
+      id: 'device-id',
+      account_id: recipientAccountId,
+      push_token: pushToken,
+      is_active: true,
+    };
+    userDevicesRepository.findActiveByAccountId.mockResolvedValue([
+      activeDevice,
     ]);
+    userDevicesRepository.findActiveOwnedDevice.mockResolvedValue(activeDevice);
   });
 
   it('stores and sends a booking request through Firebase Admin', async () => {
@@ -105,6 +105,7 @@ describe('NotificationsService booking notifications', () => {
     );
     expect(notificationDeliveriesRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
+        account_id: recipientAccountId,
         status: notifications_status.sent,
         push_token: pushToken,
       }),
@@ -126,9 +127,10 @@ describe('NotificationsService booking notifications', () => {
     expect(notificationDeliveriesRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({ status: notifications_status.failed }),
     );
-    expect(userDevicesRepository.update).toHaveBeenCalledWith('device-id', {
-      is_active: false,
-    });
+    expect(userDevicesRepository.deactivateIfTokenMatches).toHaveBeenCalledWith(
+      'device-id',
+      pushToken,
+    );
   });
 
   it('creates a deep-linked reminder notification and sends it', async () => {
@@ -209,7 +211,7 @@ describe('NotificationsService booking notifications', () => {
     } as never);
 
     expect(notificationsRepository.create).toHaveBeenCalled();
-    expect(userDevicesRepository.findAll).not.toHaveBeenCalled();
+    expect(userDevicesRepository.findActiveByAccountId).not.toHaveBeenCalled();
     expect(mockFirebaseSend).not.toHaveBeenCalled();
   });
 
@@ -258,5 +260,18 @@ describe('NotificationsService booking notifications', () => {
         }) as Record<string, string>,
       }),
     );
+  });
+
+  it('skips a device that was reassigned before the final send check', async () => {
+    userDevicesRepository.findActiveOwnedDevice.mockResolvedValueOnce(null);
+
+    await service.sendSitterBookingRequestNotification({
+      recipientAccountId,
+      bookingId,
+      petName: 'Mochi',
+    });
+
+    expect(mockFirebaseSend).not.toHaveBeenCalled();
+    expect(notificationDeliveriesRepository.create).not.toHaveBeenCalled();
   });
 });

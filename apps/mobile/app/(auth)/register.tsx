@@ -4,6 +4,7 @@ import { ISignUpForm } from "@/constants/validation";
 import { SignUpForm } from "@/features/auth/components/SignUpForm";
 import { signUpMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
+import { startPushRegistrationSessionAsync } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Link } from "expo-router";
@@ -15,7 +16,8 @@ export default function RegisterScreen() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: signUpMutation,
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
+      await startPushRegistrationSessionAsync();
       Toast.success({
         text: "Account created. Verify your email to continue.",
       });

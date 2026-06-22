@@ -13,6 +13,7 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { RegisterDto } from './dto/register.dto';
 import dayjs from 'dayjs';
 import crypto from 'node:crypto';
+import { UserDevicesRepository } from '../user-devices/user-devices.repository';
 
 type TokenAccount = Pick<accounts, 'id' | 'email' | 'phone' | 'role'>;
 
@@ -23,6 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly refreshTokensRepository: RefreshTokensRepository,
+    private readonly userDevicesRepository: UserDevicesRepository,
   ) {}
 
   // Validate user credentials for local strategy
@@ -82,7 +84,11 @@ export class AuthService {
     return this.login(user);
   }
 
-  async logout(userId: string, refreshToken?: string) {
+  async logout(userId: string, refreshToken?: string, deviceId?: string) {
+    if (deviceId) {
+      await this.userDevicesRepository.deactivateOwned(deviceId, userId);
+    }
+
     if (refreshToken) {
       const tokenHash = this.hashToken(refreshToken);
       await this.refreshTokensRepository.revokeByTokenHash(tokenHash);

@@ -88,7 +88,9 @@ const useUserInfoStoreBase = create<State & Action>()(
       optimisticAvatar: null,
 
       updateUser: (user) => {
-        set((state) => getUserWithOptimisticAvatar(user, state.optimisticAvatar));
+        set((state) =>
+          getUserWithOptimisticAvatar(user, state.optimisticAvatar),
+        );
       },
 
       setOptimisticUserAvatar: (uri) => {
@@ -140,6 +142,7 @@ const useUserInfoStoreBase = create<State & Action>()(
           user: null,
           tokens: null,
           otpExpire: null,
+          deviceInfo: null,
           optimisticAvatar: null,
         })),
 

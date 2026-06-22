@@ -21,7 +21,11 @@ import {
   updateUserSettingsMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
-import { registerForFirebasePushNotificationsAsync } from "@/utils";
+import {
+  getPushInstallationIdAsync,
+  getPushRegistrationGenerationAsync,
+  registerForFirebasePushNotificationsAsync,
+} from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Device from "expo-device";
 import { router } from "expo-router";
@@ -292,8 +296,14 @@ export function SettingsScreen() {
           return;
         }
 
+        const [installationId, registrationGeneration] = await Promise.all([
+          getPushInstallationIdAsync(),
+          getPushRegistrationGenerationAsync(),
+        ]);
         const device = await saveDeviceInfoMutation({
           pushToken,
+          installationId,
+          registrationGeneration,
           platform: Platform.select({
             android: "android",
             ios: "ios",

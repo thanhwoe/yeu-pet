@@ -2,6 +2,8 @@ import { USER_KEY } from "@/constants/query-keys";
 import { getUserQuery, saveDeviceInfoMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import {
+  getPushInstallationIdAsync,
+  getPushRegistrationGenerationAsync,
   registerForFirebasePushNotificationsAsync,
   subscribeToFirebasePushTokenRefresh,
 } from "@/utils";
@@ -28,14 +30,6 @@ export const UserSync = () => {
     onError(e) {
       Toast.error({ text: e.message });
     },
-    onSuccess(res) {
-      updateDeviceInfo({
-        deviceName: res.deviceName,
-        id: res.id,
-        isActive: res.isActive,
-        osVersion: res.osVersion,
-      });
-    },
   });
 
   useEffect(() => {
@@ -45,34 +39,77 @@ export const UserSync = () => {
 
     let isActive = true;
     let registrationPromise: Promise<void> | null = null;
+    let pendingToken: string | undefined;
+
+    const registerToken = async (refreshedToken?: string) => {
+      const token =
+        refreshedToken ?? (await registerForFirebasePushNotificationsAsync());
+
+      if (!isActive || !token) {
+        return;
+      }
+
+      const [installationId, registrationGeneration] = await Promise.all([
+        getPushInstallationIdAsync(),
+        getPushRegistrationGenerationAsync(),
+      ]);
+      if (!isActive) {
+        return;
+      }
+
+      const device = await mutateAsync({
+        pushToken: token,
+        installationId,
+        registrationGeneration,
+        platform: Platform.select({
+          android: "android",
+          ios: "ios",
+          default: "unknown",
+        }),
+        deviceName: Device.deviceName ?? undefined,
+        osVersion: Device.osVersion ?? undefined,
+      });
+
+      if (isActive) {
+        updateDeviceInfo({
+          deviceName: device.deviceName,
+          id: device.id,
+          isActive: device.isActive,
+          osVersion: device.osVersion,
+        });
+      }
+    };
 
     const syncFirebasePushToken = (refreshedToken?: string) => {
+      if (refreshedToken) {
+        pendingToken = refreshedToken;
+      }
+
       if (registrationPromise) {
         return registrationPromise;
       }
 
-      registrationPromise = Promise.resolve(
-        refreshedToken ?? registerForFirebasePushNotificationsAsync(),
-      )
-        .then(async (token) => {
-          if (!isActive || !token) {
-            return;
-          }
+      const shouldFetchCurrentToken = pendingToken === undefined;
+      registrationPromise = (async () => {
+        let fetchCurrentToken = shouldFetchCurrentToken;
 
-          await mutateAsync({
-            pushToken: token,
-            platform: Platform.select({
-              android: "android",
-              ios: "ios",
-              default: "unknown",
-            }),
-            deviceName: Device.deviceName ?? undefined,
-            osVersion: Device.osVersion ?? undefined,
-          });
-        })
-        .finally(() => {
-          registrationPromise = null;
-        });
+        while (isActive) {
+          const tokenToRegister = pendingToken;
+          pendingToken = undefined;
+
+          await registerToken(fetchCurrentToken ? undefined : tokenToRegister);
+          fetchCurrentToken = false;
+
+          if (!pendingToken) {
+            break;
+          }
+        }
+      })().finally(() => {
+        registrationPromise = null;
+        if (isActive && pendingToken) {
+          void syncFirebasePushToken().catch(() => undefined);
+        }
+      });
 
       return registrationPromise;
     };
@@ -92,7 +129,7 @@ export const UserSync = () => {
       task.cancel();
       unsubscribeTokenRefresh();
     };
-  }, [isAuthenticated, mutateAsync]);
+  }, [isAuthenticated, mutateAsync, updateDeviceInfo, user?.id]);
 
   useEffect(() => {
     if (data) {

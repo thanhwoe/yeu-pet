@@ -55,9 +55,9 @@ Email changes must use the OTP flow below.
 Request email change:
 
 ```ts
-POST /me/email-change/request
+POST / me / email - change / request;
 {
-  newEmail: string
+  newEmail: string;
 }
 ```
 
@@ -76,10 +76,10 @@ Response:
 Verify email change:
 
 ```ts
-POST /me/email-change/verify
+POST / me / email - change / verify;
 {
-  requestId: string
-  otp: string // 6 digits
+  requestId: string;
+  otp: string; // 6 digits
 }
 ```
 
@@ -87,7 +87,7 @@ Response:
 
 ```ts
 {
-  account: IUser
+  account: IUser;
 }
 ```
 
@@ -288,6 +288,18 @@ DELETE /notifications/:id
 ```
 
 Register mobile push tokens with `/devices`.
+
+`POST /devices` requires the Firebase `pushToken`, platform/device metadata, a
+stable per-install `installationId`, and a monotonic `registrationGeneration`
+incremented for each new login session. Registering a new token for the same
+installation deactivates that installation's previous token rows. Registering
+an existing token reassigns it to the authenticated account; stale account
+registration generations are rejected with `409 Conflict`.
+
+For normal single-device logout, call `POST /auth/logout` with both
+`refreshToken` and the current `deviceId`. The backend conditionally deactivates
+that device for the authenticated account before revoking the refresh token.
+`DELETE /devices/:id` remains an authenticated, idempotent explicit unregister.
 
 ## Integration Notes
 

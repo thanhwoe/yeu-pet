@@ -13,8 +13,10 @@ export const signUpMutation = (params: ISignUpForm) =>
 export const signInMutation = (params: ISignInForm) =>
   APIs.post<AuthResponse>(API_ROUTES.SIGN_IN, { data: params });
 
-export const signOutMutation = (params?: { refreshToken?: string }) =>
-  APIs.post(API_ROUTES.LOGOUT, { data: params });
+export const signOutMutation = (params?: {
+  refreshToken?: string;
+  deviceId?: string;
+}) => APIs.post(API_ROUTES.LOGOUT, { data: params });
 
 export const requestResetPasswordMutation = (phone: string) =>
   APIs.post<{

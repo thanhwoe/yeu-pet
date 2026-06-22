@@ -5,6 +5,7 @@ import { ISignInForm } from "@/constants/validation";
 import { SignInForm } from "@/features/auth/components/SignInForm";
 import { signInMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
+import { startPushRegistrationSessionAsync } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { Keyboard, StyleSheet, View } from "react-native";
@@ -13,7 +14,8 @@ export default function LoginScreen() {
   const { updateUser, updateTokens } = useUserInfoStore();
   const { mutate, isPending } = useMutation({
     mutationFn: signInMutation,
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
+      await startPushRegistrationSessionAsync();
       Toast.success({ text: "Signed in." });
       updateUser(res.user);
       updateTokens({

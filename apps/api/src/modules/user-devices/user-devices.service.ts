@@ -1,51 +1,45 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDeviceDto } from './dto/create-user-device.dto';
 import { accounts } from '@app/generated/prisma/client';
-import { UserDevicesRepository } from './user-devices.repository';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
-import { Action } from '../casl/casl.types';
-import { assertAbility } from '../casl/casl.helper';
+import {
+  StaleDeviceRegistrationError,
+  UserDevicesRepository,
+} from './user-devices.repository';
 
 @Injectable()
 export class UserDevicesService {
-  constructor(
-    private readonly userDevicesRepository: UserDevicesRepository,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  constructor(private readonly userDevicesRepository: UserDevicesRepository) {}
   async create(user: accounts, createUserDeviceDto: CreateUserDeviceDto) {
-    return this.userDevicesRepository.create({
-      account_id: user.id,
-      device_name: createUserDeviceDto.deviceName,
-      os_version: createUserDeviceDto.osVersion,
-      platform: createUserDeviceDto.platform,
-      push_token: createUserDeviceDto.pushToken,
-    });
+    if (/^(Expo|Exponent)PushToken\[/.test(createUserDeviceDto.pushToken)) {
+      throw new BadRequestException(
+        'Expo push tokens are not supported; register a Firebase token',
+      );
+    }
+
+    try {
+      return await this.userDevicesRepository.create({
+        account_id: user.id,
+        device_name: createUserDeviceDto.deviceName ?? null,
+        installation_id: createUserDeviceDto.installationId,
+        os_version: createUserDeviceDto.osVersion ?? null,
+        platform: createUserDeviceDto.platform,
+        push_token: createUserDeviceDto.pushToken,
+        registration_generation: createUserDeviceDto.registrationGeneration,
+      });
+    } catch (error) {
+      if (error instanceof StaleDeviceRegistrationError) {
+        throw new ConflictException(error.message);
+      }
+
+      throw error;
+    }
   }
 
   async remove(user: accounts, id: string) {
-    const record = await this.assertAbility(user, id, Action.Delete);
-
-    if (!record.is_active) {
-      throw new BadRequestException('Device token is already deactivated');
-    }
-
-    await this.userDevicesRepository.delete(id);
-  }
-
-  private async assertAbility(user: accounts, id: string, action: Action) {
-    const record = await this.userDevicesRepository.findById(id);
-
-    if (!record)
-      throw new NotFoundException(`User device with ID ${id} not found`);
-
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    assertAbility(ability, action, 'UserDevices', record);
-
-    return record;
+    await this.userDevicesRepository.deactivateOwned(id, user.id);
   }
 }

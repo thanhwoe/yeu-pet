@@ -1,10 +1,27 @@
 import { device_platform } from '@app/generated/prisma/enums';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateUserDeviceDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(512)
   pushToken: string;
+
+  @IsUUID()
+  installationId: string;
+
+  @IsInt()
+  @Min(1)
+  registrationGeneration: number;
 
   @IsString()
   @IsEnum(device_platform)
@@ -13,9 +30,11 @@ export class CreateUserDeviceDto {
 
   @IsString()
   @IsOptional()
-  deviceName: string;
+  @MaxLength(100)
+  deviceName?: string;
 
   @IsString()
   @IsOptional()
-  osVersion: string;
+  @MaxLength(20)
+  osVersion?: string;
 }

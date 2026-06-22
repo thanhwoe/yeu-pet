@@ -17,6 +17,8 @@ export interface IDeviceResponse {
   isActive: boolean | null;
   accountId: string;
   pushToken: string;
+  installationId: string;
+  registrationGeneration: number;
   deviceName: string | null;
   osVersion: string | null;
   platform: "unknown" | "android" | "ios" | null;
