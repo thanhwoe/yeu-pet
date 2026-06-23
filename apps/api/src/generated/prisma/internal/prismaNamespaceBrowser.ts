@@ -542,6 +542,8 @@ export const User_subscriptionsScalarFieldEnum = {
   started_at: 'started_at',
   expires_at: 'expires_at',
   cancelled_at: 'cancelled_at',
+  last_rc_event_id: 'last_rc_event_id',
+  last_rc_event_at: 'last_rc_event_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

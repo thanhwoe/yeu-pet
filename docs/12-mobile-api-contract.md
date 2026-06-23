@@ -119,6 +119,7 @@ Supported fields:
 ```txt
 GET  /subscriptions/me
 GET  /subscriptions/entitlements
+POST /subscriptions/sync
 POST /subscriptions/mock-upgrade
 POST /subscriptions/mock-downgrade
 ```
@@ -162,6 +163,11 @@ POST /subscriptions/mock-downgrade
 ```
 
 A numeric limit of `-1` means unlimited. `expiresAt` is the current access boundary when known; it does not by itself indicate whether store billing will renew. Use `/subscriptions/entitlements` for feature gating in the app. Mock upgrade/downgrade routes are development helpers and are rejected by the API in production.
+
+Call authenticated `POST /subscriptions/sync` after a completed or restored
+RevenueCat purchase. The API uses the account id from the JWT as the RevenueCat
+App User ID, verifies current Customer Info with RevenueCat, persists it, and
+returns the same plan-and-usage response shape shown above.
 
 ## Pets
 

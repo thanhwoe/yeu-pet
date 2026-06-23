@@ -9,7 +9,6 @@ import { HttpCacheInterceptor } from '@app/interceptors/http-cache.interceptor';
 import { SitterBookingsController } from '@app/modules/sitter-booking/bookings/sitter-bookings.controller';
 import { SitterBookingsService } from '@app/modules/sitter-booking/bookings/sitter-bookings.service';
 import { SubscriptionController } from '@app/modules/subscription/subscription.controller';
-import { SubscriptionRepository } from '@app/modules/subscription/subscription.repository';
 import { SubscriptionService } from '@app/modules/subscription/subscription.service';
 import {
   Body,
@@ -20,7 +19,6 @@ import {
   Post,
   ValidationPipe,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { Decimal } from '@prisma/client/runtime/client';
 import type {
@@ -33,7 +31,6 @@ import { App } from 'supertest/types';
 import {
   sitter_bookings_status,
   sitter_bookings_type,
-  subscription_tier,
 } from '../src/generated/prisma/client';
 
 const accountId = '123e4567-e89b-42d3-a456-426614174000';
@@ -254,93 +251,42 @@ describe('Phase 5 integration verification (e2e)', () => {
     expect(heldBookings).toHaveLength(1);
   });
 
-  it('ignores stale RevenueCat webhooks delivered after a newer renewal', async () => {
-    const subscriptionUpdates: Array<{
-      subscription: subscription_tier;
-      subscription_expires_at: Date | null;
-    }> = [];
-    const account: {
-      id: string;
-      subscription_expires_at: Date | null;
-    } = {
-      id: accountId,
-      subscription_expires_at: new Date('2026-06-01T00:00:00.000Z'),
-    };
-    const subscriptionRepository = {
-      findAccountByRevenueCatUserIds: jest.fn(() => Promise.resolve(account)),
-      updateSubscription: jest.fn(
-        (
-          _id: string,
-          data: {
-            subscription: subscription_tier;
-            subscription_expires_at: Date | null;
-          },
-        ) => {
-          subscriptionUpdates.push(data);
-          account.subscription_expires_at = data.subscription_expires_at;
-          return Promise.resolve({ id: accountId });
-        },
-      ),
-    };
+  it('acknowledges the canonical RevenueCat webhook after queueing it', async () => {
+    const enqueueRevenueCatWebhook = jest
+      .fn()
+      .mockResolvedValue({ eventId: 'event-1', received: true });
 
     await initApp({
       controllers: [SubscriptionController],
       providers: [
-        SubscriptionService,
-        { provide: SubscriptionRepository, useValue: subscriptionRepository },
         {
-          provide: ConfigService,
-          useValue: {
-            get: jest.fn((key: string) =>
-              key === 'REVENUECAT_WEBHOOK_SECRET'
-                ? 'webhook-secret'
-                : undefined,
-            ),
-          },
+          provide: SubscriptionService,
+          useValue: { enqueueRevenueCatWebhook },
         },
       ],
     });
 
-    const renewal = (eventId: string, expiresAt: string) => ({
+    const payload = {
       event: {
         app_user_id: accountId,
         event_timestamp_ms: Date.parse('2026-06-01T00:00:00.000Z'),
-        expiration_at_ms: Date.parse(expiresAt),
-        id: eventId,
+        expiration_at_ms: Date.parse('2026-08-01T00:00:00.000Z'),
+        id: 'event-1',
         type: 'RENEWAL',
       },
-    });
+    };
 
     await request(app.getHttpServer())
-      .post('/subscription/webhook')
+      .post('/subscriptions/webhooks/revenuecat')
       .set('Authorization', 'Bearer webhook-secret')
-      .send(renewal('newer-event', '2026-08-01T00:00:00.000Z'))
+      .send(payload)
       .expect(200)
-      .expect((response) => {
-        const body = response.body as { processed: boolean };
-        expect(body.processed).toBe(true);
-      });
+      .expect({ eventId: 'event-1', received: true });
 
-    await request(app.getHttpServer())
-      .post('/subscription/webhook')
-      .set('Authorization', 'Bearer webhook-secret')
-      .send(renewal('stale-event', '2026-07-01T00:00:00.000Z'))
-      .expect(200)
-      .expect((response) => {
-        expect(response.body).toEqual(
-          expect.objectContaining({
-            processed: false,
-            reason: 'stale_event',
-          }),
-        );
-      });
-
-    expect(subscriptionUpdates).toEqual([
-      {
-        subscription: subscription_tier.premium,
-        subscription_expires_at: new Date('2026-08-01T00:00:00.000Z'),
-      },
-    ]);
+    expect(enqueueRevenueCatWebhook).toHaveBeenCalledWith(
+      payload,
+      'Bearer webhook-secret',
+    );
   });
 
   it('evicts opt-in HTTP cache entries after mutations', async () => {

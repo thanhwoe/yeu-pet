@@ -26,6 +26,9 @@ import { BULLMQ_QUEUES } from './bullmq.queue';
     BullModule.registerQueue({
       name: BULLMQ_QUEUES.EMAIL,
     }),
+    BullModule.registerQueue({
+      name: BULLMQ_QUEUES.REVENUECAT_WEBHOOK,
+    }),
   ],
   exports: [BullModule],
 })

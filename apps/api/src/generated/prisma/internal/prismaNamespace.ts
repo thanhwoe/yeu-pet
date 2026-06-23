@@ -3357,6 +3357,8 @@ export const User_subscriptionsScalarFieldEnum = {
   started_at: 'started_at',
   expires_at: 'expires_at',
   cancelled_at: 'cancelled_at',
+  last_rc_event_id: 'last_rc_event_id',
+  last_rc_event_at: 'last_rc_event_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3841,6 +3843,20 @@ export type ListEnumsubscription_statusFieldRefInput<$PrismaModel> = FieldRefInp
 
 
 /**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+
+
+
+/**
  * Reference to a field of type 'ai_conversation_status'
  */
 export type Enumai_conversation_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ai_conversation_status'>
@@ -4128,4 +4144,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

@@ -4,4 +4,5 @@ export const BULLMQ_QUEUES = {
   PHOTO_UPLOAD: 'photo-upload',
   SEND_OTP: 'send-otp',
   EMAIL: 'email',
+  REVENUECAT_WEBHOOK: 'revenuecat-webhook',
 };

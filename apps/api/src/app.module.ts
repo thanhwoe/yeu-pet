@@ -11,6 +11,7 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from './filters/prisma-exceptions.filter';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { SubscriptionGuard } from './guards/subscription.guard';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import { TrackInterceptor } from './interceptors/track.interceptor';
@@ -96,6 +97,10 @@ import { UsersModule } from './modules/users/users.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: SubscriptionGuard,
     },
     {
       provide: APP_GUARD,

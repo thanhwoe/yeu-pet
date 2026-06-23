@@ -20,8 +20,18 @@ export type user_subscriptionsModel = runtime.Types.Result.DefaultSelection<Pris
 
 export type AggregateUser_subscriptions = {
   _count: User_subscriptionsCountAggregateOutputType | null
+  _avg: User_subscriptionsAvgAggregateOutputType | null
+  _sum: User_subscriptionsSumAggregateOutputType | null
   _min: User_subscriptionsMinAggregateOutputType | null
   _max: User_subscriptionsMaxAggregateOutputType | null
+}
+
+export type User_subscriptionsAvgAggregateOutputType = {
+  last_rc_event_at: number | null
+}
+
+export type User_subscriptionsSumAggregateOutputType = {
+  last_rc_event_at: bigint | null
 }
 
 export type User_subscriptionsMinAggregateOutputType = {
@@ -35,6 +45,8 @@ export type User_subscriptionsMinAggregateOutputType = {
   started_at: Date | null
   expires_at: Date | null
   cancelled_at: Date | null
+  last_rc_event_id: string | null
+  last_rc_event_at: bigint | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -50,6 +62,8 @@ export type User_subscriptionsMaxAggregateOutputType = {
   started_at: Date | null
   expires_at: Date | null
   cancelled_at: Date | null
+  last_rc_event_id: string | null
+  last_rc_event_at: bigint | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -65,11 +79,21 @@ export type User_subscriptionsCountAggregateOutputType = {
   started_at: number
   expires_at: number
   cancelled_at: number
+  last_rc_event_id: number
+  last_rc_event_at: number
   created_at: number
   updated_at: number
   _all: number
 }
 
+
+export type User_subscriptionsAvgAggregateInputType = {
+  last_rc_event_at?: true
+}
+
+export type User_subscriptionsSumAggregateInputType = {
+  last_rc_event_at?: true
+}
 
 export type User_subscriptionsMinAggregateInputType = {
   id?: true
@@ -82,6 +106,8 @@ export type User_subscriptionsMinAggregateInputType = {
   started_at?: true
   expires_at?: true
   cancelled_at?: true
+  last_rc_event_id?: true
+  last_rc_event_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -97,6 +123,8 @@ export type User_subscriptionsMaxAggregateInputType = {
   started_at?: true
   expires_at?: true
   cancelled_at?: true
+  last_rc_event_id?: true
+  last_rc_event_at?: true
   created_at?: true
   updated_at?: true
 }
@@ -112,6 +140,8 @@ export type User_subscriptionsCountAggregateInputType = {
   started_at?: true
   expires_at?: true
   cancelled_at?: true
+  last_rc_event_id?: true
+  last_rc_event_at?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -154,6 +184,18 @@ export type User_subscriptionsAggregateArgs<ExtArgs extends runtime.Types.Extens
   _count?: true | User_subscriptionsCountAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to average
+  **/
+  _avg?: User_subscriptionsAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: User_subscriptionsSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
    * Select which fields to find the minimum value
   **/
@@ -185,6 +227,8 @@ export type user_subscriptionsGroupByArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   _count?: User_subscriptionsCountAggregateInputType | true
+  _avg?: User_subscriptionsAvgAggregateInputType
+  _sum?: User_subscriptionsSumAggregateInputType
   _min?: User_subscriptionsMinAggregateInputType
   _max?: User_subscriptionsMaxAggregateInputType
 }
@@ -200,9 +244,13 @@ export type User_subscriptionsGroupByOutputType = {
   started_at: Date | null
   expires_at: Date | null
   cancelled_at: Date | null
+  last_rc_event_id: string | null
+  last_rc_event_at: bigint | null
   created_at: Date | null
   updated_at: Date | null
   _count: User_subscriptionsCountAggregateOutputType | null
+  _avg: User_subscriptionsAvgAggregateOutputType | null
+  _sum: User_subscriptionsSumAggregateOutputType | null
   _min: User_subscriptionsMinAggregateOutputType | null
   _max: User_subscriptionsMaxAggregateOutputType | null
 }
@@ -236,6 +284,8 @@ export type user_subscriptionsWhereInput = {
   started_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   expires_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
+  last_rc_event_id?: Prisma.StringNullableFilter<"user_subscriptions"> | string | null
+  last_rc_event_at?: Prisma.BigIntNullableFilter<"user_subscriptions"> | bigint | number | null
   created_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -253,6 +303,8 @@ export type user_subscriptionsOrderByWithRelationInput = {
   started_at?: Prisma.SortOrderInput | Prisma.SortOrder
   expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  last_rc_event_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  last_rc_event_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   accounts?: Prisma.accountsOrderByWithRelationInput
@@ -273,6 +325,8 @@ export type user_subscriptionsWhereUniqueInput = Prisma.AtLeast<{
   started_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   expires_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
+  last_rc_event_id?: Prisma.StringNullableFilter<"user_subscriptions"> | string | null
+  last_rc_event_at?: Prisma.BigIntNullableFilter<"user_subscriptions"> | bigint | number | null
   created_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   accounts?: Prisma.XOR<Prisma.AccountsScalarRelationFilter, Prisma.accountsWhereInput>
@@ -290,11 +344,15 @@ export type user_subscriptionsOrderByWithAggregationInput = {
   started_at?: Prisma.SortOrderInput | Prisma.SortOrder
   expires_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  last_rc_event_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  last_rc_event_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrderInput | Prisma.SortOrder
   updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.user_subscriptionsCountOrderByAggregateInput
+  _avg?: Prisma.user_subscriptionsAvgOrderByAggregateInput
   _max?: Prisma.user_subscriptionsMaxOrderByAggregateInput
   _min?: Prisma.user_subscriptionsMinOrderByAggregateInput
+  _sum?: Prisma.user_subscriptionsSumOrderByAggregateInput
 }
 
 export type user_subscriptionsScalarWhereWithAggregatesInput = {
@@ -311,6 +369,8 @@ export type user_subscriptionsScalarWhereWithAggregatesInput = {
   started_at?: Prisma.DateTimeNullableWithAggregatesFilter<"user_subscriptions"> | Date | string | null
   expires_at?: Prisma.DateTimeNullableWithAggregatesFilter<"user_subscriptions"> | Date | string | null
   cancelled_at?: Prisma.DateTimeNullableWithAggregatesFilter<"user_subscriptions"> | Date | string | null
+  last_rc_event_id?: Prisma.StringNullableWithAggregatesFilter<"user_subscriptions"> | string | null
+  last_rc_event_at?: Prisma.BigIntNullableWithAggregatesFilter<"user_subscriptions"> | bigint | number | null
   created_at?: Prisma.DateTimeNullableWithAggregatesFilter<"user_subscriptions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"user_subscriptions"> | Date | string | null
 }
@@ -324,6 +384,8 @@ export type user_subscriptionsCreateInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutUser_subscriptionsInput
@@ -341,6 +403,8 @@ export type user_subscriptionsUncheckedCreateInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -354,6 +418,8 @@ export type user_subscriptionsUpdateInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutUser_subscriptionsNestedInput
@@ -371,6 +437,8 @@ export type user_subscriptionsUncheckedUpdateInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -386,6 +454,8 @@ export type user_subscriptionsCreateManyInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -399,6 +469,8 @@ export type user_subscriptionsUpdateManyMutationInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -414,6 +486,8 @@ export type user_subscriptionsUncheckedUpdateManyInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -439,8 +513,14 @@ export type user_subscriptionsCountOrderByAggregateInput = {
   started_at?: Prisma.SortOrder
   expires_at?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
+  last_rc_event_id?: Prisma.SortOrder
+  last_rc_event_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type user_subscriptionsAvgOrderByAggregateInput = {
+  last_rc_event_at?: Prisma.SortOrder
 }
 
 export type user_subscriptionsMaxOrderByAggregateInput = {
@@ -454,6 +534,8 @@ export type user_subscriptionsMaxOrderByAggregateInput = {
   started_at?: Prisma.SortOrder
   expires_at?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
+  last_rc_event_id?: Prisma.SortOrder
+  last_rc_event_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -469,8 +551,14 @@ export type user_subscriptionsMinOrderByAggregateInput = {
   started_at?: Prisma.SortOrder
   expires_at?: Prisma.SortOrder
   cancelled_at?: Prisma.SortOrder
+  last_rc_event_id?: Prisma.SortOrder
+  last_rc_event_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type user_subscriptionsSumOrderByAggregateInput = {
+  last_rc_event_at?: Prisma.SortOrder
 }
 
 export type user_subscriptionsCreateNestedManyWithoutAccountsInput = {
@@ -565,6 +653,14 @@ export type Enumsubscription_statusFieldUpdateOperationsInput = {
   set?: $Enums.subscription_status
 }
 
+export type NullableBigIntFieldUpdateOperationsInput = {
+  set?: bigint | number | null
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
+}
+
 export type user_subscriptionsCreateWithoutAccountsInput = {
   id?: string
   provider?: $Enums.subscription_provider
@@ -574,6 +670,8 @@ export type user_subscriptionsCreateWithoutAccountsInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   subscription_plans: Prisma.subscription_plansCreateNestedOneWithoutUser_subscriptionsInput
@@ -589,6 +687,8 @@ export type user_subscriptionsUncheckedCreateWithoutAccountsInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -633,6 +733,8 @@ export type user_subscriptionsScalarWhereInput = {
   started_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   expires_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   cancelled_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
+  last_rc_event_id?: Prisma.StringNullableFilter<"user_subscriptions"> | string | null
+  last_rc_event_at?: Prisma.BigIntNullableFilter<"user_subscriptions"> | bigint | number | null
   created_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
   updated_at?: Prisma.DateTimeNullableFilter<"user_subscriptions"> | Date | string | null
 }
@@ -646,6 +748,8 @@ export type user_subscriptionsCreateWithoutSubscription_plansInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
   accounts: Prisma.accountsCreateNestedOneWithoutUser_subscriptionsInput
@@ -661,6 +765,8 @@ export type user_subscriptionsUncheckedCreateWithoutSubscription_plansInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -701,6 +807,8 @@ export type user_subscriptionsCreateManyAccountsInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -714,6 +822,8 @@ export type user_subscriptionsUpdateWithoutAccountsInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   subscription_plans?: Prisma.subscription_plansUpdateOneRequiredWithoutUser_subscriptionsNestedInput
@@ -729,6 +839,8 @@ export type user_subscriptionsUncheckedUpdateWithoutAccountsInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -743,6 +855,8 @@ export type user_subscriptionsUncheckedUpdateManyWithoutAccountsInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -757,6 +871,8 @@ export type user_subscriptionsCreateManySubscription_plansInput = {
   started_at?: Date | string | null
   expires_at?: Date | string | null
   cancelled_at?: Date | string | null
+  last_rc_event_id?: string | null
+  last_rc_event_at?: bigint | number | null
   created_at?: Date | string | null
   updated_at?: Date | string | null
 }
@@ -770,6 +886,8 @@ export type user_subscriptionsUpdateWithoutSubscription_plansInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.accountsUpdateOneRequiredWithoutUser_subscriptionsNestedInput
@@ -785,6 +903,8 @@ export type user_subscriptionsUncheckedUpdateWithoutSubscription_plansInput = {
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -799,6 +919,8 @@ export type user_subscriptionsUncheckedUpdateManyWithoutSubscription_plansInput 
   started_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expires_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_rc_event_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_rc_event_at?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -816,6 +938,8 @@ export type user_subscriptionsSelect<ExtArgs extends runtime.Types.Extensions.In
   started_at?: boolean
   expires_at?: boolean
   cancelled_at?: boolean
+  last_rc_event_id?: boolean
+  last_rc_event_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -833,6 +957,8 @@ export type user_subscriptionsSelectCreateManyAndReturn<ExtArgs extends runtime.
   started_at?: boolean
   expires_at?: boolean
   cancelled_at?: boolean
+  last_rc_event_id?: boolean
+  last_rc_event_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -850,6 +976,8 @@ export type user_subscriptionsSelectUpdateManyAndReturn<ExtArgs extends runtime.
   started_at?: boolean
   expires_at?: boolean
   cancelled_at?: boolean
+  last_rc_event_id?: boolean
+  last_rc_event_at?: boolean
   created_at?: boolean
   updated_at?: boolean
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
@@ -867,11 +995,13 @@ export type user_subscriptionsSelectScalar = {
   started_at?: boolean
   expires_at?: boolean
   cancelled_at?: boolean
+  last_rc_event_id?: boolean
+  last_rc_event_at?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type user_subscriptionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "plan_code" | "provider" | "provider_customer_id" | "provider_original_id" | "status" | "started_at" | "expires_at" | "cancelled_at" | "created_at" | "updated_at", ExtArgs["result"]["user_subscriptions"]>
+export type user_subscriptionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "account_id" | "plan_code" | "provider" | "provider_customer_id" | "provider_original_id" | "status" | "started_at" | "expires_at" | "cancelled_at" | "last_rc_event_id" | "last_rc_event_at" | "created_at" | "updated_at", ExtArgs["result"]["user_subscriptions"]>
 export type user_subscriptionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.accountsDefaultArgs<ExtArgs>
   subscription_plans?: boolean | Prisma.subscription_plansDefaultArgs<ExtArgs>
@@ -902,6 +1032,8 @@ export type $user_subscriptionsPayload<ExtArgs extends runtime.Types.Extensions.
     started_at: Date | null
     expires_at: Date | null
     cancelled_at: Date | null
+    last_rc_event_id: string | null
+    last_rc_event_at: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }, ExtArgs["result"]["user_subscriptions"]>
@@ -1339,6 +1471,8 @@ export interface user_subscriptionsFieldRefs {
   readonly started_at: Prisma.FieldRef<"user_subscriptions", 'DateTime'>
   readonly expires_at: Prisma.FieldRef<"user_subscriptions", 'DateTime'>
   readonly cancelled_at: Prisma.FieldRef<"user_subscriptions", 'DateTime'>
+  readonly last_rc_event_id: Prisma.FieldRef<"user_subscriptions", 'String'>
+  readonly last_rc_event_at: Prisma.FieldRef<"user_subscriptions", 'BigInt'>
   readonly created_at: Prisma.FieldRef<"user_subscriptions", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"user_subscriptions", 'DateTime'>
 }

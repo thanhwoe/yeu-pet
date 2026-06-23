@@ -8,55 +8,248 @@ import {
 } from '@app/generated/prisma/client';
 import { Injectable } from '@nestjs/common';
 
+export interface RevenueCatSubscriptionTarget {
+  account: accounts;
+  subscription: user_subscriptions | null;
+}
+
+export interface RevenueCatSubscriptionMutation {
+  accountExpiresAt?: Date | null;
+  accountId: string;
+  accountTier: subscription_tier;
+  cancelledAt?: Date | null;
+  capUsageCounters?: Record<string, number>;
+  expiresAt?: Date | null;
+  lastRcEventAt?: bigint;
+  lastRcEventId?: string;
+  planCode?: string;
+  providerCustomerId?: string | null;
+  providerOriginalId?: string | null;
+  startedAt?: Date | null;
+  status: subscription_status;
+  subscriptionId?: string;
+}
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 @Injectable()
 export class SubscriptionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAccountByRevenueCatUserIds(userIds: string[]): Promise<accounts | null> {
-    return this.prisma.accounts.findFirst({
-      where: {
-        id: {
-          in: userIds,
-        },
-      },
-    });
+  async findRevenueCatTarget(
+    userIds: string[],
+  ): Promise<RevenueCatSubscriptionTarget | null> {
+    const targets = await this.findRevenueCatTargets(userIds);
+    return targets[0] ?? null;
   }
 
-  updateSubscription(
+  async findRevenueCatTargets(
+    userIds: string[],
+  ): Promise<RevenueCatSubscriptionTarget[]> {
+    const uniqueIds = [...new Set(userIds.filter(Boolean))];
+
+    if (uniqueIds.length === 0) {
+      return [];
+    }
+
+    const subscriptions = await this.prisma.user_subscriptions.findMany({
+      where: {
+        provider: subscription_provider.revenuecat,
+        OR: [
+          { provider_customer_id: { in: uniqueIds } },
+          { provider_original_id: { in: uniqueIds } },
+        ],
+      },
+      include: { accounts: true },
+      orderBy: { updated_at: 'desc' },
+    });
+
+    const targetsByAccount = new Map<string, RevenueCatSubscriptionTarget>();
+
+    for (const subscription of subscriptions) {
+      if (!targetsByAccount.has(subscription.account_id)) {
+        targetsByAccount.set(subscription.account_id, {
+          account: subscription.accounts,
+          subscription,
+        });
+      }
+    }
+
+    const accountIds = uniqueIds.filter((id) => UUID_PATTERN.test(id));
+    const missingAccountIds = accountIds.filter(
+      (accountId) => !targetsByAccount.has(accountId),
+    );
+
+    if (missingAccountIds.length > 0) {
+      const accounts = await this.prisma.accounts.findMany({
+        where: { id: { in: missingAccountIds } },
+      });
+
+      for (const account of accounts) {
+        const subscription = await this.prisma.user_subscriptions.findFirst({
+          where: {
+            account_id: account.id,
+            provider: subscription_provider.revenuecat,
+          },
+          orderBy: { updated_at: 'desc' },
+        });
+
+        targetsByAccount.set(account.id, { account, subscription });
+      }
+    }
+
+    return [...targetsByAccount.values()];
+  }
+
+  async findRevenueCatTargetForAccount(
     accountId: string,
-    data: {
-      subscription: subscription_tier;
-      subscription_expires_at: Date | null;
-    },
-  ): Promise<accounts> {
-    const status =
-      data.subscription === subscription_tier.premium
-        ? subscription_status.active
-        : subscription_status.expired;
+  ): Promise<RevenueCatSubscriptionTarget | null> {
+    const account = await this.findAccountById(accountId);
 
-    return this.prisma.$transaction(async (tx) => {
-      await tx.user_subscriptions.create({
-        data: {
-          account_id: accountId,
-          plan_code:
-            data.subscription === subscription_tier.premium
-              ? 'premium_monthly'
-              : 'free',
+    if (!account) {
+      return null;
+    }
+
+    const subscription = await this.prisma.user_subscriptions.findFirst({
+      where: {
+        account_id: accountId,
+        provider: subscription_provider.revenuecat,
+      },
+      orderBy: { updated_at: 'desc' },
+    });
+
+    return { account, subscription };
+  }
+
+  async findActivePlanCode(productId?: string | null): Promise<string | null> {
+    if (!productId) {
+      return null;
+    }
+
+    const plan = await this.prisma.subscription_plans.findFirst({
+      where: { code: productId, is_active: true },
+      select: { code: true },
+    });
+
+    return plan?.code ?? null;
+  }
+
+  async applyRevenueCatMutations(
+    mutations: RevenueCatSubscriptionMutation[],
+  ): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      for (const mutation of mutations) {
+        const now = new Date();
+        const subscriptionData = {
           provider: subscription_provider.revenuecat,
-          status,
-          started_at:
-            data.subscription === subscription_tier.premium ? new Date() : null,
-          expires_at: data.subscription_expires_at,
-        },
-      });
+          status: mutation.status,
+          updated_at: now,
+          ...(mutation.planCode === undefined
+            ? {}
+            : { plan_code: mutation.planCode }),
+          ...(mutation.providerCustomerId === undefined
+            ? {}
+            : { provider_customer_id: mutation.providerCustomerId }),
+          ...(mutation.providerOriginalId === undefined
+            ? {}
+            : { provider_original_id: mutation.providerOriginalId }),
+          ...(mutation.startedAt === undefined
+            ? {}
+            : { started_at: mutation.startedAt }),
+          ...(mutation.expiresAt === undefined
+            ? {}
+            : { expires_at: mutation.expiresAt }),
+          ...(mutation.cancelledAt === undefined
+            ? {}
+            : { cancelled_at: mutation.cancelledAt }),
+          ...(mutation.lastRcEventId === undefined
+            ? {}
+            : { last_rc_event_id: mutation.lastRcEventId }),
+          ...(mutation.lastRcEventAt === undefined
+            ? {}
+            : { last_rc_event_at: mutation.lastRcEventAt }),
+        };
 
-      return tx.accounts.update({
-        where: { id: accountId },
-        data: {
-          ...data,
-          updated_at: new Date(),
-        },
-      });
+        if (mutation.subscriptionId) {
+          if (mutation.lastRcEventAt !== undefined && mutation.lastRcEventId) {
+            const update = await tx.user_subscriptions.updateMany({
+              where: {
+                id: mutation.subscriptionId,
+                AND: [
+                  {
+                    OR: [
+                      { last_rc_event_id: null },
+                      { last_rc_event_id: { not: mutation.lastRcEventId } },
+                    ],
+                  },
+                  {
+                    OR: [
+                      { last_rc_event_at: null },
+                      { last_rc_event_at: { lte: mutation.lastRcEventAt } },
+                    ],
+                  },
+                ],
+              },
+              data: subscriptionData,
+            });
+
+            if (update.count === 0) {
+              continue;
+            }
+          } else {
+            await tx.user_subscriptions.update({
+              where: { id: mutation.subscriptionId },
+              data: subscriptionData,
+            });
+          }
+        } else {
+          await tx.user_subscriptions.create({
+            data: {
+              account_id: mutation.accountId,
+              plan_code:
+                mutation.planCode ??
+                (mutation.accountTier === subscription_tier.premium
+                  ? 'premium_monthly'
+                  : 'free'),
+              ...subscriptionData,
+            },
+          });
+        }
+
+        await tx.accounts.update({
+          where: { id: mutation.accountId },
+          data: {
+            subscription: mutation.accountTier,
+            updated_at: now,
+            ...(mutation.accountExpiresAt === undefined
+              ? {}
+              : { subscription_expires_at: mutation.accountExpiresAt }),
+          },
+        });
+
+        if (mutation.capUsageCounters) {
+          const counters = await tx.usage_counters.findMany({
+            where: {
+              account_id: mutation.accountId,
+              feature_key: {
+                in: Object.keys(mutation.capUsageCounters),
+              },
+            },
+          });
+
+          for (const counter of counters) {
+            const limit = mutation.capUsageCounters[counter.feature_key];
+
+            if (limit !== undefined && counter.count > limit) {
+              await tx.usage_counters.update({
+                where: { id: counter.id },
+                data: { count: limit, updated_at: now },
+              });
+            }
+          }
+        }
+      }
     });
   }
 
@@ -65,7 +258,7 @@ export class SubscriptionRepository {
   ): Promise<user_subscriptions | null> {
     return this.prisma.user_subscriptions.findFirst({
       where: { account_id: accountId },
-      orderBy: { created_at: 'desc' },
+      orderBy: { updated_at: 'desc' },
     });
   }
 

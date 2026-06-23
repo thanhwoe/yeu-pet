@@ -4,39 +4,41 @@ import {
   subscription_status,
   subscription_tier,
 } from '@app/generated/prisma/client';
+import { BULLMQ_QUEUES } from '@app/modules/shared/bullmq/bullmq.queue';
+import { InjectQueue } from '@nestjs/bullmq';
 import { timingSafeEqual } from 'crypto';
+import { Queue } from 'bullmq';
 import dayjs from 'dayjs';
 import {
   BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
+  ParsedRevenueCatWebhookEvent,
   REVENUECAT_SUBSCRIPTION_EVENTS,
+  REVENUECAT_WEBHOOK_JOB,
+  RevenueCatSubscriberResponse,
   RevenueCatWebhookEvent,
+  RevenueCatWebhookAck,
   RevenueCatWebhookPayload,
   RevenueCatWebhookResult,
 } from './revenuecat-webhook.interface';
+import { RevenueCatClient } from './revenuecat.client';
 import {
   SUBSCRIPTION_FEATURE_KEYS,
   SUBSCRIPTION_LIMITS,
 } from './subscription-limits';
-import { SubscriptionRepository } from './subscription.repository';
-
-interface SubscriptionUpdate {
-  guardAt: Date;
-  subscription: subscription_tier;
-  subscription_expires_at: Date | null;
-}
-
-type ParsedRevenueCatWebhookEvent = RevenueCatWebhookEvent & {
-  event_timestamp_ms: number;
-  type: string;
-};
+import {
+  RevenueCatSubscriptionMutation,
+  RevenueCatSubscriptionTarget,
+  SubscriptionRepository,
+} from './subscription.repository';
 
 export interface EntitlementUsage {
   pets: number;
@@ -47,14 +49,22 @@ export interface EntitlementUsage {
   aiMessagesThisMonth: number;
 }
 
-const UUID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const FREE_USAGE_COUNTER_LIMITS = {
+  ai_conversations: SUBSCRIPTION_LIMITS.free.aiMessagesPerMonth,
+  ai_messages: SUBSCRIPTION_LIMITS.free.aiMessagesPerMonth,
+  medical_records: SUBSCRIPTION_LIMITS.free.maxMedicalRecords,
+};
 
 @Injectable()
 export class SubscriptionService {
+  private readonly logger = new Logger(SubscriptionService.name);
+
   constructor(
     private readonly subscriptionRepository: SubscriptionRepository,
     private readonly configService: ConfigService,
+    private readonly revenueCatClient: RevenueCatClient,
+    @InjectQueue(BULLMQ_QUEUES.REVENUECAT_WEBHOOK)
+    private readonly revenueCatWebhookQueue: Queue<RevenueCatWebhookPayload>,
   ) {}
 
   async getCurrentPlan(accountId: string) {
@@ -269,53 +279,118 @@ export class SubscriptionService {
     );
   }
 
-  async handleRevenueCatWebhook(
+  async enqueueRevenueCatWebhook(
     payload: RevenueCatWebhookPayload,
     authorizationHeader?: string,
-  ): Promise<RevenueCatWebhookResult> {
+  ): Promise<RevenueCatWebhookAck> {
     this.assertAuthorized(authorizationHeader);
 
     const event = this.parseEvent(payload);
-    const update = this.toSubscriptionUpdate(event);
 
-    if (!update) {
-      return this.ignored(event, 'event_type_ignored');
+    await this.revenueCatWebhookQueue.add(REVENUECAT_WEBHOOK_JOB, payload, {
+      jobId: event.id,
+      removeOnComplete: { age: 7 * 24 * 60 * 60, count: 10_000 },
+      removeOnFail: { age: 30 * 24 * 60 * 60, count: 10_000 },
+    });
+
+    return { eventId: event.id, received: true };
+  }
+
+  async processRevenueCatWebhook(
+    payload: RevenueCatWebhookPayload,
+  ): Promise<RevenueCatWebhookResult> {
+    const event = this.parseEvent(payload);
+
+    if (
+      event.environment === 'SANDBOX' &&
+      this.configService.get<string>('NODE_ENV') === 'production'
+    ) {
+      this.logger.warn(
+        `Ignoring sandbox RevenueCat event ${event.id} in production`,
+      );
+      return this.ignored(event, 'sandbox_event_in_production');
+    }
+
+    if (event.type === REVENUECAT_SUBSCRIPTION_EVENTS.TEST) {
+      this.logger.log(`Received RevenueCat test event ${event.id}`);
+      return this.ignored(event, 'test_event');
+    }
+
+    if (event.type === REVENUECAT_SUBSCRIPTION_EVENTS.TRANSFER) {
+      return this.processTransferEvent(event);
     }
 
     if (!this.matchesConfiguredEntitlement(event)) {
       return this.ignored(event, 'entitlement_ignored');
     }
 
-    const accountIds = this.extractAccountIds(event);
+    const revenueCatIds = this.extractRevenueCatIds(event);
 
-    if (accountIds.length === 0) {
+    if (revenueCatIds.length === 0) {
       return this.ignored(event, 'no_matching_account_id');
     }
 
-    const account =
-      await this.subscriptionRepository.findAccountByRevenueCatUserIds(
-        accountIds,
-      );
+    const target =
+      await this.subscriptionRepository.findRevenueCatTarget(revenueCatIds);
 
-    if (!account) {
+    if (!target) {
+      this.logger.warn(
+        `No account matched RevenueCat event ${event.id} (${event.type})`,
+      );
       return this.ignored(event, 'account_not_found');
     }
 
-    if (!this.shouldApply(account.subscription_expires_at, update.guardAt)) {
-      return this.ignored(event, 'stale_event', account.id);
+    const skipReason = this.getEventSkipReason(target, event);
+
+    if (skipReason) {
+      this.logger.warn(
+        `Skipping RevenueCat event ${event.id} for account ${target.account.id}: ${skipReason}`,
+      );
+      return this.ignored(event, skipReason, target.account.id);
     }
 
-    await this.subscriptionRepository.updateSubscription(account.id, {
-      subscription: update.subscription,
-      subscription_expires_at: update.subscription_expires_at,
-    });
+    const mutation = await this.toWebhookMutation(target, event);
+
+    if (!mutation) {
+      return this.ignored(event, 'event_type_ignored', target.account.id);
+    }
+
+    await this.subscriptionRepository.applyRevenueCatMutations([mutation]);
+
+    if (event.type === REVENUECAT_SUBSCRIPTION_EVENTS.BILLING_ISSUE) {
+      this.logger.warn(
+        `RevenueCat billing issue for account ${target.account.id} (${event.id})`,
+      );
+    }
 
     return {
-      accountId: account.id,
+      accountId: target.account.id,
       eventId: event.id,
       eventType: event.type,
       processed: true,
     };
+  }
+
+  async syncRevenueCatSubscription(accountId: string) {
+    const target =
+      await this.subscriptionRepository.findRevenueCatTargetForAccount(
+        accountId,
+      );
+
+    if (!target) {
+      throw new NotFoundException('Account not found');
+    }
+
+    const subscriber = await this.revenueCatClient.getSubscriber(accountId);
+    const mutation = await this.toSubscriberMutation(
+      target,
+      subscriber,
+      accountId,
+    );
+
+    await this.subscriptionRepository.applyRevenueCatMutations([mutation]);
+
+    return this.getEntitlements(accountId);
   }
 
   private async getUsage(accountId: string): Promise<EntitlementUsage> {
@@ -384,7 +459,9 @@ export class SubscriptionService {
   ): subscription_status {
     if (subscriptionStatus) {
       if (
-        subscriptionStatus === subscription_status.active &&
+        (subscriptionStatus === subscription_status.active ||
+          subscriptionStatus === subscription_status.trialing ||
+          subscriptionStatus === subscription_status.grace_period) &&
         account.subscription_expires_at &&
         account.subscription_expires_at.getTime() <= Date.now()
       ) {
@@ -458,56 +535,450 @@ export class SubscriptionService {
   private parseEvent(
     payload: RevenueCatWebhookPayload,
   ): ParsedRevenueCatWebhookEvent {
-    if (!payload.event?.type || !payload.event.event_timestamp_ms) {
+    const event = payload.event;
+
+    if (
+      !event?.id ||
+      !event.type ||
+      event.event_timestamp_ms === undefined ||
+      !Number.isSafeInteger(event.event_timestamp_ms)
+    ) {
       throw new BadRequestException('Invalid RevenueCat webhook payload');
     }
 
-    return payload.event as ParsedRevenueCatWebhookEvent;
+    return event as ParsedRevenueCatWebhookEvent;
   }
 
-  private toSubscriptionUpdate(
+  private async processTransferEvent(
     event: ParsedRevenueCatWebhookEvent,
-  ): SubscriptionUpdate | null {
-    if (event.type === REVENUECAT_SUBSCRIPTION_EVENTS.EXPIRATION) {
-      const eventTimestamp = this.fromMs(event.event_timestamp_ms);
+  ): Promise<RevenueCatWebhookResult> {
+    const transferredFrom = [...new Set(event.transferred_from ?? [])];
+    const transferredTo = [...new Set(event.transferred_to ?? [])];
 
-      return {
-        guardAt: eventTimestamp,
-        subscription: subscription_tier.free,
-        subscription_expires_at:
-          this.fromNullableMs(event.expiration_at_ms) ?? eventTimestamp,
-      };
+    if (transferredFrom.length === 0 || transferredTo.length === 0) {
+      return this.ignored(event, 'invalid_transfer_event');
     }
 
-    if (!this.isPremiumEvent(event.type)) {
-      return null;
+    const [sourceTargets, destinationTargets] = await Promise.all([
+      this.subscriptionRepository.findRevenueCatTargets(transferredFrom),
+      this.subscriptionRepository.findRevenueCatTargets(transferredTo),
+    ]);
+
+    const targetEntries = [
+      ...sourceTargets.map((target) => ({ ids: transferredFrom, target })),
+      ...destinationTargets.map((target) => ({ ids: transferredTo, target })),
+    ];
+    const uniqueTargets = new Map<
+      string,
+      { ids: string[]; target: RevenueCatSubscriptionTarget }
+    >();
+
+    for (const entry of targetEntries) {
+      uniqueTargets.set(entry.target.account.id, entry);
     }
 
-    const expiresAt = this.fromNullableMs(event.expiration_at_ms);
+    const mutations: RevenueCatSubscriptionMutation[] = [];
 
-    if (!expiresAt) {
-      return null;
+    for (const { ids, target } of uniqueTargets.values()) {
+      if (this.getEventSkipReason(target, event)) {
+        continue;
+      }
+
+      const appUserId = this.pickRevenueCatId(target, ids);
+      const subscriber = await this.revenueCatClient.getSubscriber(appUserId);
+      const mutation = await this.toSubscriberMutation(
+        target,
+        subscriber,
+        appUserId,
+      );
+
+      mutations.push(this.withEventIdentity(mutation, event));
     }
+
+    if (mutations.length === 0) {
+      const reason =
+        uniqueTargets.size === 0 ? 'account_not_found' : 'stale_event';
+
+      if (reason === 'account_not_found') {
+        this.logger.warn(`No accounts matched RevenueCat transfer ${event.id}`);
+      }
+
+      return this.ignored(event, reason);
+    }
+
+    await this.subscriptionRepository.applyRevenueCatMutations(mutations);
 
     return {
-      guardAt: expiresAt,
-      subscription:
-        expiresAt.getTime() > Date.now()
-          ? subscription_tier.premium
-          : subscription_tier.free,
-      subscription_expires_at: expiresAt,
+      eventId: event.id,
+      eventType: event.type,
+      processed: true,
     };
   }
 
-  private isPremiumEvent(type?: string): boolean {
-    return (
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.INITIAL_PURCHASE ||
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.RENEWAL ||
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.PRODUCT_CHANGE ||
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.SUBSCRIPTION_EXTENDED ||
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.TEMPORARY_ENTITLEMENT_GRANT ||
-      type === REVENUECAT_SUBSCRIPTION_EVENTS.UNCANCELLATION
+  private async toWebhookMutation(
+    target: RevenueCatSubscriptionTarget,
+    event: ParsedRevenueCatWebhookEvent,
+  ): Promise<RevenueCatSubscriptionMutation | null> {
+    const eventAt = this.fromMs(event.event_timestamp_ms);
+    const expiresAt = this.fromNullableMs(event.expiration_at_ms);
+    const planCode = await this.resolvePlanCode(
+      event.new_product_id ?? event.product_id,
+      subscription_tier.premium,
     );
+    const base = this.webhookMutationBase(target, event);
+
+    switch (event.type) {
+      case REVENUECAT_SUBSCRIPTION_EVENTS.INITIAL_PURCHASE:
+        if (!expiresAt) return null;
+        return {
+          ...base,
+          accountExpiresAt: expiresAt,
+          accountTier: subscription_tier.premium,
+          cancelledAt: null,
+          expiresAt,
+          planCode,
+          startedAt: this.fromNullableMs(event.purchased_at_ms) ?? eventAt,
+          status:
+            event.period_type === 'TRIAL'
+              ? subscription_status.trialing
+              : subscription_status.active,
+        };
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.RENEWAL:
+        if (!expiresAt) return null;
+        return {
+          ...base,
+          accountExpiresAt: expiresAt,
+          accountTier: subscription_tier.premium,
+          cancelledAt: null,
+          expiresAt,
+          planCode,
+          status: subscription_status.active,
+        };
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.CANCELLATION: {
+        const immediateRevocation = ['CUSTOMER_SUPPORT', 'FRAUD'].includes(
+          event.cancel_reason ?? '',
+        );
+
+        if (immediateRevocation) {
+          const verified = await this.toVerifiedSubscriberMutation(
+            target,
+            event,
+          );
+
+          return {
+            ...verified,
+            cancelledAt: eventAt,
+            status:
+              verified.accountTier === subscription_tier.free
+                ? subscription_status.cancelled
+                : verified.status,
+          };
+        }
+
+        return {
+          ...base,
+          accountExpiresAt: expiresAt ?? undefined,
+          accountTier: subscription_tier.premium,
+          cancelledAt: eventAt,
+          expiresAt: expiresAt ?? undefined,
+          status: subscription_status.active,
+        };
+      }
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.EXPIRATION: {
+        const verified = await this.toVerifiedSubscriberMutation(target, event);
+        return {
+          ...verified,
+          capUsageCounters:
+            verified.accountTier === subscription_tier.free
+              ? FREE_USAGE_COUNTER_LIMITS
+              : undefined,
+          status:
+            verified.accountTier === subscription_tier.free
+              ? subscription_status.expired
+              : verified.status,
+        };
+      }
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.UNCANCELLATION:
+        return {
+          ...base,
+          accountExpiresAt: expiresAt ?? undefined,
+          accountTier: subscription_tier.premium,
+          cancelledAt: null,
+          expiresAt: expiresAt ?? undefined,
+          status: subscription_status.active,
+        };
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.BILLING_ISSUE: {
+        const gracePeriodEndsAt = this.fromNullableMs(
+          event.grace_period_expiration_at_ms,
+        );
+        const accessEndsAt = gracePeriodEndsAt ?? expiresAt;
+
+        return {
+          ...base,
+          accountExpiresAt: accessEndsAt ?? undefined,
+          accountTier: subscription_tier.premium,
+          expiresAt: accessEndsAt ?? undefined,
+          status:
+            gracePeriodEndsAt && gracePeriodEndsAt.getTime() > Date.now()
+              ? subscription_status.grace_period
+              : subscription_status.active,
+        };
+      }
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.PRODUCT_CHANGE:
+        return {
+          ...base,
+          accountExpiresAt: expiresAt ?? undefined,
+          accountTier: subscription_tier.premium,
+          expiresAt: expiresAt ?? undefined,
+          planCode,
+          status: subscription_status.active,
+        };
+
+      case REVENUECAT_SUBSCRIPTION_EVENTS.SUBSCRIPTION_EXTENDED:
+      case REVENUECAT_SUBSCRIPTION_EVENTS.TEMPORARY_ENTITLEMENT_GRANT:
+        if (!expiresAt) return null;
+        return {
+          ...base,
+          accountExpiresAt: expiresAt,
+          accountTier: subscription_tier.premium,
+          expiresAt,
+          planCode,
+          status: subscription_status.active,
+        };
+
+      default:
+        return null;
+    }
+  }
+
+  private async toVerifiedSubscriberMutation(
+    target: RevenueCatSubscriptionTarget,
+    event: ParsedRevenueCatWebhookEvent,
+  ): Promise<RevenueCatSubscriptionMutation> {
+    const ids = this.extractRevenueCatIds(event);
+    const appUserId = this.pickRevenueCatId(target, ids);
+    const subscriber = await this.revenueCatClient.getSubscriber(appUserId);
+    const mutation = await this.toSubscriberMutation(
+      target,
+      subscriber,
+      appUserId,
+    );
+
+    return this.withEventIdentity(mutation, event);
+  }
+
+  private async toSubscriberMutation(
+    target: RevenueCatSubscriptionTarget,
+    response: RevenueCatSubscriberResponse,
+    appUserId: string,
+  ): Promise<RevenueCatSubscriptionMutation> {
+    const now = new Date();
+    const entitlements = Object.entries(response.subscriber.entitlements ?? {});
+    const configuredEntitlementId = this.configService.get<string>(
+      'REVENUECAT_PREMIUM_ENTITLEMENT_ID',
+    );
+    const entitlementEntry = configuredEntitlementId
+      ? entitlements.find(([id]) => id === configuredEntitlementId)
+      : entitlements.find(([, entitlement]) =>
+          this.isEntitlementActive(entitlement, now),
+        );
+    const entitlement = entitlementEntry?.[1];
+    const productId = entitlement?.product_identifier ?? undefined;
+    const subscription = productId
+      ? response.subscriber.subscriptions?.[productId]
+      : undefined;
+    const entitlementExpiresAt = this.fromIso(entitlement?.expires_date);
+    const entitlementGraceEndsAt = this.fromIso(
+      entitlement?.grace_period_expires_date,
+    );
+    const subscriptionExpiresAt = this.fromIso(subscription?.expires_date);
+    const subscriptionGraceEndsAt = this.fromIso(
+      subscription?.grace_period_expires_date,
+    );
+    const accessEndsAt = this.latestDate(
+      entitlementExpiresAt,
+      entitlementGraceEndsAt,
+      subscriptionExpiresAt,
+      subscriptionGraceEndsAt,
+    );
+    const isLifetime = Boolean(
+      entitlement &&
+      !entitlement.expires_date &&
+      !entitlement.grace_period_expires_date,
+    );
+    const isActive = Boolean(
+      entitlement &&
+      (isLifetime || (accessEndsAt && accessEndsAt.getTime() > now.getTime())),
+    );
+    const inGracePeriod = Boolean(
+      isActive &&
+      (entitlementGraceEndsAt ?? subscriptionGraceEndsAt) &&
+      entitlementExpiresAt &&
+      entitlementExpiresAt.getTime() <= now.getTime(),
+    );
+    const accountTier = isActive
+      ? subscription_tier.premium
+      : subscription_tier.free;
+    const status = isActive
+      ? inGracePeriod
+        ? subscription_status.grace_period
+        : subscription?.period_type?.toUpperCase() === 'TRIAL'
+          ? subscription_status.trialing
+          : subscription_status.active
+      : target.subscription
+        ? subscription_status.expired
+        : subscription_status.free;
+    const planCode = productId
+      ? await this.resolvePlanCode(productId, subscription_tier.premium)
+      : (target.subscription?.plan_code ?? 'free');
+
+    return {
+      accountExpiresAt: isActive ? accessEndsAt : null,
+      accountId: target.account.id,
+      accountTier,
+      cancelledAt: this.fromIso(subscription?.unsubscribe_detected_at),
+      expiresAt:
+        entitlement || subscription
+          ? accessEndsAt
+          : (target.subscription?.expires_at ?? null),
+      planCode,
+      providerCustomerId: appUserId,
+      providerOriginalId:
+        response.subscriber.original_app_user_id ??
+        target.subscription?.provider_original_id ??
+        null,
+      startedAt:
+        this.fromIso(entitlement?.purchase_date) ??
+        this.fromIso(subscription?.purchase_date) ??
+        undefined,
+      status,
+      subscriptionId: target.subscription?.id,
+    };
+  }
+
+  private webhookMutationBase(
+    target: RevenueCatSubscriptionTarget,
+    event: ParsedRevenueCatWebhookEvent,
+  ): RevenueCatSubscriptionMutation {
+    return {
+      accountId: target.account.id,
+      accountTier: target.account.subscription,
+      lastRcEventAt: BigInt(event.event_timestamp_ms),
+      lastRcEventId: event.id,
+      providerCustomerId: event.app_user_id,
+      providerOriginalId: event.original_app_user_id,
+      status: target.subscription?.status ?? subscription_status.free,
+      subscriptionId: target.subscription?.id,
+    };
+  }
+
+  private withEventIdentity(
+    mutation: RevenueCatSubscriptionMutation,
+    event: ParsedRevenueCatWebhookEvent,
+  ): RevenueCatSubscriptionMutation {
+    return {
+      ...mutation,
+      lastRcEventAt: BigInt(event.event_timestamp_ms),
+      lastRcEventId: event.id,
+    };
+  }
+
+  private getEventSkipReason(
+    target: RevenueCatSubscriptionTarget,
+    event: ParsedRevenueCatWebhookEvent,
+  ): 'duplicate_event' | 'stale_event' | null {
+    if (target.subscription?.last_rc_event_id === event.id) {
+      return 'duplicate_event';
+    }
+
+    const lastEventAt = target.subscription?.last_rc_event_at;
+
+    if (
+      lastEventAt !== null &&
+      lastEventAt !== undefined &&
+      lastEventAt > BigInt(event.event_timestamp_ms)
+    ) {
+      return 'stale_event';
+    }
+
+    return null;
+  }
+
+  private async resolvePlanCode(
+    productId: string | null | undefined,
+    tier: subscription_tier,
+  ): Promise<string> {
+    const exactPlanCode =
+      await this.subscriptionRepository.findActivePlanCode(productId);
+
+    if (exactPlanCode) {
+      return exactPlanCode;
+    }
+
+    if (tier === subscription_tier.free) {
+      return 'free';
+    }
+
+    return productId && /(annual|year)/i.test(productId)
+      ? 'premium_yearly'
+      : 'premium_monthly';
+  }
+
+  private pickRevenueCatId(
+    target: RevenueCatSubscriptionTarget,
+    ids: string[],
+  ): string {
+    return (
+      ids.find((id) => id === target.account.id) ??
+      ids.find((id) => id === target.subscription?.provider_customer_id) ??
+      ids.find((id) => id === target.subscription?.provider_original_id) ??
+      ids[0] ??
+      target.account.id
+    );
+  }
+
+  private isEntitlementActive(
+    entitlement: {
+      expires_date?: string | null;
+      grace_period_expires_date?: string | null;
+    },
+    now: Date,
+  ): boolean {
+    if (!entitlement.expires_date && !entitlement.grace_period_expires_date) {
+      return true;
+    }
+
+    const accessEndsAt = this.latestDate(
+      this.fromIso(entitlement.expires_date),
+      this.fromIso(entitlement.grace_period_expires_date),
+    );
+
+    return Boolean(accessEndsAt && accessEndsAt.getTime() > now.getTime());
+  }
+
+  private latestDate(...dates: Array<Date | null>): Date | null {
+    return dates.reduce<Date | null>((latest, date) => {
+      if (!date || (latest && latest.getTime() >= date.getTime())) {
+        return latest;
+      }
+
+      return date;
+    }, null);
+  }
+
+  private fromIso(value?: string | null): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
   private matchesConfiguredEntitlement(event: RevenueCatWebhookEvent): boolean {
@@ -519,32 +990,25 @@ export class SubscriptionService {
       return true;
     }
 
-    const hasDeprecatedEntitlement = event.entitlement_id === entitlementId;
-    const hasEntitlement = event.entitlement_ids?.includes(entitlementId);
+    const eventEntitlements = [
+      event.entitlement_id,
+      ...(event.entitlement_ids ?? []),
+    ].filter((id): id is string => Boolean(id));
 
-    return Boolean(hasDeprecatedEntitlement || hasEntitlement);
+    return (
+      eventEntitlements.length === 0 ||
+      eventEntitlements.includes(entitlementId)
+    );
   }
 
-  private extractAccountIds(event: RevenueCatWebhookEvent): string[] {
+  private extractRevenueCatIds(event: RevenueCatWebhookEvent): string[] {
     return [
       event.app_user_id,
       event.original_app_user_id,
       ...(event.aliases ?? []),
     ]
       .filter((id): id is string => Boolean(id))
-      .filter((id, index, ids) => ids.indexOf(id) === index)
-      .filter((id) => UUID_PATTERN.test(id));
-  }
-
-  private shouldApply(
-    currentExpiresAt: Date | null,
-    incomingGuardAt: Date,
-  ): boolean {
-    if (!currentExpiresAt) {
-      return true;
-    }
-
-    return incomingGuardAt.getTime() > currentExpiresAt.getTime();
+      .filter((id, index, ids) => ids.indexOf(id) === index);
   }
 
   private fromMs(value: number): Date {
@@ -552,7 +1016,7 @@ export class SubscriptionService {
   }
 
   private fromNullableMs(value?: number | null): Date | null {
-    if (!value) {
+    if (value === undefined || value === null) {
       return null;
     }
 

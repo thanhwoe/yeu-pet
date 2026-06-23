@@ -11,7 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
-import { RevenueCatWebhookResult } from './revenuecat-webhook.interface';
+import { RevenueCatWebhookAck } from './revenuecat-webhook.interface';
 import type { RevenueCatWebhookPayload } from './revenuecat-webhook.interface';
 import { SubscriptionService } from './subscription.service';
 
@@ -44,6 +44,12 @@ export class SubscriptionController {
     return this.subscriptionService.mockDowngrade(user.id);
   }
 
+  @Post('subscriptions/sync')
+  @HttpCode(HttpStatus.OK)
+  sync(@CurrentUser() user: accounts) {
+    return this.subscriptionService.syncRevenueCatSubscription(user.id);
+  }
+
   @Public()
   @Post([
     'subscription/webhook',
@@ -54,8 +60,8 @@ export class SubscriptionController {
   handleRevenueCatWebhook(
     @Headers('authorization') authorizationHeader: string | undefined,
     @Body() payload: RevenueCatWebhookPayload,
-  ): Promise<RevenueCatWebhookResult> {
-    return this.subscriptionService.handleRevenueCatWebhook(
+  ): Promise<RevenueCatWebhookAck> {
+    return this.subscriptionService.enqueueRevenueCatWebhook(
       payload,
       authorizationHeader,
     );

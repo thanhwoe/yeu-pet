@@ -9,6 +9,7 @@ import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from './filters/prisma-exceptions.filter';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { SubscriptionGuard } from './guards/subscription.guard';
 import { CustomThrottlerGuard } from './guards/throttler.guard';
 import { ErrorLoggingInterceptor } from './interceptors/error-logging.interceptor';
 import { HttpCacheInterceptor } from './interceptors/http-cache.interceptor';
@@ -93,12 +94,17 @@ describe('App architecture wiring', () => {
     ]);
   });
 
-  it('registers auth, role, and throttling guards globally', () => {
+  it('registers auth, role, subscription, and throttling guards globally', () => {
     const guards = getProviders()
       .filter((provider) => provider.provide === APP_GUARD)
       .map((provider) => provider.useClass);
 
-    expect(guards).toEqual([JwtAuthGuard, RolesGuard, CustomThrottlerGuard]);
+    expect(guards).toEqual([
+      JwtAuthGuard,
+      RolesGuard,
+      SubscriptionGuard,
+      CustomThrottlerGuard,
+    ]);
   });
 
   it('keeps HTTP caching opt-in rather than a global interceptor', () => {

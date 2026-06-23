@@ -56,6 +56,9 @@ In your **`api` service** under the **Variables** tab, add the following environ
 | `JWT_REFRESH_SECRET` | A secure random string for refresh tokens |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Paste the **entire JSON string** of your Firebase Service Account private key (starts with `{` and ends with `}`). The application is adapted to parse it directly. |
 | `NOTIFICATION_CHANNEL` | `yeu-pet` |
+| `REVENUECAT_WEBHOOK_SECRET` | Exact authorization header configured for the RevenueCat webhook |
+| `REVENUECAT_SECRET_KEY` | Secret RevenueCat API key used for server-side subscriber verification |
+| `REVENUECAT_PREMIUM_ENTITLEMENT_ID` | RevenueCat entitlement that maps to YeuPet Premium |
 
 *Add any other variables from `apps/api/.env.example` as needed (e.g. Twilio, SMTP, Cloudinary).*
 

@@ -137,8 +137,9 @@ DTO fields:
 ```txt
 GET  /subscriptions/me
 GET  /subscriptions/entitlements
+POST /subscriptions/sync                # authenticated RevenueCat reconciliation
 POST /subscriptions/mock-upgrade        # dev only
-POST /subscriptions/webhooks/revenuecat # later
+POST /subscriptions/webhooks/revenuecat # public, authenticated by webhook secret
 ```
 
 Backend must expose current limits to FE:
