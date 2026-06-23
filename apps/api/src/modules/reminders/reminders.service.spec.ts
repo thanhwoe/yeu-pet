@@ -16,6 +16,7 @@ describe('RemindersService', () => {
     create: jest.fn(),
     update: jest.fn(),
     findById: jest.fn(),
+    findAll: jest.fn(),
     findMany: jest.fn(),
     claimForNotification: jest.fn().mockResolvedValue(true),
   };
@@ -94,6 +95,40 @@ describe('RemindersService', () => {
         completed_at: expect.any(Date) as Date,
       }),
     );
+  });
+
+  it('forwards date, pet, type, and status filters to the repository', async () => {
+    const from = '2026-05-31T17:00:00.000Z';
+    const to = '2026-06-30T16:59:59.999Z';
+    petsRepository.findByUser.mockResolvedValue({ id: 'pet-1' });
+    remindersRepository.findAll.mockResolvedValue([[], 0]);
+
+    await service.findAll(
+      'account-1',
+      { page: 2, limit: 20 },
+      {
+        from,
+        to,
+        petId: 'pet-1',
+        status: reminder_status.completed,
+        type: reminder_type.medication,
+      },
+    );
+
+    expect(petsRepository.findByUser).toHaveBeenCalledWith(
+      'account-1',
+      'pet-1',
+    );
+    expect(remindersRepository.findAll).toHaveBeenCalledWith({
+      account_id: 'account-1',
+      pet_id: 'pet-1',
+      status: reminder_status.completed,
+      type: reminder_type.medication,
+      skip: 20,
+      take: 20,
+      startDate: new Date(from),
+      endDate: new Date(to),
+    });
   });
 
   it('processes due reminders without sending them early', async () => {

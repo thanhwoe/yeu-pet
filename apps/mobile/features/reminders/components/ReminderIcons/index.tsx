@@ -1,12 +1,15 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { ReminderStatus, ReminderType } from "@/interfaces";
+import {
+  ReminderStatus,
+  ReminderType,
+  VisibleReminderStatus,
+} from "@/interfaces";
 import { cn } from "@/utils";
 import { REMINDER_STATUS_LABELS } from "@/utils/reminder";
 import {
   BoneIcon as Bone,
   CheckCircleIcon,
   ClockIcon,
-  ProhibitIcon,
   IconProps,
   PillIcon as Pill,
   ScissorsIcon as Scissors,
@@ -25,7 +28,6 @@ const PillIcon = withIconClassName(Pill);
 const SentIcon = withIconClassName(CheckCircleIcon);
 const CancelIcon = withIconClassName(XCircleIcon);
 const PendingIcon = withIconClassName(ClockIcon);
-const SkippedIcon = withIconClassName(ProhibitIcon);
 
 const typeIconMapping: Record<
   ReminderType,
@@ -88,7 +90,7 @@ export const ReminderTypeIcon = ({
 export const ReminderIcons = ReminderTypeIcon;
 
 const statusIconMapping: Record<
-  ReminderStatus,
+  VisibleReminderStatus,
   ComponentType<
     IconProps & {
       readonly className?: string | undefined;
@@ -96,27 +98,26 @@ const statusIconMapping: Record<
   >
 > = {
   sent: SentIcon,
-  completed: SentIcon,
-  skipped: SkippedIcon,
   cancelled: CancelIcon,
   pending: PendingIcon,
 };
 
-const statusColorMapping: Record<ReminderStatus, string> = {
+const statusColorMapping: Record<VisibleReminderStatus, string> = {
   sent: "text-status-success-text",
-  completed: "text-status-success-text",
-  skipped: "text-text-muted",
   cancelled: "text-status-danger-text",
   pending: "text-status-warning-text",
 };
 
-const statusBackgroundMapping: Record<ReminderStatus, string> = {
+const statusBackgroundMapping: Record<VisibleReminderStatus, string> = {
   sent: "bg-status-success-surface",
-  completed: "bg-status-success-surface",
-  skipped: "bg-background-surface-muted",
   cancelled: "bg-status-danger-surface",
   pending: "bg-status-warning-surface",
 };
+
+const isVisibleStatus = (
+  status: ReminderStatus,
+): status is VisibleReminderStatus =>
+  status !== "completed" && status !== "skipped";
 interface ReminderStatusProps extends IconProps {
   status: ReminderStatus;
 }
@@ -125,6 +126,8 @@ export const ReminderStatusChip = ({
   status,
   ...props
 }: ReminderStatusProps) => {
+  if (!isVisibleStatus(status)) return null;
+
   const Icon = statusIconMapping[status];
   const color = statusColorMapping[status];
   const bg = statusBackgroundMapping[status];
@@ -136,7 +139,11 @@ export const ReminderStatusChip = ({
       )}
     >
       <Icon size={20} weight="fill" className={color} {...props} />
-      <Body variant="body2" className={cn("capitalize", color)} weight="semiBold">
+      <Body
+        variant="body2"
+        className={cn("capitalize", color)}
+        weight="semiBold"
+      >
         {REMINDER_STATUS_LABELS[status]}
       </Body>
     </View>

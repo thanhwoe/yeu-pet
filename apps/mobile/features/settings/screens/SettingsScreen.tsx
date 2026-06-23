@@ -139,7 +139,7 @@ function SubscriptionSummary({
   const isPremium = entitlements.tier === "premium";
 
   return (
-    <View className="gap-12 border-b border-line-subtle px-16 py-14">
+    <View className="gap-12 border-b border-line-subtle px-16 py-14 ">
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`View ${planLabel} plan usage`}

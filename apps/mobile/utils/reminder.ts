@@ -1,17 +1,20 @@
-import { GroupedReminder, IReminder, ReminderRepeatFrequency } from "@/interfaces";
+import {
+  GroupedReminder,
+  IReminder,
+  ReminderRepeatFrequency,
+  VisibleReminderStatus,
+} from "@/interfaces";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
 import type { ExpandableCalendarProps } from "react-native-calendars";
 
 export const REMINDER_DAY_KEY_FORMAT = "YYYY-MM-DD";
 
-export const REMINDER_STATUS_LABELS = {
+export const REMINDER_STATUS_LABELS: Record<VisibleReminderStatus, string> = {
   pending: "Pending",
-  completed: "Done",
-  sent: "Done",
-  skipped: "Skipped",
+  sent: "Sent",
   cancelled: "Cancelled",
-} as const;
+};
 
 export const REMINDER_TYPE_LABELS = {
   feeding: "Feeding",

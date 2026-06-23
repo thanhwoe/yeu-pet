@@ -489,9 +489,9 @@ export const darkColorTheme = {
   "--background": "--blue-100",
   "--background-foreground": "--grey-100",
 
-  "--background-primary": "--orange-40",
-  "--background-primary-pressed": "--orange-50",
-  "--background-primary-disabled": "--orange-80",
+  "--background-primary": "--blue-40",
+  "--background-primary-pressed": "--blue-50",
+  "--background-primary-disabled": "--blue-80",
 
   "--background-secondary": "--blue-90",
   "--background-secondary-pressed": "--blue-80",

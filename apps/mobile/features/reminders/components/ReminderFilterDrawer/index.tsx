@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { Body, Heading } from "@/components/ui/Typography";
 import { PET_KEY } from "@/constants/query-keys";
 import { useReminderUiStore } from "@/features/reminders/store";
-import { ReminderStatus, ReminderType } from "@/interfaces";
+import { ReminderType, VisibleReminderStatus } from "@/interfaces";
 import { getListPetQuery } from "@/services";
 import { cn } from "@/utils";
 import type { DrawerContentComponentProps } from "@react-navigation/drawer";
@@ -12,11 +12,10 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const STATUS_FILTERS: { label: string; value?: ReminderStatus }[] = [
+const STATUS_FILTERS: { label: string; value?: VisibleReminderStatus }[] = [
   { label: "All" },
   { label: "Pending", value: "pending" },
-  { label: "Done", value: "completed" },
-  { label: "Skipped", value: "skipped" },
+  { label: "Sent", value: "sent" },
   { label: "Cancelled", value: "cancelled" },
 ];
 
@@ -37,7 +36,9 @@ export const ReminderFilterDrawer = ({
   const setFilters = useReminderUiStore((state) => state.setFilters);
   const resetFilters = useReminderUiStore((state) => state.resetFilters);
 
-  const [draftStatus, setDraftStatus] = useState<ReminderStatus | undefined>();
+  const [draftStatus, setDraftStatus] = useState<
+    VisibleReminderStatus | undefined
+  >();
   const [draftType, setDraftType] = useState<ReminderType | undefined>();
   const [draftPetId, setDraftPetId] = useState<string | undefined>();
 
@@ -171,7 +172,7 @@ const FilterOption = ({
     accessibilityState={{ selected }}
     onPress={onPress}
     className={cn(
-      "min-h-42 justify-center rounded-14 border border-line-subtle bg-background-surface-muted px-14",
+      "min-h-44 justify-center rounded-14 border border-line-subtle bg-background-surface-muted px-14",
       selected && "border-action-primary bg-action-secondary",
     )}
   >

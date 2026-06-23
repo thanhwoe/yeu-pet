@@ -5,15 +5,14 @@ import { IReminder } from "@/interfaces";
 import { useReminderUiStore } from "@/features/reminders/store";
 import {
   cancelReminderMutation,
-  completeReminderMutation,
   createReminderMutation,
   deleteReminderMutation,
   getListPetQuery,
   getListReminderQuery,
-  skipReminderMutation,
   updateReminderMutation,
 } from "@/services";
 import {
+  getMonthRange,
   getMarkedDateCounts,
   getRemindersForDay,
   REMINDER_DAY_KEY_FORMAT,
@@ -45,29 +44,24 @@ export function useReminderCalendar() {
 
   const queryClient = useQueryClient();
 
-  const reminderParams = useMemo(
-    () => ({
-      month: dayjs(visibleMonth).month() + 1,
-      year: dayjs(visibleMonth).year(),
+  const reminderParams = useMemo(() => {
+    const range = getMonthRange(visibleMonth);
+
+    return {
+      ...range,
       status: statusFilter,
       type: typeFilter,
       petId: petFilter,
       limit: 100,
-    }),
-    [petFilter, statusFilter, typeFilter, visibleMonth],
-  );
+    };
+  }, [petFilter, statusFilter, typeFilter, visibleMonth]);
 
   const { data: petData } = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
 
-  const {
-    data,
-    isError,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data, isError, isLoading, refetch } = useQuery({
     queryKey: REMINDER_KEY.list(reminderParams),
     queryFn: () => getListReminderQuery(reminderParams),
   });
@@ -94,29 +88,14 @@ export function useReminderCalendar() {
     },
   });
 
-  const statusMutationOptions = {
+  const { mutateAsync: cancelReminder, variables: cancellingId } = useMutation({
+    mutationFn: cancelReminderMutation,
     onError(e: Error) {
       Toast.error({ text: e.message });
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
     },
-  };
-
-  const { mutateAsync: completeReminder, variables: completingId } =
-    useMutation({
-      mutationFn: completeReminderMutation,
-      ...statusMutationOptions,
-    });
-
-  const { mutateAsync: skipReminder, variables: skippingId } = useMutation({
-    mutationFn: skipReminderMutation,
-    ...statusMutationOptions,
-  });
-
-  const { mutateAsync: cancelReminder, variables: cancellingId } = useMutation({
-    mutationFn: cancelReminderMutation,
-    ...statusMutationOptions,
   });
 
   const allReminders = useMemo(
@@ -172,7 +151,7 @@ export function useReminderCalendar() {
   }, [agendaEdit]);
 
   const hasFilters = !!statusFilter || !!typeFilter || !!petFilter;
-  const actioningId = completingId ?? skippingId ?? cancellingId;
+  const actioningId = cancellingId;
 
   const handlePreviousMonth = useCallback(() => {
     const nextMonth = dayjs(visibleMonth).subtract(1, "month").startOf("month");
@@ -210,7 +189,6 @@ export function useReminderCalendar() {
     typeFilter,
     visibleMonth,
     cancelReminder,
-    completeReminder,
     handleCancelDelete,
     handleDelete,
     handleNextMonth,
@@ -222,7 +200,6 @@ export function useReminderCalendar() {
     setSelectedDate,
     setFilters,
     resetFilters,
-    skipReminder,
   };
 }
 

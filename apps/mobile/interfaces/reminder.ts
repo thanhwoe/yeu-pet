@@ -32,6 +32,11 @@ export type ReminderStatus =
   | "sent"
   | "cancelled";
 
+export type VisibleReminderStatus = Exclude<
+  ReminderStatus,
+  "completed" | "skipped"
+>;
+
 export type ReminderRepeatFrequency =
   | "none"
   | "daily"

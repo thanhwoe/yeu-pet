@@ -11,7 +11,7 @@ import {
   useCreateReminderSheet,
   useReminderCalendar,
 } from "@/features/reminders/hooks";
-import { IReminder } from "@/interfaces";
+import { IReminder, VisibleReminderStatus } from "@/interfaces";
 import {
   formatReminderDate,
   REMINDER_STATUS_LABELS,
@@ -45,7 +45,6 @@ export const ReminderCalendar = () => {
     typeFilter,
     visibleMonth,
     cancelReminder,
-    completeReminder,
     handleCancelDelete,
     handleDelete,
     handleNextMonth,
@@ -56,7 +55,6 @@ export const ReminderCalendar = () => {
     setAgendaEdit,
     setSelectedDate,
     resetFilters,
-    skipReminder,
   } = useReminderCalendar();
 
   const {
@@ -132,12 +130,6 @@ export const ReminderCalendar = () => {
         reminder={selectedReminder}
         actioning={selectedReminder?.id === actioningId}
         onDismiss={() => setSelectedReminder(undefined)}
-        onComplete={async (item) => {
-          await completeReminder(item.id);
-        }}
-        onSkip={async (item) => {
-          await skipReminder(item.id);
-        }}
         onCancelReminder={async (item) => {
           await cancelReminder(item.id);
         }}
@@ -184,7 +176,7 @@ const ActiveFilterSummary = ({
   petName,
   onReset,
 }: {
-  status?: IReminder["status"];
+  status?: VisibleReminderStatus;
   type?: IReminder["type"];
   petName?: string;
   onReset: () => void;

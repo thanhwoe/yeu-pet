@@ -36,7 +36,7 @@ export const AgendaItem = ({
   editing,
   deleting,
 }: ItemProps) => {
-  const isMuted = item.status === "cancelled" || item.status === "skipped";
+  const isMuted = item.status === "cancelled";
   const petName = item.pets?.name ?? "No pet";
   const repeatSummary = formatReminderRepeat(
     item.repeatFrequency,

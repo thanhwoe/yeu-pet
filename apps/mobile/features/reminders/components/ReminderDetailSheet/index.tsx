@@ -14,16 +14,10 @@ import {
   formatReminderTime,
   REMINDER_TYPE_LABELS,
 } from "@/utils/reminder";
-import {
-  CheckCircleIcon,
-  ProhibitIcon,
-  XCircleIcon,
-} from "phosphor-react-native";
+import { XCircleIcon } from "phosphor-react-native";
 import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
-const DoneIcon = withIconClassName(CheckCircleIcon);
-const SkipIcon = withIconClassName(ProhibitIcon);
 const CancelIcon = withIconClassName(XCircleIcon);
 
 interface ReminderDetailSheetProps {
@@ -31,8 +25,6 @@ interface ReminderDetailSheetProps {
   visible: boolean;
   actioning?: boolean;
   onDismiss: () => void;
-  onComplete: (item: IReminder) => Promise<void> | void;
-  onSkip: (item: IReminder) => Promise<void> | void;
   onCancelReminder: (item: IReminder) => Promise<void> | void;
 }
 
@@ -41,8 +33,6 @@ export const ReminderDetailSheet = ({
   visible,
   actioning,
   onDismiss,
-  onComplete,
-  onSkip,
   onCancelReminder,
 }: ReminderDetailSheetProps) => {
   const runAction = async (
@@ -109,34 +99,6 @@ export const ReminderDetailSheet = ({
           {reminder.status === "pending" ? (
             <View className="items-center gap-12 pt-4">
               <View className="flex-row flex-wrap justify-center gap-12">
-                <DetailActionButton
-                  label="Done"
-                  disabled={actioning}
-                  className="bg-status-success-surface"
-                  textClassName="text-status-success-text"
-                  icon={
-                    <DoneIcon
-                      size={17}
-                      weight="fill"
-                      className="text-status-success-icon"
-                    />
-                  }
-                  onPress={() => void runAction(onComplete)}
-                />
-                <DetailActionButton
-                  label="Skip"
-                  disabled={actioning}
-                  className="bg-background-surface-muted"
-                  textClassName="text-text-muted"
-                  icon={
-                    <SkipIcon
-                      size={17}
-                      weight="fill"
-                      className="text-icon-muted"
-                    />
-                  }
-                  onPress={() => void runAction(onSkip)}
-                />
                 <DetailActionButton
                   label="Cancel"
                   disabled={actioning}

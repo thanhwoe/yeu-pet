@@ -17,8 +17,8 @@ import {
   sitterProfileSchema,
   sitterReviewSchema,
 } from "@/constants/validation";
-import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
+import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
 import { cn } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -394,7 +394,7 @@ export const SitterProfileForm = ({
   });
 
   return (
-    <View className="gap-18">
+    <View className="gap-18 px-16">
       {defaultValues ? (
         <Pressable
           accessibilityRole="switch"

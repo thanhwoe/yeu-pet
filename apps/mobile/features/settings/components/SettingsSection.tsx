@@ -28,7 +28,7 @@ export function SettingsSection({
           </Text>
         ) : null}
       </View>
-      <View className="overflow-hidden rounded-22 border-hairline border-line-subtle bg-background-surface shadow-sm">
+      <View className="overflow-hidden rounded-16 border-hairline border-line-subtle bg-background-surface shadow-sm">
         {children}
       </View>
     </View>

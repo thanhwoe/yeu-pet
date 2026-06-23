@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { ReminderStatus, ReminderType } from "@/interfaces";
+import { ReminderType, VisibleReminderStatus } from "@/interfaces";
 
 interface ReminderUiState {
-  statusFilter?: ReminderStatus;
+  statusFilter?: VisibleReminderStatus;
   typeFilter?: ReminderType;
   petFilter?: string;
   setFilters: (filters: {
-    status?: ReminderStatus;
+    status?: VisibleReminderStatus;
     type?: ReminderType;
     petId?: string;
   }) => void;

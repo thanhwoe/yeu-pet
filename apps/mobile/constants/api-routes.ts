@@ -25,8 +25,6 @@ export const API_ROUTES = {
   REMINDERS: "/reminders",
   UPCOMING_REMINDERS: "/reminders/upcoming",
   MUTATE_REMINDER: (id: string) => `/reminders/${id}`,
-  COMPLETE_REMINDER: (id: string) => `/reminders/${id}/complete`,
-  SKIP_REMINDER: (id: string) => `/reminders/${id}/skip`,
   CANCEL_REMINDER: (id: string) => `/reminders/${id}/cancel`,
 
   SUGGEST_CLINIC: (city: string) => `/clinic/${city}/suggest`,
@@ -86,8 +84,7 @@ export const API_ROUTES = {
   REVIEW_SITTER_BOOKING: (id: string) => `/sitter-bookings/${id}/review`,
   SITTER_BOOKING_MESSAGES: (id: string) => `/sitter-bookings/${id}/messages`,
   SITTER_REVIEWS: "/sitter-reviews",
-  SITTER_REVIEWS_BY_SITTER: (sitterId: string) =>
-    `/sitter-reviews/${sitterId}`,
+  SITTER_REVIEWS_BY_SITTER: (sitterId: string) => `/sitter-reviews/${sitterId}`,
 
   LIST_PRODUCTS: "/products",
   PRODUCT_DETAIL: (id: string) => `/products/${id}`,
@@ -108,8 +105,7 @@ export const API_ROUTES = {
   PAYMENT_VNPAY: "/payment/vnpay",
 
   MEDICAL_RECORDS: "/medical-records",
-  MEDICAL_RECORDS_FOR_PET: (petId: string) =>
-    `/pets/${petId}/medical-records`,
+  MEDICAL_RECORDS_FOR_PET: (petId: string) => `/pets/${petId}/medical-records`,
   MEDICAL_RECORD_DETAIL: (id: string) => `/medical-records/${id}`,
   MEDICAL_RECORD_ATTACHMENTS: (id: string) =>
     `/medical-records/${id}/attachments`,

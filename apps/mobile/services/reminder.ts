@@ -19,8 +19,6 @@ interface IReminderQuery {
   type?: ReminderType;
   limit?: number;
   page?: number;
-  month?: number;
-  year?: number;
   petId?: string;
   from?: string;
   to?: string;
@@ -50,12 +48,6 @@ export const updateReminderMutation = ({
 
 export const deleteReminderMutation = (id: string) =>
   APIs.delete<{ data: IReminder }>(API_ROUTES.MUTATE_REMINDER(id));
-
-export const completeReminderMutation = (id: string) =>
-  APIs.post<IReminder>(API_ROUTES.COMPLETE_REMINDER(id));
-
-export const skipReminderMutation = (id: string) =>
-  APIs.post<IReminder>(API_ROUTES.SKIP_REMINDER(id));
 
 export const cancelReminderMutation = (id: string) =>
   APIs.post<IReminder>(API_ROUTES.CANCEL_REMINDER(id));

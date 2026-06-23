@@ -44,7 +44,7 @@ export const inputVariants = cva(
 export const supportTextVariants = cva("mt-8", {
   variants: {
     variant: {
-      default: "text-text-tertiary-inverse",
+      default: "text-text-tertiary",
     },
     hasError: {
       true: "text-text-negative",
