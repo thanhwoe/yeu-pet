@@ -38,7 +38,10 @@ export const usePetCardSection = () => {
   const { mutateAsync: updatePet, isPending: isUpdating } = useMutation({
     mutationFn: updatePetMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Pet not updated",
+        text: e.message || "Check the pet details and try again.",
+      });
     },
     onSuccess(res, variable) {
       queryClient.setQueryData(PET_KEY.list(), (old: IPagination<IPet>) => {
@@ -59,6 +62,10 @@ export const usePetCardSection = () => {
           data,
         };
       });
+      Toast.success({
+        title: "Pet details updated",
+        text: `${res.name}'s information is now up to date.`,
+      });
       setPetEdit(undefined);
     },
   });
@@ -66,7 +73,10 @@ export const usePetCardSection = () => {
   const { mutateAsync: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Pet not removed",
+        text: e.message || "Please try removing this pet again.",
+      });
     },
     onSuccess(_, petId) {
       setPetDelete(undefined);

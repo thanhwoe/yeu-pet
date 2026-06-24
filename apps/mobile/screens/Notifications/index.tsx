@@ -246,7 +246,11 @@ export const NotificationsScreen = () => {
         context?.previousBadge,
       );
       Toast.error({
-        text: getErrorMessage(error, "Failed to mark notification as read"),
+        title: "Notification not updated",
+        text: getErrorMessage(
+          error,
+          "Try marking this notification as read again.",
+        ),
       });
     },
     onSettled: softInvalidateNotifications,
@@ -281,7 +285,10 @@ export const NotificationsScreen = () => {
       return { previousBadge, previousNotificationQueries };
     },
     onSuccess() {
-      Toast.success({ text: "Notifications marked as read." });
+      Toast.success({
+        title: "Notifications updated",
+        text: "All notifications are now marked as read.",
+      });
     },
     onError(error: MutationError, _variables, context) {
       context?.previousNotificationQueries.forEach(([queryKey, data]) => {
@@ -292,7 +299,11 @@ export const NotificationsScreen = () => {
         context?.previousBadge,
       );
       Toast.error({
-        text: getErrorMessage(error, "Failed to mark notifications as read"),
+        title: "Notifications not updated",
+        text: getErrorMessage(
+          error,
+          "Try marking all notifications as read again.",
+        ),
       });
     },
     onSettled: softInvalidateNotifications,

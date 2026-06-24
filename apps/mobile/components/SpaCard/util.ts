@@ -3,7 +3,10 @@ import { Toast } from "../Toast";
 
 export const makePhoneCall = async (phoneNumber?: string) => {
   if (!phoneNumber) {
-    Toast.warn({ text: "No phone number available." });
+    Toast.warn({
+      title: "Call unavailable",
+      text: "This spa has not provided a phone number.",
+    });
     return;
   }
   const phoneUrl = `tel:${phoneNumber}`;
@@ -22,7 +25,10 @@ export const makePhoneCall = async (phoneNumber?: string) => {
 
 export const sendSMS = async (phoneNumber?: string) => {
   if (!phoneNumber) {
-    Toast.warn({ text: "No phone number available." });
+    Toast.warn({
+      title: "Message unavailable",
+      text: "This spa has not provided a phone number.",
+    });
     return;
   }
   const smsUrl = `sms:${phoneNumber}`;

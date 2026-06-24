@@ -401,17 +401,31 @@ function DeveloperTools({
     mutationFn: mockUpgradeSubscriptionMutation,
     onSuccess: (nextSubscription) => {
       syncSubscription(nextSubscription);
-      Toast.success({ text: "Mock Premium plan enabled." });
+      Toast.success({
+        title: "Premium test enabled",
+        text: "Development entitlements now use the Premium plan.",
+      });
     },
-    onError: (error: Error) => Toast.error({ text: error.message }),
+    onError: (error: Error) =>
+      Toast.error({
+        title: "Test plan not changed",
+        text: error.message || "Try enabling the Premium test plan again.",
+      }),
   });
   const downgradeMutation = useMutation({
     mutationFn: mockDowngradeSubscriptionMutation,
     onSuccess: (nextSubscription) => {
       syncSubscription(nextSubscription);
-      Toast.success({ text: "Mock Free plan enabled." });
+      Toast.success({
+        title: "Free test enabled",
+        text: "Development entitlements now use the Free plan.",
+      });
     },
-    onError: (error: Error) => Toast.error({ text: error.message }),
+    onError: (error: Error) =>
+      Toast.error({
+        title: "Test plan not changed",
+        text: error.message || "Try enabling the Free test plan again.",
+      }),
   });
 
   return (

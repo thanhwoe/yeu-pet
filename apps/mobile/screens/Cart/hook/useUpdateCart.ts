@@ -16,7 +16,12 @@ export const useUpdateCart = (delay: number = 1000) => {
   const { mutate: updateCart, isPending } = useMutation({
     mutationFn: updateCartMutation,
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message ?? "Failed to update cart" });
+      Toast.error({
+        title: "Cart not updated",
+        text:
+          e.errors?.[0].message ??
+          "Check the quantity and try updating your cart again.",
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.lists() });

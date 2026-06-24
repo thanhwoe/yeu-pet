@@ -414,7 +414,10 @@ export function useMedicalRecordList() {
         });
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Record not created",
+          text: e.message || "Check the medical record and try again.",
+        });
       },
     });
 
@@ -430,7 +433,10 @@ export function useMedicalRecordList() {
       setSelectedRecord(null);
     },
     onError: (error) => {
-      Toast.error({ text: error.message });
+      Toast.error({
+        title: "Record not removed",
+        text: error.message || "Refresh the records and try again.",
+      });
     },
   });
 
@@ -440,7 +446,10 @@ export function useMedicalRecordList() {
       return;
     }
 
-    Toast.warn({ text: "Please add a pet first." });
+    Toast.warn({
+      title: "Add a pet first",
+      text: "A medical record must be linked to one of your pets.",
+    });
   }, [petData?.data.length]);
 
   const handleCloseForm = useCallback(() => setOpenForm(false), []);
@@ -560,7 +569,10 @@ export function useMedicalRecordDetail({
       setOpenOptions(false);
     },
     onError: (error) => {
-      Toast.error({ text: error.message });
+      Toast.error({
+        title: "Record not updated",
+        text: error.message || "Check the medical record and try again.",
+      });
     },
   });
 
@@ -577,7 +589,10 @@ export function useMedicalRecordDetail({
       onDeleted?.();
     },
     onError: (error) => {
-      Toast.error({ text: error.message });
+      Toast.error({
+        title: "Record not removed",
+        text: error.message || "Refresh the record and try again.",
+      });
     },
   });
 
@@ -732,7 +747,10 @@ export function useMedicalRecordPetList(petId?: string) {
       setSelectedRecord(null);
     },
     onError: (error) => {
-      Toast.error({ text: error.message });
+      Toast.error({
+        title: "Record not removed",
+        text: error.message || "Refresh the records and try again.",
+      });
     },
   });
 

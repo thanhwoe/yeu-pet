@@ -45,8 +45,11 @@ const BOOKING_LIMIT = 20;
 const MESSAGE_LIMIT = 30;
 const REVIEW_LIMIT = 3;
 
-const showError = (error: Error) => {
-  Toast.error({ text: error.message });
+const showError = (title: string) => (error: Error) => {
+  Toast.error({
+    title,
+    text: error.message || "Please review the details and try again.",
+  });
 };
 
 export const useSitters = (
@@ -115,64 +118,85 @@ export const useSitters = (
   const createBooking = useMutation({
     mutationFn: createSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking request sent." });
+      Toast.success({
+        title: "Request sent",
+        text: "The sitter can now review your care request.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Request not sent"),
   });
 
   const registerProfile = useMutation({
     mutationFn: registerSitterMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Sitter profile saved." });
+      Toast.success({
+        title: "Sitter profile created",
+        text: "Pet owners can now discover your care services.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Profile not created"),
   });
 
   const updateProfile = useMutation({
     mutationFn: updateSitterMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Sitter profile updated." });
+      Toast.success({
+        title: "Sitter profile updated",
+        text: "Your latest care details are now visible.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Profile not updated"),
   });
 
   const acceptBooking = useMutation({
     mutationFn: confirmSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking confirmed." });
+      Toast.success({
+        title: "Booking confirmed",
+        text: "The pet owner can now see that you accepted the request.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Booking not confirmed"),
   });
 
   const rejectBooking = useMutation({
     mutationFn: rejectSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking rejected." });
+      Toast.success({
+        title: "Booking declined",
+        text: "The pet owner can now make other care arrangements.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Booking not declined"),
   });
 
   const completeBooking = useMutation({
     mutationFn: completeSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking completed." });
+      Toast.success({
+        title: "Booking completed",
+        text: "This care booking is now recorded as complete.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Booking not completed"),
   });
 
   const cancelBooking = useMutation({
     mutationFn: cancelSitterBookingMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Booking cancelled." });
+      Toast.success({
+        title: "Booking cancelled",
+        text: "Both sides can now see that this booking was cancelled.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Booking not cancelled"),
   });
 
   const sendMessage = useMutation({
@@ -182,16 +206,19 @@ export const useSitters = (
         queryKey: SITTER_BOOKING_KEY.messages(variables.bookingId),
       });
     },
-    onError: showError,
+    onError: showError("Message not sent"),
   });
 
   const createReview = useMutation({
     mutationFn: createSitterReviewMutation,
     onSuccess: async () => {
-      Toast.success({ text: "Review submitted." });
+      Toast.success({
+        title: "Review submitted",
+        text: "Your feedback is now visible on the sitter profile.",
+      });
       await invalidateSitterData();
     },
-    onError: showError,
+    onError: showError("Review not submitted"),
   });
 
   return {

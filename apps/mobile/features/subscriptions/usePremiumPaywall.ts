@@ -29,6 +29,7 @@ export const usePremiumPaywall = () => {
     try {
       if (!(await configureRevenueCat())) {
         Toast.warn({
+          title: "Premium unavailable",
           text: "Premium options are unavailable right now. Please try again later.",
         });
         return null;
@@ -53,10 +54,14 @@ export const usePremiumPaywall = () => {
             result !== PAYWALL_RESULT.NOT_PRESENTED &&
             subscription.tier === "premium"
           ) {
-            Toast.success({ text: "Premium care tools are ready." });
+            Toast.success({
+              title: "Premium unlocked",
+              text: "Your Premium care tools are ready to use.",
+            });
           }
         } catch {
           Toast.warn({
+            title: "Plan still syncing",
             text: purchaseCompleted
               ? "Your store purchase succeeded. YeuPet is still refreshing your plan."
               : "YeuPet is still refreshing your plan. Please check again shortly.",
@@ -64,6 +69,7 @@ export const usePremiumPaywall = () => {
         }
       } else if (result === PAYWALL_RESULT.ERROR) {
         Toast.error({
+          title: "Checkout unavailable",
           text: "Premium checkout could not open. Please try again.",
         });
       }
@@ -72,6 +78,7 @@ export const usePremiumPaywall = () => {
     } catch (error) {
       console.warn("[RevenueCat] Could not present the paywall.", error);
       Toast.error({
+        title: "Checkout unavailable",
         text: "Premium checkout could not open. Please try again.",
       });
       return PAYWALL_RESULT.ERROR;
@@ -89,6 +96,7 @@ export const usePremiumPaywall = () => {
     try {
       if (!(await configureRevenueCat())) {
         Toast.warn({
+          title: "Subscriptions unavailable",
           text: "Subscription management is unavailable right now.",
         });
         return;
@@ -122,12 +130,14 @@ export const usePremiumPaywall = () => {
           error,
         );
         Toast.warn({
+          title: "Changes still syncing",
           text: "Your subscription changes are still refreshing in YeuPet.",
         });
       }
     } catch (error) {
       console.warn("[RevenueCat] Could not present Customer Center.", error);
       Toast.error({
+        title: "Subscriptions unavailable",
         text: "Could not open subscription management. Please try again.",
       });
     } finally {

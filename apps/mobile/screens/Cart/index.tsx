@@ -44,7 +44,10 @@ export const CartScreen = () => {
   const { mutate: deleteCartItem, isPending: isDeleting } = useMutation({
     mutationFn: deleteCartItemMutation,
     onError: (e) => {
-      Toast.error({ text: e.errors?.[0].message ?? "Failed to delete item" });
+      Toast.error({
+        title: "Item not removed",
+        text: e.errors?.[0].message ?? "Try removing this cart item again.",
+      });
     },
     onSuccess: (_, variable) => {
       setCartItems((prev) => prev.filter((item) => item.id !== variable));

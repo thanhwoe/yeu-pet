@@ -50,14 +50,20 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
     onSuccess() {
-      Toast.success({ text: "Photo uploaded." });
+      Toast.success({
+        title: "Photo shared",
+        text: "Your pet photo is now available in the photo feed.",
+      });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       setCaption("");
       onDismiss();
     },
     onError(e: MutationError) {
       Toast.error({
-        text: e.errors?.[0]?.message ?? "Failed to upload photo",
+        title: "Photo not shared",
+        text:
+          e.errors?.[0]?.message ??
+          "Check your connection and try uploading again.",
       });
     },
   });
@@ -93,6 +99,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const handleSubmit = async () => {
     if (!photoLimit.allowed) {
       Toast.error({
+        title: "Photo limit reached",
         text: `Free plan supports ${photoLimit.limit} photo uploads. Upgrade to continue.`,
       });
       return;
@@ -101,7 +108,10 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
     const trimmedCaption = caption.trim();
 
     if (!trimmedCaption) {
-      Toast.warn({ text: "Caption is required." });
+      Toast.warn({
+        title: "Add a caption",
+        text: "Write a short caption before sharing this photo.",
+      });
       return;
     }
 

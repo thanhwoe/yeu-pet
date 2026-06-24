@@ -42,7 +42,10 @@ export const VerifyOtpScreen = () => {
   const { mutate: verifyOtp, isPending: isVerifying } = useMutation({
     mutationFn: verifyOtpMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Code not verified",
+        text: e.message || "Check the verification code and try again.",
+      });
       shake();
     },
     onSuccess(res) {
@@ -54,7 +57,10 @@ export const VerifyOtpScreen = () => {
   const { mutate: resendOtp, isPending: resendingOtp } = useMutation({
     mutationFn: resendOtpMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Code not resent",
+        text: e.message || "Wait a moment and try again.",
+      });
     },
     onSuccess(res) {
       updateOtpExpire(dayjs(res.expiresAt).toDate());

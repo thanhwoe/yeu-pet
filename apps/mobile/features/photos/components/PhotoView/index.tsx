@@ -96,13 +96,17 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoMutation,
     onSuccess() {
-      Toast.success({ text: "Photo deleted." });
+      Toast.success({
+        title: "Photo removed",
+        text: "The photo is no longer visible in your feed.",
+      });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       onDismiss?.();
     },
     onError(e: MutationError) {
       Toast.error({
-        text: e.errors?.[0]?.message ?? "Failed to delete photo",
+        title: "Photo not removed",
+        text: e.errors?.[0]?.message ?? "Refresh the photo and try again.",
       });
     },
   });
@@ -174,7 +178,10 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
           setLocalLiked(serverLikedRef.current);
           setLocalLikes(serverLikesRef.current);
           Toast.error({
-            text: e.errors?.[0]?.message ?? "Failed to update photo like",
+            title: "Reaction not saved",
+            text:
+              e.errors?.[0]?.message ??
+              "Check your connection and try reacting again.",
           });
         },
         onSettled() {

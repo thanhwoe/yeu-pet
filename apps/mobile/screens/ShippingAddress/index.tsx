@@ -121,7 +121,10 @@ export const ShippingAddressScreen = () => {
       mutationFn: createShippingAddressMutation,
       onError: (e: MutationError) => {
         Toast.error({
-          text: e.errors?.[0]?.message ?? "Failed to add shipping address",
+          title: "Address not added",
+          text:
+            e.errors?.[0]?.message ??
+            "Check the address details and try again.",
         });
       },
       onSuccess: () => {
@@ -140,7 +143,8 @@ export const ShippingAddressScreen = () => {
       mutationFn: deleteShippingAddressMutation,
       onError: (e: MutationError) => {
         Toast.error({
-          text: e.errors?.[0]?.message ?? "Failed to delete shipping address",
+          title: "Address not removed",
+          text: e.errors?.[0]?.message ?? "Try removing this address again.",
         });
       },
       onSuccess: () => {

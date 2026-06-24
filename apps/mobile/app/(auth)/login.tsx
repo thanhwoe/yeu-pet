@@ -27,10 +27,16 @@ export default function LoginScreen() {
         console.warn("[RevenueCat] Post-login sync failed.", error),
       );
       await startPushRegistrationSessionAsync();
-      Toast.success({ text: "Signed in." });
+      Toast.success({
+        title: "Welcome back",
+        text: "You are signed in to YeuPet.",
+      });
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Sign in failed",
+        text: e.message || "Check your details and try again.",
+      });
     },
   });
 

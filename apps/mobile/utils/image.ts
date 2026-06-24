@@ -21,7 +21,10 @@ export const saveImageToGallery = async (imageUri: string) => {
 
     if (status === "granted") {
       await MediaLibrary.saveToLibraryAsync(imageUri);
-      Toast.success({ text: "Image saved to gallery." });
+      Toast.success({
+        title: "Image saved",
+        text: "You can find it in your device gallery.",
+      });
     } else {
       alertGalleryPermission();
     }

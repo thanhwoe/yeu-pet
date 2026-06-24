@@ -70,7 +70,10 @@ export const AddCard = ({
   const { mutateAsync, isPending } = useMutation({
     mutationFn: createPetMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Pet not added",
+        text: e.message || "Check the pet details and try again.",
+      });
     },
     onSuccess(res, variable) {
       queryClient.setQueryData(PET_KEY.list(), (old: IPagination<IPet>) => {
@@ -114,6 +117,7 @@ export const AddCard = ({
   const handleSubmit = async (data: IPetInfoForm) => {
     if (!petLimit.allowed) {
       Toast.error({
+        title: "Pet limit reached",
         text: `Free plan supports ${petLimit.limit} pets. Upgrade to add more.`,
       });
       return;

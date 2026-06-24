@@ -79,7 +79,10 @@ export const usePayment = () => {
         handlePayWithZaloPay();
         break;
       default:
-        Toast.error({ text: "Choose a supported payment method." });
+        Toast.error({
+          title: "Payment method unavailable",
+          text: "Choose one of the supported payment methods to continue.",
+        });
         break;
     }
   };
@@ -89,25 +92,46 @@ export const usePayment = () => {
     // https://sandbox.vnpayment.vn/apis/docs/thanh-toan-token/token.html
     switch (data) {
       case "00":
-        Toast.success({ text: "Payment successful." });
+        Toast.success({
+          title: "Payment complete",
+          text: "Your payment was confirmed successfully.",
+        });
         break;
       case "24":
-        Toast.warn({ text: "Payment cancelled." });
+        Toast.warn({
+          title: "Payment cancelled",
+          text: "No payment was completed. You can try again when ready.",
+        });
         break;
       case "99":
-        Toast.error({ text: "Payment provider error. Please try again." });
+        Toast.error({
+          title: "Payment service error",
+          text: "The payment provider could not respond. Please try again.",
+        });
         break;
       case "08":
-        Toast.error({ text: "Bank is under maintenance. Try again later." });
+        Toast.error({
+          title: "Bank temporarily unavailable",
+          text: "Your bank is under maintenance. Please try again later.",
+        });
         break;
       case "79":
-        Toast.error({ text: "Bank is under maintenance. Try again later." });
+        Toast.error({
+          title: "Bank temporarily unavailable",
+          text: "Your bank is under maintenance. Please try again later.",
+        });
         break;
       case "02":
-        Toast.error({ text: "Transaction failed." });
+        Toast.error({
+          title: "Transaction declined",
+          text: "The bank did not approve this payment. Try another method.",
+        });
         break;
       default:
-        Toast.error({ text: "Payment failed." });
+        Toast.error({
+          title: "Payment failed",
+          text: "The payment was not completed. Please try again.",
+        });
         break;
     }
   };

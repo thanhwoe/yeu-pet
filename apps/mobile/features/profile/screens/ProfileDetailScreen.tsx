@@ -171,7 +171,10 @@ export function ProfileDetailScreen() {
 
     const asset = result.assets[0];
     if (asset.fileSize && asset.fileSize > MAX_AVATAR_SIZE) {
-      Toast.error({ text: "Choose an image under 5MB." });
+      Toast.error({
+        title: "Image is too large",
+        text: "Choose a profile image smaller than 5 MB.",
+      });
       return;
     }
 
@@ -193,7 +196,10 @@ export function ProfileDetailScreen() {
         normalizeEmail(data.email) !== normalizeEmail(user.email);
 
       if (!nameChanged && !emailChanged && !avatar) {
-        Toast.warn({ text: "No profile changes to save." });
+        Toast.warn({
+          title: "Nothing to save",
+          text: "Update your name, email, or photo before saving.",
+        });
         return;
       }
 
@@ -225,10 +231,14 @@ export function ProfileDetailScreen() {
           return;
         }
 
-        Toast.success({ text: "Profile updated." });
+        Toast.success({
+          title: "Profile updated",
+          text: "Your account details are now up to date.",
+        });
         router.back();
       } catch (error) {
         Toast.error({
+          title: "Profile not updated",
           text:
             error instanceof Error
               ? error.message

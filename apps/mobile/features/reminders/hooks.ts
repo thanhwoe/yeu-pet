@@ -74,7 +74,10 @@ export function useReminderCalendar() {
   const { mutateAsync: updateReminder, isPending: isUpdating } = useMutation({
     mutationFn: updateReminderMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Reminder not updated",
+        text: e.message || "Check the reminder details and try again.",
+      });
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -85,7 +88,10 @@ export function useReminderCalendar() {
   const { mutateAsync: deleteReminder, isPending: isDeleting } = useMutation({
     mutationFn: deleteReminderMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Reminder not removed",
+        text: e.message || "Refresh your reminders and try again.",
+      });
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -99,7 +105,10 @@ export function useReminderCalendar() {
   const { mutateAsync: cancelReminder, variables: cancellingId } = useMutation({
     mutationFn: cancelReminderMutation,
     onError(e: Error) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Reminder not cancelled",
+        text: e.message || "Refresh the reminder and try again.",
+      });
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -247,10 +256,16 @@ export function useCreateReminderSheet() {
             : old,
       );
       setOpenForm(false);
-      Toast.success({ text: "Reminder added." });
+      Toast.success({
+        title: "Reminder created",
+        text: "The new care task is now on your schedule.",
+      });
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Reminder not created",
+        text: e.message || "Check the reminder details and try again.",
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });

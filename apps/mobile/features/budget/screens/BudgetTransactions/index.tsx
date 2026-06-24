@@ -127,7 +127,10 @@ export const BudgetTransactionsScreen = () => {
         setOpenTransactionForm(false);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Transaction not added",
+          text: e.message || "Check the transaction details and try again.",
+        });
       },
       onSettled: () => {
         queryClient.invalidateQueries({
@@ -152,7 +155,10 @@ export const BudgetTransactionsScreen = () => {
         setTransactionEdit(undefined);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Transaction not updated",
+          text: e.message || "Check the transaction details and try again.",
+        });
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
@@ -180,7 +186,10 @@ export const BudgetTransactionsScreen = () => {
         });
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Transaction not removed",
+          text: e.message || "Refresh your transactions and try again.",
+        });
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });

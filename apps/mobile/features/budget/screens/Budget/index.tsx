@@ -133,7 +133,10 @@ export function BudgetScreen() {
         setOpenCategoryForm(false);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Category not created",
+          text: e.message || "Check the category details and try again.",
+        });
       },
     });
 
@@ -172,7 +175,10 @@ export function BudgetScreen() {
         setOpenTransactionForm(false);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Transaction not added",
+          text: e.message || "Check the transaction details and try again.",
+        });
       },
       onSettled: () => {
         queryClient.invalidateQueries({
@@ -195,7 +201,10 @@ export function BudgetScreen() {
         setOpenAddOptions(false);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Budget not updated",
+          text: e.message || "Check the amount and try again.",
+        });
       },
     });
 

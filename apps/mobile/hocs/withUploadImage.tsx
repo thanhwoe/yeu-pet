@@ -35,6 +35,7 @@ export const withUploadImage =
 
     const handleError = useCallback((err: unknown) => {
       Toast.error({
+        title: "Image not selected",
         text: (err as Error).message ?? "Could not select image.",
       });
     }, []);

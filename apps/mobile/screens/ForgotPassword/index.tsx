@@ -17,7 +17,10 @@ export const ForgotPasswordScreen = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: requestResetPasswordMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Reset code not sent",
+        text: e.message || "Check your phone number and try again.",
+      });
     },
     onSuccess(res) {
       updateOtpExpire(dayjs(res.expiresAt).toDate());

@@ -113,6 +113,7 @@ export function NotificationSettingsScreen() {
       },
       onError: (error: Error) => {
         Toast.error({
+          title: "Settings not saved",
           text: error.message || "Could not save settings. Please try again.",
         });
       },
@@ -149,6 +150,7 @@ export function NotificationSettingsScreen() {
         const pushToken = await registerForFirebasePushNotificationsAsync();
         if (!pushToken) {
           Toast.warn({
+            title: "Push unavailable here",
             text: "Push notifications are unavailable on this simulator.",
           });
           return;
@@ -179,10 +181,14 @@ export function NotificationSettingsScreen() {
         registrationComplete = true;
         await handleUpdateSettings({ notificationEnable: true });
         setPermissionState("authorized");
-        Toast.success({ text: "Push notifications enabled." });
+        Toast.success({
+          title: "Notifications enabled",
+          text: "YeuPet can now send care reminders to this device.",
+        });
       } catch (error: unknown) {
         if (!registrationComplete) {
           Toast.warn({
+            title: "Notifications not enabled",
             text:
               error instanceof Error
                 ? error.message
@@ -202,6 +208,7 @@ export function NotificationSettingsScreen() {
       await Linking.openSettings();
     } catch {
       Toast.error({
+        title: "Settings did not open",
         text: "Could not open device settings. Please try again.",
       });
     }

@@ -74,7 +74,10 @@ export const useBudgetCategories = () => {
       closeForm();
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Category not created",
+        text: e.message || "Check the category details and try again.",
+      });
     },
   });
 
@@ -85,7 +88,10 @@ export const useBudgetCategories = () => {
       closeForm();
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Category not updated",
+        text: e.message || "Check the category details and try again.",
+      });
     },
   });
 
@@ -95,7 +101,10 @@ export const useBudgetCategories = () => {
       invalidateBudgetData();
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Category not removed",
+        text: e.message || "Move its transactions or try again.",
+      });
     },
     onSettled: () => {
       closeDeleteConfirm();

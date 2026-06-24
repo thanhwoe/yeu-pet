@@ -30,14 +30,18 @@ export default function RegisterScreen() {
       );
       await startPushRegistrationSessionAsync();
       Toast.success({
-        text: "Account created. Verify your email to continue.",
+        title: "Account created",
+        text: "Verify your phone number to continue into YeuPet.",
       });
 
       const otpExpire = dayjs().add(10, "minute").toDate();
       updateOtpExpire(otpExpire);
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Account not created",
+        text: e.message || "Check your details and try again.",
+      });
     },
   });
   const handleLogin = async (data: ISignUpForm) => {

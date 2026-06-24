@@ -16,7 +16,10 @@ export const checkIsOpening = (data: IClinic) => {
 
 export const makePhoneCall = async (phoneNumber?: string) => {
   if (!phoneNumber) {
-    Toast.warn({ text: "No phone number available." });
+    Toast.warn({
+      title: "Call unavailable",
+      text: "This clinic has not provided a phone number.",
+    });
     return;
   }
   const phoneUrl = `tel:${phoneNumber}`;
@@ -35,7 +38,10 @@ export const makePhoneCall = async (phoneNumber?: string) => {
 
 export const sendSMS = async (phoneNumber?: string) => {
   if (!phoneNumber) {
-    Toast.warn({ text: "No phone number available." });
+    Toast.warn({
+      title: "Message unavailable",
+      text: "This clinic has not provided a phone number.",
+    });
     return;
   }
   const smsUrl = `sms:${phoneNumber}`;

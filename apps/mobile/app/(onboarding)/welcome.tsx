@@ -55,11 +55,17 @@ export default function WelcomeScreen() {
   const { mutate, isPending } = useMutation({
     mutationFn: completeOnboardingMutation,
     onSuccess: (res) => {
-      Toast.success({ text: "Onboarding completed." });
+      Toast.success({
+        title: "Setup complete",
+        text: "YeuPet is ready for your pet-care routine.",
+      });
       updateUser(res);
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Setup could not finish",
+        text: e.message || "Please sign in and try again.",
+      });
       logout();
     },
   });

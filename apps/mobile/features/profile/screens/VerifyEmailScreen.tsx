@@ -99,7 +99,10 @@ export function VerifyEmailScreen() {
     onSuccess: (request) => {
       setExpiresAt(request.expiresAt);
       setResendAvailableAt(request.resendAvailableAt ?? "");
-      Toast.success({ text: "Verification code sent." });
+      Toast.success({
+        title: "Code sent",
+        text: "Check your new email address for the verification code.",
+      });
     },
   });
 
@@ -113,10 +116,14 @@ export function VerifyEmailScreen() {
 
       try {
         await verifyEmail({ requestId, otp });
-        Toast.success({ text: "Email updated." });
+        Toast.success({
+          title: "Email updated",
+          text: "Use your new email address the next time you sign in.",
+        });
         router.replace("/profile");
       } catch (error) {
         Toast.error({
+          title: "Code not verified",
           text:
             error instanceof Error
               ? error.message
@@ -134,6 +141,7 @@ export function VerifyEmailScreen() {
       await resendCode({ requestId });
     } catch (error) {
       Toast.error({
+        title: "Code not sent",
         text:
           error instanceof Error
             ? error.message
@@ -156,10 +164,14 @@ export function VerifyEmailScreen() {
           onPress: async () => {
             try {
               await cancelChange({ requestId });
-              Toast.success({ text: "Email change cancelled." });
+              Toast.success({
+                title: "Email change cancelled",
+                text: "Your current email address remains unchanged.",
+              });
               router.replace("/profile");
             } catch (error) {
               Toast.error({
+                title: "Cancellation failed",
                 text:
                   error instanceof Error
                     ? error.message

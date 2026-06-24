@@ -31,10 +31,14 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
   const handleSuccess = async () => {
     try {
       await syncBackend();
-      Toast.success({ text: "Premium care tools are ready." });
+      Toast.success({
+        title: "Premium unlocked",
+        text: "Your Premium care tools are ready to use.",
+      });
       onSuccess();
     } catch {
       Toast.warn({
+        title: "Plan still syncing",
         text: "Your store purchase succeeded. YeuPet is still refreshing your plan.",
       });
       onSuccess();
@@ -76,11 +80,17 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
       onDismiss={onDismiss}
       onPurchaseCompleted={() => void handleSuccess()}
       onPurchaseError={() =>
-        Toast.error({ text: "Purchase failed. Please try again." })
+        Toast.error({
+          title: "Purchase failed",
+          text: "Premium was not activated. Please try again.",
+        })
       }
       onRestoreCompleted={() => void handleSuccess()}
       onRestoreError={() =>
-        Toast.error({ text: "Restore failed. Please try again." })
+        Toast.error({
+          title: "Restore failed",
+          text: "We could not restore your purchases. Please try again.",
+        })
       }
     />
   );

@@ -209,7 +209,8 @@ export const usePhotoCommentsSheet = ({
     mutationFn: createPhotoCommentMutation,
     onError(error: MutationError) {
       Toast.error({
-        text: getErrorMessage(error, "Failed to send comment"),
+        title: "Comment not posted",
+        text: getErrorMessage(error, "Check your connection and try again."),
       });
     },
   });
@@ -218,7 +219,8 @@ export const usePhotoCommentsSheet = ({
     mutationFn: createPhotoReplyMutation,
     onError(error: MutationError) {
       Toast.error({
-        text: getErrorMessage(error, "Failed to send reply"),
+        title: "Reply not posted",
+        text: getErrorMessage(error, "Check your connection and try again."),
       });
     },
   });
@@ -226,14 +228,18 @@ export const usePhotoCommentsSheet = ({
   const { mutate: deleteComment, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoCommentMutation,
     onSuccess(result) {
-      Toast.success({ text: "Comment deleted." });
+      Toast.success({
+        title: "Comment removed",
+        text: "The comment is no longer visible on this photo.",
+      });
       setActionComment(null);
       applyDeletedCommentResult(result);
       invalidateComments();
     },
     onError(error: MutationError) {
       Toast.error({
-        text: getErrorMessage(error, "Failed to delete comment"),
+        title: "Comment not removed",
+        text: getErrorMessage(error, "Refresh the comments and try again."),
       });
     },
   });

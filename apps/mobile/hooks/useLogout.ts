@@ -15,7 +15,10 @@ export const useLogout = () => {
       queryClient.resetQueries();
     },
     onError: (e) => {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Sign out failed",
+        text: e.message || "Please try signing out again.",
+      });
     },
   });
 

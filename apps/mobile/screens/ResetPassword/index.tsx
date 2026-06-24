@@ -22,7 +22,10 @@ export const ResetPasswordScreen = () => {
   const { mutateAsync: resendOtp, isPending: resendingOtp } = useMutation({
     mutationFn: requestResetPasswordMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Code not resent",
+        text: e.message || "Wait a moment and try again.",
+      });
     },
     onSuccess(res) {
       updateOtpExpire(dayjs(res.expiresAt).toDate());
@@ -32,7 +35,10 @@ export const ResetPasswordScreen = () => {
   const { mutateAsync: resetPassword, isPending: isSubmitting } = useMutation({
     mutationFn: resetPasswordMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Password not reset",
+        text: e.message || "Check the code and try again.",
+      });
     },
     onSuccess() {
       updateOtpExpire(null);

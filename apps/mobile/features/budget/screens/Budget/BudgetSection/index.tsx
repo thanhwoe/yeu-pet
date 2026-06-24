@@ -50,7 +50,10 @@ export const BudgetSection = memo(
         setShowBottomSheet(false);
       },
       onError: (e) => {
-        Toast.error({ text: e.message });
+        Toast.error({
+          title: "Budget not updated",
+          text: e.message || "Check the amount and try again.",
+        });
       },
     });
 

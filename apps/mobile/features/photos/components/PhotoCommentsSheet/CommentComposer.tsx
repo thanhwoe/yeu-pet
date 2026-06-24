@@ -72,7 +72,10 @@ export const CommentComposer = memo(
       const trimmedContent = content.trim();
 
       if (!trimmedContent) {
-        Toast.warn({ text: "Comment is required." });
+        Toast.warn({
+          title: "Write a comment",
+          text: "Add some text before posting your comment.",
+        });
         return;
       }
 

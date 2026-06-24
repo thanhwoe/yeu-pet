@@ -233,6 +233,7 @@ export function SettingsScreen() {
       },
       onError: (error: Error) => {
         Toast.error({
+          title: "Settings not saved",
           text: error.message || "Could not save settings. Please try again.",
         });
       },
@@ -263,7 +264,10 @@ export function SettingsScreen() {
     try {
       await Linking.openURL(url);
     } catch {
-      Toast.error({ text: "Could not open this link. Please try again." });
+      Toast.error({
+        title: "Link did not open",
+        text: "Check your connection and try opening the link again.",
+      });
     }
   }, []);
 

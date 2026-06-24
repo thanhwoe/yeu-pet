@@ -29,12 +29,17 @@ export const BottomActions = ({ loading }: IProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.all });
 
-      Toast.success({ text: "Item added to cart." });
+      Toast.success({
+        title: "Added to cart",
+        text: "This item is ready for checkout in your cart.",
+      });
     },
     onError: (e) => {
       Toast.error({
-        text: e.errors?.[0].message ?? "Failed to add item to cart",
-        title: "Add to cart failed",
+        text:
+          e.errors?.[0].message ??
+          "Check the item and try adding it to your cart again.",
+        title: "Item not added",
       });
     },
   });

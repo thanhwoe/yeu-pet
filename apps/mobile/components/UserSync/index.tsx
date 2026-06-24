@@ -28,7 +28,10 @@ export const UserSync = () => {
   const { mutateAsync } = useMutation({
     mutationFn: saveDeviceInfoMutation,
     onError(e) {
-      Toast.error({ text: e.message });
+      Toast.error({
+        title: "Device sync failed",
+        text: e.message || "Notification setup will retry later.",
+      });
     },
   });
 

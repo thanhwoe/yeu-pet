@@ -62,7 +62,10 @@ export const DocumentsInputController = <
 
   const handleUpload = (uploaded: UploadFileParam) => {
     if (uploaded.size && uploaded.size > maxSizeMB * BYTES_PER_MB) {
-      Toast.error({ text: `${uploaded.name}: exceeds ${maxSizeMB}MB limit` });
+      Toast.error({
+        title: "File is too large",
+        text: `${uploaded.name} must be smaller than ${maxSizeMB} MB.`,
+      });
       return;
     }
 
@@ -71,12 +74,18 @@ export const DocumentsInputController = <
     );
 
     if (isDuplicate) {
-      Toast.error({ text: `${uploaded.name}: already added` });
+      Toast.error({
+        title: "File already added",
+        text: `${uploaded.name} is already attached to this record.`,
+      });
       return;
     }
 
     if (totalCount >= maxFiles) {
-      Toast.error({ text: `Maximum ${maxFiles} files allowed` });
+      Toast.error({
+        title: "Attachment limit reached",
+        text: `Remove a file before adding more than ${maxFiles} attachments.`,
+      });
       return;
     }
 
