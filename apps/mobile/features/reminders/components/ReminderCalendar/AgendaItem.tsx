@@ -8,6 +8,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminder } from "@/interfaces";
 import { cn } from "@/utils";
 import {
+  canDeleteReminder,
   formatReminderRepeat,
   formatReminderTime,
   REMINDER_TYPE_LABELS,
@@ -37,6 +38,7 @@ export const AgendaItem = ({
   deleting,
 }: ItemProps) => {
   const isMuted = item.status === "cancelled";
+  const canDelete = canDeleteReminder(item.status);
   const petName = item.pets?.name ?? "No pet";
   const repeatSummary = formatReminderRepeat(
     item.repeatFrequency,
@@ -51,12 +53,18 @@ export const AgendaItem = ({
         width: 80,
         loading: editing,
       }}
-      rightAction={{
-        icon: <DeleteIcon className="text-status-danger-icon" weight="bold" />,
-        onPress: () => onDelete?.(item),
-        width: 80,
-        loading: deleting,
-      }}
+      rightAction={
+        canDelete
+          ? {
+              icon: (
+                <DeleteIcon className="text-status-danger-icon" weight="bold" />
+              ),
+              onPress: () => onDelete?.(item),
+              width: 80,
+              loading: deleting,
+            }
+          : undefined
+      }
       style={{ marginBottom: 12 }}
       swipeThreshold={60}
     >

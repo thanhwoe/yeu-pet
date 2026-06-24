@@ -195,6 +195,9 @@ POST   /reminders/:id/skip
 POST   /reminders/:id/cancel
 ```
 
+Sent or completed reminders are retained as care history. Attempting to delete
+either status returns `400 Bad Request`.
+
 ## Medical Records
 
 ```txt

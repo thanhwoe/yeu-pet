@@ -14,6 +14,7 @@ import {
   BUDGET_KEY,
   BUDGET_STATISTIC_KEY,
   BUDGET_TRANSACTION_KEY,
+  SUBSCRIPTION_KEY,
 } from "@/constants/query-keys";
 import {
   IBudgetCategoryForm,
@@ -23,6 +24,7 @@ import { BudgetCategoryForm } from "@/features/budget/components/BudgetCategoryF
 import { BudgetTransaction } from "@/features/budget/components/BudgetTransaction";
 import { BudgetTransactionForm } from "@/features/budget/components/BudgetTransactionForm";
 import { withIconClassName } from "@/hocs/withIconClassName";
+import { SubscriptionEntitlements } from "@/interfaces";
 import {
   createBudgetCategoryMutation,
   createBudgetTransactionMutation,
@@ -142,7 +144,7 @@ export function BudgetScreen() {
   const { mutateAsync: createTransaction, isPending: isTransactionCreating } =
     useMutation({
       mutationFn: createBudgetTransactionMutation,
-      onSuccess: () => {
+      onSuccess: (_transaction, variables) => {
         queryClient.invalidateQueries({
           queryKey: BUDGET_TRANSACTION_KEY.lists(),
         });
@@ -150,11 +152,33 @@ export function BudgetScreen() {
         queryClient.invalidateQueries({
           queryKey: BUDGET_STATISTIC_KEY.details(),
         });
+        if (dayjs(variables.date).isSame(dayjs(), "month")) {
+          queryClient.setQueryData(
+            SUBSCRIPTION_KEY.entitlements(),
+            (old: SubscriptionEntitlements | undefined) =>
+              old
+                ? {
+                    ...old,
+                    usage: {
+                      ...old.usage,
+                      budgetTransactionsThisMonth:
+                        old.usage.budgetTransactionsThisMonth + 1,
+                    },
+                  }
+                : old,
+          );
+        }
         setOpenAddOptions(false);
         setOpenTransactionForm(false);
       },
       onError: (e) => {
         Toast.error({ text: e.message });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: BUDGET_TRANSACTION_KEY.lists(),
+        });
+        queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
       },
     });
 
@@ -342,6 +366,7 @@ export function BudgetScreen() {
       <BottomSheet
         visible={openCategoryForm}
         onDismiss={() => setOpenCategoryForm(false)}
+        keyboardBehavior="interactive"
       >
         <BudgetCategoryForm
           onSubmit={handleSubmitCategory}

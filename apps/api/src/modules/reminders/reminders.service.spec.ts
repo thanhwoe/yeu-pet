@@ -6,6 +6,7 @@ import {
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { IRemindersRepository } from '@app/interfaces/reminders-repository.interface';
 import { Test } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SubscriptionService } from '../subscription/subscription.service';
@@ -19,6 +20,7 @@ describe('RemindersService', () => {
     findAll: jest.fn(),
     findMany: jest.fn(),
     claimForNotification: jest.fn().mockResolvedValue(true),
+    deleteIfAllowed: jest.fn(),
   };
   const petsRepository = {
     findByUser: jest.fn(),
@@ -94,6 +96,72 @@ describe('RemindersService', () => {
         status: reminder_status.completed,
         completed_at: expect.any(Date) as Date,
       }),
+    );
+  });
+
+  it.each([reminder_status.sent, reminder_status.completed])(
+    'does not delete %s reminders',
+    async (status) => {
+      remindersRepository.findById.mockResolvedValue({
+        id: 'reminder-1',
+        account_id: 'account-1',
+        status,
+      });
+
+      await expect(
+        service.remove(
+          {
+            id: 'account-1',
+          } as never,
+          'reminder-1',
+        ),
+      ).rejects.toThrow(
+        new BadRequestException(
+          'Sent or completed reminders cannot be deleted',
+        ),
+      );
+
+      expect(remindersRepository.deleteIfAllowed).not.toHaveBeenCalled();
+    },
+  );
+
+  it('deletes reminders that are not sent or completed', async () => {
+    remindersRepository.findById.mockResolvedValue({
+      id: 'reminder-1',
+      account_id: 'account-1',
+      status: reminder_status.pending,
+    });
+    remindersRepository.deleteIfAllowed.mockResolvedValue(true);
+
+    await service.remove(
+      {
+        id: 'account-1',
+      } as never,
+      'reminder-1',
+    );
+
+    expect(remindersRepository.deleteIfAllowed).toHaveBeenCalledWith(
+      'reminder-1',
+    );
+  });
+
+  it('does not delete a reminder claimed for delivery after validation', async () => {
+    remindersRepository.findById.mockResolvedValue({
+      id: 'reminder-1',
+      account_id: 'account-1',
+      status: reminder_status.pending,
+    });
+    remindersRepository.deleteIfAllowed.mockResolvedValue(false);
+
+    await expect(
+      service.remove(
+        {
+          id: 'account-1',
+        } as never,
+        'reminder-1',
+      ),
+    ).rejects.toThrow(
+      new BadRequestException('Sent or completed reminders cannot be deleted'),
     );
   });
 

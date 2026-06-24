@@ -102,6 +102,20 @@ export class RemindersRepository implements IRemindersRepository {
     });
   }
 
+  async deleteIfAllowed(id: string) {
+    const result = await this.prisma.reminders.deleteMany({
+      where: {
+        id,
+        notification_provider_id: null,
+        status: {
+          notIn: [reminder_status.sent, reminder_status.completed],
+        },
+      },
+    });
+
+    return result.count === 1;
+  }
+
   private include() {
     return {
       pets: {

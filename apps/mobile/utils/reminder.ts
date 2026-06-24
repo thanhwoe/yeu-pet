@@ -2,6 +2,7 @@ import {
   GroupedReminder,
   IReminder,
   ReminderRepeatFrequency,
+  ReminderStatus,
   VisibleReminderStatus,
 } from "@/interfaces";
 import dayjs from "dayjs";
@@ -9,6 +10,14 @@ import { isEmpty } from "lodash";
 import type { ExpandableCalendarProps } from "react-native-calendars";
 
 export const REMINDER_DAY_KEY_FORMAT = "YYYY-MM-DD";
+
+const NON_DELETABLE_REMINDER_STATUSES = new Set<ReminderStatus>([
+  "sent",
+  "completed",
+]);
+
+export const canDeleteReminder = (status: ReminderStatus) =>
+  !NON_DELETABLE_REMINDER_STATUSES.has(status);
 
 export const REMINDER_STATUS_LABELS: Record<VisibleReminderStatus, string> = {
   pending: "Pending",

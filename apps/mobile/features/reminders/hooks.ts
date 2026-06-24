@@ -1,7 +1,11 @@
 import { Toast } from "@/components/Toast";
-import { PET_KEY, REMINDER_KEY } from "@/constants/query-keys";
+import {
+  PET_KEY,
+  REMINDER_KEY,
+  SUBSCRIPTION_KEY,
+} from "@/constants/query-keys";
 import { IReminderForm } from "@/constants/validation";
-import { IReminder } from "@/interfaces";
+import { IReminder, SubscriptionEntitlements } from "@/interfaces";
 import { useReminderUiStore } from "@/features/reminders/store";
 import {
   cancelReminderMutation,
@@ -12,6 +16,7 @@ import {
   updateReminderMutation,
 } from "@/services";
 import {
+  canDeleteReminder,
   getMonthRange,
   getMarkedDateCounts,
   getRemindersForDay,
@@ -86,6 +91,9 @@ export function useReminderCalendar() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setAgendaDelete(undefined);
     },
+    onSettled() {
+      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
+    },
   });
 
   const { mutateAsync: cancelReminder, variables: cancellingId } = useMutation({
@@ -95,6 +103,9 @@ export function useReminderCalendar() {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
+    },
+    onSettled() {
+      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
     },
   });
 
@@ -123,10 +134,21 @@ export function useReminderCalendar() {
   );
 
   const handleDelete = useCallback(async () => {
-    if (agendaDelete?.id) {
-      await deleteReminder(agendaDelete.id);
+    if (!agendaDelete?.id) {
+      return;
     }
-  }, [agendaDelete?.id, deleteReminder]);
+
+    if (!canDeleteReminder(agendaDelete.status)) {
+      setAgendaDelete(undefined);
+      Toast.warn({
+        title: "Cannot delete reminder",
+        text: "Sent or completed reminders are kept in your care history.",
+      });
+      return;
+    }
+
+    await deleteReminder(agendaDelete.id);
+  }, [agendaDelete, deleteReminder]);
 
   const handleCancelDelete = useCallback(() => setAgendaDelete(undefined), []);
 
@@ -211,11 +233,27 @@ export function useCreateReminderSheet() {
     mutationFn: createReminderMutation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
+      queryClient.setQueryData(
+        SUBSCRIPTION_KEY.entitlements(),
+        (old: SubscriptionEntitlements | undefined) =>
+          old
+            ? {
+                ...old,
+                usage: {
+                  ...old.usage,
+                  activeReminders: old.usage.activeReminders + 1,
+                },
+              }
+            : old,
+      );
       setOpenForm(false);
       Toast.success({ text: "Reminder added." });
     },
     onError: (e) => {
       Toast.error({ text: e.message });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
     },
   });
 

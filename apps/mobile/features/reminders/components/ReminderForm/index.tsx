@@ -1,12 +1,16 @@
 import { DateTimePickerController } from "@/components/DatetimePickerController";
 import { InputController } from "@/components/InputController";
 import { OptionInputController } from "@/components/OptionInputController";
+import { PaywallNotice } from "@/components/PaywallNotice";
 import { PetPickerController } from "@/components/PetPickerController";
+import { Toast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
 import { PET_KEY } from "@/constants/query-keys";
 import { IReminderForm, reminderSchema } from "@/constants/validation";
 import { ReminderTypeIcon } from "@/features/reminders/components/ReminderIcons";
+import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { getListPetQuery } from "@/services";
 import { date } from "@/utils";
@@ -75,7 +79,39 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
     queryFn: getListPetQuery,
   });
 
+  const {
+    entitlements,
+    getLimitState,
+    isError: isEntitlementsError,
+    isLoading: isEntitlementsLoading,
+    isUpgrading,
+    refetch: refetchEntitlements,
+    upgrade,
+  } = useEntitlements();
+  const activeReminderLimit = getLimitState("maxActiveReminders");
+  const recurringReminderBlocked =
+    repeatFrequency !== "none" &&
+    Boolean(repeatFrequency) &&
+    entitlements?.limits.recurringReminders === false;
+  const isCreating = !defaultValues;
+
   const handleSubmitForm = async (data: IReminderForm) => {
+    if (isCreating && !activeReminderLimit.allowed) {
+      Toast.warn({
+        title: "Reminder limit reached",
+        text: "Upgrade to Premium to create more active reminders.",
+      });
+      return;
+    }
+
+    if (recurringReminderBlocked) {
+      Toast.warn({
+        title: "Recurring reminders require Premium",
+        text: "Choose a one-time reminder or upgrade to Premium.",
+      });
+      return;
+    }
+
     await onSubmit({
       ...data,
       title: data.title.trim(),
@@ -84,11 +120,59 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       repeatFrequency: data.repeatFrequency ?? "none",
       repeatInterval: data.repeatFrequency === "none" ? undefined : 1,
       repeatUntil:
-        data.repeatFrequency === "none" ? null : data.repeatUntil ?? null,
+        data.repeatFrequency === "none" ? null : (data.repeatUntil ?? null),
       timezone:
         data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
   };
+
+  if (isCreating && isEntitlementsLoading && !entitlements) {
+    return (
+      <View className="min-h-240 px-20 pb-safe-offset-8">
+        <StateView
+          variant="loading"
+          title="Checking your plan"
+          description="Making sure there is room for another reminder."
+        />
+      </View>
+    );
+  }
+
+  if (isCreating && isEntitlementsError && !entitlements) {
+    return (
+      <View className="min-h-240 px-20 pb-safe-offset-8">
+        <StateView
+          variant="error"
+          title="Could not check your reminder limit"
+          description="Check your connection and try again."
+          actionLabel="Try again"
+          onAction={() => void refetchEntitlements()}
+        />
+      </View>
+    );
+  }
+
+  if (isCreating && !activeReminderLimit.allowed) {
+    return (
+      <KeyboardAvoidingView
+        className="px-20 pb-safe-offset-8"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <PaywallNotice
+          variant="blocking"
+          title="Reminder limit reached"
+          description={`Free plan includes ${activeReminderLimit.limit} active reminders. Upgrade to Premium to keep every care routine on schedule.`}
+          benefits={[
+            "Unlimited active reminders",
+            "Recurring care schedules",
+            "More room for every pet",
+          ]}
+          loading={isUpgrading}
+          onAction={() => void upgrade()}
+        />
+      </KeyboardAvoidingView>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -159,6 +243,15 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
               minimumDate={scheduledAt ?? new Date()}
               format={(val) => date(val).format("LL")}
             />
+            {recurringReminderBlocked ? (
+              <PaywallNotice
+                variant="inline"
+                title="Recurring reminders are Premium"
+                description="Choose a one-time reminder or upgrade to repeat this care task automatically."
+                loading={isUpgrading}
+                onAction={() => void upgrade()}
+              />
+            ) : null}
           </>
         ) : null}
       </View>
@@ -167,6 +260,7 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
         onPress={() => handleSubmit(handleSubmitForm)()}
         className="mt-8"
         loading={loading}
+        disabled={recurringReminderBlocked}
       >
         {!!defaultValues ? "Update reminder" : "Create reminder"}
       </Button>

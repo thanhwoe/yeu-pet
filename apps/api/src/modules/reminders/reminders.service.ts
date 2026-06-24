@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import dayjs from 'dayjs';
@@ -16,6 +22,11 @@ import { IRemindersRepository } from '@app/interfaces/reminders-repository.inter
 import { assertOwnerOrAdmin } from '@app/utils/ownership';
 import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { SubscriptionService } from '../subscription/subscription.service';
+
+const NON_DELETABLE_REMINDER_STATUSES = new Set<reminder_status>([
+  reminder_status.sent,
+  reminder_status.completed,
+]);
 
 @Injectable()
 export class RemindersService {
@@ -210,8 +221,21 @@ export class RemindersService {
   }
 
   async remove(user: accounts, id: string) {
-    await this.assertOwner(user, id);
-    await this.remindersRepository.delete(id);
+    const reminder = await this.assertOwner(user, id);
+
+    if (NON_DELETABLE_REMINDER_STATUSES.has(reminder.status)) {
+      throw new BadRequestException(
+        'Sent or completed reminders cannot be deleted',
+      );
+    }
+
+    const deleted = await this.remindersRepository.deleteIfAllowed(id);
+
+    if (!deleted) {
+      throw new BadRequestException(
+        'Sent or completed reminders cannot be deleted',
+      );
+    }
   }
 
   async complete(user: accounts, id: string) {

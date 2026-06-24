@@ -8,12 +8,13 @@ import {
   BUDGET_KEY,
   BUDGET_STATISTIC_KEY,
   BUDGET_TRANSACTION_KEY,
+  SUBSCRIPTION_KEY,
 } from "@/constants/query-keys";
 import { IBudgetTransactionForm } from "@/constants/validation";
 import { BudgetTransaction } from "@/features/budget/components/BudgetTransaction";
 import { BudgetTransactionForm } from "@/features/budget/components/BudgetTransactionForm";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { IBudgetTransaction } from "@/interfaces";
+import { IBudgetTransaction, SubscriptionEntitlements } from "@/interfaces";
 import {
   createBudgetTransactionMutation,
   deleteBudgetTransactionMutation,
@@ -99,7 +100,7 @@ export const BudgetTransactionsScreen = () => {
   const { mutateAsync: createTransaction, isPending: isTransactionCreating } =
     useMutation({
       mutationFn: createBudgetTransactionMutation,
-      onSuccess: () => {
+      onSuccess: (_transaction, variables) => {
         queryClient.invalidateQueries({
           queryKey: BUDGET_TRANSACTION_KEY.lists(),
         });
@@ -107,10 +108,32 @@ export const BudgetTransactionsScreen = () => {
         queryClient.invalidateQueries({
           queryKey: BUDGET_STATISTIC_KEY.details(),
         });
+        if (dayjs(variables.date).isSame(dayjs(), "month")) {
+          queryClient.setQueryData(
+            SUBSCRIPTION_KEY.entitlements(),
+            (old: SubscriptionEntitlements | undefined) =>
+              old
+                ? {
+                    ...old,
+                    usage: {
+                      ...old.usage,
+                      budgetTransactionsThisMonth:
+                        old.usage.budgetTransactionsThisMonth + 1,
+                    },
+                  }
+                : old,
+          );
+        }
         setOpenTransactionForm(false);
       },
       onError: (e) => {
         Toast.error({ text: e.message });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({
+          queryKey: BUDGET_TRANSACTION_KEY.lists(),
+        });
+        queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
       },
     });
 
@@ -130,6 +153,9 @@ export const BudgetTransactionsScreen = () => {
       },
       onError: (e) => {
         Toast.error({ text: e.message });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
       },
     });
 
@@ -157,6 +183,7 @@ export const BudgetTransactionsScreen = () => {
         Toast.error({ text: e.message });
       },
       onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
         setOpenTransactionForm(false);
         setTransactionDelete(undefined);
       },
