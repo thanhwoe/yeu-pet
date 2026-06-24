@@ -6,6 +6,7 @@ import { Body, Heading } from "@/components/ui/Typography";
 import { useSitterReviews } from "@/features/sitter/useSitters";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPetSitter, ISitterReview } from "@/interfaces";
+import { date } from "@/utils";
 import { MapPinIcon, PawPrintIcon, StarIcon } from "phosphor-react-native";
 import { View } from "react-native";
 import { formatRate, getLocationLine, getSitterName } from "../utils";
@@ -25,7 +26,9 @@ const getReviewerName = (review: ISitterReview) => {
 
 const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
   const reviewsQuery = useSitterReviews(sitter.id);
-  const reviews = reviewsQuery.data?.data ?? [];
+  const reviews = reviewsQuery.data?.pages.flatMap((page) => page.data) ?? [];
+  const totalReviews =
+    reviewsQuery.data?.pages[0]?.meta.total ?? sitter.totalReviews ?? 0;
 
   return (
     <View className="gap-12">
@@ -34,11 +37,11 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
           Reviews
         </Heading>
         <Body variant="body4" className="text-text-muted">
-          {sitter.totalReviews || 0} total
+          {totalReviews} total
         </Body>
       </View>
 
-      {reviewsQuery.isFetching ? (
+      {reviewsQuery.isLoading ? (
         <View
           accessibilityRole="progressbar"
           accessibilityLabel="Loading sitter reviews"
@@ -52,8 +55,12 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
             className="h-74 rounded-18"
             backgroundClassName="bg-background-surface-muted"
           />
+          <Skeleton
+            className="h-74 rounded-18"
+            backgroundClassName="bg-background-surface-muted"
+          />
         </View>
-      ) : reviewsQuery.isError ? (
+      ) : reviewsQuery.isError && !reviews.length ? (
         <StateView
           variant="error"
           title="Reviews could not load"
@@ -70,10 +77,19 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
               className="gap-6 rounded-18 border border-line-subtle bg-background-surface px-12 py-12"
             >
               <View className="flex-row items-center justify-between gap-12">
-                <Body variant="body3" weight="semiBold" numberOfLines={1}>
+                <Body
+                  variant="body3"
+                  weight="semiBold"
+                  numberOfLines={1}
+                  className="min-w-0 flex-1"
+                >
                   {getReviewerName(review)}
                 </Body>
-                <View className="flex-row items-center gap-4">
+                <View
+                  accessible
+                  accessibilityLabel={`Rated ${review.rating} out of 5`}
+                  className="shrink-0 flex-row items-center gap-4"
+                >
                   <Star
                     size={14}
                     weight="fill"
@@ -85,12 +101,51 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
                 </View>
               </View>
               {review.comment ? (
-                <Body variant="body4" className="text-text-muted">
+                <Body
+                  variant="body4"
+                  className="text-text-muted"
+                  numberOfLines={3}
+                >
                   {review.comment}
+                </Body>
+              ) : null}
+              {review.createdAt ? (
+                <Body variant="body5" className="text-text-muted">
+                  {date(review.createdAt).format("DD MMM YYYY")}
                 </Body>
               ) : null}
             </View>
           ))}
+
+          {reviewsQuery.isFetchNextPageError ? (
+            <View className="items-center gap-8 py-4">
+              <Body variant="body4" className="text-center text-text-muted">
+                More reviews could not load.
+              </Body>
+              <Button
+                variant="outline"
+                size="md"
+                onPress={() => reviewsQuery.fetchNextPage()}
+                accessibilityLabel="Retry loading more sitter reviews"
+              >
+                Try again
+              </Button>
+            </View>
+          ) : reviewsQuery.hasNextPage ? (
+            <Button
+              variant="outline"
+              size="md"
+              loading={reviewsQuery.isFetchingNextPage}
+              onPress={() => reviewsQuery.fetchNextPage()}
+              accessibilityLabel="Show more sitter reviews"
+            >
+              Show more reviews
+            </Button>
+          ) : (
+            <Body variant="body4" className="py-4 text-center text-text-muted">
+              All reviews loaded
+            </Body>
+          )}
         </View>
       ) : (
         <StateView

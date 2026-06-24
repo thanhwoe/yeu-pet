@@ -33,7 +33,12 @@ import {
   rejectSitterBookingMutation,
   updateSitterMutation,
 } from "@/services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 const SITTER_LIMIT = 10;
 const BOOKING_LIMIT = 20;
@@ -272,16 +277,20 @@ export const useSitterBookingDetail = (bookingId?: string) => {
 };
 
 export const useSitterReviews = (sitterId?: string) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: SITTER_REVIEW_KEY.list({
       sitterId,
       limit: REVIEW_LIMIT,
     }),
-    queryFn: () =>
+    queryFn: ({ pageParam }) =>
       getSitterReviewsQuery({
         sitterId: sitterId ?? "",
         limit: REVIEW_LIMIT,
+        page: pageParam,
       }),
     enabled: Boolean(sitterId),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.hasNextPage ? lastPage.meta.page + 1 : undefined,
   });
 };
