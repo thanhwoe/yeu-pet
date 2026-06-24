@@ -6,8 +6,8 @@ import { Options } from "@/components/ui/Options";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { Spinner } from "@/components/ui/Spinner";
 import { Body, Heading } from "@/components/ui/Typography";
-import { MedicalRecordStatusChip } from "@/features/medical-records/components/MedicalRecordStatusChip";
 import { MedicalRecordForm } from "@/features/medical-records/components/MedicalRecordForm";
+import { MedicalRecordStatusChip } from "@/features/medical-records/components/MedicalRecordStatusChip";
 import { MedicalRecordType } from "@/features/medical-records/components/MedicalRecordType";
 import { useMedicalRecordDetail } from "@/features/medical-records/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
@@ -107,10 +107,7 @@ export const MedicalRecordDetailScreen = () => {
       />
       <ImageGallery data={recordImages} ref={galleryRef} />
 
-      <BottomSheet
-        visible={!!openOptions}
-        onDismiss={handleCloseOptions}
-      >
+      <BottomSheet visible={!!openOptions} onDismiss={handleCloseOptions}>
         <Options
           data={[
             {
@@ -176,14 +173,19 @@ const HeroSummaryCard = ({
         <MedicalRecordStatusChip status={data.attachmentStatus} />
       </View>
 
-      <View className="flex-row flex-wrap items-center gap-8">
+      <View className="gap-8">
         <MedicalRecordType type={data.recordType} />
-        <MetaPill>{date(data.date).format("LL")}</MetaPill>
-        {!!petName && <MetaPill>{petName}</MetaPill>}
+
+        <Body variant="body2" weight="semiBold" className="text-text-emphasis">
+          {petName}
+        </Body>
+        <Body variant="body4" className="text-text-muted">
+          Date: {date(data.date).format("LL")}
+        </Body>
       </View>
 
       <Body variant="body4" className="text-text-muted">
-        Record ID {shortID(data.id)}
+        Record ID: {shortID(data.id)}
       </Body>
     </View>
   );
@@ -202,16 +204,6 @@ const SectionCard = ({
         {title}
       </Heading>
       <View className="gap-14">{children}</View>
-    </View>
-  );
-};
-
-const MetaPill = ({ children }: { children: ReactNode }) => {
-  return (
-    <View className="min-h-30 justify-center rounded-full bg-background-surface-muted px-10">
-      <Body variant="body4" className="text-text-muted">
-        {children}
-      </Body>
     </View>
   );
 };
@@ -307,7 +299,9 @@ const AttachmentStateCard = ({
 
   return (
     <StateCard
-      icon={<AttachmentIcon size={22} className="text-feature-medical-accent" />}
+      icon={
+        <AttachmentIcon size={22} className="text-feature-medical-accent" />
+      }
       title="No attachments yet"
       description="Add photos or documents when you edit this record."
     />

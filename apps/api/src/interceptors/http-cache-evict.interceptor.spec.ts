@@ -48,6 +48,40 @@ describe('HttpCacheEvictInterceptor', () => {
     ]);
   });
 
+  it('waits for cache eviction before returning the mutation response', async () => {
+    let resolveEviction: (() => void) | undefined;
+    cacheService.delByPattern.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveEviction = resolve;
+      }),
+    );
+    const next: CallHandler = { handle: jest.fn(() => of({ ok: true })) };
+    const context = createContext({
+      method: 'PATCH',
+      url: '/medical-records/record-1',
+      user: { id: 'user-1' },
+    });
+    let completed = false;
+
+    const responsePromise = lastValueFrom(
+      interceptor.intercept(context, next),
+    ).then((response) => {
+      completed = true;
+      return response;
+    });
+
+    await new Promise<void>((resolve) => setImmediate(resolve));
+
+    expect(cacheService.delByPattern.mock.calls).toContainEqual([
+      'http_cache:user:user-1:*',
+    ]);
+    expect(completed).toBe(false);
+
+    resolveEviction?.();
+
+    await expect(responsePromise).resolves.toEqual({ ok: true });
+  });
+
   it('expands configured eviction patterns', async () => {
     const handler = jest.fn();
     Reflect.defineMetadata(

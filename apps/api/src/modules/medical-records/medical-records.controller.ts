@@ -22,7 +22,7 @@ import { Action } from '../casl/casl.types';
 import { CurrentUser } from '@app/decorators/current-user.decorator';
 import type { accounts } from '@app/generated/prisma/client';
 import { IdParam } from '@app/decorators/id-param.decorator';
-import { Cacheable } from '@app/decorators/cache.decorator';
+import { Cacheable, CacheEvict } from '@app/decorators/cache.decorator';
 import { PaginationQuery } from '@app/decorators/pagination.decorator';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 
@@ -32,6 +32,7 @@ export class MedicalRecordsController {
   constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
 
   @Post('medical-records')
+  @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
   @UseInterceptors(FilesInterceptor('attachments', 5))
   create(
@@ -47,6 +48,7 @@ export class MedicalRecordsController {
   }
 
   @Post('pets/:id/medical-records')
+  @CacheEvict()
   @CheckPolicies((ability) => ability.can(Action.Create, 'MedicalRecords'))
   @UseInterceptors(FilesInterceptor('attachments', 5))
   createForPet(
@@ -82,6 +84,7 @@ export class MedicalRecordsController {
   }
 
   @Patch('medical-records/:id')
+  @CacheEvict()
   @UseInterceptors(FilesInterceptor('attachments', 5))
   update(
     @CurrentUser() user: accounts,
@@ -98,11 +101,13 @@ export class MedicalRecordsController {
   }
 
   @Delete('medical-records/:id')
+  @CacheEvict()
   remove(@CurrentUser() user: accounts, @IdParam('id') id: string) {
     return this.medicalRecordsService.remove(user, id);
   }
 
   @Post('medical-records/:id/attachments')
+  @CacheEvict()
   @UseInterceptors(FilesInterceptor('attachments', 5))
   @HttpCode(HttpStatus.ACCEPTED)
   addAttachments(
@@ -114,6 +119,7 @@ export class MedicalRecordsController {
   }
 
   @Delete('medical-records/:id/attachments/:attachmentId')
+  @CacheEvict()
   @HttpCode(HttpStatus.NO_CONTENT)
   removeAttachment(
     @CurrentUser() user: accounts,

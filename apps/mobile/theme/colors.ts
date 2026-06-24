@@ -479,9 +479,9 @@ export const darkColorTheme = {
   "--text-positive": "--green-30",
   "--text-negative": "--red-30",
 
-  "--text-emphasis": "--orange-30",
-  "--text-emphasis-inverse": "--orange-90",
-  "--text-emphasis-disabled": "--orange-60",
+  "--text-emphasis": "--blue-30",
+  "--text-emphasis-inverse": "--blue-90",
+  "--text-emphasis-disabled": "--blue-60",
 
   // ---------------------------------------------------------------------------
   // BACKGROUND / SURFACE

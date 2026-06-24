@@ -358,13 +358,10 @@ const finishMedicalRecordDelete = async (
 
 const syncMedicalRecordListCaches = (
   queryClient: QueryClient,
-  record: IMedicalRecordDetail,
+  listRecord: IMedicalRecord,
 ) => {
-  const listRecord = toMedicalRecordListItem(record);
-
-  if (listRecord.attachmentStatus !== "processing") {
-    createdMedicalRecords.delete(listRecord.id);
-  }
+  createdMedicalRecords.delete(listRecord.id);
+  deletedMedicalRecordIds.delete(listRecord.id);
 
   queryClient.setQueriesData<MedicalRecordListCache>(
     { queryKey: MEDICAL_RECORDS_KEY.lists() },
@@ -391,6 +388,7 @@ const syncMedicalRecordListCaches = (
 
 export function useMedicalRecordList() {
   const [openForm, setOpenForm] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<IMedicalRecord | null>(
     null,
   );
@@ -398,11 +396,7 @@ export function useMedicalRecordList() {
 
   const queryClient = useQueryClient();
 
-  const {
-    data: petData,
-    isRefetching,
-    refetch,
-  } = useQuery({
+  const { data: petData, refetch } = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
@@ -480,17 +474,26 @@ export function useMedicalRecordList() {
     }
   }, [deleteMedicalRecord, selectedRecord?.id]);
 
-  const handleRefresh = useCallback(() => {
-    refetch();
-    queryClient.invalidateQueries({
-      queryKey: MEDICAL_RECORDS_KEY.lists(),
-    });
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+
+    try {
+      await Promise.all([
+        refetch(),
+        queryClient.refetchQueries({
+          queryKey: MEDICAL_RECORDS_KEY.lists(),
+          type: "active",
+        }),
+      ]);
+    } finally {
+      setIsRefreshing(false);
+    }
   }, [queryClient, refetch]);
 
   return {
     isCreating,
     isDeletingMedicalRecord,
-    isRefetching,
+    isRefetching: isRefreshing,
     openDeletePopup,
     openForm,
     petData,
@@ -537,10 +540,21 @@ export function useMedicalRecordDetail({
     isPending: isUpdatingMedicalRecord,
   } = useMutation({
     mutationFn: updateMedicalRecordMutation,
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: MEDICAL_RECORDS_KEY.lists(),
+      });
+    },
+    onSuccess: (record) => {
+      syncMedicalRecordListCaches(queryClient, record);
+      queryClient.setQueryData<IMedicalRecordDetail>(
+        MEDICAL_RECORDS_KEY.detail(record.id),
+        (currentRecord) =>
+          currentRecord ? { ...currentRecord, ...record } : currentRecord,
+      );
       queryClient.invalidateQueries({ queryKey: MEDICAL_RECORDS_KEY.lists() });
       queryClient.invalidateQueries({
-        queryKey: MEDICAL_RECORDS_KEY.detail(id),
+        queryKey: MEDICAL_RECORDS_KEY.detail(record.id),
       });
       setOpenEditForm(false);
       setOpenOptions(false);
@@ -609,7 +623,7 @@ export function useMedicalRecordDetail({
       return;
     }
 
-    syncMedicalRecordListCaches(queryClient, data);
+    syncMedicalRecordListCaches(queryClient, toMedicalRecordListItem(data));
   }, [data, queryClient]);
 
   const defaultValues: IMedicalRecordForm | undefined = useMemo(() => {

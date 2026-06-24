@@ -14,7 +14,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 const MUTATION_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
@@ -41,13 +41,15 @@ export class HttpCacheEvictInterceptor implements NestInterceptor {
       ]) ?? [];
 
     return next.handle().pipe(
-      tap(() => {
+      mergeMap(async (response) => {
         const patterns = this.resolvePatterns(request, configuredPatterns);
-        void Promise.all(
+        await Promise.all(
           patterns.map((pattern) =>
             this.cacheService.delByPattern(pattern).catch(() => undefined),
           ),
         );
+
+        return response;
       }),
     );
   }
