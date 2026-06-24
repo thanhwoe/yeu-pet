@@ -84,7 +84,13 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "extraPods": [
+              {
+                "name": "GoogleUtilities",
+                "modular_headers": true
+              }
+            ]
           }
         }
       ],

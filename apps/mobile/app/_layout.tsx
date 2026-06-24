@@ -16,7 +16,9 @@ import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
 import { Providers } from "@/components/Providers";
 import { UserSync } from "@/components/UserSync";
 import { NOTIFICATIONS_KEY, REMINDER_KEY } from "@/constants/query-keys";
+import { RevenueCatSync } from "@/features/subscriptions/components/RevenueCatSync";
 import { markNotificationReadMutation } from "@/services";
+import { configureRevenueCat } from "@/services/revenuecat";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useQueryClient } from "@tanstack/react-query";
 import "../global.css";
@@ -25,11 +27,13 @@ export { ErrorBoundary } from "expo-router";
 
 // SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({ fade: true });
+void configureRevenueCat();
 
 export default function RootLayout() {
   return (
     <Providers>
       <UserSync />
+      <RevenueCatSync />
       <RootNavigation />
       <NotificationNavigationHandler />
     </Providers>

@@ -9,18 +9,14 @@ import { IPetSitter, ISitterReview } from "@/interfaces";
 import { MapPinIcon, PawPrintIcon, StarIcon } from "phosphor-react-native";
 import { View } from "react-native";
 import { formatRate, getLocationLine, getSitterName } from "../utils";
-import {
-  AvailabilityBadge,
-  ExternalPaymentNotice,
-  InfoRow,
-} from "./SitterPrimitives";
+import { AvailabilityBadge, InfoRow } from "./SitterPrimitives";
 
 const MapPin = withIconClassName(MapPinIcon);
 const PawPrint = withIconClassName(PawPrintIcon);
 const Star = withIconClassName(StarIcon);
 
 const getReviewerName = (review: ISitterReview) => {
-  const name = [review.user?.firstName, review.user?.lastName]
+  const name = [review.accounts?.firstName, review.accounts?.lastName]
     .filter(Boolean)
     .join(" ");
 
@@ -226,6 +222,5 @@ export const SitterDetail = ({
     </View>
 
     <RecentSitterReviews sitter={sitter} />
-    <ExternalPaymentNotice compact />
   </View>
 );

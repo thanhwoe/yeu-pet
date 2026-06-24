@@ -183,6 +183,9 @@ Use query keys consistently by feature domain so cache invalidation stays predic
 The app reads these environment values:
 
 - `EXPO_PUBLIC_API_URL`
+- `EXPO_PUBLIC_RC_APPLE_API_KEY`
+- `EXPO_PUBLIC_RC_ANDROID_API_KEY`
+- `EXPO_PUBLIC_RC_PREMIUM_ENTITLEMENT_ID`
 - `FIREBASE_ANDROID_GOOGLE_SERVICES_FILE`
 - `FIREBASE_IOS_GOOGLE_SERVICES_FILE`
 
@@ -214,6 +217,12 @@ pnpm --filter @yeu-pet/mobile ios
 
 After adding or changing Firebase native modules, rebuild the development
 client before starting Metro so the Firebase Messaging native code is linked.
+
+RevenueCat Purchases and Customer Center also require a native development
+build. Configure the public SDK keys and matching entitlement identifier in the
+environment, then rebuild the client; RevenueCat UI is not available in Expo Go.
+The iOS build keeps `GoogleUtilities` on modular headers so Firebase and the
+RevenueCat Swift pods can coexist with the app's static-framework setup.
 
 ## Documentation to read first
 

@@ -1,5 +1,5 @@
+import { PaywallNotice } from "@/components/PaywallNotice";
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { Body } from "@/components/ui/Typography";
@@ -169,16 +169,17 @@ export const DoctorAIScreen = () => {
           pets={pets}
           selectedPetId={canUsePetContext ? selectedPetId : null}
         />
-        <QuotaCard
-          exhausted={quotaExhausted}
-          isPremium={isPremium}
-          limit={aiLimit.limit}
-          loading={isEntitlementsLoading}
-          onUpgrade={() => upgrade()}
-          remaining={aiLimit.remaining}
-          upgrading={isUpgrading}
-          usage={aiLimit.usage}
-        />
+        {!quotaExhausted ? (
+          <QuotaCard
+            isPremium={isPremium}
+            limit={aiLimit.limit}
+            loading={isEntitlementsLoading}
+            onUpgrade={() => void upgrade()}
+            remaining={aiLimit.remaining}
+            upgrading={isUpgrading}
+            usage={aiLimit.usage}
+          />
+        ) : null}
       </View>
     ),
     [
@@ -229,14 +230,30 @@ export const DoctorAIScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <MessageComposer
-        disabled={quotaExhausted || isGeneratingMessage}
-        loading={isGeneratingMessage}
-        onChangeText={setComposerValue}
-        onSubmit={handleSubmitComposer}
-        quotaExhausted={quotaExhausted}
-        value={composerValue}
-      />
+      {quotaExhausted ? (
+        <View className="border-t border-line-subtle bg-background px-16 pb-safe pt-10">
+          <PaywallNotice
+            variant="blocking"
+            title="AI message limit reached"
+            description="You have used your free AI messages for this month. Upgrade to Premium for more Pet Care AI support."
+            benefits={[
+              "300 AI messages each month",
+              "AI with pet context",
+              "AI with medical history context",
+            ]}
+            loading={isUpgrading}
+            onAction={() => void upgrade()}
+          />
+        </View>
+      ) : (
+        <MessageComposer
+          disabled={isGeneratingMessage}
+          loading={isGeneratingMessage}
+          onChangeText={setComposerValue}
+          onSubmit={handleSubmitComposer}
+          value={composerValue}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -388,7 +405,6 @@ const QuotaCard = memo(
     limit,
     remaining,
     isPremium,
-    exhausted,
     loading,
     upgrading,
     onUpgrade,
@@ -397,7 +413,6 @@ const QuotaCard = memo(
     limit?: number;
     remaining?: number;
     isPremium: boolean;
-    exhausted: boolean;
     loading: boolean;
     upgrading: boolean;
     onUpgrade: () => void;
@@ -408,13 +423,21 @@ const QuotaCard = memo(
     const progress =
       safeLimit > 0 ? Math.min(100, (safeUsage / safeLimit) * 100) : 0;
 
+    if (!loading && !isPremium) {
+      return (
+        <PaywallNotice
+          variant="inline"
+          title={`${safeRemaining} free AI messages remaining`}
+          description="Premium adds more monthly messages plus pet and medical history context."
+          actionLabel="See Premium"
+          loading={upgrading}
+          onAction={onUpgrade}
+        />
+      );
+    }
+
     return (
-      <View
-        className={cn(
-          "gap-10 rounded-20 border border-line-subtle bg-background-surface px-14 py-12 shadow-sm",
-          exhausted && "border-status-danger-border bg-status-danger-surface",
-        )}
-      >
+      <View className="gap-10 rounded-20 border border-line-subtle bg-background-surface px-14 py-12 shadow-sm">
         <View className="flex-row items-start justify-between gap-12">
           <View className="flex-1 gap-2">
             <Body
@@ -422,13 +445,7 @@ const QuotaCard = memo(
               weight="semiBold"
               className="text-text-primary"
             >
-              {loading
-                ? "Checking AI messages"
-                : isPremium
-                  ? "Premium AI"
-                  : exhausted
-                    ? "AI message limit reached"
-                    : `${safeRemaining} of ${safeLimit} free messages remaining`}
+              {loading ? "Checking AI messages" : "Premium AI"}
             </Body>
             <Body variant="body4" className="text-text-muted">
               {isPremium
@@ -436,24 +453,10 @@ const QuotaCard = memo(
                 : "Premium unlocks more messages, pet context, and recent medical history."}
             </Body>
           </View>
-          {!isPremium ? (
-            <Button
-              accessibilityLabel="Upgrade for more Doctor AI messages"
-              size="sm"
-              variant={exhausted ? "primary" : "secondary"}
-              loading={upgrading}
-              onPress={onUpgrade}
-            >
-              Upgrade
-            </Button>
-          ) : null}
         </View>
         <View className="h-6 overflow-hidden rounded-full bg-background-surface-muted">
           <View
-            className={cn(
-              "h-full rounded-full bg-feature-ai-accent",
-              exhausted && "bg-status-danger-icon",
-            )}
+            className="h-full rounded-full bg-feature-ai-accent"
             style={{ width: `${progress}%` }}
           />
         </View>
@@ -518,14 +521,12 @@ const MessageComposer = memo(
     value,
     disabled,
     loading,
-    quotaExhausted,
     onChangeText,
     onSubmit,
   }: {
     value: string;
     disabled: boolean;
     loading: boolean;
-    quotaExhausted: boolean;
     onChangeText: (value: string) => void;
     onSubmit: () => void;
   }) => {
@@ -535,9 +536,7 @@ const MessageComposer = memo(
 
     return (
       <View className="gap-8 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
-        {quotaExhausted ? (
-          <InlineWarning text="You have used your free AI messages this month. Upgrade to continue chatting." />
-        ) : inputHasUrgentConcern ? (
+        {inputHasUrgentConcern ? (
           <InlineWarning text="This may be urgent. Contact a veterinarian or emergency clinic now if your pet is in distress." />
         ) : null}
         <View
@@ -550,15 +549,13 @@ const MessageComposer = memo(
             accessibilityLabel="Doctor AI message"
             autoCorrect
             className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
-            editable={!quotaExhausted && !loading}
+            editable={!loading}
             multiline
             onChangeText={onChangeText}
             placeholder={
-              quotaExhausted
-                ? "Upgrade to continue chatting"
-                : loading
-                  ? "Pet Care AI is thinking..."
-                  : "Ask about feeding, grooming, behavior, symptoms..."
+              loading
+                ? "Pet Care AI is thinking..."
+                : "Ask about feeding, grooming, behavior, symptoms..."
             }
             textAlignVertical="top"
             value={value}

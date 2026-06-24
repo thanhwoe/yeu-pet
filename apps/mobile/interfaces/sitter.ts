@@ -139,7 +139,7 @@ export interface ISitterReview {
   comment: string | null;
   createdAt: string | null;
   updatedAt: string | null;
-  user?: IUser;
+  accounts?: IUser;
 }
 
 export interface ISitterReviewForm {

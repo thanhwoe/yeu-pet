@@ -67,6 +67,7 @@ export const API_ROUTES = {
 
   SUBSCRIPTIONS_ME: "/subscriptions/me",
   SUBSCRIPTION_ENTITLEMENTS: "/subscriptions/entitlements",
+  SUBSCRIPTION_SYNC: "/subscriptions/sync",
   SUBSCRIPTION_MOCK_UPGRADE: "/subscriptions/mock-upgrade",
   SUBSCRIPTION_MOCK_DOWNGRADE: "/subscriptions/mock-downgrade",
 

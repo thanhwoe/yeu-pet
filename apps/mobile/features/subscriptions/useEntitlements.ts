@@ -1,8 +1,8 @@
 import { SUBSCRIPTION_KEY } from "@/constants/query-keys";
+import { usePremiumPaywall } from "@/features/subscriptions/usePremiumPaywall";
 import { SubscriptionEntitlements } from "@/interfaces";
 import { getEntitlementsQuery } from "@/services";
 import { useQuery } from "@tanstack/react-query";
-import { router } from "expo-router";
 
 type LimitKey = keyof Pick<
   SubscriptionEntitlements["limits"],
@@ -28,6 +28,7 @@ const USAGE_BY_LIMIT: Record<LimitKey, UsageKey> = {
 };
 
 export const useEntitlements = () => {
+  const { isPresenting, presentPaywall } = usePremiumPaywall();
   const query = useQuery({
     queryKey: SUBSCRIPTION_KEY.entitlements(),
     queryFn: getEntitlementsQuery,
@@ -66,7 +67,7 @@ export const useEntitlements = () => {
     entitlements: query.data,
     getLimitState,
     isPremium,
-    upgrade: () => router.push("/subscription"),
-    isUpgrading: false,
+    upgrade: presentPaywall,
+    isUpgrading: isPresenting,
   };
 };

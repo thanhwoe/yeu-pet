@@ -9,6 +9,7 @@ import {
   formatSubscriptionStatus,
   getPlanPeriodCopy,
 } from "@/features/subscriptions/utils";
+import { usePremiumPaywall } from "@/features/subscriptions/usePremiumPaywall";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import {
   SubscriptionEntitlements,
@@ -118,13 +119,22 @@ function SectionHeading({
 }
 
 function PlanCard({
+  isManaging,
+  isUpgrading,
+  onManage,
   subscription,
   onUpgrade,
 }: {
+  isManaging: boolean;
+  isUpgrading: boolean;
+  onManage: () => void;
   subscription: SubscriptionEntitlements;
   onUpgrade: () => void;
 }) {
   const isPremium = subscription.tier === "premium";
+  const statusLabel = isPremium
+    ? formatSubscriptionStatus(subscription.status)
+    : "Free";
 
   return (
     <View
@@ -170,7 +180,7 @@ function PlanCard({
                     : "font-semibold text-text-secondary"
                 }
               >
-                {formatSubscriptionStatus(subscription.status)}
+                {statusLabel}
               </Text>
             </View>
           </View>
@@ -180,13 +190,26 @@ function PlanCard({
         </View>
       </View>
 
-      {isPremium ? null : (
+      {isPremium ? (
+        <Button
+          accessibilityLabel="Manage Premium subscription"
+          variant="outline"
+          loading={isManaging}
+          onPress={onManage}
+        >
+          Manage subscription
+        </Button>
+      ) : (
         <View className="gap-14">
           <Text variant="body2" className="text-text-secondary">
             Upgrade to support more pets, reminders, photos, health records, and
             AI care conversations.
           </Text>
-          <Button accessibilityLabel="Upgrade to Premium" onPress={onUpgrade}>
+          <Button
+            accessibilityLabel="Upgrade to Premium"
+            loading={isUpgrading}
+            onPress={onUpgrade}
+          >
             Upgrade to Premium
           </Button>
         </View>
@@ -469,6 +492,8 @@ function SubscriptionLoading() {
 }
 
 export function SubscriptionScreen() {
+  const { isManaging, isPresenting, presentCustomerCenter, presentPaywall } =
+    usePremiumPaywall();
   const {
     data: subscription,
     isError,
@@ -500,16 +525,19 @@ export function SubscriptionScreen() {
   }
 
   const isPremium = subscription.tier === "premium";
-  const handleUpgrade = () => {
-    Toast.warn({
-      text: "Premium purchase will be available after secure store checkout is connected.",
-    });
-  };
+  const handleUpgrade = () => void presentPaywall();
+  const handleManage = () => void presentCustomerCenter();
 
   return (
     <ScreenContainer scrollEnabled>
       <View className="gap-26 px-20 pb-40 pt-18">
-        <PlanCard subscription={subscription} onUpgrade={handleUpgrade} />
+        <PlanCard
+          subscription={subscription}
+          isManaging={isManaging}
+          isUpgrading={isPresenting}
+          onManage={handleManage}
+          onUpgrade={handleUpgrade}
+        />
 
         <View className="gap-10">
           <SectionHeading
@@ -639,9 +667,14 @@ export function SubscriptionScreen() {
             }
           />
           <BenefitsCard premium={isPremium} />
+          <Text variant="caption1" className="px-2 text-text-muted">
+            Pet Care AI offers general guidance and does not replace veterinary
+            diagnosis or treatment.
+          </Text>
           {!isPremium ? (
             <Button
               accessibilityLabel="Upgrade to Premium"
+              loading={isPresenting}
               onPress={handleUpgrade}
             >
               Upgrade to Premium

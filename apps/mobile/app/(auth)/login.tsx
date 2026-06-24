@@ -3,25 +3,31 @@ import { Image } from "@/components/ui/Image";
 import { Body, Heading } from "@/components/ui/Typography";
 import { ISignInForm } from "@/constants/validation";
 import { SignInForm } from "@/features/auth/components/SignInForm";
+import { syncRevenueCatForUser } from "@/features/subscriptions/cache";
 import { signInMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { startPushRegistrationSessionAsync } from "@/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { Keyboard, StyleSheet, View } from "react-native";
 
 export default function LoginScreen() {
   const { updateUser, updateTokens } = useUserInfoStore();
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: signInMutation,
     onSuccess: async (res) => {
-      await startPushRegistrationSessionAsync();
-      Toast.success({ text: "Signed in." });
-      updateUser(res.user);
       updateTokens({
         refreshToken: res.refreshToken,
         accessToken: res.accessToken,
       });
+      updateUser(res.user);
+
+      void syncRevenueCatForUser(queryClient, res.user.id).catch((error) =>
+        console.warn("[RevenueCat] Post-login sync failed.", error),
+      );
+      await startPushRegistrationSessionAsync();
+      Toast.success({ text: "Signed in." });
     },
     onError: (e) => {
       Toast.error({ text: e.message });

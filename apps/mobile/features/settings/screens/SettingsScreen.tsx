@@ -8,6 +8,7 @@ import { SETTINGS_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { SegmentedSetting } from "@/features/settings/components/SegmentedSetting";
 import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
+import { usePremiumPaywall } from "@/features/subscriptions/usePremiumPaywall";
 import { getPlanPeriodCopy } from "@/features/subscriptions/utils";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -94,14 +95,22 @@ function SubscriptionSummary({
   entitlements,
   loading,
   error,
+  managing,
+  upgrading,
+  onManage,
   onOpen,
   onRetry,
+  onUpgrade,
 }: {
   entitlements?: SubscriptionEntitlements;
   loading: boolean;
   error: boolean;
+  managing: boolean;
+  upgrading: boolean;
+  onManage: () => void;
   onOpen: () => void;
   onRetry: () => void;
+  onUpgrade: () => void;
 }) {
   if (loading && !entitlements) {
     return (
@@ -167,11 +176,25 @@ function SubscriptionSummary({
           >
             View usage
           </Button>
-          <Button size="sm" wrapperClassName="flex-1" onPress={onOpen}>
+          <Button
+            size="sm"
+            wrapperClassName="flex-1"
+            loading={upgrading}
+            onPress={onUpgrade}
+          >
             Upgrade
           </Button>
         </View>
-      ) : null}
+      ) : (
+        <Button
+          size="sm"
+          variant="outline"
+          loading={managing}
+          onPress={onManage}
+        >
+          Manage subscription
+        </Button>
+      )}
     </View>
   );
 }
@@ -181,6 +204,8 @@ export function SettingsScreen() {
   const { setColorScheme } = useColorScheme();
   const user = useUserInfoStore.use.user();
   const queryClient = useQueryClient();
+  const { isManaging, isPresenting, presentCustomerCenter, presentPaywall } =
+    usePremiumPaywall();
   const {
     data: settings,
     isError: isSettingsError,
@@ -320,8 +345,12 @@ export function SettingsScreen() {
             entitlements={entitlements}
             loading={isLoadingEntitlements}
             error={isEntitlementsError}
+            managing={isManaging}
+            upgrading={isPresenting}
+            onManage={() => void presentCustomerCenter()}
             onOpen={openSubscription}
             onRetry={() => void refetchEntitlements()}
+            onUpgrade={() => void presentPaywall()}
           />
         </SettingsSection>
 

@@ -8,6 +8,9 @@ export const getSubscriptionQuery = () =>
 export const getEntitlementsQuery = () =>
   APIs.get<SubscriptionEntitlements>(API_ROUTES.SUBSCRIPTION_ENTITLEMENTS);
 
+export const syncSubscriptionMutation = () =>
+  APIs.post<SubscriptionEntitlements>(API_ROUTES.SUBSCRIPTION_SYNC);
+
 export const mockUpgradeSubscriptionMutation = () =>
   APIs.post<SubscriptionEntitlements>(API_ROUTES.SUBSCRIPTION_MOCK_UPGRADE);
 

@@ -2,6 +2,7 @@ import { PaywallNotice } from "@/components/PaywallNotice";
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Image } from "@/components/ui/Image";
+import { StateView } from "@/components/ui/StateView";
 import { Text } from "@/components/ui/Text";
 import { PHOTOS_KEY } from "@/constants/query-keys";
 import { CaptionInput } from "@/features/photos/components/CaptionInput";
@@ -34,9 +35,17 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
   const [checked, setChecked] = useState<boolean>(true);
   const [caption, setCaption] = useState<string>("");
   const queryClient = useQueryClient();
-  const { entitlements, getLimitState, isUpgrading, upgrade } =
-    useEntitlements();
+  const {
+    entitlements,
+    getLimitState,
+    isError: isEntitlementsError,
+    isLoading: isEntitlementsLoading,
+    isUpgrading,
+    refetch: refetchEntitlements,
+    upgrade,
+  } = useEntitlements();
   const photoLimit = getLimitState("maxPhotos");
+  const photoUsage = entitlements?.usage.photos ?? photoLimit.usage ?? 0;
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
@@ -113,51 +122,72 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
       handleComponent={renderSheetHeader}
     >
       <View className="items-center gap-16 px-20 pb-8">
-        {!photoLimit.allowed && (
+        {isEntitlementsLoading && !entitlements ? (
+          <StateView
+            variant="loading"
+            title="Checking your plan"
+            description="Making sure there is room for another memory."
+            className="w-full"
+          />
+        ) : isEntitlementsError && !entitlements ? (
+          <StateView
+            variant="error"
+            title="Could not check your photo limit"
+            description="Check your connection and try again."
+            actionLabel="Try again"
+            onAction={() => void refetchEntitlements()}
+            className="w-full"
+          />
+        ) : !photoLimit.allowed ? (
           <PaywallNotice
-            compact
-            title="Photo upload limit reached"
-            description={`You have uploaded ${entitlements?.usage.photos ?? photoLimit.usage} of ${photoLimit.limit} photos.`}
+            variant="blocking"
+            title="Photo limit reached"
+            description="Upgrade to Premium to save and share more pet memories."
+            benefits={[
+              "More photo storage",
+              "Share memories with the pet community",
+              "Keep every special moment",
+            ]}
             loading={isUpgrading}
-            onAction={() => upgrade()}
+            onAction={() => void upgrade()}
           />
-        )}
-        <View style={styles.previewFrame}>
-          <Image source={{ uri: image?.uri }} style={styles.previewImage} />
-          <CaptionInput
-            placeholder="Bạn đang nghĩ gì?"
-            onChangeText={setCaption}
-            containerClassName="absolute bottom-12 left-12 right-12"
-          />
-        </View>
-        <View className="w-full flex-row items-center justify-center gap-16">
-          <SubmitButton
-            onPress={handleSubmit}
-            disabled={isPending || !photoLimit.allowed}
-          />
-          <TouchableOpacity
-            accessibilityLabel="Toggle photo public visibility"
-            accessibilityRole="button"
-            activeOpacity={0.82}
-            className="h-52 flex-row items-center gap-8 rounded-full border-hairline border-line-primary bg-background-card px-16"
-            disabled={isPending}
-            onPress={handleToggleVisibility}
-          >
-            <View
-              className={[
-                "h-18 w-18 items-center justify-center rounded-full border-2",
-                checked ? "border-line-secondary" : "border-line-primary",
-              ].join(" ")}
-            >
-              {checked && (
-                <View className="h-8 w-8 rounded-full bg-background-primary" />
-              )}
+        ) : (
+          <>
+            <View style={styles.previewFrame}>
+              <Image source={{ uri: image?.uri }} style={styles.previewImage} />
+              <CaptionInput
+                placeholder="Bạn đang nghĩ gì?"
+                onChangeText={setCaption}
+                containerClassName="absolute bottom-12 left-12 right-12"
+              />
             </View>
-            <Text variant="subhead" className="font-medium">
-              Public
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <View className="w-full flex-row items-center justify-center gap-16">
+              <SubmitButton onPress={handleSubmit} disabled={isPending} />
+              <TouchableOpacity
+                accessibilityLabel="Toggle photo public visibility"
+                accessibilityRole="button"
+                activeOpacity={0.82}
+                className="h-52 flex-row items-center gap-8 rounded-full border-hairline border-line-primary bg-background-card px-16"
+                disabled={isPending}
+                onPress={handleToggleVisibility}
+              >
+                <View
+                  className={[
+                    "h-18 w-18 items-center justify-center rounded-full border-2",
+                    checked ? "border-line-secondary" : "border-line-primary",
+                  ].join(" ")}
+                >
+                  {checked && (
+                    <View className="h-8 w-8 rounded-full bg-background-primary" />
+                  )}
+                </View>
+                <Text variant="subhead" className="font-medium">
+                  Public
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
     </BottomSheet>
   );

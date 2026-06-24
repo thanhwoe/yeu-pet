@@ -74,6 +74,8 @@
     "react-native-get-random-values": "^2.0.0",
     "react-native-markdown-display": "^7.0.2",
     "react-native-pager-view": "6.7.1",
+    "react-native-purchases": "^10.4.0",
+    "react-native-purchases-ui": "^10.4.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "~4.11.1",

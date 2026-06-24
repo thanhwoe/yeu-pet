@@ -1,6 +1,7 @@
 import { PaywallNotice } from "@/components/PaywallNotice";
 import { Toast } from "@/components/Toast";
 import { BottomSheet } from "@/components/ui/BottomSheet";
+import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
 import { PET_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { IPetInfoForm } from "@/constants/validation";
@@ -35,9 +36,18 @@ export const AddCard = ({
   currentPetCount: number;
 }) => {
   const [showForm, setShowForm] = useState(false);
-  const { entitlements, getLimitState, isUpgrading, upgrade } =
-    useEntitlements();
+  const {
+    entitlements,
+    getLimitState,
+    isError: isEntitlementsError,
+    isLoading: isEntitlementsLoading,
+    isUpgrading,
+    refetch: refetchEntitlements,
+    upgrade,
+  } = useEntitlements();
   const petLimit = getLimitState("maxPets", currentPetCount);
+  const petUsage =
+    petLimit.usage ?? entitlements?.usage.pets ?? currentPetCount;
 
   const zoomStyle = useAnimatedStyle(() => {
     const inputRange = [
@@ -151,20 +161,37 @@ export const AddCard = ({
         onDismiss={() => setShowForm(false)}
         titleElement={<Body weight="semiBold">Add your pet</Body>}
       >
-        <View className="gap-16">
-          {!petLimit.allowed && (
-            <PaywallNotice
-              title="Pet limit reached"
-              description={`You have ${petLimit.usage ?? entitlements?.usage.pets ?? currentPetCount} of ${petLimit.limit} pets. Upgrade to Premium to add more pets.`}
-              loading={isUpgrading}
-              onAction={() => upgrade()}
+        <View className="min-h-220 gap-16">
+          {isEntitlementsLoading && !entitlements ? (
+            <StateView
+              variant="loading"
+              title="Checking your plan"
+              description="Making sure there is room for another pet."
             />
+          ) : isEntitlementsError && !entitlements ? (
+            <StateView
+              variant="error"
+              title="Could not check your pet limit"
+              description="Check your connection and try again."
+              actionLabel="Try again"
+              onAction={() => void refetchEntitlements()}
+            />
+          ) : !petLimit.allowed ? (
+            <PaywallNotice
+              variant="blocking"
+              title="Pet limit reached"
+              description={`Free plan includes ${petLimit.limit} pets. Upgrade to Premium to add more pets and manage care for every companion.`}
+              benefits={[
+                "Unlimited pets",
+                "More reminders and records",
+                "More photos and AI support",
+              ]}
+              loading={isUpgrading}
+              onAction={() => void upgrade()}
+            />
+          ) : (
+            <PetInfoForm onSubmit={handleSubmit} isSubmitting={isPending} />
           )}
-          <PetInfoForm
-            onSubmit={handleSubmit}
-            isSubmitting={isPending}
-            disabled={!petLimit.allowed}
-          />
         </View>
       </BottomSheet>
     </>
