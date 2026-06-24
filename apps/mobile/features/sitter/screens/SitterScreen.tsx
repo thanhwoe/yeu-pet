@@ -13,23 +13,22 @@ import {
   BookingListSkeleton,
   BookingRequestForm,
   CancelForm,
-  hasSitterFilters,
   ReviewForm,
+  SitterActiveFilters,
   SitterCard,
   SitterDetail,
-  SitterFilterSheet,
   SitterProfileForm,
   SitterProfileStatus,
   SitterSkeleton,
   StatusFilterRow,
 } from "@/features/sitter/components";
 import { BOOKING_ROLE_TABS, SCREEN_TABS } from "@/features/sitter/constants";
+import { hasSitterFilters } from "@/features/sitter/filters";
+import { useSitterFilters } from "@/features/sitter/SitterFiltersContext";
 import {
-  SitterFilters,
   useSitterBookingDetail,
   useSitters,
 } from "@/features/sitter/useSitters";
-import { formatRate } from "@/features/sitter/utils";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import {
   IPetSitter,
@@ -39,8 +38,9 @@ import {
 } from "@/interfaces";
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
+import { DrawerActions } from "@react-navigation/native";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { PencilSimpleIcon, SlidersHorizontalIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Pressable, View } from "react-native";
@@ -50,6 +50,9 @@ const SlidersHorizontal = withIconClassName(SlidersHorizontalIcon);
 
 export const SitterScreen = () => {
   const router = useRouter();
+  const navigation = useNavigation();
+  const { appliedFilters, filterRevision, beginEditing, clearAppliedFilters } =
+    useSitterFilters();
   const { tab, role, bookingId } = useLocalSearchParams<{
     tab?: string;
     role?: string;
@@ -65,8 +68,6 @@ export const SitterScreen = () => {
   const [bookingStatus, setBookingStatus] = useState<
     SitterBookingStatus | undefined
   >();
-  const [filters, setFilters] = useState<SitterFilters>({});
-  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [selectedSitter, setSelectedSitter] = useState<IPetSitter | null>(null);
   const [bookingSitter, setBookingSitter] = useState<IPetSitter | null>(null);
   const [profileFormOpen, setProfileFormOpen] = useState(false);
@@ -107,10 +108,10 @@ export const SitterScreen = () => {
     isSavingProfile,
     isMutatingBooking,
     isCreatingReview,
-  } = useSitters(filters, bookingStatus);
+  } = useSitters(appliedFilters, bookingStatus, filterRevision);
 
   const activeBookingRole = bookingRoleTab === 0 ? "owner" : "sitter";
-  const hasActiveFilters = hasSitterFilters(filters);
+  const hasActiveFilters = hasSitterFilters(appliedFilters);
   const isActiveBookingsLoading =
     bookingRoleTab === 0 ? isOwnerBookingsLoading : isSitterBookingsLoading;
   const isActiveBookingsFetching =
@@ -174,19 +175,6 @@ export const SitterScreen = () => {
       setSelectedBooking(hydrateBooking(booking));
     }
   }, [activeBookings, bookingId, hydrateBooking, linkedBooking]);
-
-  const filterSummary = useMemo(
-    () =>
-      [
-        filters.city,
-        filters.district,
-        filters.minRating && `★${filters.minRating}+`,
-        filters.maxPrice && `under ${formatRate(filters.maxPrice)}`,
-      ]
-        .filter(Boolean)
-        .join(" · "),
-    [filters],
-  );
 
   const openSitterDetail = useCallback((sitter: IPetSitter) => {
     setSelectedSitter(null);
@@ -272,7 +260,10 @@ export const SitterScreen = () => {
               accessibilityRole="button"
               accessibilityLabel="Filter sitters"
               accessibilityState={{ selected: hasActiveFilters }}
-              onPress={() => setFilterSheetOpen(true)}
+              onPress={() => {
+                beginEditing();
+                navigation.dispatch(DrawerActions.openDrawer());
+              }}
               className={cn(
                 "h-44 w-44 items-center justify-center rounded-full border border-line-subtle bg-background-surface",
                 hasActiveFilters && "border-action-primary bg-action-primary",
@@ -301,13 +292,7 @@ export const SitterScreen = () => {
             </Pressable>
           </View>
         </View>
-        {hasActiveFilters ? (
-          <View className="rounded-full bg-background-surface-muted px-12 py-7 self-start">
-            <Body variant="body4" className="text-text-muted">
-              {filterSummary}
-            </Body>
-          </View>
-        ) : null}
+        <SitterActiveFilters />
       </View>
 
       <Tabs
@@ -355,7 +340,7 @@ export const SitterScreen = () => {
                     : "Available pet sitters will appear here."
                 }
                 actionLabel={hasActiveFilters ? "Clear filters" : undefined}
-                onAction={hasActiveFilters ? () => setFilters({}) : undefined}
+                onAction={hasActiveFilters ? clearAppliedFilters : undefined}
               />
             );
           }}
@@ -421,25 +406,6 @@ export const SitterScreen = () => {
           )}
         </View>
       )}
-
-      <BottomSheet
-        visible={filterSheetOpen}
-        onDismiss={() => setFilterSheetOpen(false)}
-        titleElement={<Body weight="semiBold">Filter sitters</Body>}
-        useScrollView
-      >
-        <SitterFilterSheet
-          value={filters}
-          onClear={() => {
-            setFilters({});
-            setFilterSheetOpen(false);
-          }}
-          onApply={(nextFilters) => {
-            setFilters(nextFilters);
-            setFilterSheetOpen(false);
-          }}
-        />
-      </BottomSheet>
 
       <BottomSheet
         visible={!!selectedSitter}

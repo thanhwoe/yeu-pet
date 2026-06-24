@@ -6,7 +6,7 @@ export {
   ReviewForm,
   SitterProfileForm,
 } from "./SitterForms";
-export { hasSitterFilters, SitterFilterSheet } from "./SitterFilterSheet";
+export { SitterActiveFilters } from "./SitterActiveFilters";
 export { MessageThread } from "./MessageThread";
 export { SitterDetail } from "./SitterDetail";
 export { SitterProfileStatus } from "./SitterProfileStatus";

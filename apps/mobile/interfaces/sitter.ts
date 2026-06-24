@@ -11,6 +11,14 @@ export type SitterBookingStatus =
 
 export type SitterBookingType = "hourly" | "daily";
 
+export type SitterMinimumRating = 4 | 3 | 5 | 2 | 1;
+
+export interface SitterFilters {
+  city?: string;
+  minRating?: SitterMinimumRating;
+  maxPrice?: number;
+}
+
 export interface ISitterBookingParty {
   id: string;
   firstName?: string | null;
@@ -46,7 +54,6 @@ export interface IPetSitter {
 export interface IPetSitterForm {
   displayName?: string;
   bio?: string;
-  address: string;
   city?: string;
   district?: string;
   ward?: string;

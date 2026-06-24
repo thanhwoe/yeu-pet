@@ -12,6 +12,7 @@ import {
   ISitterBookingMessageForm,
   ISitterReviewForm,
   SitterBookingStatus,
+  SitterFilters,
 } from "@/interfaces";
 import {
   cancelSitterBookingMutation,
@@ -39,13 +40,6 @@ const BOOKING_LIMIT = 20;
 const MESSAGE_LIMIT = 30;
 const REVIEW_LIMIT = 3;
 
-export interface SitterFilters {
-  city?: string;
-  district?: string;
-  minRating?: string;
-  maxPrice?: string;
-}
-
 const showError = (error: Error) => {
   Toast.error({ text: error.message });
 };
@@ -53,11 +47,16 @@ const showError = (error: Error) => {
 export const useSitters = (
   filters: SitterFilters = {},
   status?: SitterBookingStatus,
+  filterRevision = 0,
 ) => {
   const queryClient = useQueryClient();
 
   const sittersQuery = useQuery({
-    queryKey: SITTER_KEY.list({ limit: SITTER_LIMIT, ...filters }),
+    queryKey: SITTER_KEY.list({
+      limit: SITTER_LIMIT,
+      ...filters,
+      filterRevision,
+    }),
     queryFn: () => getSittersQuery({ limit: SITTER_LIMIT, ...filters }),
   });
 

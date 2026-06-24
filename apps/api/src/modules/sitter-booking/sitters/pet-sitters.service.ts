@@ -1,3 +1,7 @@
+import { accounts } from '@app/generated/prisma/client';
+import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
+import { assertOwnerOrAdmin } from '@app/utils/ownership';
+import { paginate } from '@app/utils/pagination';
 import {
   BadRequestException,
   ConflictException,
@@ -5,13 +9,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { CreatePetSitterDto } from './dto/create-pet-sitter.dto';
 import { UpdatePetSitterDto } from './dto/update-pet-sitter.dto';
-import { accounts } from '@app/generated/prisma/client';
-import { PaginationDto } from '../../shared/dto/pagination.dto';
-import { paginate } from '@app/utils/pagination';
-import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
-import { assertOwnerOrAdmin } from '@app/utils/ownership';
 
 export interface PetSitterSearchFilters {
   address?: string;
@@ -20,6 +20,8 @@ export interface PetSitterSearchFilters {
   minRating?: string;
   maxPrice?: string;
 }
+
+const MAX_SITTER_FILTER_PRICE = 10_000_000;
 
 @Injectable()
 export class PetSittersService {
@@ -34,10 +36,18 @@ export class PetSittersService {
       throw new ConflictException('User is already registered as a pet sitter');
     }
 
+    const address = [
+      createPetSitterDto.ward,
+      createPetSitterDto.district,
+      createPetSitterDto.city,
+    ]
+      .filter(Boolean)
+      .join(', ');
+
     return this.petSittersRepository.create({
       account_id: user.id,
       display_name: createPetSitterDto.displayName,
-      address: createPetSitterDto.address,
+      address: address,
       bio: createPetSitterDto.bio,
       city: createPetSitterDto.city,
       district: createPetSitterDto.district,
@@ -66,8 +76,13 @@ export class PetSittersService {
       address: filters.address,
       city: filters.city,
       district: filters.district,
-      minRating: this.parseOptionalNumber(filters.minRating, 'minRating'),
-      maxPrice: this.parseOptionalNumber(filters.maxPrice, 'maxPrice'),
+      minRating: this.parseOptionalNumber(filters.minRating, 'minRating', 0, 5),
+      maxPrice: this.parseOptionalNumber(
+        filters.maxPrice,
+        'maxPrice',
+        0,
+        MAX_SITTER_FILTER_PRICE,
+      ),
       viewer_account_id: user.id,
     });
 
@@ -86,9 +101,17 @@ export class PetSittersService {
   ) {
     await this.assertOwner(user, id);
 
+    const address = [
+      updatePetSitterDto.ward,
+      updatePetSitterDto.district,
+      updatePetSitterDto.city,
+    ]
+      .filter(Boolean)
+      .join(', ');
+
     return this.petSittersRepository.update(id, {
       display_name: updatePetSitterDto.displayName,
-      address: updatePetSitterDto.address,
+      address: address,
       bio: updatePetSitterDto.bio,
       city: updatePetSitterDto.city,
       district: updatePetSitterDto.district,
@@ -136,7 +159,12 @@ export class PetSittersService {
     return record;
   }
 
-  private parseOptionalNumber(value: string | undefined, name: string) {
+  private parseOptionalNumber(
+    value: string | undefined,
+    name: string,
+    minimum: number,
+    maximum: number,
+  ) {
     if (value === undefined || value.trim() === '') {
       return undefined;
     }
@@ -144,6 +172,12 @@ export class PetSittersService {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) {
       throw new BadRequestException(`${name} must be a number`);
+    }
+
+    if (parsed < minimum || parsed > maximum) {
+      throw new BadRequestException(
+        `${name} must be between ${minimum} and ${maximum}`,
+      );
     }
 
     return parsed;

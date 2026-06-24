@@ -109,6 +109,21 @@ describe('PetSittersService', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
+  it.each([
+    { filters: { minRating: '-1' }, label: 'ratings below zero' },
+    { filters: { minRating: '5.1' }, label: 'ratings above five' },
+    { filters: { maxPrice: '-1' }, label: 'negative prices' },
+    { filters: { maxPrice: '10000001' }, label: 'unsafe prices' },
+  ])('rejects $label', async ({ filters }) => {
+    await expect(
+      service.findAll(
+        { id: 'account-1' } as never,
+        { page: 1, limit: 10 },
+        filters,
+      ),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
   it('updates the current user sitter profile', async () => {
     petSittersRepository.findByUser.mockResolvedValue({
       id: 'sitter-1',

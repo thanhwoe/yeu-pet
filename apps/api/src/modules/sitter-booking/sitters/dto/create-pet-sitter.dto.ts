@@ -21,13 +21,6 @@ export class CreatePetSitterDto {
   @MaxLength(200)
   bio?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  address: string;
-
-  @IsString()
-  @IsOptional()
   @MaxLength(100)
   city?: string;
 

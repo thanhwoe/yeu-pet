@@ -17,6 +17,7 @@ import {
   sitterProfileSchema,
   sitterReviewSchema,
 } from "@/constants/validation";
+import { resolveVietnamProvinceCityName } from "@/constants/vietnam-location-options";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
 import { cn } from "@/utils";
@@ -33,6 +34,7 @@ import {
   getSitterName,
 } from "../utils";
 import { SectionLabel } from "./SitterPrimitives";
+import { VietnamProvinceCitySelect } from "./VietnamProvinceCitySelect";
 
 const BottomSheetInputController =
   withBottomSheetKeyboardEvents(InputController);
@@ -373,8 +375,10 @@ export const SitterProfileForm = ({
     resolver: zodResolver(sitterProfileSchema),
     defaultValues: {
       displayName: defaultValues?.displayName ?? "",
-      address: defaultValues?.address ?? "",
-      city: defaultValues?.city ?? "",
+      city:
+        resolveVietnamProvinceCityName(defaultValues?.city) ??
+        defaultValues?.city ??
+        "",
       district: defaultValues?.district ?? "",
       ward: defaultValues?.ward ?? "",
       experience: defaultValues?.experience ?? "",
@@ -391,6 +395,13 @@ export const SitterProfileForm = ({
   } = useController({
     control,
     name: "isAvailable",
+  });
+  const {
+    field: { value: city, onChange: setCity },
+    fieldState: { error: cityError },
+  } = useController({
+    control,
+    name: "city",
   });
 
   return (
@@ -452,21 +463,14 @@ export const SitterProfileForm = ({
       </View>
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
-        <SectionLabel>Service area</SectionLabel>
-        <BottomSheetInputController
-          control={control}
-          name="address"
-          label="Service area"
-          placeholder="District, city, or neighborhood"
+        <VietnamProvinceCitySelect
+          value={city}
+          onChange={setCity}
+          emptyLabel="Select city"
+          clearLabel="Not selected"
+          errorMessage={cityError?.message}
         />
         <View className="flex-row gap-12">
-          <BottomSheetInputController
-            control={control}
-            name="city"
-            label="City"
-            placeholder="Da Nang"
-            className="flex-1"
-          />
           <BottomSheetInputController
             control={control}
             name="district"
@@ -474,13 +478,14 @@ export const SitterProfileForm = ({
             placeholder="Hai Chau"
             className="flex-1"
           />
+          <BottomSheetInputController
+            control={control}
+            name="ward"
+            label="Ward"
+            placeholder="Optional"
+            className="flex-1"
+          />
         </View>
-        <BottomSheetInputController
-          control={control}
-          name="ward"
-          label="Ward"
-          placeholder="Optional"
-        />
       </View>
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">

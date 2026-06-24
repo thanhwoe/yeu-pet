@@ -1,6 +1,7 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { z } from "zod";
 import { ERROR_MESSAGE } from "./messages";
+import { isVietnamProvinceCityName } from "./vietnam-location-options";
 
 export const REGEX = {
   date: /^\d{2}\/\d{2}\/\d{4}$/,
@@ -214,7 +215,8 @@ export const petInfoSchema = z.object({
   ),
   species: z.preprocess(
     emptyStringToUndefined,
-    z.enum(["dog", "cat", "bird", "rabbit", "hamster", "other"])
+    z
+      .enum(["dog", "cat", "bird", "rabbit", "hamster", "other"])
       .optional()
       .nullable(),
   ),
@@ -363,13 +365,12 @@ export const sitterProfileSchema = z.object({
     100,
     "Display name must be at most 100 characters.",
   ),
-  address: z
-    .string({
-      message: ERROR_MESSAGE.FIELD_REQUIRED("Service area"),
-    })
-    .trim()
-    .min(3, ERROR_MESSAGE.FIELD_INVALID("Service area")),
-  city: optionalTrimmedString(100, "City must be at most 100 characters."),
+  city: optionalTrimmedString(
+    100,
+    "City must be at most 100 characters.",
+  ).refine((value) => value === undefined || isVietnamProvinceCityName(value), {
+    message: "Select a city from the Vietnam province and city list.",
+  }),
   district: optionalTrimmedString(
     100,
     "District must be at most 100 characters.",
@@ -426,8 +427,7 @@ export const sitterBookingSchema = z
     ),
   })
   .refine(
-    (data) =>
-      data.type !== "hourly" || data.startTime.getTime() > Date.now(),
+    (data) => data.type !== "hourly" || data.startTime.getTime() > Date.now(),
     {
       message: "Start time must be in the future.",
       path: ["startTime"],
@@ -436,8 +436,7 @@ export const sitterBookingSchema = z
   .refine(
     (data) =>
       data.type !== "daily" ||
-      startOfLocalDayTime(data.startTime) >
-        startOfLocalDayTime(new Date()),
+      startOfLocalDayTime(data.startTime) > startOfLocalDayTime(new Date()),
     {
       message: "Start date must be tomorrow or later for daily care.",
       path: ["startTime"],
@@ -461,7 +460,11 @@ export const sitterBookingSchema = z
   );
 
 export const sitterCancelSchema = z.object({
-  reason: z.string().trim().max(240, "Reason must be at most 240 characters.").optional(),
+  reason: z
+    .string()
+    .trim()
+    .max(240, "Reason must be at most 240 characters.")
+    .optional(),
 });
 
 export const sitterMessageSchema = z.object({
@@ -478,7 +481,11 @@ export const sitterReviewSchema = z.object({
   rating: z.enum(["1", "2", "3", "4", "5"], {
     message: ERROR_MESSAGE.FIELD_REQUIRED("Rating"),
   }),
-  comment: z.string().trim().max(500, "Review must be at most 500 characters.").optional(),
+  comment: z
+    .string()
+    .trim()
+    .max(500, "Review must be at most 500 characters.")
+    .optional(),
 });
 
 export const shippingAddressSchema = z.object({

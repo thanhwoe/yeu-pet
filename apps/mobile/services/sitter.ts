@@ -20,7 +20,6 @@ interface ISitterQuery {
   page?: number;
   address?: string;
   city?: string;
-  district?: string;
   minRating?: string | number;
   maxPrice?: string | number;
 }
