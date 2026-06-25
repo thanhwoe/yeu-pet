@@ -5,6 +5,96 @@
     "networkTitle": "Connection issue",
     "networkText": "Check your connection and try again."
   },
+  "auth": {
+    "common": {
+      "createAccount": "Create an account",
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    },
+    "forgot": {
+      "description": "Enter the phone number linked to your account and we will send a reset code.",
+      "rememberPassword": "Remember your password?",
+      "title": "Forgot password?"
+    },
+    "form": {
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name"
+      },
+      "forgotPassword": "Forgot password",
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name"
+      },
+      "newPassword": {
+        "label": "New password",
+        "placeholder": "Enter new password"
+      },
+      "otpCode": {
+        "label": "OTP code",
+        "placeholder": "OTP code"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Password"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "Enter your phone number"
+      },
+      "resetPassword": "Reset password",
+      "sendResetOtp": "Send reset code"
+    },
+    "login": {
+      "noAccount": "Don't have an account?",
+      "subtitle": "Sign in to your account",
+      "title": "Welcome back"
+    },
+    "register": {
+      "hasAccount": "Already have an account?",
+      "subtitle": "Manage, care for, and love your pets.",
+      "title": "Create an account"
+    },
+    "reset": {
+      "description": "Create a strong password to keep your account safe.",
+      "didNotReceive": "Didn't receive the code?",
+      "rememberPassword": "Remember your password?",
+      "title": "Reset password"
+    },
+    "toast": {
+      "accountCreatedText": "Verify your phone number to continue into YeuPet.",
+      "accountCreatedTitle": "Account created",
+      "accountFailedText": "Check your details and try again.",
+      "accountFailedTitle": "Account not created",
+      "codeNotResentText": "Wait a moment and try again.",
+      "codeNotResentTitle": "Code not resent",
+      "codeNotVerifiedText": "Check the verification code and try again.",
+      "codeNotVerifiedTitle": "Code not verified",
+      "passwordNotResetText": "Check the code and try again.",
+      "passwordNotResetTitle": "Password not reset",
+      "resetCodeNotSentText": "Check your phone number and try again.",
+      "resetCodeNotSentTitle": "Reset code not sent",
+      "signInFailedText": "Check your details and try again.",
+      "signInFailedTitle": "Sign in failed",
+      "welcomeBackText": "You are signed in to YeuPet.",
+      "welcomeBackTitle": "Welcome back"
+    },
+    "verify": {
+      "changePhone": "Change phone number",
+      "didNotReceive": "Didn't receive the code?",
+      "incorrectCode": "Incorrect code. Please try again.",
+      "inputLabel": "Verification code digit {{index}}",
+      "resend": "Resend",
+      "resendIn": "Resend in {{time}}",
+      "sentCode": "We sent a {{count}}-digit code to",
+      "title": "Verify your phone number",
+      "verify": "Verify"
+    },
+    "welcome": {
+      "subtitle": "Smart care for your beloved pets. Everything your pet needs.",
+      "title": "Welcome to YeuPet"
+    }
+  },
   "common": {
     "accountSynced": "Account details synced",
     "activePlan": "Active plan",
@@ -228,5 +318,20 @@
   },
   "toast": {
     "notificationHint": "Opens the related screen"
+  },
+  "validation": {
+    "exactLength": "{{field}} must be exactly {{length}} characters",
+    "fields": {
+      "email": "Email",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "otpCode": "OTP code",
+      "password": "Password",
+      "phoneNumber": "Phone number"
+    },
+    "invalid": "Invalid {{field}}",
+    "numbersOnly": "{{field}} must contain numbers only",
+    "passwordMin": "Password cannot be less than 8 characters",
+    "required": "{{field}} cannot be empty"
   }
 }

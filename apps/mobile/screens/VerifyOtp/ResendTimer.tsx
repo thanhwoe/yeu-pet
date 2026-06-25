@@ -5,12 +5,14 @@ import { formatHMS } from "@/utils/date";
 import dayjs from "dayjs";
 import { memo, useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
   onResend?: () => void;
 }
 
 export const ResendTimer = memo<IProps>(({ onResend }) => {
+  const { t } = useTranslation();
   const otpExpire = useUserInfoStore.use.otpExpire();
   const updateOtpExpire = useUserInfoStore.use.updateOtpExpire();
 
@@ -52,7 +54,9 @@ export const ResendTimer = memo<IProps>(({ onResend }) => {
           "text-text-tertiary-inverse opacity-50": remaining > 0,
         })}
       >
-        {remaining > 0 ? `Resend in ${formatHMS(remaining)}` : "Resend"}
+        {remaining > 0
+          ? t("auth.verify.resendIn", { time: formatHMS(remaining) })
+          : t("auth.verify.resend")}
       </Body>
     </TouchableOpacity>
   );

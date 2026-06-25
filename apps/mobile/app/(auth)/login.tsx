@@ -6,12 +6,14 @@ import { SignInForm } from "@/features/auth/components/SignInForm";
 import { syncRevenueCatForUser } from "@/features/subscriptions/cache";
 import { signInMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
-import { startPushRegistrationSessionAsync } from "@/utils";
+import { getApiErrorToast, startPushRegistrationSessionAsync } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { Keyboard, StyleSheet, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const { updateUser, updateTokens } = useUserInfoStore();
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -28,15 +30,17 @@ export default function LoginScreen() {
       );
       await startPushRegistrationSessionAsync();
       Toast.success({
-        title: "Welcome back",
-        text: "You are signed in to YeuPet.",
+        title: t("auth.toast.welcomeBackTitle"),
+        text: t("auth.toast.welcomeBackText"),
       });
     },
     onError: (e) => {
-      Toast.error({
-        title: "Sign in failed",
-        text: e.message || "Check your details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          textKey: "auth.toast.signInFailedText",
+          titleKey: "auth.toast.signInFailedTitle",
+        }),
+      );
     },
   });
 
@@ -64,14 +68,14 @@ export default function LoginScreen() {
 
       <View className="flex-1 justify-center">
         <View className="gap-16 mb-20">
-          <Heading variant="h2">Hi, Welcome back! 👋</Heading>
-          <Heading variant="h5">Sign in to your account</Heading>
+          <Heading variant="h2">{t("auth.login.title")}</Heading>
+          <Heading variant="h5">{t("auth.login.subtitle")}</Heading>
         </View>
         <SignInForm onSubmit={handleLogin} isSubmitting={isPending} />
         <View className="flex-row mt-10 justify-center items-center">
-          <Body>Don&apos;t have an account? </Body>
+          <Body>{t("auth.login.noAccount")} </Body>
           <Link href="/register" replace>
-            <Body className="text-text-link">Sign Up</Body>
+            <Body className="text-text-link">{t("auth.common.signUp")}</Body>
           </Link>
         </View>
       </View>

@@ -5,6 +5,96 @@
     "networkTitle": "Kết nối không ổn định",
     "networkText": "Kiểm tra kết nối rồi thử lại nhé."
   },
+  "auth": {
+    "common": {
+      "createAccount": "Tạo tài khoản",
+      "signIn": "Đăng nhập",
+      "signUp": "Đăng ký"
+    },
+    "forgot": {
+      "description": "Nhập số điện thoại liên kết với tài khoản để nhận mã đặt lại mật khẩu.",
+      "rememberPassword": "Bạn nhớ mật khẩu rồi?",
+      "title": "Quên mật khẩu?"
+    },
+    "form": {
+      "firstName": {
+        "label": "Tên",
+        "placeholder": "Tên"
+      },
+      "forgotPassword": "Quên mật khẩu",
+      "lastName": {
+        "label": "Họ",
+        "placeholder": "Họ"
+      },
+      "newPassword": {
+        "label": "Mật khẩu mới",
+        "placeholder": "Nhập mật khẩu mới"
+      },
+      "otpCode": {
+        "label": "Mã OTP",
+        "placeholder": "Mã OTP"
+      },
+      "password": {
+        "label": "Mật khẩu",
+        "placeholder": "Mật khẩu"
+      },
+      "phone": {
+        "label": "Số điện thoại",
+        "placeholder": "Nhập số điện thoại"
+      },
+      "resetPassword": "Đặt lại mật khẩu",
+      "sendResetOtp": "Gửi mã đặt lại"
+    },
+    "login": {
+      "noAccount": "Bạn chưa có tài khoản?",
+      "subtitle": "Đăng nhập vào tài khoản của bạn",
+      "title": "Chào mừng trở lại"
+    },
+    "register": {
+      "hasAccount": "Bạn đã có tài khoản?",
+      "subtitle": "Quản lý và chăm sóc thú cưng mỗi ngày.",
+      "title": "Tạo tài khoản"
+    },
+    "reset": {
+      "description": "Tạo mật khẩu mạnh để bảo vệ tài khoản của bạn.",
+      "didNotReceive": "Bạn chưa nhận được mã?",
+      "rememberPassword": "Bạn nhớ mật khẩu rồi?",
+      "title": "Đặt lại mật khẩu"
+    },
+    "toast": {
+      "accountCreatedText": "Xác minh số điện thoại để tiếp tục vào YeuPet.",
+      "accountCreatedTitle": "Đã tạo tài khoản",
+      "accountFailedText": "Kiểm tra thông tin rồi thử lại nhé.",
+      "accountFailedTitle": "Chưa tạo được tài khoản",
+      "codeNotResentText": "Đợi một chút rồi thử lại nhé.",
+      "codeNotResentTitle": "Chưa gửi lại mã",
+      "codeNotVerifiedText": "Kiểm tra mã xác minh rồi thử lại nhé.",
+      "codeNotVerifiedTitle": "Chưa xác minh được mã",
+      "passwordNotResetText": "Kiểm tra mã rồi thử lại nhé.",
+      "passwordNotResetTitle": "Chưa đặt lại mật khẩu",
+      "resetCodeNotSentText": "Kiểm tra số điện thoại rồi thử lại nhé.",
+      "resetCodeNotSentTitle": "Chưa gửi được mã",
+      "signInFailedText": "Kiểm tra thông tin rồi thử lại nhé.",
+      "signInFailedTitle": "Chưa đăng nhập được",
+      "welcomeBackText": "Bạn đã đăng nhập vào YeuPet.",
+      "welcomeBackTitle": "Chào mừng trở lại"
+    },
+    "verify": {
+      "changePhone": "Đổi số điện thoại",
+      "didNotReceive": "Bạn chưa nhận được mã?",
+      "incorrectCode": "Mã chưa đúng. Vui lòng thử lại.",
+      "inputLabel": "Chữ số {{index}} của mã xác minh",
+      "resend": "Gửi lại",
+      "resendIn": "Gửi lại sau {{time}}",
+      "sentCode": "YeuPet đã gửi mã gồm {{count}} chữ số đến",
+      "title": "Xác minh số điện thoại",
+      "verify": "Xác minh"
+    },
+    "welcome": {
+      "subtitle": "Chăm sóc thú cưng thông minh, đầy đủ những điều bé cần.",
+      "title": "Chào mừng đến YeuPet"
+    }
+  },
   "common": {
     "accountSynced": "Thông tin tài khoản đã đồng bộ",
     "activePlan": "Gói đang hoạt động",
@@ -228,5 +318,20 @@
   },
   "toast": {
     "notificationHint": "Mở màn hình liên quan"
+  },
+  "validation": {
+    "exactLength": "{{field}} phải có đúng {{length}} ký tự",
+    "fields": {
+      "email": "Email",
+      "firstName": "Tên",
+      "lastName": "Họ",
+      "otpCode": "Mã OTP",
+      "password": "Mật khẩu",
+      "phoneNumber": "Số điện thoại"
+    },
+    "invalid": "{{field}} chưa hợp lệ",
+    "numbersOnly": "{{field}} chỉ được chứa số",
+    "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
+    "required": "{{field}} không được để trống"
   }
 }

@@ -5,7 +5,7 @@ import { Body, Heading } from "@/components/ui/Typography";
 import { useLogout } from "@/hooks/useLogout";
 import { resendOtpMutation, verifyOtpMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
-import { cn } from "@/utils";
+import { cn, getApiErrorToast } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -16,6 +16,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -28,6 +29,7 @@ import { ResendTimer } from "./ResendTimer";
 const OTP_LENGTH = 6;
 
 export const VerifyOtpScreen = () => {
+  const { t } = useTranslation();
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [activeIndex, setActiveIndex] = useState(0);
   const [hasError, setHasError] = useState(false);
@@ -42,10 +44,12 @@ export const VerifyOtpScreen = () => {
   const { mutate: verifyOtp, isPending: isVerifying } = useMutation({
     mutationFn: verifyOtpMutation,
     onError(e) {
-      Toast.error({
-        title: "Code not verified",
-        text: e.message || "Check the verification code and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          textKey: "auth.toast.codeNotVerifiedText",
+          titleKey: "auth.toast.codeNotVerifiedTitle",
+        }),
+      );
       shake();
     },
     onSuccess(res) {
@@ -57,10 +61,12 @@ export const VerifyOtpScreen = () => {
   const { mutate: resendOtp, isPending: resendingOtp } = useMutation({
     mutationFn: resendOtpMutation,
     onError(e) {
-      Toast.error({
-        title: "Code not resent",
-        text: e.message || "Wait a moment and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          textKey: "auth.toast.codeNotResentText",
+          titleKey: "auth.toast.codeNotResentTitle",
+        }),
+      );
     },
     onSuccess(res) {
       updateOtpExpire(dayjs(res.expiresAt).toDate());
@@ -172,8 +178,8 @@ export const VerifyOtpScreen = () => {
             source={require("@/assets/images/sitting-dog.png")}
           />
 
-          <Heading variant="h4">Verify your phone number</Heading>
-          <Body>We sent a {OTP_LENGTH}-digit code to</Body>
+          <Heading variant="h4">{t("auth.verify.title")}</Heading>
+          <Body>{t("auth.verify.sentCode", { count: OTP_LENGTH })}</Body>
           <Body weight="bold">{user?.phone}</Body>
         </View>
 
@@ -206,13 +212,16 @@ export const VerifyOtpScreen = () => {
               maxLength={1}
               textContentType="oneTimeCode"
               autoComplete="sms-otp"
+              accessibilityLabel={t("auth.verify.inputLabel", {
+                index: i + 1,
+              })}
             />
           ))}
         </Animated.View>
 
         {hasError && (
           <Body center variant="body3" className="mt-12 text-text-negative">
-            Incorrect code. Please try again.
+            {t("auth.verify.incorrectCode")}
           </Body>
         )}
 
@@ -239,7 +248,7 @@ export const VerifyOtpScreen = () => {
           {/* Resend */}
           <View className="flex-row justify-center items-center">
             <Body variant="body2" className="text-text-tertiary-inverse">
-              Didn&rsquo;t receive the code?{" "}
+              {t("auth.verify.didNotReceive")}{" "}
             </Body>
             <ResendTimer onResend={handleResend} />
           </View>
@@ -249,7 +258,7 @@ export const VerifyOtpScreen = () => {
             loading={isVerifying}
             onPress={handleVerify}
           >
-            Verify
+            {t("auth.verify.verify")}
           </Button>
           <Button
             variant="ghost"
@@ -257,7 +266,7 @@ export const VerifyOtpScreen = () => {
             loading={loggingOut}
             disabled={resendingOtp || isVerifying}
           >
-            Change phone number
+            {t("auth.verify.changePhone")}
           </Button>
         </View>
       </Animated.View>

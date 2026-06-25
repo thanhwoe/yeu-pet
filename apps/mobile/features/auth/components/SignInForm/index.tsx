@@ -1,12 +1,15 @@
-import { ISignInForm, signInSchema } from "@/constants/validation";
 import { InputController } from "@/components/InputController";
 import { PhoneInputController } from "@/components/PhoneInputController";
 import { Button } from "@/components/ui/Button";
 import { Body } from "@/components/ui/Typography";
+import { ISignInForm } from "@/constants/validation";
+import { createSignInSchema } from "@/features/auth/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
   onSubmit: (data: ISignInForm) => Promise<void>;
@@ -14,8 +17,10 @@ interface IProps {
 }
 
 export const SignInForm = ({ onSubmit, isSubmitting }: IProps) => {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createSignInSchema(t), [t]);
   const { control, handleSubmit } = useForm<ISignInForm>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(schema),
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
@@ -27,23 +32,23 @@ export const SignInForm = ({ onSubmit, isSubmitting }: IProps) => {
     >
       <PhoneInputController<ISignInForm>
         control={control}
-        placeholder="Enter your phone number"
-        label="Phone"
+        placeholder={t("auth.form.phone.placeholder")}
+        label={t("auth.form.phone.label")}
         name="phone"
       />
       <InputController<ISignInForm>
         control={control}
         name="password"
-        label="Password"
-        placeholder="Password"
+        label={t("auth.form.password.label")}
+        placeholder={t("auth.form.password.placeholder")}
         secureTextEntry
       />
       <Link href="/forgot-password" className="self-end my-6" replace>
-        <Body className="text-text-link">Forgot Password</Body>
+        <Body className="text-text-link">{t("auth.form.forgotPassword")}</Body>
       </Link>
 
       <Button onPress={() => handleSubmit(onSubmit)()} loading={isSubmitting}>
-        Sign In
+        {t("auth.common.signIn")}
       </Button>
     </KeyboardAvoidingView>
   );

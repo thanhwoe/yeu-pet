@@ -8,13 +8,16 @@ import {
   resetPasswordMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
+import { getApiErrorToast } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { Keyboard, StyleSheet, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { ResendTimer } from "../VerifyOtp/ResendTimer";
 
 export const ResetPasswordScreen = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { phone } = useLocalSearchParams<{ phone: string }>();
   const updateOtpExpire = useUserInfoStore.use.updateOtpExpire();
@@ -22,10 +25,12 @@ export const ResetPasswordScreen = () => {
   const { mutateAsync: resendOtp, isPending: resendingOtp } = useMutation({
     mutationFn: requestResetPasswordMutation,
     onError(e) {
-      Toast.error({
-        title: "Code not resent",
-        text: e.message || "Wait a moment and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          textKey: "auth.toast.codeNotResentText",
+          titleKey: "auth.toast.codeNotResentTitle",
+        }),
+      );
     },
     onSuccess(res) {
       updateOtpExpire(dayjs(res.expiresAt).toDate());
@@ -35,10 +40,12 @@ export const ResetPasswordScreen = () => {
   const { mutateAsync: resetPassword, isPending: isSubmitting } = useMutation({
     mutationFn: resetPasswordMutation,
     onError(e) {
-      Toast.error({
-        title: "Password not reset",
-        text: e.message || "Check the code and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          textKey: "auth.toast.passwordNotResetText",
+          titleKey: "auth.toast.passwordNotResetTitle",
+        }),
+      );
     },
     onSuccess() {
       updateOtpExpire(null);
@@ -80,9 +87,9 @@ export const ResetPasswordScreen = () => {
 
       <View className="flex-1 justify-center">
         <View className="gap-16 mb-50">
-          <Heading variant="h2">Reset Password</Heading>
+          <Heading variant="h2">{t("auth.reset.title")}</Heading>
           <Body className="text-text-tertiary-inverse">
-            Create a strong password to keep your pets safe.
+            {t("auth.reset.description")}
           </Body>
         </View>
         <ResetPasswordForm
@@ -92,15 +99,15 @@ export const ResetPasswordScreen = () => {
         >
           <View className="flex-row justify-center items-center mt-8">
             <Body variant="body2" className="text-text-tertiary-inverse">
-              Didn&rsquo;t receive the code?{" "}
+              {t("auth.reset.didNotReceive")}{" "}
             </Body>
             <ResendTimer onResend={handleResend} />
           </View>
         </ResetPasswordForm>
         <View className="flex-row mt-10 justify-center items-center">
-          <Body>Remember password ?</Body>
+          <Body>{t("auth.reset.rememberPassword")} </Body>
           <Link href="/login" replace>
-            <Body className="text-text-link">Sign In</Body>
+            <Body className="text-text-link">{t("auth.common.signIn")}</Body>
           </Link>
         </View>
       </View>

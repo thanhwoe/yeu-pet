@@ -1,9 +1,7 @@
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
+import { initReactI18next, setI18n } from "react-i18next";
 
 import { setAppDateLocale } from "@/utils/dayjsConfig";
-import en from "./resources/en.json";
-import vi from "./resources/vi.json";
 import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
@@ -11,6 +9,8 @@ import {
   normalizeLanguage,
   type SupportedLanguage,
 } from "./languages";
+import en from "./resources/en.json";
+import vi from "./resources/vi.json";
 
 const resources = {
   en: { translation: en },
@@ -18,8 +18,8 @@ const resources = {
 } as const;
 
 const initialLanguage = detectDeviceLanguage();
-
 setAppDateLocale(initialLanguage);
+setI18n(i18n);
 
 if (!i18n.isInitialized) {
   void i18n.use(initReactI18next).init({

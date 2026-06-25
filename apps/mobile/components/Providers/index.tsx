@@ -16,6 +16,7 @@ import {
   changeAppLanguage,
   detectDeviceLanguage,
   getCurrentLanguage,
+  i18n,
 } from "@/i18n";
 import { useUserInfoStore } from "@/stores";
 import { themes } from "@/theme";
@@ -42,13 +43,19 @@ import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useTranslation } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import { AppLoader } from "../AppLoader";
 import { Toast } from "../Toast";
 
 export const Providers = ({ children }: Required<Children>) =>
   combineProviders(
-    [GestureHandlerProvider, SafeAreaProvider, QueryProvider, InitialProvider],
+    [
+      GestureHandlerProvider,
+      SafeAreaProvider,
+      TranslationProvider,
+      QueryProvider,
+      InitialProvider,
+    ],
     children,
   );
 
@@ -225,6 +232,10 @@ const GestureHandlerProvider = ({ children }: Children) => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     {children}
   </GestureHandlerRootView>
+);
+
+const TranslationProvider = ({ children }: Children) => (
+  <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
 );
 
 const queryClient = new QueryClient();

@@ -1,12 +1,12 @@
-import {
-  forgotPasswordSchema,
-  IForgotPasswordForm,
-} from "@/constants/validation";
 import { PhoneInputController } from "@/components/PhoneInputController";
 import { Button } from "@/components/ui/Button";
+import { IForgotPasswordForm } from "@/constants/validation";
+import { createForgotPasswordSchema } from "@/features/auth/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
   onSubmit: (data: IForgotPasswordForm) => Promise<void>;
@@ -14,8 +14,10 @@ interface IProps {
 }
 
 export const ForgotPasswordForm = ({ onSubmit, isSubmitting }: IProps) => {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createForgotPasswordSchema(t), [t]);
   const { control, handleSubmit } = useForm<IForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(schema),
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
@@ -24,13 +26,13 @@ export const ForgotPasswordForm = ({ onSubmit, isSubmitting }: IProps) => {
     <View className="gap-40">
       <PhoneInputController<IForgotPasswordForm>
         control={control}
-        placeholder="Enter your phone number"
-        label="Phone"
+        placeholder={t("auth.form.phone.placeholder")}
+        label={t("auth.form.phone.label")}
         name="phone"
       />
 
       <Button onPress={() => handleSubmit(onSubmit)()} loading={isSubmitting}>
-        Send Reset OTP
+        {t("auth.form.sendResetOtp")}
       </Button>
     </View>
   );

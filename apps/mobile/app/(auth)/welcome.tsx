@@ -4,9 +4,11 @@ import { Heading } from "@/components/ui/Typography";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <View className="flex-1 bg-white justify-end">
@@ -29,16 +31,18 @@ export default function WelcomeScreen() {
       <View className="gap-56 px-18">
         <View className="gap-12">
           <Heading variant="h3" weight="bold" center>
-            Welcome to Yeu Pet
+            {t("auth.welcome.title")}
           </Heading>
           <Heading variant="h6" center>
-            Smart care for your beloved pets. Everything your pet needs.
+            {t("auth.welcome.subtitle")}
           </Heading>
         </View>
         <View className="gap-12 mb-safe-offset-4">
-          <Button onPress={() => router.replace("/login")}>Sign In</Button>
+          <Button onPress={() => router.replace("/login")}>
+            {t("auth.common.signIn")}
+          </Button>
           <Button variant="outline" onPress={() => router.replace("/register")}>
-            Create an Account
+            {t("auth.common.createAccount")}
           </Button>
         </View>
       </View>
