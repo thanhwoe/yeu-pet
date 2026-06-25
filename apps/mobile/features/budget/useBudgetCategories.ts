@@ -13,7 +13,11 @@ import {
   getBudgetCategoryQuery,
   updateBudgetCategoryMutation,
 } from "@/services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 
 const CATEGORY_LIMIT = 20;
@@ -24,10 +28,21 @@ export const useBudgetCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState<IBudgetCategory>();
   const [categoryDelete, setCategoryDelete] = useState<IBudgetCategory>();
 
-  const categoriesQuery = useQuery({
+  const categoriesQuery = useInfiniteQuery({
     queryKey: BUDGET_CATEGORY_KEY.list({ limit: CATEGORY_LIMIT }),
-    queryFn: () => getBudgetCategoryQuery({ limit: CATEGORY_LIMIT }),
+    queryFn: ({ pageParam }) =>
+      getBudgetCategoryQuery({ limit: CATEGORY_LIMIT, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.meta.hasNextPage) return undefined;
+      return lastPage.meta.page + 1;
+    },
   });
+
+  const categories = useMemo(
+    () => categoriesQuery.data?.pages.flatMap((page) => page.data) ?? [],
+    [categoriesQuery.data?.pages],
+  );
 
   const closeForm = useCallback(() => {
     setIsFormOpen(false);
@@ -143,10 +158,34 @@ export const useBudgetCategories = () => {
     deleteCategory(categoryDelete.id);
   }, [categoryDelete, deleteCategory]);
 
+  const loadMoreCategories = useCallback(() => {
+    if (
+      categoriesQuery.isLoading ||
+      categoriesQuery.isFetchingNextPage ||
+      !categoriesQuery.hasNextPage ||
+      !categories.length
+    ) {
+      return;
+    }
+
+    void categoriesQuery.fetchNextPage();
+  }, [
+    categories.length,
+    categoriesQuery.fetchNextPage,
+    categoriesQuery.hasNextPage,
+    categoriesQuery.isFetchingNextPage,
+    categoriesQuery.isLoading,
+  ]);
+
   return {
-    categories: categoriesQuery.data?.data ?? [],
+    categories,
     isLoading: categoriesQuery.isLoading,
-    isRefreshing: categoriesQuery.isRefetching && !categoriesQuery.isLoading,
+    isRefreshing:
+      categoriesQuery.isRefetching &&
+      !categoriesQuery.isLoading &&
+      !categoriesQuery.isFetchingNextPage,
+    isFetchingNextPage: categoriesQuery.isFetchingNextPage,
+    hasNextPage: categoriesQuery.hasNextPage,
     isSubmitting: isCreating || isUpdating,
     isDeleting,
     isFormOpen,
@@ -159,6 +198,7 @@ export const useBudgetCategories = () => {
     closeForm,
     handleSubmit,
     handleDelete,
+    loadMoreCategories,
     refetch: categoriesQuery.refetch,
   };
 };

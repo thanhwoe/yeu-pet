@@ -247,7 +247,7 @@ export const BudgetTransactionsScreen = () => {
               amount: transactionEdit.amount,
               categoryId: transactionEdit.categoryId,
               date: dayjs(transactionEdit.date).toDate(),
-              description: transactionEdit.description,
+              description: transactionEdit.description ?? undefined,
               petId: transactionEdit.petId ?? undefined,
             },
           })}

@@ -2,6 +2,7 @@ import { Popup } from "@/components/Popup";
 import { Skeleton } from "@/components/Skeleton";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
+import { Spinner } from "@/components/ui/Spinner";
 import { StateView } from "@/components/ui/StateView";
 import { BudgetCategoryForm } from "@/features/budget/components/BudgetCategoryForm";
 import { useBudgetCategories } from "@/features/budget/useBudgetCategories";
@@ -20,6 +21,7 @@ export const BudgetCategoriesScreen = () => {
     categories,
     isLoading,
     isRefreshing,
+    isFetchingNextPage,
     isSubmitting,
     isDeleting,
     isFormOpen,
@@ -32,6 +34,7 @@ export const BudgetCategoriesScreen = () => {
     closeForm,
     handleSubmit,
     handleDelete,
+    loadMoreCategories,
     refetch,
   } = useBudgetCategories();
 
@@ -59,6 +62,8 @@ export const BudgetCategoriesScreen = () => {
         data={categories}
         refreshing={isRefreshing}
         onRefresh={refetch}
+        onEndReached={loadMoreCategories}
+        onEndReachedThreshold={0.2}
         renderItem={({ item }) => (
           <CategoryItem
             data={item}
@@ -97,9 +102,14 @@ export const BudgetCategoriesScreen = () => {
             />
           );
         }}
+        ListFooterComponent={isFetchingNextPage ? <Spinner /> : null}
       />
 
-      <BottomSheet visible={isFormOpen} onDismiss={closeForm}>
+      <BottomSheet
+        visible={isFormOpen}
+        onDismiss={closeForm}
+        keyboardBehavior="interactive"
+      >
         <BudgetCategoryForm
           onSubmit={handleSubmit}
           submitting={isSubmitting}

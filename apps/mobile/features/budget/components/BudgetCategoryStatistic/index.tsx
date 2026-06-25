@@ -3,6 +3,7 @@ import { Body, Heading } from "@/components/ui/Typography";
 import { DonutChart } from "@/features/budget/components/chart/DonutChart";
 import { IBudgetSpendingByCategory } from "@/interfaces";
 import { hexToRgba } from "@/utils";
+import { formatBudgetCurrency } from "@/utils/budget";
 import { Link } from "expo-router";
 import { memo, useMemo } from "react";
 import { View } from "react-native";
@@ -56,7 +57,7 @@ export const BudgetCategoryStatistic = memo<IProps>(
               <View className="flex-1">
                 <View className="flex-row items-center justify-between">
                   <Body>{i.category.name}</Body>
-                  <Body weight="bold">{i.total.toLocaleString()}</Body>
+                  <Body weight="bold">{formatBudgetCurrency(i.total)}</Body>
                 </View>
                 <ProgressBar
                   shimmer={false}

@@ -18,10 +18,13 @@ import { Body } from "../ui/Typography";
 
 interface ActionButton {
   text?: string;
+  textClassName?: string;
   icon?: ReactNode;
   onPress: () => void;
   width?: number;
   className?: string;
+  contentClassName?: string;
+  accessibilityLabel?: string;
   disabled?: boolean;
   loading?: boolean;
 }
@@ -32,6 +35,7 @@ interface SwipeableWrapperProps {
   rightAction?: ActionButton;
   swipeThreshold?: number;
   style?: ViewStyle;
+  className?: string;
   actionButtonStyle?: ViewStyle;
   disabled?: boolean;
   springConfig?: {
@@ -47,6 +51,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
   rightAction,
   swipeThreshold = 100,
   style,
+  className,
   actionButtonStyle,
   disabled = false,
   springConfig = {
@@ -187,7 +192,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={[{ position: "relative" }, style]}>
+      <View className={className} style={[{ position: "relative" }, style]}>
         {/* Left Action Button */}
         {leftAction && (
           <Animated.View
@@ -220,9 +225,16 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               onPress={() => handleActionPress(leftAction)}
               activeOpacity={0.8}
               disabled={leftAction.disabled || leftAction.loading}
+              accessibilityLabel={leftAction.accessibilityLabel}
+              accessibilityRole="button"
+              className={leftAction.contentClassName}
             >
               {leftAction.text && (
-                <Body weight="semiBold" variant="body2">
+                <Body
+                  weight="semiBold"
+                  variant="body5"
+                  className={leftAction.textClassName}
+                >
                   {leftAction.text}
                 </Body>
               )}
@@ -266,9 +278,16 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
               onPress={() => handleActionPress(rightAction)}
               activeOpacity={0.8}
               disabled={rightAction.disabled || rightAction.loading}
+              accessibilityLabel={rightAction.accessibilityLabel}
+              accessibilityRole="button"
+              className={rightAction.contentClassName}
             >
               {rightAction.text && (
-                <Body weight="semiBold" variant="body2">
+                <Body
+                  weight="semiBold"
+                  variant="body5"
+                  className={rightAction.textClassName}
+                >
                   {rightAction.text}
                 </Body>
               )}

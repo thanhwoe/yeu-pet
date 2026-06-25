@@ -13,12 +13,13 @@ import {
   formatReminderTime,
   REMINDER_TYPE_LABELS,
 } from "@/utils/reminder";
-import { ClockIcon, PencilIcon, TrashIcon } from "phosphor-react-native";
+import { ClockIcon, PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
 import { Pressable, View } from "react-native";
 
-const EditIcon = withIconClassName(PencilIcon);
+const EditIcon = withIconClassName(PencilSimpleIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 const Clock = withIconClassName(ClockIcon);
+const ACTION_WIDTH = 68;
 
 interface ItemProps {
   item: IReminder;
@@ -39,6 +40,7 @@ export const AgendaItem = ({
 }: ItemProps) => {
   const isMuted = item.status === "cancelled";
   const canDelete = canDeleteReminder(item.status);
+  const canSwipeDelete = canDelete && Boolean(onDelete);
   const petName = item.pets?.name ?? "No pet";
   const repeatSummary = formatReminderRepeat(
     item.repeatFrequency,
@@ -47,30 +49,56 @@ export const AgendaItem = ({
 
   return (
     <SwipeableWrapper
-      leftAction={{
-        icon: <EditIcon className="text-status-success-icon" weight="bold" />,
-        onPress: () => onEdit?.(item),
-        width: 80,
-        loading: editing,
-      }}
-      rightAction={
-        canDelete
+      disabled={!onEdit && !canSwipeDelete}
+      className="mb-12 overflow-hidden rounded-20 border border-line-subtle bg-background-surface shadow-sm"
+      leftAction={
+        onEdit
           ? {
               icon: (
-                <DeleteIcon className="text-status-danger-icon" weight="bold" />
+                <EditIcon
+                  className="text-status-info-icon"
+                  size={18}
+                  weight="bold"
+                />
               ),
-              onPress: () => onDelete?.(item),
-              width: 80,
-              loading: deleting,
+              onPress: () => onEdit(item),
+              width: ACTION_WIDTH,
+              loading: editing,
+              disabled: deleting,
+              className:
+                "border-r border-status-info-border bg-status-info-surface",
+              contentClassName: "gap-4",
+              accessibilityLabel: `Edit ${item.title} reminder`,
             }
           : undefined
       }
-      style={{ marginBottom: 12 }}
-      swipeThreshold={60}
+      rightAction={
+        canDelete && onDelete
+          ? {
+              icon: (
+                <DeleteIcon
+                  className="text-status-danger-icon"
+                  size={18}
+                  weight="bold"
+                />
+              ),
+              onPress: () => onDelete(item),
+              width: ACTION_WIDTH,
+              loading: deleting,
+              disabled: editing,
+              className:
+                "border-l border-status-danger-border bg-status-danger-surface",
+              contentClassName: "gap-4",
+              accessibilityLabel: `Delete ${item.title} reminder`,
+            }
+          : undefined
+      }
+      swipeThreshold={72}
+      springConfig={{ damping: 18, stiffness: 180, mass: 0.9 }}
     >
       <View
         className={cn(
-          "rounded-20 border border-line-subtle bg-background-card px-14 py-14",
+          "bg-background-surface px-14 py-14",
           isMuted && "opacity-80",
         )}
       >

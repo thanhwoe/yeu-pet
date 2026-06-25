@@ -2,6 +2,7 @@ import { BudgetCategoryStatistic } from "@/features/budget/components/BudgetCate
 import { BarChart, LineChart } from "@/features/budget/components/chart";
 import { Body, Heading } from "@/components/ui/Typography";
 import { withLoading } from "@/hocs/withLoading";
+import { formatBudgetCurrency } from "@/utils/budget";
 import {
   IBudget,
   IBudgetSpendingByCategory,
@@ -91,7 +92,7 @@ const YearContent = memo(
               loadingSize="w-120 h-20"
               className="self-end"
             >
-              {summary?.totalSpent.toLocaleString()}
+              {formatBudgetCurrency(summary?.totalSpent)}
             </LoadableBody>
           </View>
         </View>

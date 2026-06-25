@@ -6,13 +6,19 @@ export interface IBudgetTransaction {
   categoryId: string;
   petId?: string | null;
   amount: string;
-  description: string;
+  description?: string | null;
   date: string;
   budgetCategories: {
     id: string;
+    name?: string | null;
     emoji: string;
-    color: string;
+    color?: string | null;
   };
+  pets?: {
+    id: string;
+    name?: string | null;
+    avatarUrl?: string | null;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }

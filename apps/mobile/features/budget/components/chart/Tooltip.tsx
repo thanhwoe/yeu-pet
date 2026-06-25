@@ -41,7 +41,7 @@ export const Tooltip = ({ isPressActive, pressState }: IProps) => {
           : new Date(pressState.x.value.value).toLocaleDateString();
         const value = isDefault
           ? ""
-          : pressState.y.value.value.value.toLocaleString();
+          : `${pressState.y.value.value.value.toLocaleString("vi-VN")} ₫`;
 
         setNativeProps(dateValueRef, {
           text: label,

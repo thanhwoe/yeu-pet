@@ -253,20 +253,18 @@ export function BudgetScreen() {
   }, []);
 
   const ListHeaderComponent = useMemo(() => {
-    if (sections.length > 0) {
-      return (
-        <View className="justify-between items-center flex-row py-20">
-          <Heading variant="h5" weight="bold">
-            Recent Transactions
-          </Heading>
+    return (
+      <View className="flex-row items-center justify-between pt-4">
+        <Heading variant="h5" weight="bold">
+          Recent Transactions
+        </Heading>
+        {sections.length > 0 && (
           <Link href="/budget/transactions">
             <Body className="text-text-link">See all</Body>
           </Link>
-        </View>
-      );
-    }
-
-    return null;
+        )}
+      </View>
+    );
   }, [sections]);
   return (
     <ScreenContainer
@@ -320,6 +318,9 @@ export function BudgetScreen() {
 
           setOpenCategoryForm(true);
         }}
+        compactEmpty
+        emptyTitle="No recent transactions"
+        emptyDescription="Add a pet-care expense when you are ready to track this period."
       />
       <BottomSheet
         useScrollView={false}

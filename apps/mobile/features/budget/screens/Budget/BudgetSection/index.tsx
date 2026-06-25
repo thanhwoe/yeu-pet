@@ -12,6 +12,7 @@ import { withLoading } from "@/hocs/withLoading";
 import { IBudget } from "@/interfaces";
 import { updateBudgetMutation } from "@/services";
 import { cn } from "@/utils";
+import { formatBudgetCurrency } from "@/utils/budget";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WalletIcon } from "phosphor-react-native";
 import {
@@ -88,7 +89,7 @@ export const BudgetSection = memo(
                 loadingSize="w-120 h-50"
                 adjustsFontSizeToFit
               >
-                {amount?.toLocaleString()}
+                {formatBudgetCurrency(amount)}
               </LoadableHeading>
             </View>
             <TouchableOpacity
@@ -115,7 +116,7 @@ export const BudgetSection = memo(
               weight="bold"
               className="flex-1 mr-8"
             >
-              Spent: {spent?.toLocaleString()}
+              Spent: {formatBudgetCurrency(spent)}
             </LoadableBody>
             <LoadableBody loading={loading} loadingSize="w-40 h-20">
               {usagePercent}%
@@ -134,7 +135,7 @@ export const BudgetSection = memo(
                   "text-text-negative": isOverBudget,
                 })}
               >
-                {remaining?.toLocaleString()}
+                {formatBudgetCurrency(remaining)}
               </LoadableHeading>
             </View>
           </View>
