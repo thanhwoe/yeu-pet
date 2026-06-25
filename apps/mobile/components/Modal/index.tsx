@@ -11,6 +11,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+const DEFAULT_THUMBNAIL_FRAME = {
+  x: SCREEN_WIDTH / 2 - 50,
+  y: SCREEN_HEIGHT / 2 - 50,
+  width: 100,
+  height: 100,
+};
+
 interface ZoomOutModalProps {
   visible: boolean;
   onClose: () => void;
@@ -28,12 +35,7 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
   visible,
   onClose,
   presentation = "zoom",
-  thumbnailFrame = {
-    x: SCREEN_WIDTH / 2 - 50,
-    y: SCREEN_HEIGHT / 2 - 50,
-    width: 100,
-    height: 100,
-  },
+  thumbnailFrame = DEFAULT_THUMBNAIL_FRAME,
   children,
 }) => {
   const scale = useSharedValue(0.1);
@@ -58,15 +60,13 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
       targetWidth,
       targetHeight,
       initialScale: thumbnailFrame.width / targetWidth,
-      initialTranslateX:
-        thumbnailFrame.x + thumbnailFrame.width / 2 - centerX,
-      initialTranslateY:
-        thumbnailFrame.y + thumbnailFrame.height / 2 - centerY,
+      initialTranslateX: thumbnailFrame.x + thumbnailFrame.width / 2 - centerX,
+      initialTranslateY: thumbnailFrame.y + thumbnailFrame.height / 2 - centerY,
     };
   }, [presentation, thumbnailFrame]);
 
   useEffect(() => {
-    if (visible) {
+    if (visible && presentation !== "fullscreen") {
       // Set initial values
       scale.value = animationFrame.initialScale;
       translateX.value = animationFrame.initialTranslateX;
@@ -96,7 +96,16 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
       opacity.value = withTiming(1, { duration: 300 });
       backdropOpacity.value = withTiming(1, { duration: 300 });
     }
-  }, [animationFrame, backdropOpacity, opacity, scale, translateX, translateY, visible]);
+  }, [
+    animationFrame,
+    backdropOpacity,
+    opacity,
+    presentation,
+    scale,
+    translateX,
+    translateY,
+    visible,
+  ]);
 
   const handleClose = useCallback(() => {
     // Animate back to thumbnail size and position
@@ -123,7 +132,15 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
     });
 
     backdropOpacity.value = withTiming(0, { duration: 200 });
-  }, [animationFrame, backdropOpacity, onClose, opacity, scale, translateX, translateY]);
+  }, [
+    animationFrame,
+    backdropOpacity,
+    onClose,
+    opacity,
+    scale,
+    translateX,
+    translateY,
+  ]);
 
   const animatedImageStyle = useAnimatedStyle(() => ({
     transform: [
@@ -137,6 +154,31 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
   const animatedBackdropStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,
   }));
+
+  if (presentation === "fullscreen") {
+    return (
+      <RNModal
+        visible={visible}
+        statusBarTranslucent
+        animationType="fade"
+        presentationStyle="fullScreen"
+        onRequestClose={onClose}
+      >
+        <GestureHandlerRootView style={styles.modalRoot}>
+          <BottomSheetModalProvider>
+            {visible && (
+              <StatusBar
+                backgroundColor="transparent"
+                barStyle="light-content"
+                translucent
+              />
+            )}
+            <View style={styles.fullscreenContent}>{children}</View>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </RNModal>
+    );
+  }
 
   if (!visible) return null;
 
@@ -165,6 +207,7 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
 
             {/* Pressable overlay for closing */}
             <Pressable
+              accessible={false}
               className="flex-1 justify-center items-center"
               onPress={handleClose}
             >
@@ -179,7 +222,10 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
                 ]}
                 className="justify-center items-center"
               >
-                <Pressable onPress={(e) => e.stopPropagation()}>
+                <Pressable
+                  accessible={false}
+                  onPress={(e) => e.stopPropagation()}
+                >
                   {children}
                 </Pressable>
               </Animated.View>
@@ -192,6 +238,10 @@ export const Modal: React.FC<ZoomOutModalProps> = ({
 };
 
 const styles = {
+  fullscreenContent: {
+    backgroundColor: "#000",
+    flex: 1,
+  },
   modalRoot: {
     flex: 1,
   },

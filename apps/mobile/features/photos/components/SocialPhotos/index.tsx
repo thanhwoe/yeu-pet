@@ -1,16 +1,19 @@
 import { Spinner } from "@/components/ui/Spinner";
 import { PHOTOS_KEY } from "@/constants/query-keys";
 import { EmptyPhotos } from "@/features/photos/components/EmptyPhotos";
+import { PhotoGalleryViewer } from "@/features/photos/components/PhotoGalleryViewer";
 import { PhotoItem } from "@/features/photos/components/PhotoItem";
 import { ITEM_WIDTH, LIMIT } from "@/features/photos/utils";
 import { IPhoto } from "@/interfaces";
 import { getListSocialPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { View } from "react-native";
 
 export const SocialPhotos = () => {
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [initialViewerIndex, setInitialViewerIndex] = useState(0);
   const {
     data = [],
     hasNextPage,
@@ -18,6 +21,7 @@ export const SocialPhotos = () => {
     isError,
     isRefetching,
     isFetchingNextPage,
+    isFetchNextPageError,
     fetchNextPage,
     refetch,
   } = useInfiniteQuery({
@@ -36,9 +40,17 @@ export const SocialPhotos = () => {
     select: (data) => data?.pages.flatMap((item) => item.data) || [],
   });
 
+  const openViewer = useCallback((index: number) => {
+    setInitialViewerIndex(index);
+    setViewerVisible(true);
+  }, []);
+  const closeViewer = useCallback(() => setViewerVisible(false), []);
+
   const renderItem = useCallback<ListRenderItem<IPhoto>>(
-    ({ item, index }) => <PhotoItem data={item} index={index} />,
-    [],
+    ({ item, index }) => (
+      <PhotoItem data={item} index={index} onPress={openViewer} />
+    ),
+    [openViewer],
   );
 
   const keyExtractor = useCallback((item: IPhoto) => item.id, []);
@@ -49,34 +61,47 @@ export const SocialPhotos = () => {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <FlashList
-      data={data}
-      numColumns={3}
-      keyExtractor={keyExtractor}
-      renderItem={renderItem}
-      ListEmptyComponent={
-        <EmptyPhotos
-          isLoading={isLoading}
-          isError={isError}
-          title="No shared photos yet"
-          description="When the community shares public pet moments, they will appear here."
-          onRetry={() => refetch()}
-        />
-      }
-      ListFooterComponent={
-        isFetchingNextPage ? (
-          <View className="items-center py-20">
-            <Spinner size={22} />
-          </View>
-        ) : null
-      }
-      estimatedItemSize={ITEM_WIDTH}
-      showsVerticalScrollIndicator={false}
-      onEndReached={handleEndReached}
-      onEndReachedThreshold={0.4}
-      refreshing={isRefetching && !isFetchingNextPage}
-      onRefresh={refetch}
-      contentContainerStyle={{ paddingBottom: 112 }}
-    />
+    <>
+      <FlashList
+        data={data}
+        numColumns={3}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          <EmptyPhotos
+            isLoading={isLoading}
+            isError={isError}
+            title="No shared photos yet"
+            description="When the community shares public pet moments, they will appear here."
+            onRetry={() => refetch()}
+          />
+        }
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View className="items-center py-20">
+              <Spinner size={22} />
+            </View>
+          ) : null
+        }
+        estimatedItemSize={ITEM_WIDTH}
+        showsVerticalScrollIndicator={false}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.4}
+        refreshing={isRefetching && !isFetchingNextPage}
+        onRefresh={refetch}
+        contentContainerStyle={{ paddingBottom: 112 }}
+      />
+
+      <PhotoGalleryViewer
+        visible={viewerVisible}
+        photos={data}
+        initialIndex={initialViewerIndex}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        isFetchNextPageError={isFetchNextPageError}
+        fetchNextPage={fetchNextPage}
+        onClose={closeViewer}
+      />
+    </>
   );
 };

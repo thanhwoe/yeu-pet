@@ -1,24 +1,20 @@
-import { Modal } from "@/components/Modal";
 import { Image } from "@/components/ui/Image";
-import { PhotoView } from "@/features/photos/components/PhotoView";
 import {
   GRID_COLUMNS,
   GRID_GAP,
   GRID_ITEM_RADIUS,
   ITEM_WIDTH,
-  SCREEN_HORIZONTAL_PADDING,
 } from "@/features/photos/utils";
 import { IPhoto } from "@/interfaces";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { ImageStyle, Pressable } from "react-native";
 
 interface PhotoItemProps {
   data: IPhoto;
   index: number;
-  deleteAble?: boolean;
+  onPress: (index: number) => void;
 }
-export const PhotoItem = memo(({ data, index, deleteAble }: PhotoItemProps) => {
-  const [showModal, setShowModal] = useState(false);
+export const PhotoItem = memo(({ data, index, onPress }: PhotoItemProps) => {
   const columnIndex = index % GRID_COLUMNS;
 
   const thumbnailStyle = useMemo<ImageStyle>(
@@ -32,47 +28,34 @@ export const PhotoItem = memo(({ data, index, deleteAble }: PhotoItemProps) => {
     [columnIndex],
   );
 
-  const thumbnailFrame = useMemo(
-    () => ({
-      x: SCREEN_HORIZONTAL_PADDING + columnIndex * (ITEM_WIDTH + GRID_GAP),
-      y: Math.floor(index / GRID_COLUMNS) * (ITEM_WIDTH + GRID_GAP),
-      width: ITEM_WIDTH,
-      height: ITEM_WIDTH,
-    }),
-    [columnIndex, index],
-  );
+  const accessibilityLabel = useMemo(() => {
+    const ownerFirstName =
+      data.accounts.firstName ?? data.accounts.first_name ?? "";
+    const ownerLastName =
+      data.accounts.lastName ?? data.accounts.last_name ?? "";
+    const ownerName = `${ownerFirstName} ${ownerLastName}`.trim();
 
-  const openModal = useCallback(() => setShowModal(true), []);
-  const closeModal = useCallback(() => setShowModal(false), []);
+    if (ownerName) {
+      return `Open photo by ${ownerName}`;
+    }
+
+    return data.caption ? `Open photo: ${data.caption}` : "Open photo";
+  }, [data.accounts, data.caption]);
+  const handlePress = useCallback(() => onPress(index), [index, onPress]);
 
   return (
-    <>
-      <Pressable
-        accessibilityLabel="Open photo"
-        accessibilityRole="button"
-        hitSlop={4}
-        onPress={openModal}
-      >
-        <Image
-          style={thumbnailStyle}
-          source={{ uri: data.url }}
-          transition={120}
-        />
-      </Pressable>
-
-      <Modal
-        visible={showModal}
-        onClose={closeModal}
-        thumbnailFrame={thumbnailFrame}
-        presentation="fullscreen"
-      >
-        <PhotoView
-          data={data}
-          deleteAble={deleteAble}
-          onDismiss={closeModal}
-        />
-      </Modal>
-    </>
+    <Pressable
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="button"
+      hitSlop={4}
+      onPress={handlePress}
+    >
+      <Image
+        style={thumbnailStyle}
+        source={{ uri: data.url }}
+        transition={120}
+      />
+    </Pressable>
   );
 });
 

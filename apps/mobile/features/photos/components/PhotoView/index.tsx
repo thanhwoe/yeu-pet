@@ -5,7 +5,7 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@/constants/common";
 import { PHOTOS_KEY } from "@/constants/query-keys";
 import { PhotoCommentsSheet } from "@/features/photos/components/PhotoCommentsSheet";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { IPhoto } from "@/interfaces";
+import { IPhoto, IPagination } from "@/interfaces";
 import {
   deletePhotoMutation,
   getPhotoStatsQuery,
@@ -13,7 +13,12 @@ import {
   unlikePhotoMutation,
 } from "@/services";
 import { abbreviateNumber } from "@/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   ChatCircleTextIcon,
@@ -22,13 +27,18 @@ import {
   XIcon,
 } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface IProps {
   data: IPhoto;
+  active?: boolean;
   deleteAble?: boolean;
+  pageHeight?: number;
+  pageWidth?: number;
+  onDeleted?: (photoId: string) => void;
   onDismiss?: () => void;
+  onInteractionChange?: (locked: boolean) => void;
 }
 
 type MutationError = {
@@ -52,10 +62,21 @@ const CloseIcon = withIconClassName(XIcon);
 const CommentIcon = withIconClassName(ChatCircleTextIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 const Heart = withIconClassName(HeartIcon);
-const LIKE_SYNC_DELAY_MS = 300;
+type PhotoListCache = InfiniteData<IPagination<IPhoto>, number>;
 
-export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
+export const PhotoView = ({
+  data,
+  active = true,
+  deleteAble,
+  pageHeight = SCREEN_HEIGHT,
+  pageWidth = SCREEN_WIDTH,
+  onDeleted,
+  onDismiss,
+  onInteractionChange,
+}: IProps) => {
   const [showComments, setShowComments] = useState(false);
+  const [hasImageError, setHasImageError] = useState(false);
+  const commentsOpenRef = useRef(false);
   const initialLiked = data.liked ?? false;
   const initialLikes = data.likes ?? data.likeCount ?? 0;
   const [localLiked, setLocalLiked] = useState(initialLiked);
@@ -70,7 +91,6 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const serverLikedRef = useRef(initialLiked);
   const serverLikesRef = useRef(initialLikes);
   const isSyncingLikeRef = useRef(false);
-  const likeSyncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const account = useMemo(
     () => ({
@@ -85,6 +105,50 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     [photo.accounts],
   );
   const ownerId = photo.accountId ?? photo.account_id ?? account.id ?? "";
+  const containerStyle = useMemo(
+    () => ({ height: pageHeight, width: pageWidth }),
+    [pageHeight, pageWidth],
+  );
+  const topGradientStyle = useMemo(
+    () => ({ height: pageHeight * 0.22 }),
+    [pageHeight],
+  );
+  const bottomGradientStyle = useMemo(
+    () => ({ height: pageHeight * 0.42 }),
+    [pageHeight],
+  );
+
+  const removePhotoFromListCache = useCallback(
+    (photoId: string) => {
+      queryClient.setQueriesData<PhotoListCache>(
+        { queryKey: PHOTOS_KEY.lists() },
+        (current) => {
+          if (
+            !current ||
+            !current.pages.some((page) =>
+              page.data.some((item) => item.id === photoId),
+            )
+          ) {
+            return current;
+          }
+
+          return {
+            ...current,
+            pages: current.pages.map((page) => ({
+              ...page,
+              data: page.data.filter((item) => item.id !== photoId),
+              meta: {
+                ...page.meta,
+                total: Math.max(0, page.meta.total - 1),
+              },
+            })),
+          };
+        },
+      );
+      queryClient.removeQueries({ queryKey: PHOTOS_KEY.detail(photoId) });
+    },
+    [queryClient],
+  );
 
   const { mutate: toggleLikePhoto } = useMutation({
     mutationFn: toggleLikePhotoMutation,
@@ -96,12 +160,18 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
     mutationFn: deletePhotoMutation,
     onSuccess() {
+      removePhotoFromListCache(data.id);
       Toast.success({
         title: "Photo removed",
         text: "The photo is no longer visible in your feed.",
       });
-      queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
-      onDismiss?.();
+      void queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
+
+      if (onDeleted) {
+        onDeleted(data.id);
+      } else {
+        onDismiss?.();
+      }
     },
     onError(e: MutationError) {
       Toast.error({
@@ -109,11 +179,15 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
         text: e.errors?.[0]?.message ?? "Refresh the photo and try again.",
       });
     },
+    onSettled() {
+      onInteractionChange?.(false);
+    },
   });
 
   const { data: photoStats } = useQuery({
     queryKey: PHOTOS_KEY.detail(data.id),
     queryFn: () => getPhotoStatsQuery({ id: data.id }),
+    enabled: active,
   });
 
   useEffect(() => {
@@ -134,6 +208,10 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     }
   }, [photoStats]);
 
+  useEffect(() => {
+    setHasImageError(false);
+  }, [data.id]);
+
   const syncLikeToServer = useCallback(() => {
     if (isSyncingLikeRef.current) {
       return;
@@ -144,7 +222,9 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     }
 
     isSyncingLikeRef.current = true;
-    const syncMutation = desiredLikedRef.current ? toggleLikePhoto : unlikePhoto;
+    const syncMutation = desiredLikedRef.current
+      ? toggleLikePhoto
+      : unlikePhoto;
 
     syncMutation(
       { id: data.id },
@@ -195,50 +275,80 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
     );
   }, [data.id, queryClient, toggleLikePhoto, unlikePhoto]);
 
-  const scheduleLikeSync = useCallback(() => {
-    if (likeSyncTimerRef.current) {
-      clearTimeout(likeSyncTimerRef.current);
-    }
-
-    likeSyncTimerRef.current = setTimeout(() => {
-      likeSyncTimerRef.current = null;
-      syncLikeToServer();
-    }, LIKE_SYNC_DELAY_MS);
-  }, [syncLikeToServer]);
-
   const handleToggleLike = useCallback(() => {
     const nextLiked = !desiredLikedRef.current;
     desiredLikedRef.current = nextLiked;
 
     setLocalLiked(nextLiked);
-    setLocalLikes((current) =>
-      Math.max(0, current + (nextLiked ? 1 : -1)),
+    setLocalLikes((current) => Math.max(0, current + (nextLiked ? 1 : -1)));
+    syncLikeToServer();
+  }, [syncLikeToServer]);
+
+  const handleOpenComments = useCallback(() => {
+    commentsOpenRef.current = true;
+    setShowComments(true);
+    onInteractionChange?.(true);
+  }, [onInteractionChange]);
+  const handleDismissComments = useCallback(() => {
+    commentsOpenRef.current = false;
+    setShowComments(false);
+    onInteractionChange?.(false);
+  }, [onInteractionChange]);
+  const handleDeletePress = useCallback(() => {
+    Alert.alert(
+      "Delete this photo?",
+      "This removes the photo from My Photos and the social feed if it was public.",
+      [
+        { text: "Keep photo", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deletePhoto({ id: data.id }),
+        },
+      ],
     );
-    scheduleLikeSync();
-  }, [scheduleLikeSync]);
+  }, [data.id, deletePhoto]);
 
   useEffect(
     () => () => {
-      if (likeSyncTimerRef.current) {
-        clearTimeout(likeSyncTimerRef.current);
+      if (commentsOpenRef.current) {
+        onInteractionChange?.(false);
       }
     },
-    [],
+    [onInteractionChange],
   );
 
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: data.url }} style={styles.photo} />
+    <View style={[styles.container, containerStyle]}>
+      {!hasImageError ? (
+        <Image
+          source={{ uri: data.url }}
+          style={styles.photo}
+          onError={() => setHasImageError(true)}
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center gap-8 px-32">
+          <Text variant="heading" className="text-center text-white">
+            Photo unavailable
+          </Text>
+          <Text
+            variant="body2"
+            className="text-center text-text-tertiary-inverse"
+          >
+            Swipe to another photo or close the viewer and try again.
+          </Text>
+        </View>
+      )}
 
       <LinearGradient
         pointerEvents="none"
         colors={["rgba(0,0,0,0.42)", "rgba(0,0,0,0)"]}
-        style={styles.topGradient}
+        style={[styles.topGradient, topGradientStyle]}
       />
       <LinearGradient
         pointerEvents="none"
         colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.72)"]}
-        style={styles.bottomGradient}
+        style={[styles.bottomGradient, bottomGradientStyle]}
       />
 
       <TouchableOpacity
@@ -257,7 +367,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
         style={{ bottom: insets.bottom + 112, right: 16 }}
       >
         <ActionButton
-          accessibilityLabel="Like photo"
+          accessibilityLabel={localLiked ? "Unlike photo" : "Like photo"}
           icon={
             <Heart
               size={31}
@@ -273,7 +383,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
           accessibilityLabel="Open comments"
           icon={<CommentIcon size={31} weight="bold" className="text-white" />}
           label={abbreviateNumber(localComments)}
-          onPress={() => setShowComments(true)}
+          onPress={handleOpenComments}
         />
 
         {deleteAble && (
@@ -282,7 +392,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
             disabled={isDeleting}
             icon={<DeleteIcon size={29} weight="bold" className="text-white" />}
             label="Delete"
-            onPress={() => deletePhoto({ id: data.id })}
+            onPress={handleDeletePress}
           />
         )}
       </View>
@@ -325,7 +435,7 @@ export const PhotoView = ({ data, deleteAble, onDismiss }: IProps) => {
         photoId={data.id}
         photoOwnerId={ownerId}
         onCommentCountChange={setLocalComments}
-        onDismiss={() => setShowComments(false)}
+        onDismiss={handleDismissComments}
       />
     </View>
   );
@@ -368,23 +478,19 @@ const ActionButton = ({
 const styles = StyleSheet.create({
   bottomGradient: {
     bottom: 0,
-    height: SCREEN_HEIGHT * 0.42,
     left: 0,
     position: "absolute",
     right: 0,
   },
   container: {
     backgroundColor: "#000",
-    height: SCREEN_HEIGHT,
     overflow: "hidden",
-    width: SCREEN_WIDTH,
   },
   photo: {
     height: "100%",
     width: "100%",
   },
   topGradient: {
-    height: SCREEN_HEIGHT * 0.22,
     left: 0,
     position: "absolute",
     right: 0,
