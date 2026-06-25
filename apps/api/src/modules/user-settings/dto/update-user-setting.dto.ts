@@ -1,4 +1,5 @@
 import { IsBoolean, IsIn, IsOptional } from 'class-validator';
+import type { SupportedLanguage } from '@app/modules/shared/localization/localization.types';
 
 export class UpdateUserSettingDto {
   @IsOptional()
@@ -23,7 +24,7 @@ export class UpdateUserSettingDto {
 
   @IsOptional()
   @IsIn(['vi', 'en'])
-  language?: string;
+  language?: SupportedLanguage;
 
   @IsOptional()
   @IsIn(['system', 'light', 'dark'])

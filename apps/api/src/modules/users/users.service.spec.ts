@@ -13,6 +13,7 @@ import {
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { OtpService } from '../shared/otp/otp.service';
 import { EmailService } from '../shared/email/email.service';
+import { LocalizationService } from '../shared/localization/localization.service';
 import { EmailChangeRequestsRepository } from './email-change-requests.repository';
 import { UsersService } from './users.service';
 
@@ -42,6 +43,9 @@ describe('UsersService', () => {
     updateForResend: jest.fn(),
     verifyAndUpdateAccountEmail: jest.fn(),
   };
+  const localizationService = {
+    resolveLanguageForAccount: jest.fn(() => Promise.resolve('en')),
+  };
 
   let service: UsersService;
 
@@ -59,6 +63,7 @@ describe('UsersService', () => {
           provide: EmailChangeRequestsRepository,
           useValue: emailChangeRequestsRepository,
         },
+        { provide: LocalizationService, useValue: localizationService },
       ],
     }).compile();
 
@@ -132,6 +137,7 @@ describe('UsersService', () => {
       expect.objectContaining({
         to: 'new@example.com',
         expiresInMinutes: 10,
+        language: 'en',
         userName: 'Thanh Nguyen',
       }),
     );

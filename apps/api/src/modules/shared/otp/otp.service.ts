@@ -4,6 +4,7 @@ import { OtpTokensRepository } from './otp-tokens.repository';
 import { SendOtpJobParams } from '@app/interfaces/otp.interface';
 import { OTP_JOBS } from './otp.job';
 import { QueueService } from '../queue/queue.service';
+import type { SupportedLanguage } from '../localization/localization.types';
 
 @Injectable()
 export class OtpService {
@@ -34,13 +35,18 @@ export class OtpService {
     return otp;
   }
 
-  async sendOtpToEmail(email: string, userName: string): Promise<string> {
+  async sendOtpToEmail(
+    email: string,
+    userName: string,
+    language?: SupportedLanguage,
+  ): Promise<string> {
     const otp = this.generateOtp();
 
     await this.addSendOtpJob({
       jobName: OTP_JOBS.SEND_OTP_EMAIL,
       token: otp,
       email,
+      language,
       userName,
     });
 

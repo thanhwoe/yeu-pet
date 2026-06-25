@@ -39,6 +39,7 @@ import {
 } from './sitter-booking.events';
 import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
 import { NotificationsService } from '../../notifications/notifications.service';
+import { LocalizationService } from '../../shared/localization/localization.service';
 
 const BOOKING_HOLD_MINUTES = 15;
 const EXTERNAL_PAYMENT_NOTE =
@@ -120,6 +121,7 @@ export class SitterBookingsService {
     @Inject(IEventBusService)
     private readonly eventBusService: IEventBusService,
     private readonly notificationsService: NotificationsService,
+    private readonly localizationService: LocalizationService,
   ) {}
   async create(user: accounts, createSitterBookingDto: CreateSitterBookingDto) {
     const idempotencyKey = createSitterBookingDto.idempotencyKey.trim();
@@ -571,7 +573,7 @@ export class SitterBookingsService {
         sitterId: booking.sitter_id,
       });
 
-      this.dispatchExpiryEmails(booking);
+      await this.dispatchExpiryEmails(booking);
       this.notifyOwnerOfBookingStatus(booking, 'expired');
     }
 
@@ -580,27 +582,68 @@ export class SitterBookingsService {
     };
   }
 
-  private dispatchExpiryEmails(booking: ExpiredSitterBooking): void {
+  private async dispatchExpiryEmails(
+    booking: ExpiredSitterBooking,
+  ): Promise<void> {
+    await this.sendExpiryEmails(booking).catch((error) => {
+      this.logger.error(
+        `Failed to prepare booking expiry emails: ${(error as Error).message}`,
+      );
+    });
+  }
+
+  private async sendExpiryEmails(booking: ExpiredSitterBooking): Promise<void> {
     const ownerEmail = booking.accounts.email;
     const sitterEmail = booking.pet_sitters.accounts.email;
-    const ownerFirstName = booking.accounts.first_name ?? 'there';
 
     if (ownerEmail) {
+      const ownerLanguage =
+        await this.localizationService.resolveLanguageForAccount(
+          booking.account_id,
+        );
+      const ownerName =
+        booking.accounts.first_name ??
+        (ownerLanguage === 'vi' ? 'bạn' : 'there');
+
       this.dispatchEmail({
         accountId: booking.account_id,
         bookingId: booking.id,
         to: ownerEmail,
-        subject: 'Your YeuPet booking hold expired',
-        text: `Hi ${ownerFirstName}, your booking hold for ${booking.pets.name} has expired because it was not confirmed in time.`,
+        subject: this.localizationService.translate(
+          'emails.bookingHoldExpired.owner.subject',
+          ownerLanguage,
+        ),
+        text: this.localizationService.translate(
+          'emails.bookingHoldExpired.owner.body',
+          ownerLanguage,
+          {
+            name: ownerName,
+            petName: booking.pets.name,
+          },
+        ),
       });
     }
 
     if (sitterEmail && sitterEmail !== ownerEmail) {
+      const sitterLanguage =
+        await this.localizationService.resolveLanguageForAccount(
+          booking.pet_sitters.account_id,
+        );
+
       this.dispatchEmail({
         bookingId: booking.id,
         to: sitterEmail,
-        subject: 'A YeuPet booking hold expired',
-        text: `A pending booking hold for ${booking.pets.name} has expired and no longer reserves capacity.`,
+        subject: this.localizationService.translate(
+          'emails.bookingHoldExpired.sitter.subject',
+          sitterLanguage,
+        ),
+        text: this.localizationService.translate(
+          'emails.bookingHoldExpired.sitter.body',
+          sitterLanguage,
+          {
+            petName: booking.pets.name,
+          },
+        ),
       });
     }
   }

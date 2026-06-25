@@ -263,6 +263,7 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
         },
         pet_sitters: {
           select: {
+            account_id: true,
             accounts: {
               select: {
                 email: true,

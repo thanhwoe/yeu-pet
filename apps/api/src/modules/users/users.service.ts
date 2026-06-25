@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { API_ERROR_CODES } from '@app/errors/api-error-codes';
 import { accounts, email_change_status } from '@app/generated/prisma/client';
 import { IUsersRepository } from '@app/interfaces/users-repository.interface';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,6 +25,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { OtpService } from '../shared/otp/otp.service';
 import { EmailService } from '../shared/email/email.service';
+import { LocalizationService } from '../shared/localization/localization.service';
 import {
   FILE_DELETE_JOBS,
   FILE_UPLOAD_JOBS,
@@ -47,6 +49,7 @@ export class UsersService {
     private readonly fileUploadService: FileUploadService,
     private readonly emailService: EmailService,
     private readonly emailChangeRequestsRepository: EmailChangeRequestsRepository,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async findById(id: string) {
@@ -71,7 +74,11 @@ export class UsersService {
     if (data.email) {
       const emailExists = await this.usersRepository.existsByEmail(data.email);
       if (emailExists) {
-        throw new ConflictException('Email already exists');
+        throw new ConflictException({
+          errorCode: API_ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS,
+          message: 'Email already exists',
+          messageKey: 'errors.auth.emailAlreadyExists',
+        });
       }
     }
 
@@ -112,11 +119,19 @@ export class UsersService {
     }
 
     if (dayjs().isAfter(otpRecord.expires_at)) {
-      throw new BadRequestException('OTP code has expired');
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.AUTH_OTP_EXPIRED,
+        message: 'OTP code has expired',
+        messageKey: 'errors.auth.otpExpired',
+      });
     }
 
     if (token !== otpRecord.token) {
-      throw new BadRequestException('Invalid OTP code');
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.AUTH_OTP_INVALID,
+        message: 'Invalid OTP code',
+        messageKey: 'errors.auth.otpInvalid',
+      });
     }
 
     await this.otpService.revokeToken(userId, token);
@@ -176,7 +191,11 @@ export class UsersService {
 
     const otpRecord = await this.otpService.findByUserId(user.id);
     if (!otpRecord || otpRecord.token !== dto.code) {
-      throw new BadRequestException('Invalid or expired OTP code');
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.AUTH_OTP_INVALID,
+        message: 'Invalid or expired OTP code',
+        messageKey: 'errors.auth.otpInvalid',
+      });
     }
 
     const hashedPassword = await this.hashPassword(dto.newPassword);
@@ -271,6 +290,8 @@ export class UsersService {
       'EMAIL_OTP_EXPIRES_MINUTES',
       10,
     );
+    const language =
+      await this.localizationService.resolveLanguageForAccount(userId);
     const request = await this.emailChangeRequestsRepository.create({
       accountId: userId,
       newEmail,
@@ -284,6 +305,7 @@ export class UsersService {
         to: newEmail,
         otp,
         expiresInMinutes,
+        language,
         userName: [user.first_name, user.last_name].filter(Boolean).join(' '),
         idempotencyKey: `email-change-otp/${request.id}/initial`,
       });
@@ -320,7 +342,11 @@ export class UsersService {
         throw this.tooManyRequests('Too many invalid OTP attempts');
       }
 
-      throw new BadRequestException('Invalid OTP code');
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.AUTH_OTP_INVALID,
+        message: 'Invalid OTP code',
+        messageKey: 'errors.auth.otpInvalid',
+      });
     }
 
     await this.assertEmailAvailable(request.new_email, userId);
@@ -377,10 +403,13 @@ export class UsersService {
 
     try {
       const user = await this.getUser({ id: userId });
+      const language =
+        await this.localizationService.resolveLanguageForAccount(userId);
       await this.emailService.sendEmailChangeOtpEmail({
         to: updated.new_email,
         otp,
         expiresInMinutes,
+        language,
         userName: [user.first_name, user.last_name].filter(Boolean).join(' '),
         idempotencyKey: `email-change-otp/${updated.id}/resend-${updated.resend_count}`,
       });
@@ -544,7 +573,11 @@ export class UsersService {
         status: email_change_status.expired,
       });
 
-      throw new BadRequestException('OTP code has expired');
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.AUTH_OTP_EXPIRED,
+        message: 'OTP code has expired',
+        messageKey: 'errors.auth.otpExpired',
+      });
     }
 
     return request;
@@ -557,7 +590,11 @@ export class UsersService {
     const existing = await this.usersRepository.findByEmail(newEmail);
 
     if (existing && existing.id !== currentAccountId) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException({
+        errorCode: API_ERROR_CODES.AUTH_EMAIL_ALREADY_EXISTS,
+        message: 'Email already exists',
+        messageKey: 'errors.auth.emailAlreadyExists',
+      });
     }
   }
 

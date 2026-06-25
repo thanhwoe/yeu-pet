@@ -1,4 +1,5 @@
 import { REQUIRED_SUBSCRIPTION_KEY } from '@app/decorators/require-subscription.decorator';
+import { API_ERROR_CODES } from '@app/errors/api-error-codes';
 import { accounts, subscription_tier } from '@app/generated/prisma/client';
 import { SubscriptionService } from '@app/modules/subscription/subscription.service';
 import {
@@ -39,7 +40,13 @@ export class SubscriptionGuard implements CanActivate {
     if (plan.tier !== requiredTier) {
       throw new ForbiddenException({
         currentTier: plan.tier,
+        errorCode: API_ERROR_CODES.SUBSCRIPTION_PREMIUM_REQUIRED,
         message: 'This feature requires a Premium subscription',
+        messageKey: 'errors.subscription.premiumRequired',
+        params: {
+          currentTier: plan.tier,
+          requiredTier,
+        },
         requiredTier,
       });
     }

@@ -4,6 +4,7 @@ import {
   subscription_status,
   subscription_tier,
 } from '@app/generated/prisma/client';
+import { API_ERROR_CODES } from '@app/errors/api-error-codes';
 import { BULLMQ_QUEUES } from '@app/modules/shared/bullmq/bullmq.queue';
 import { InjectQueue } from '@nestjs/bullmq';
 import { timingSafeEqual } from 'crypto';
@@ -133,9 +134,16 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.pets >= limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_PET_LIMIT_REACHED,
           message: 'Free plan pet limit reached',
+          messageKey: 'errors.subscription.petLimitReached',
           feature: 'pets',
           limit,
+          params: {
+            feature: 'pets',
+            limit,
+            usage: entitlements.usage.pets,
+          },
           usage: entitlements.usage.pets,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -156,8 +164,13 @@ export class SubscriptionService {
     ) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_PREMIUM_REQUIRED,
           message: 'Recurring reminders require Premium',
+          messageKey: 'errors.subscription.premiumRequired',
           feature: 'recurringReminders',
+          params: {
+            feature: 'recurringReminders',
+          },
         },
         HttpStatus.TOO_MANY_REQUESTS,
       );
@@ -168,9 +181,16 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.activeReminders >= limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_REMINDER_LIMIT_REACHED,
           message: 'Free plan active reminder limit reached',
+          messageKey: 'errors.subscription.reminderLimitReached',
           feature: 'reminders',
           limit,
+          params: {
+            feature: 'reminders',
+            limit,
+            usage: entitlements.usage.activeReminders,
+          },
           usage: entitlements.usage.activeReminders,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -185,9 +205,16 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.medicalRecords >= limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_MEDICAL_RECORD_LIMIT_REACHED,
           message: 'Free plan medical record limit reached',
+          messageKey: 'errors.subscription.medicalRecordLimitReached',
           feature: 'medicalRecords',
           limit,
+          params: {
+            feature: 'medicalRecords',
+            limit,
+            usage: entitlements.usage.medicalRecords,
+          },
           usage: entitlements.usage.medicalRecords,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -202,9 +229,16 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.photos >= limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_PHOTO_LIMIT_REACHED,
           message: 'Free plan photo limit reached',
+          messageKey: 'errors.subscription.photoLimitReached',
           feature: 'photos',
           limit,
+          params: {
+            feature: 'photos',
+            limit,
+            usage: entitlements.usage.photos,
+          },
           usage: entitlements.usage.photos,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -222,9 +256,16 @@ export class SubscriptionService {
     if (limit >= 0 && count > limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_PHOTO_LIMIT_REACHED,
           message: 'Medical image limit reached',
+          messageKey: 'errors.subscription.photoLimitReached',
           feature: 'medicalAttachments',
           limit,
+          params: {
+            feature: 'medicalAttachments',
+            limit,
+            usage: count,
+          },
           usage: count,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -242,9 +283,17 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.budgetTransactionsThisMonth >= limit) {
       throw new HttpException(
         {
+          errorCode:
+            API_ERROR_CODES.SUBSCRIPTION_BUDGET_TRANSACTION_LIMIT_REACHED,
           message: 'Free plan monthly budget transaction limit reached',
+          messageKey: 'errors.subscription.budgetTransactionLimitReached',
           feature: 'budgetTransactions',
           limit,
+          params: {
+            feature: 'budgetTransactions',
+            limit,
+            usage: entitlements.usage.budgetTransactionsThisMonth,
+          },
           usage: entitlements.usage.budgetTransactionsThisMonth,
         },
         HttpStatus.TOO_MANY_REQUESTS,
@@ -259,9 +308,16 @@ export class SubscriptionService {
     if (limit >= 0 && entitlements.usage.aiMessagesThisMonth >= limit) {
       throw new HttpException(
         {
+          errorCode: API_ERROR_CODES.SUBSCRIPTION_AI_LIMIT_REACHED,
           message: 'AI monthly quota reached',
+          messageKey: 'errors.subscription.aiLimitReached',
           feature: SUBSCRIPTION_FEATURE_KEYS.aiMessages,
           limit,
+          params: {
+            feature: SUBSCRIPTION_FEATURE_KEYS.aiMessages,
+            limit,
+            usage: entitlements.usage.aiMessagesThisMonth,
+          },
           usage: entitlements.usage.aiMessagesThisMonth,
         },
         HttpStatus.TOO_MANY_REQUESTS,

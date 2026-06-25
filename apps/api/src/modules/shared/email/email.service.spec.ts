@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailLogsRepository } from './email-logs.repository';
 import { EMAIL_LOG_STATUS, EmailService } from './email.service';
 import { ResendClient } from './resend.client';
+import { LocalizationService } from '../localization/localization.service';
 
 interface EmailRepositoryMock {
   createLog: jest.Mock;
@@ -21,9 +22,57 @@ const createRepository = () =>
     suppressEmail: jest.fn(),
   }) satisfies EmailRepositoryMock;
 
+const createLocalizationService = () =>
+  ({
+    normalizeLanguage: jest.fn((language?: string | null) =>
+      language === 'en' ? 'en' : 'vi',
+    ),
+    translate: jest.fn(
+      (
+        key: string,
+        language: string,
+        params?: Record<string, string | number | boolean | null | undefined>,
+      ) => {
+        const translations: Record<string, Record<string, string>> = {
+          en: {
+            'emails.emailChange.expiry':
+              'This code expires in {minutes} minutes.',
+            'emails.emailChange.greeting': 'Hi {name},',
+            'emails.emailChange.heading': 'Verify your new email',
+            'emails.emailChange.ignore':
+              'If you did not request this email change, you can ignore this email.',
+            'emails.emailChange.intro':
+              'Use this code to finish changing your YeuPet account email:',
+            'emails.emailChange.subject': 'Verify your new email for YeuPet',
+          },
+          vi: {
+            'emails.emailChange.expiry':
+              'Mã này sẽ hết hạn sau {minutes} phút.',
+            'emails.emailChange.greeting': 'Xin chào {name},',
+            'emails.emailChange.heading': 'Xác minh email mới',
+            'emails.emailChange.ignore':
+              'Nếu bạn không yêu cầu thay đổi email, bạn có thể bỏ qua email này.',
+            'emails.emailChange.intro':
+              'Dùng mã này để hoàn tất thay đổi email tài khoản YeuPet:',
+            'emails.emailChange.subject': 'Xác minh email mới cho YeuPet',
+          },
+        };
+
+        return (translations[language]?.[key] ?? key).replace(
+          /\{(\w+)\}/g,
+          (_match, name: string) =>
+            params?.[name] === null || params?.[name] === undefined
+              ? ''
+              : String(params[name]),
+        );
+      },
+    ),
+  }) as unknown as jest.Mocked<LocalizationService>;
+
 describe('EmailService', () => {
   let repository: ReturnType<typeof createRepository>;
   let resendClient: jest.Mocked<ResendClient>;
+  let localizationService: ReturnType<typeof createLocalizationService>;
   let service: EmailService;
 
   const email: EmailJobData = {
@@ -40,6 +89,7 @@ describe('EmailService', () => {
       sendEmail: jest.fn().mockResolvedValue({ id: 'resend-1' }),
       verifyWebhook: jest.fn(),
     };
+    localizationService = createLocalizationService();
     service = new EmailService(
       repository as unknown as EmailLogsRepository,
       {
@@ -48,6 +98,7 @@ describe('EmailService', () => {
         ),
       } as unknown as ConfigService,
       resendClient,
+      localizationService,
     );
   });
 
@@ -117,6 +168,7 @@ describe('EmailService', () => {
       to: 'new@example.com',
       otp: '123456',
       expiresInMinutes: 10,
+      language: 'en',
       userName: 'Thanh',
       idempotencyKey: 'email-change-otp/request-1/initial',
     });
@@ -148,6 +200,7 @@ describe('EmailService', () => {
         to: 'new@example.com',
         otp: '123456',
         expiresInMinutes: 10,
+        language: 'en',
         idempotencyKey: 'email-change-otp/request-1/initial',
       }),
     ).rejects.toThrow('Could not send verification email');

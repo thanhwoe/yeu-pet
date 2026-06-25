@@ -6,6 +6,7 @@ import { CacheModule } from './cache/cache.module';
 import { EmailModule } from './email/email.module';
 import { EventBusModule } from './event-bus/event-bus.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { LocalizationModule } from './localization/localization.module';
 import { OtpModule } from './otp/otp.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
@@ -16,6 +17,7 @@ import { TrackModule } from './track/track.module';
   imports: [
     RedisModule,
     BullMQModule,
+    LocalizationModule,
     FileUploadModule,
     OtpModule,
     QueueModule,
@@ -28,6 +30,7 @@ import { TrackModule } from './track/track.module';
 
   exports: [
     BullMQModule,
+    LocalizationModule,
     FileUploadModule,
     OtpModule,
     QueueModule,

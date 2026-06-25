@@ -10,6 +10,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { API_ERROR_CODES } from './errors/api-error-codes';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -110,6 +111,8 @@ async function bootstrap() {
           errors: Object.values(error.constraints || {}),
         }));
         return new BadRequestException({
+          errorCode: API_ERROR_CODES.VALIDATION_FAILED,
+          messageKey: 'errors.common.validationFailed',
           message: 'Validation failed',
           errors: messages,
         });

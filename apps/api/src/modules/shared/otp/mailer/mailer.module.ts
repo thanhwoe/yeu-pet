@@ -4,9 +4,11 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.ad
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { MailerService } from './mailer.service';
+import { LocalizationModule } from '../../localization/localization.module';
 
 @Module({
   imports: [
+    LocalizationModule,
     MailerModuleOrg.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

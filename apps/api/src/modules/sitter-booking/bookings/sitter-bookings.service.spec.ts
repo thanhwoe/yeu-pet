@@ -17,6 +17,7 @@ import { SitterBookingsService } from './sitter-bookings.service';
 import { SITTER_BOOKING_EVENT_CHANNELS } from './sitter-booking.events';
 import { QUEUE_EVENT_CHANNELS } from '../../shared/queue/queue.events';
 import { NotificationsService } from '../../notifications/notifications.service';
+import { LocalizationService } from '../../shared/localization/localization.service';
 
 const accountId = '123e4567-e89b-42d3-a456-426614174000';
 const sitterAccountId = '123e4567-e89b-42d3-a456-426614174001';
@@ -132,6 +133,7 @@ const expiredBooking = {
     name: 'Mochi',
   },
   pet_sitters: {
+    account_id: sitterAccountId,
     accounts: {
       email: 'sitter@example.com',
       first_name: 'Sitter',
@@ -186,6 +188,37 @@ const createNotificationsService = () =>
     sendSitterBookingStatusNotification: jest.fn(() => Promise.resolve()),
   }) as unknown as jest.Mocked<NotificationsService>;
 
+const createLocalizationService = () =>
+  ({
+    resolveLanguageForAccount: jest.fn(() => Promise.resolve('en')),
+    translate: jest.fn(
+      (
+        key: string,
+        _language: string,
+        params?: Record<string, string | number | boolean | null | undefined>,
+      ) => {
+        const translations: Record<string, string> = {
+          'emails.bookingHoldExpired.owner.subject':
+            'Your YeuPet booking hold expired',
+          'emails.bookingHoldExpired.owner.body':
+            'Hi {name}, your booking hold for {petName} has expired because it was not confirmed in time.',
+          'emails.bookingHoldExpired.sitter.subject':
+            'A YeuPet booking hold expired',
+          'emails.bookingHoldExpired.sitter.body':
+            'A pending booking hold for {petName} has expired and no longer reserves capacity.',
+        };
+
+        return (translations[key] ?? key).replace(
+          /\{(\w+)\}/g,
+          (_match, name: string) =>
+            params?.[name] === null || params?.[name] === undefined
+              ? ''
+              : String(params[name]),
+        );
+      },
+    ),
+  }) as unknown as jest.Mocked<LocalizationService>;
+
 describe('SitterBookingsService', () => {
   let sitterBookingsRepository: ReturnType<
     typeof createSitterBookingsRepository
@@ -194,6 +227,7 @@ describe('SitterBookingsService', () => {
   let petsRepository: ReturnType<typeof createPetsRepository>;
   let eventBus: ReturnType<typeof createEventBus>;
   let notificationsService: ReturnType<typeof createNotificationsService>;
+  let localizationService: ReturnType<typeof createLocalizationService>;
   let service: SitterBookingsService;
 
   beforeEach(() => {
@@ -202,12 +236,14 @@ describe('SitterBookingsService', () => {
     petsRepository = createPetsRepository();
     eventBus = createEventBus();
     notificationsService = createNotificationsService();
+    localizationService = createLocalizationService();
     service = new SitterBookingsService(
       sitterBookingsRepository,
       petsRepository,
       petSittersRepository,
       eventBus,
       notificationsService,
+      localizationService,
     );
 
     sitterBookingsRepository.findByIdempotencyKey.mockResolvedValue(null);

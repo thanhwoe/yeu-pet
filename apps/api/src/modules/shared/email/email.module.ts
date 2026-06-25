@@ -5,8 +5,10 @@ import { EmailService } from './email.service';
 import { ResendWebhookController } from './resend-webhook.controller';
 import { ResendWebhookService } from './resend-webhook.service';
 import { resendClientProvider } from './resend.client';
+import { LocalizationModule } from '../localization/localization.module';
 
 @Module({
+  imports: [LocalizationModule],
   controllers: [ResendWebhookController],
   providers: [
     EmailLogsRepository,

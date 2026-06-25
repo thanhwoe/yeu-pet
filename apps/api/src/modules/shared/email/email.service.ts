@@ -9,6 +9,8 @@ import { EmailLogsRepository } from './email-logs.repository';
 import { RESEND_CLIENT, ResendEmailPayload } from './resend.client';
 import type { ResendClient } from './resend.client';
 import type { WebhookEventPayload } from 'resend';
+import { LocalizationService } from '../localization/localization.service';
+import type { SupportedLanguage } from '../localization/localization.types';
 
 export const EMAIL_LOG_STATUS = {
   PENDING: 'pending',
@@ -28,6 +30,7 @@ export class EmailService {
     private readonly configService: ConfigService,
     @Inject(RESEND_CLIENT)
     private readonly resendClient: ResendClient,
+    private readonly localizationService: LocalizationService,
   ) {}
 
   async sendEmail(input: EmailJobData) {
@@ -71,20 +74,45 @@ export class EmailService {
     expiresInMinutes: number;
     userName?: string;
     idempotencyKey: string;
+    language?: SupportedLanguage;
   }) {
-    const subject = 'Verify your new email for YeuPet';
-    const name = params.userName?.trim() || 'there';
-    const text = [
-      `Hi ${name},`,
-      '',
-      `Your YeuPet email verification code is ${params.otp}.`,
-      `This code expires in ${params.expiresInMinutes} minutes.`,
-      '',
-      'If you did not request this email change, you can ignore this email.',
-    ].join('\n');
+    const language = this.localizationService.normalizeLanguage(
+      params.language,
+    );
+    const name =
+      params.userName?.trim() || (language === 'vi' ? 'bạn' : 'there');
+    const subject = this.localizationService.translate(
+      'emails.emailChange.subject',
+      language,
+    );
+    const heading = this.localizationService.translate(
+      'emails.emailChange.heading',
+      language,
+    );
+    const greeting = this.localizationService.translate(
+      'emails.emailChange.greeting',
+      language,
+      { name },
+    );
+    const intro = this.localizationService.translate(
+      'emails.emailChange.intro',
+      language,
+    );
+    const expiry = this.localizationService.translate(
+      'emails.emailChange.expiry',
+      language,
+      { minutes: params.expiresInMinutes },
+    );
+    const ignore = this.localizationService.translate(
+      'emails.emailChange.ignore',
+      language,
+    );
+    const text = [greeting, '', intro, params.otp, expiry, '', ignore].join(
+      '\n',
+    );
     const html = `
       <!doctype html>
-      <html lang="en">
+      <html lang="${language}">
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -92,12 +120,12 @@ export class EmailService {
         </head>
         <body style="margin: 0; padding: 0; background: #f8fafc;">
           <main style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1f2937; line-height: 1.5; max-width: 520px; margin: 0 auto; padding: 32px 20px;">
-            <h1 style="font-size: 22px; line-height: 1.25; margin: 0 0 20px;">Verify your new email</h1>
-            <p style="margin: 0 0 16px;">Hi ${this.escapeHtml(name)},</p>
-            <p style="margin: 0 0 16px;">Use this code to finish changing your YeuPet account email:</p>
+            <h1 style="font-size: 22px; line-height: 1.25; margin: 0 0 20px;">${this.escapeHtml(heading)}</h1>
+            <p style="margin: 0 0 16px;">${this.escapeHtml(greeting)}</p>
+            <p style="margin: 0 0 16px;">${this.escapeHtml(intro)}</p>
             <p aria-label="Verification code ${params.otp}" style="font-size: 32px; font-weight: 700; letter-spacing: 6px; margin: 24px 0; color: #111827;">${params.otp}</p>
-            <p style="margin: 0 0 16px;">This code expires in ${params.expiresInMinutes} minutes.</p>
-            <p style="margin: 0; color: #64748b;">If you did not request this email change, you can ignore this email.</p>
+            <p style="margin: 0 0 16px;">${this.escapeHtml(expiry)}</p>
+            <p style="margin: 0; color: #64748b;">${this.escapeHtml(ignore)}</p>
           </main>
         </body>
       </html>

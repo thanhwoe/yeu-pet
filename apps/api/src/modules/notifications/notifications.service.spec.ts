@@ -5,6 +5,7 @@ import {
   reminder_type,
 } from '@app/generated/prisma/client';
 import { NotificationsService } from './notifications.service';
+import { LocalizationService } from '../shared/localization/localization.service';
 
 const mockFirebaseSend = jest.fn();
 
@@ -36,6 +37,45 @@ describe('NotificationsService booking notifications', () => {
   const userSettingsRepository = {
     findById: jest.fn(),
   };
+  const localizationService = {
+    normalizeLanguage: jest.fn((language?: string | null) =>
+      language === 'en' ? 'en' : 'vi',
+    ),
+    translate: jest.fn(
+      (
+        key: string,
+        language: string,
+        params?: Record<string, string | number | boolean | null | undefined>,
+      ) => {
+        const translations: Record<string, Record<string, string>> = {
+          en: {
+            'notifications.booking.confirmed.body':
+              "{petName}'s booking request was accepted.",
+            'notifications.booking.confirmed.title': 'Booking confirmed',
+            'notifications.booking.request.body':
+              'You have a new booking request for {petName}.',
+            'notifications.booking.request.title': 'New booking request',
+            'notifications.reminder.due.body':
+              'Your reminder {title} is due now.',
+            'notifications.reminder.due.title': 'Reminder due: {title}',
+          },
+          vi: {
+            'notifications.booking.request.body':
+              'Bạn có một yêu cầu đặt lịch mới cho {petName}.',
+            'notifications.booking.request.title': 'Yêu cầu đặt lịch mới',
+          },
+        };
+
+        return (translations[language]?.[key] ?? key).replace(
+          /\{(\w+)\}/g,
+          (_match, name: string) =>
+            params?.[name] === null || params?.[name] === undefined
+              ? ''
+              : String(params[name]),
+        );
+      },
+    ),
+  };
   const caslAbilityFactory = {};
   let service: NotificationsService;
 
@@ -47,20 +87,29 @@ describe('NotificationsService booking notifications', () => {
       notificationDeliveriesRepository as never,
       userDevicesRepository as never,
       userSettingsRepository as never,
+      localizationService as unknown as LocalizationService,
       caslAbilityFactory as never,
     );
 
-    notificationsRepository.create.mockResolvedValue({
-      id: 'notification-id',
-      account_id: recipientAccountId,
-      title: 'New booking request',
-      body: 'You have a new booking request for Mochi.',
-      data: { bookingId, notificationType: 'sitter_booking_request' },
-      deep_link: `/sitter?tab=bookings&role=sitter&bookingId=${bookingId}`,
-      image_url: null,
-    });
+    notificationsRepository.create.mockImplementation((payload) =>
+      Promise.resolve({
+        id: 'notification-id',
+        is_read: false,
+        read_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+        ...payload,
+      }),
+    );
     notificationsRepository.countBadge.mockResolvedValue(1);
-    userSettingsRepository.findById.mockResolvedValue(null);
+    userSettingsRepository.findById.mockResolvedValue({
+      ai_notifications: true,
+      booking_notifications: true,
+      language: 'en',
+      notification_enable: true,
+      reminder_notifications: true,
+      social_notifications: true,
+    });
     const activeDevice = {
       id: 'device-id',
       account_id: recipientAccountId,
@@ -99,7 +148,10 @@ describe('NotificationsService booking notifications', () => {
         }) as { title: string; body: string },
         data: expect.objectContaining({
           bookingId,
+          bodyKey: 'notifications.booking.request.body',
+          language: 'en',
           notificationType: 'sitter_booking_request',
+          titleKey: 'notifications.booking.request.title',
         }) as Record<string, string>,
       }),
     );
@@ -175,11 +227,14 @@ describe('NotificationsService booking notifications', () => {
     expect(notificationsRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
         title: 'Reminder due: Give medication',
-        body: 'Your medication care task is due now.',
+        body: 'Your reminder Give medication is due now.',
         deep_link: '/(tabs)/(reminder)',
         data: expect.objectContaining({
           reminderId: 'reminder-id',
+          bodyKey: 'notifications.reminder.due.body',
+          language: 'en',
           notificationType: 'reminder_due',
+          titleKey: 'notifications.reminder.due.title',
         }) as Record<string, string>,
       }),
     );
@@ -197,6 +252,7 @@ describe('NotificationsService booking notifications', () => {
 
   it('keeps reminder notifications in-app when reminder push is muted', async () => {
     userSettingsRepository.findById.mockResolvedValueOnce({
+      language: 'en',
       notification_enable: true,
       reminder_notifications: false,
     });
@@ -244,11 +300,14 @@ describe('NotificationsService booking notifications', () => {
         title: 'Booking confirmed',
         body: "Mochi's booking request was accepted.",
         deep_link: `/sitter?tab=bookings&role=owner&bookingId=${bookingId}`,
-        data: {
+        data: expect.objectContaining({
           bookingId,
           bookingStatus: 'confirmed',
+          bodyKey: 'notifications.booking.confirmed.body',
+          language: 'en',
           notificationType: 'sitter_booking_status',
-        },
+          titleKey: 'notifications.booking.confirmed.title',
+        }) as Record<string, string>,
       }),
     );
     expect(mockFirebaseSend).toHaveBeenCalledWith(

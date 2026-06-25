@@ -18,7 +18,7 @@ export class OtpProcessor extends WorkerHost {
   async process(
     job: Job<OtpJobData, any, keyof typeof OTP_JOBS>,
   ): Promise<any> {
-    const { token, email, phone, userName } = job.data;
+    const { token, email, language, phone, userName } = job.data;
 
     // Update progress
     await job.updateProgress(10);
@@ -32,7 +32,7 @@ export class OtpProcessor extends WorkerHost {
         break;
       case OTP_JOBS.SEND_OTP_EMAIL:
         if (email && userName) {
-          await this.mailerService.sendOtp(email, token, userName);
+          await this.mailerService.sendOtp(email, token, userName, language);
         }
         break;
       default:

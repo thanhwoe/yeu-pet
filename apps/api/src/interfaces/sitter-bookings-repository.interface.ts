@@ -74,6 +74,7 @@ export type ExpiredSitterBooking = sitter_bookings & {
     name: string;
   };
   pet_sitters: {
+    account_id: string;
     accounts: {
       email: string | null;
       first_name: string | null;

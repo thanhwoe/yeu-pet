@@ -21,18 +21,33 @@ import { jsonValueToStringMap } from '@app/utils/transform';
 import { PaginationDto } from '../shared/dto/pagination.dto';
 import { paginate } from '@app/utils/pagination';
 import { UserSettingsRepository } from '../user-settings/user-settings.repository';
+import { LocalizationService } from '../shared/localization/localization.service';
+import {
+  SupportedLanguage,
+  TranslationParams,
+} from '../shared/localization/localization.types';
 
 type NotificationPreference =
   | 'reminder_notifications'
-  | 'booking_notifications';
+  | 'booking_notifications'
+  | 'social_notifications'
+  | 'ai_notifications';
 
 type CreateAndDeliverNotificationParams = {
   accountId: string;
-  title: string;
-  body: string;
+  titleKey: string;
+  bodyKey: string;
+  titleParams?: TranslationParams;
+  bodyParams?: TranslationParams;
   deepLink: string;
   data: Record<string, string | null>;
   preference: NotificationPreference;
+};
+
+type LocalizedNotificationCopy = {
+  title: string;
+  body: string;
+  language: SupportedLanguage;
 };
 
 @Injectable()
@@ -45,6 +60,7 @@ export class NotificationsService {
     private readonly notificationDeliveriesRepository: NotificationDeliveriesRepository,
     private readonly userDevicesRepository: UserDevicesRepository,
     private readonly userSettingsRepository: UserSettingsRepository,
+    private readonly localizationService: LocalizationService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {
     if (!admin.apps.length) {
@@ -91,19 +107,27 @@ export class NotificationsService {
   }
 
   async sendReminderDueNotification(reminder: reminders) {
-    const reminderType = reminder.type.toLowerCase();
+    const description = reminder.description?.trim();
     return this.createAndDeliverNotification({
       accountId: reminder.account_id,
-      body:
-        reminder.description?.trim() ||
-        `Your ${reminderType} care task is due now.`,
+      bodyKey: description
+        ? 'notifications.reminder.due.bodyWithDescription'
+        : 'notifications.reminder.due.body',
+      bodyParams: description
+        ? { description }
+        : {
+            title: reminder.title,
+          },
       data: {
         reminderId: reminder.id,
-        reminderType,
+        reminderType: reminder.type.toLowerCase(),
         petId: reminder.pet_id,
         notificationType: 'reminder_due',
       },
-      title: `Reminder due: ${reminder.title}`,
+      titleKey: 'notifications.reminder.due.title',
+      titleParams: {
+        title: reminder.title,
+      },
       deepLink: '/(tabs)/(reminder)',
       preference: 'reminder_notifications',
     });
@@ -115,8 +139,8 @@ export class NotificationsService {
   }) {
     await this.sendBookingNotification({
       recipientAccountId: params.recipientAccountId,
-      title: 'New sitter message',
-      body: 'You have a new message about your booking.',
+      titleKey: 'notifications.booking.message.title',
+      bodyKey: 'notifications.booking.message.body',
       deepLink: `/sitter-bookings/${params.bookingId}/chat`,
       data: {
         bookingId: params.bookingId,
@@ -132,8 +156,11 @@ export class NotificationsService {
   }) {
     await this.sendBookingNotification({
       recipientAccountId: params.recipientAccountId,
-      title: 'New booking request',
-      body: `You have a new booking request for ${params.petName}.`,
+      titleKey: 'notifications.booking.request.title',
+      bodyKey: 'notifications.booking.request.body',
+      bodyParams: {
+        petName: params.petName,
+      },
       deepLink: `/sitter?tab=bookings&role=sitter&bookingId=${encodeURIComponent(params.bookingId)}`,
       data: {
         bookingId: params.bookingId,
@@ -148,33 +175,36 @@ export class NotificationsService {
     petName: string;
     status: 'confirmed' | 'rejected' | 'completed' | 'cancelled' | 'expired';
   }) {
-    const copy = {
+    const keyByStatus = {
       [sitter_bookings_status.confirmed]: {
-        title: 'Booking confirmed',
-        body: `${params.petName}'s booking request was accepted.`,
+        titleKey: 'notifications.booking.confirmed.title',
+        bodyKey: 'notifications.booking.confirmed.body',
       },
       [sitter_bookings_status.rejected]: {
-        title: 'Booking request declined',
-        body: `${params.petName}'s booking request was declined.`,
+        titleKey: 'notifications.booking.rejected.title',
+        bodyKey: 'notifications.booking.rejected.body',
       },
       [sitter_bookings_status.completed]: {
-        title: 'Booking completed',
-        body: `${params.petName}'s booking was marked as completed.`,
+        titleKey: 'notifications.booking.completed.title',
+        bodyKey: 'notifications.booking.completed.body',
       },
       [sitter_bookings_status.cancelled]: {
-        title: 'Booking cancelled',
-        body: `${params.petName}'s booking was cancelled by the sitter.`,
+        titleKey: 'notifications.booking.cancelled.title',
+        bodyKey: 'notifications.booking.cancelled.body',
       },
       expired: {
-        title: 'Booking request expired',
-        body: `${params.petName}'s booking request expired before it was accepted.`,
+        titleKey: 'notifications.booking.expired.title',
+        bodyKey: 'notifications.booking.expired.body',
       },
     }[params.status];
 
     await this.sendBookingNotification({
       recipientAccountId: params.recipientAccountId,
-      title: copy.title,
-      body: copy.body,
+      titleKey: keyByStatus.titleKey,
+      bodyKey: keyByStatus.bodyKey,
+      bodyParams: {
+        petName: params.petName,
+      },
       deepLink: `/sitter?tab=bookings&role=owner&bookingId=${encodeURIComponent(params.bookingId)}`,
       data: {
         bookingId: params.bookingId,
@@ -186,15 +216,19 @@ export class NotificationsService {
 
   private async sendBookingNotification(params: {
     recipientAccountId: string;
-    title: string;
-    body: string;
+    titleKey: string;
+    bodyKey: string;
+    titleParams?: TranslationParams;
+    bodyParams?: TranslationParams;
     deepLink: string;
     data: Record<string, string>;
   }) {
     return this.createAndDeliverNotification({
       accountId: params.recipientAccountId,
-      title: params.title,
-      body: params.body,
+      titleKey: params.titleKey,
+      bodyKey: params.bodyKey,
+      titleParams: params.titleParams,
+      bodyParams: params.bodyParams,
       deepLink: params.deepLink,
       data: params.data,
       preference: 'booking_notifications',
@@ -204,19 +238,28 @@ export class NotificationsService {
   private async createAndDeliverNotification(
     params: CreateAndDeliverNotificationParams,
   ) {
+    const settings = await this.userSettingsRepository.findById(
+      params.accountId,
+    );
+    const copy = this.toLocalizedNotificationCopy(
+      params,
+      this.localizationService.normalizeLanguage(settings?.language),
+    );
     const notification = await this.notificationsRepository.create({
       account_id: params.accountId,
-      body: params.body,
-      data: params.data,
-      title: params.title,
+      body: copy.body,
+      data: {
+        ...params.data,
+        bodyKey: params.bodyKey,
+        language: copy.language,
+        titleKey: params.titleKey,
+      },
+      title: copy.title,
       deep_link: params.deepLink,
       image_url: null,
       image_id: null,
     });
 
-    const settings = await this.userSettingsRepository.findById(
-      params.accountId,
-    );
     if (
       settings &&
       (!settings.notification_enable || !settings[params.preference])
@@ -227,6 +270,25 @@ export class NotificationsService {
     await this.deliverPushToAccountSafely(notification);
 
     return notification;
+  }
+
+  private toLocalizedNotificationCopy(
+    params: CreateAndDeliverNotificationParams,
+    language: SupportedLanguage,
+  ): LocalizedNotificationCopy {
+    return {
+      body: this.localizationService.translate(
+        params.bodyKey,
+        language,
+        params.bodyParams,
+      ),
+      language,
+      title: this.localizationService.translate(
+        params.titleKey,
+        language,
+        params.titleParams,
+      ),
+    };
   }
 
   private async deliverPushToAccountSafely(notification: notifications) {

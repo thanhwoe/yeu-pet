@@ -6,9 +6,15 @@ import { UserDevicesModule } from '../user-devices/user-devices.module';
 import { CaslModule } from '../casl/casl.module';
 import { NotificationDeliveriesRepository } from './notification-deliveries.repository';
 import { UserSettingsModule } from '../user-settings/user-settings.module';
+import { LocalizationModule } from '../shared/localization/localization.module';
 
 @Module({
-  imports: [CaslModule, UserDevicesModule, UserSettingsModule],
+  imports: [
+    CaslModule,
+    LocalizationModule,
+    UserDevicesModule,
+    UserSettingsModule,
+  ],
   controllers: [NotificationsController],
   providers: [
     NotificationsService,
