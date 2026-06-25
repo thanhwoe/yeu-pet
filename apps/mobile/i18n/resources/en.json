@@ -1,0 +1,232 @@
+{
+  "apiError": {
+    "genericTitle": "Request failed",
+    "genericText": "Please try again in a moment.",
+    "networkTitle": "Connection issue",
+    "networkText": "Check your connection and try again."
+  },
+  "common": {
+    "accountSynced": "Account details synced",
+    "activePlan": "Active plan",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "done": "Done",
+    "email": "Email",
+    "free": "Free",
+    "loading": "Loading",
+    "notSet": "Not set",
+    "open": "Open",
+    "premium": "Premium",
+    "retry": "Retry",
+    "tryAgain": "Try again"
+  },
+  "datePicker": {
+    "selectDate": "Select date",
+    "selectDateTime": "Select date & time",
+    "selectTime": "Select time"
+  },
+  "errors": {
+    "auth": {
+      "emailAlreadyExists": "This email is already registered.",
+      "invalidCredentials": "The email or password is incorrect.",
+      "otpExpired": "The verification code has expired.",
+      "otpInvalid": "The verification code is incorrect."
+    },
+    "common": {
+      "badRequest": "The request could not be completed.",
+      "conflict": "This action conflicts with current data.",
+      "forbidden": "You do not have permission to do this.",
+      "internalServerError": "Something went wrong on our side.",
+      "notFound": "We could not find that item.",
+      "tooManyRequests": "Too many attempts. Please try again later.",
+      "unauthorized": "Please sign in again.",
+      "validationFailed": "Some details need your attention."
+    },
+    "subscription": {
+      "featureLimitReached": "This plan limit has been reached.",
+      "premiumRequired": "This feature needs a premium plan."
+    }
+  },
+  "navigation": {
+    "bookingMessages": "Booking messages",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "doctorAi": "Doctor AI",
+    "listClinic": "List Clinic",
+    "listSpa": "List Spa",
+    "notificationSettings": "Notification settings",
+    "notifications": "Notifications",
+    "photos": "Share photos",
+    "planUsage": "Plan & Usage",
+    "shippingAddress": "Shipping Address"
+  },
+  "notificationSettings": {
+    "accessError": {
+      "description": "Please try again.",
+      "title": "Notification access could not be checked"
+    },
+    "checking": {
+      "description": "Getting your device permission and preferences ready.",
+      "title": "Checking notification access"
+    },
+    "devicePermission": {
+      "accessibilityLabel": "Open device notification settings",
+      "button": "Open device settings",
+      "description": "Enable notifications to receive care alerts.",
+      "title": "Notifications are disabled"
+    },
+    "enabled": {
+      "text": "YeuPet can now send care reminders to this device.",
+      "title": "Notifications enabled"
+    },
+    "loadError": {
+      "description": "Check your connection and try again.",
+      "title": "Notification settings could not load"
+    },
+    "loading": {
+      "description": "Getting your preferences ready.",
+      "title": "Loading notification settings"
+    },
+    "muted": "Muted",
+    "notEnabled": {
+      "text": "Could not enable push notifications.",
+      "title": "Notifications not enabled"
+    },
+    "openSettingsFailed": {
+      "text": "Could not open device settings. Please try again.",
+      "title": "Settings did not open"
+    },
+    "preferences": {
+      "aiDescription": "Usage and care tips",
+      "aiLabel": "Pet Care AI notifications",
+      "aiTitle": "Pet Care AI",
+      "bookingDescription": "Requests and messages",
+      "bookingLabel": "Sitter booking notifications",
+      "bookingTitle": "Sitter booking",
+      "masterDescription": "Master notification switch",
+      "photosDescription": "Comments and activity",
+      "photosLabel": "Photos social notifications",
+      "photosTitle": "Photos/social",
+      "pushLabel": "Push notifications",
+      "pushTitle": "Push notifications",
+      "remindersDescription": "Vaccines, medicine, grooming",
+      "remindersLabel": "Care reminders",
+      "remindersTitle": "Care reminders",
+      "section": "Notification preferences"
+    },
+    "pushUnavailable": {
+      "text": "Push notifications are unavailable on this simulator.",
+      "title": "Push unavailable here"
+    },
+    "saveError": {
+      "text": "Could not save notification settings. Please try again.",
+      "title": "Notification settings not saved"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "accessibilityLabel": "Theme preference",
+      "dark": "Dark",
+      "light": "Light",
+      "section": "Appearance",
+      "system": "System",
+      "theme": "Theme"
+    },
+    "helpLegal": {
+      "contactSupport": "Contact support",
+      "linkFailedText": "Check your connection and try opening the link again.",
+      "linkFailedTitle": "Link did not open",
+      "privacyPolicy": "Privacy policy",
+      "section": "Help & Legal",
+      "termsOfService": "Terms of service"
+    },
+    "language": {
+      "accessibilityLabel": "Language preference",
+      "appLanguage": "App language",
+      "english": "English",
+      "section": "Language",
+      "updateFailedText": "Could not save your language. Please try again.",
+      "updateFailedTitle": "Language not saved",
+      "updatedText": "YeuPet will use this language from now on.",
+      "updatedTitle": "Language updated",
+      "vietnamese": "Tiếng Việt"
+    },
+    "loading": {
+      "description": "Getting your account preferences ready.",
+      "title": "Loading settings"
+    },
+    "loadError": {
+      "description": "Check your connection and try again.",
+      "title": "Settings could not load"
+    },
+    "notifications": {
+      "accessibilityLabel": "Open notification settings",
+      "row": "Notification settings",
+      "section": "Notifications"
+    },
+    "profile": {
+      "edit": "Edit",
+      "owner": "YeuPet owner"
+    },
+    "saveError": {
+      "text": "Could not save settings. Please try again.",
+      "title": "Settings not saved"
+    },
+    "session": {
+      "description": "Sign out of this device",
+      "logout": "Logout",
+      "logoutButton": "Log out",
+      "logoutDescription": "This will clear the local session on this device.",
+      "logoutTitle": "Log out?",
+      "section": "Session",
+      "staySignedIn": "Stay signed in"
+    },
+    "subscription": {
+      "currentAccessThrough": "Current access through {{date}}",
+      "loadingDescription": "Checking plan and usage.",
+      "loadingTitle": "Loading plan",
+      "manage": "Manage subscription",
+      "plan": "{{plan}} plan",
+      "section": "Subscription",
+      "unavailableDescription": "Retry to refresh subscription status.",
+      "unavailableTitle": "Plan details unavailable",
+      "unlockCopy": "Track your usage and unlock more pet-care features.",
+      "upgrade": "Upgrade",
+      "usage": "View usage",
+      "viewPlanUsage": "View {{plan}} plan usage"
+    },
+    "title": "Settings"
+  },
+  "subscription": {
+    "period": {
+      "activePlan": "Active plan",
+      "currentAccessThrough": "Current access through {{date}}",
+      "unlockCopy": "Track your usage and unlock more pet-care features."
+    },
+    "status": {
+      "active": "Active",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "free": "Free",
+      "grace_period": "Grace period",
+      "trialing": "Trialing"
+    }
+  },
+  "state": {
+    "empty": {
+      "description": "Add the first item to get started.",
+      "title": "Nothing here yet"
+    },
+    "error": {
+      "description": "Please try again.",
+      "title": "Something went wrong"
+    },
+    "loading": {
+      "description": "Please wait a moment.",
+      "title": "Loading"
+    }
+  },
+  "toast": {
+    "notificationHint": "Opens the related screen"
+  }
+}

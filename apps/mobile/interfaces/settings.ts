@@ -1,3 +1,5 @@
+import { type SupportedLanguage } from "@/i18n";
+
 export interface IUserSettings {
   accountId: string;
   notificationEnable: boolean;
@@ -5,7 +7,7 @@ export interface IUserSettings {
   bookingNotifications: boolean;
   socialNotifications: boolean;
   aiNotifications: boolean;
-  language: "vi" | "en";
+  language: SupportedLanguage;
   theme: "system" | "light" | "dark";
   createdAt: string | null;
   updatedAt: string | null;
@@ -17,6 +19,6 @@ export interface IUserSettingsForm {
   bookingNotifications?: boolean;
   socialNotifications?: boolean;
   aiNotifications?: boolean;
-  language?: "vi" | "en";
+  language?: SupportedLanguage;
   theme?: "system" | "light" | "dark";
 }

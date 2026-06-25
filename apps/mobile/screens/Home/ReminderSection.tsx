@@ -73,7 +73,7 @@ const ReminderItem = ({
 
   return (
     <View
-      className={cn("flex-row gap-10 border-b border-line-subtle pb-2 pt-12")}
+      className={cn("flex-row gap-10 border-b border-line-subtle pb-8 pt-12")}
     >
       <ReminderTypeIcon
         type={data.type}

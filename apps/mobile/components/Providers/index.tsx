@@ -3,20 +3,33 @@ import {
   NOTIFICATIONS_KEY,
   PHOTOS_KEY,
   REMINDER_KEY,
+  SETTINGS_KEY,
   SITTER_BOOKING_KEY,
 } from "@/constants/query-keys";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
-import { markNotificationReadMutation } from "@/services";
+import {
+  getUserSettingsQuery,
+  markNotificationReadMutation,
+} from "@/services";
+import {
+  changeAppLanguage,
+  detectDeviceLanguage,
+  getCurrentLanguage,
+} from "@/i18n";
+import { useUserInfoStore } from "@/stores";
 import { themes } from "@/theme";
 import {
-  date,
   isViewingForegroundNotificationTarget,
   normalizeForegroundNotification,
 } from "@/utils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { getMessaging, onMessage } from "@react-native-firebase/messaging";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 import {
   Href,
   useGlobalSearchParams,
@@ -27,9 +40,9 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
 import { View } from "react-native";
-import { LocaleConfig } from "react-native-calendars";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { AppLoader } from "../AppLoader";
 import { Toast } from "../Toast";
 
@@ -64,7 +77,10 @@ export const combineProviders = (
 
 const InitialProvider = ({ children }: Children) => {
   const isInitialized = useInitialize();
+  const { t } = useTranslation();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const tokens = useUserInfoStore.use.tokens();
+  const hasSession = Boolean(tokens?.accessToken);
   const themeVariables = themes[colorScheme] ?? themes.light;
   const router = useRouter();
   const pathname = usePathname();
@@ -80,6 +96,12 @@ const InitialProvider = ({ children }: Children) => {
     searchParams: { bookingId, role, tab },
   });
   const receivedNotificationIdsRef = useRef(new Set<string>());
+  const { data: userSettings } = useQuery({
+    queryKey: SETTINGS_KEY.detail(),
+    queryFn: getUserSettingsQuery,
+    enabled: isInitialized && hasSession,
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
     currentRouteRef.current = {
@@ -90,17 +112,16 @@ const InitialProvider = ({ children }: Children) => {
   }, [bookingId, pathname, role, segments, tab]);
 
   useEffect(() => {
-    date.locale("vi");
-    LocaleConfig.locales["default"] = {
-      monthNames: date.months(),
-      monthNamesShort: date.months(),
-      dayNames: date.weekdays(),
-      dayNamesShort: date.weekdaysShort(),
-      today: "Hôm nay",
-    };
+    if (!isInitialized) {
+      return;
+    }
 
-    LocaleConfig.defaultLocale = "default";
-  }, []);
+    const nextLanguage = hasSession
+      ? userSettings?.language ?? getCurrentLanguage()
+      : detectDeviceLanguage();
+
+    void changeAppLanguage(nextLanguage);
+  }, [hasSession, isInitialized, userSettings?.language]);
 
   useEffect(() => {
     return onMessage(getMessaging(), (message) => {
@@ -162,7 +183,7 @@ const InitialProvider = ({ children }: Children) => {
         notificationType: notification.category,
         accessibilityLabel: `${notification.title}. ${notification.message}`,
         accessibilityHint: notification.deepLink
-          ? "Opens the related screen"
+          ? t("toast.notificationHint")
           : undefined,
         onPress: notification.deepLink
           ? () => {
@@ -180,7 +201,7 @@ const InitialProvider = ({ children }: Children) => {
           : undefined,
       });
     });
-  }, [router]);
+  }, [router, t]);
 
   if (!isInitialized) {
     return <AppLoader />;

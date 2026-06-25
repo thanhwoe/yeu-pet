@@ -19,6 +19,7 @@ import {
   getPushInstallationIdAsync,
   getPushNotificationPermissionStatusAsync,
   getPushRegistrationGenerationAsync,
+  getApiErrorToast,
   registerForFirebasePushNotificationsAsync,
   type PushNotificationPermissionStatus,
 } from "@/utils";
@@ -27,6 +28,7 @@ import * as Device from "expo-device";
 import { BellSlashIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { AppState, Linking, Platform, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const BellSlash = withIconClassName(BellSlashIcon);
 
@@ -37,6 +39,8 @@ function DevicePermissionCard({
 }: {
   onOpenSettings: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <View className="gap-16 rounded-22 px-18 py-20">
       <View className="gap-4 items-center">
@@ -48,24 +52,27 @@ function DevicePermissionCard({
           />
         </View>
         <Text variant="heading" className="font-bold text-status-warning-text">
-          Notifications are disabled
+          {t("notificationSettings.devicePermission.title")}
         </Text>
         <Text variant="body2" className="text-status-warning-text">
-          Enable notification to receive alert.
+          {t("notificationSettings.devicePermission.description")}
         </Text>
       </View>
       <Button
         variant="secondary"
-        accessibilityLabel="Open device notification settings"
+        accessibilityLabel={t(
+          "notificationSettings.devicePermission.accessibilityLabel",
+        )}
         onPress={onOpenSettings}
       >
-        Open device settings
+        {t("notificationSettings.devicePermission.button")}
       </Button>
     </View>
   );
 }
 
 export function NotificationSettingsScreen() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const updateDeviceInfo = useUserInfoStore.use.updateDeviceInfo();
   const [permissionState, setPermissionState] =
@@ -111,11 +118,13 @@ export function NotificationSettingsScreen() {
       onSuccess: (updatedSettings) => {
         queryClient.setQueryData(SETTINGS_KEY.detail(), updatedSettings);
       },
-      onError: (error: Error) => {
-        Toast.error({
-          title: "Settings not saved",
-          text: error.message || "Could not save settings. Please try again.",
-        });
+      onError: (error: unknown) => {
+        Toast.error(
+          getApiErrorToast(error, {
+            textKey: "notificationSettings.saveError.text",
+            titleKey: "notificationSettings.saveError.title",
+          }),
+        );
       },
     });
 
@@ -150,8 +159,8 @@ export function NotificationSettingsScreen() {
         const pushToken = await registerForFirebasePushNotificationsAsync();
         if (!pushToken) {
           Toast.warn({
-            title: "Push unavailable here",
-            text: "Push notifications are unavailable on this simulator.",
+            title: t("notificationSettings.pushUnavailable.title"),
+            text: t("notificationSettings.pushUnavailable.text"),
           });
           return;
         }
@@ -182,25 +191,24 @@ export function NotificationSettingsScreen() {
         await handleUpdateSettings({ notificationEnable: true });
         setPermissionState("authorized");
         Toast.success({
-          title: "Notifications enabled",
-          text: "YeuPet can now send care reminders to this device.",
+          title: t("notificationSettings.enabled.title"),
+          text: t("notificationSettings.enabled.text"),
         });
       } catch (error: unknown) {
         if (!registrationComplete) {
-          Toast.warn({
-            title: "Notifications not enabled",
-            text:
-              error instanceof Error
-                ? error.message
-                : "Could not enable push notifications.",
-          });
+          Toast.warn(
+            getApiErrorToast(error, {
+              textKey: "notificationSettings.notEnabled.text",
+              titleKey: "notificationSettings.notEnabled.title",
+            }),
+          );
         }
         await refreshPermission();
       } finally {
         setIsRegisteringPush(false);
       }
     },
-    [handleUpdateSettings, refreshPermission, updateDeviceInfo],
+    [handleUpdateSettings, refreshPermission, t, updateDeviceInfo],
   );
 
   const openDeviceSettings = useCallback(async () => {
@@ -208,19 +216,19 @@ export function NotificationSettingsScreen() {
       await Linking.openSettings();
     } catch {
       Toast.error({
-        title: "Settings did not open",
-        text: "Could not open device settings. Please try again.",
+        title: t("notificationSettings.openSettingsFailed.title"),
+        text: t("notificationSettings.openSettingsFailed.text"),
       });
     }
-  }, []);
+  }, [t]);
 
   if (permissionState === "checking") {
     return (
       <ScreenContainer>
         <StateView
           variant="loading"
-          title="Checking notification access"
-          description="Getting your device permission and preferences ready."
+          title={t("notificationSettings.checking.title")}
+          description={t("notificationSettings.checking.description")}
           className="flex-1"
         />
       </ScreenContainer>
@@ -232,9 +240,9 @@ export function NotificationSettingsScreen() {
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Notification access could not be checked"
-          description="Please try again."
-          actionLabel="Try again"
+          title={t("notificationSettings.accessError.title")}
+          description={t("notificationSettings.accessError.description")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => {
             setPermissionState("checking");
             void refreshPermission();
@@ -258,8 +266,8 @@ export function NotificationSettingsScreen() {
       <ScreenContainer>
         <StateView
           variant="loading"
-          title="Loading notification settings"
-          description="Getting your preferences ready."
+          title={t("notificationSettings.loading.title")}
+          description={t("notificationSettings.loading.description")}
           className="flex-1"
         />
       </ScreenContainer>
@@ -271,9 +279,9 @@ export function NotificationSettingsScreen() {
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Notification settings could not load"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("notificationSettings.loadError.title")}
+          description={t("notificationSettings.loadError.description")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void refetch()}
           className="flex-1"
         />
@@ -287,27 +295,31 @@ export function NotificationSettingsScreen() {
   return (
     <ScreenContainer scrollEnabled>
       <View className="px-20 pb-40 pt-16">
-        <SettingsSection title="Notification preferences">
+        <SettingsSection title={t("notificationSettings.preferences.section")}>
           <SettingsRow
-            title="Push notifications"
-            description="Master notification switch"
+            title={t("notificationSettings.preferences.pushTitle")}
+            description={t("notificationSettings.preferences.masterDescription")}
             loading={togglesDisabled}
           >
             <SettingToggle
-              label="Push notifications"
+              label={t("notificationSettings.preferences.pushLabel")}
               value={settings.notificationEnable}
               disabled={togglesDisabled}
               onChange={handlePushNotificationsChange}
             />
           </SettingsRow>
           <SettingsRow
-            title="Care reminders"
-            description="Vaccines, medicine, grooming"
-            value={notificationsMuted ? "Muted" : undefined}
+            title={t("notificationSettings.preferences.remindersTitle")}
+            description={t(
+              "notificationSettings.preferences.remindersDescription",
+            )}
+            value={
+              notificationsMuted ? t("notificationSettings.muted") : undefined
+            }
             disabled={notificationsMuted}
           >
             <SettingToggle
-              label="Care reminders"
+              label={t("notificationSettings.preferences.remindersLabel")}
               value={settings.reminderNotifications}
               disabled={togglesDisabled || notificationsMuted}
               onChange={(reminderNotifications) =>
@@ -316,13 +328,15 @@ export function NotificationSettingsScreen() {
             />
           </SettingsRow>
           <SettingsRow
-            title="Sitter booking"
-            description="Requests and messages"
-            value={notificationsMuted ? "Muted" : undefined}
+            title={t("notificationSettings.preferences.bookingTitle")}
+            description={t("notificationSettings.preferences.bookingDescription")}
+            value={
+              notificationsMuted ? t("notificationSettings.muted") : undefined
+            }
             disabled={notificationsMuted}
           >
             <SettingToggle
-              label="Sitter booking notifications"
+              label={t("notificationSettings.preferences.bookingLabel")}
               value={settings.bookingNotifications}
               disabled={togglesDisabled || notificationsMuted}
               onChange={(bookingNotifications) =>
@@ -331,13 +345,15 @@ export function NotificationSettingsScreen() {
             />
           </SettingsRow>
           <SettingsRow
-            title="Photos/social"
-            description="Comments and activity"
-            value={notificationsMuted ? "Muted" : undefined}
+            title={t("notificationSettings.preferences.photosTitle")}
+            description={t("notificationSettings.preferences.photosDescription")}
+            value={
+              notificationsMuted ? t("notificationSettings.muted") : undefined
+            }
             disabled={notificationsMuted}
           >
             <SettingToggle
-              label="Photos social notifications"
+              label={t("notificationSettings.preferences.photosLabel")}
               value={settings.socialNotifications}
               disabled={togglesDisabled || notificationsMuted}
               onChange={(socialNotifications) =>
@@ -346,13 +362,15 @@ export function NotificationSettingsScreen() {
             />
           </SettingsRow>
           <SettingsRow
-            title="Pet Care AI"
-            description="Usage and care tips"
-            value={notificationsMuted ? "Muted" : undefined}
+            title={t("notificationSettings.preferences.aiTitle")}
+            description={t("notificationSettings.preferences.aiDescription")}
+            value={
+              notificationsMuted ? t("notificationSettings.muted") : undefined
+            }
             disabled={notificationsMuted}
           >
             <SettingToggle
-              label="Pet Care AI notifications"
+              label={t("notificationSettings.preferences.aiLabel")}
               value={settings.aiNotifications}
               disabled={togglesDisabled || notificationsMuted}
               onChange={(aiNotifications) =>

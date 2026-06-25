@@ -3,6 +3,7 @@ import { cn } from "@/utils";
 import { CheckIcon, TrashIcon } from "phosphor-react-native";
 import React, { memo, useEffect, useRef } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -41,14 +42,17 @@ export const Popup = memo<IProps>(
     variant = "alert",
     title,
     description,
-    confirmLabel = "Confirm",
-    cancelLabel = "Cancel",
+    confirmLabel,
+    cancelLabel,
     onConfirm,
     onCancel,
     loading,
   }) => {
+    const { t } = useTranslation();
     const isDelete = variant === "delete";
     const showStatusIcon = variant !== "alert";
+    const resolvedConfirmLabel = confirmLabel ?? t("common.confirm");
+    const resolvedCancelLabel = cancelLabel ?? t("common.cancel");
 
     const backdropOpacity = useSharedValue(0);
     const cardScale = useSharedValue(0.82);
@@ -191,7 +195,7 @@ export const Popup = memo<IProps>(
                 wrapperClassName="flex-1"
                 variant={onConfirm ? "cancel" : "secondary"}
               >
-                {cancelLabel}
+                {resolvedCancelLabel}
               </Button>
               {!!onConfirm && (
                 <Button
@@ -200,7 +204,7 @@ export const Popup = memo<IProps>(
                   wrapperClassName="flex-1"
                   variant={isDelete ? "destructive" : "secondary"}
                 >
-                  {confirmLabel}
+                  {resolvedConfirmLabel}
                 </Button>
               )}
             </View>

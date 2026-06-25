@@ -1,5 +1,10 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import {
+  formatCompactDate,
+  formatCompactDateTime,
+  formatTime,
+} from "@/utils/date-time";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -14,6 +19,7 @@ import {
   useController,
 } from "react-hook-form";
 import { Modal, Platform, Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Button } from "../ui/Button";
 import { InputField } from "../ui/InputField";
 import { Body } from "../ui/Typography";
@@ -67,6 +73,7 @@ export const DateTimePickerController = <
   const [androidPickerMode, setAndroidPickerMode] = useState<"date" | "time">(
     mode === "time" ? "time" : "date",
   );
+  const { i18n, t } = useTranslation();
 
   const { colorScheme } = useColorScheme();
 
@@ -146,30 +153,14 @@ export const DateTimePickerController = <
 
     if (format) return format(date);
 
-    const dateObj = new Date(date);
-
     switch (mode) {
       case "time":
-        return dateObj.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        return formatTime(date);
       case "datetime":
-        return dateObj.toLocaleString([], {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        return formatCompactDateTime(date);
       case "date":
       default:
-        return dateObj.toLocaleDateString([], {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
+        return formatCompactDate(date);
     }
   };
 
@@ -197,12 +188,12 @@ export const DateTimePickerController = <
             <View style={{ width: 96 }} />
 
             <Body weight="semiBold">
-              {mode === "date" && "Select Date"}
-              {mode === "time" && "Select Time"}
-              {mode === "datetime" && "Select Date & Time"}
+              {mode === "date" && t("datePicker.selectDate")}
+              {mode === "time" && t("datePicker.selectTime")}
+              {mode === "datetime" && t("datePicker.selectDateTime")}
             </Body>
             <Button onPress={handleIOSConfirm} variant="ghost">
-              Done
+              {t("common.done")}
             </Button>
           </View>
 
@@ -216,8 +207,7 @@ export const DateTimePickerController = <
               minimumDate={minimumDate}
               maximumDate={maximumDate}
               themeVariant={colorScheme}
-              // TODO: update this
-              locale="vi-VI"
+              locale={i18n.language === "en" ? "en-US" : "vi-VN"}
               textColor={textColor}
               style={{
                 alignSelf: "center",
@@ -259,6 +249,7 @@ export const DateTimePickerController = <
               minimumDate={minimumDate}
               maximumDate={maximumDate}
               themeVariant={colorScheme}
+              locale={i18n.language === "en" ? "en-US" : "vi-VN"}
             />
           )}
     </>

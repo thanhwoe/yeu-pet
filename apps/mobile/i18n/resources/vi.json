@@ -1,0 +1,232 @@
+{
+  "apiError": {
+    "genericTitle": "Không thể hoàn tất",
+    "genericText": "Vui lòng thử lại sau ít phút.",
+    "networkTitle": "Kết nối không ổn định",
+    "networkText": "Kiểm tra kết nối rồi thử lại nhé."
+  },
+  "common": {
+    "accountSynced": "Thông tin tài khoản đã đồng bộ",
+    "activePlan": "Gói đang hoạt động",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "done": "Xong",
+    "email": "Email",
+    "free": "Miễn phí",
+    "loading": "Đang tải",
+    "notSet": "Chưa đặt",
+    "open": "Mở",
+    "premium": "Premium",
+    "retry": "Thử lại",
+    "tryAgain": "Thử lại"
+  },
+  "datePicker": {
+    "selectDate": "Chọn ngày",
+    "selectDateTime": "Chọn ngày & giờ",
+    "selectTime": "Chọn giờ"
+  },
+  "errors": {
+    "auth": {
+      "emailAlreadyExists": "Email này đã được đăng ký.",
+      "invalidCredentials": "Email hoặc mật khẩu chưa đúng.",
+      "otpExpired": "Mã xác minh đã hết hạn.",
+      "otpInvalid": "Mã xác minh chưa đúng."
+    },
+    "common": {
+      "badRequest": "Yêu cầu chưa thể hoàn tất.",
+      "conflict": "Thao tác này đang xung đột với dữ liệu hiện tại.",
+      "forbidden": "Bạn chưa có quyền thực hiện thao tác này.",
+      "internalServerError": "YeuPet đang gặp lỗi hệ thống.",
+      "notFound": "Không tìm thấy nội dung này.",
+      "tooManyRequests": "Bạn thao tác hơi nhanh. Vui lòng thử lại sau.",
+      "unauthorized": "Vui lòng đăng nhập lại.",
+      "validationFailed": "Một vài thông tin cần được kiểm tra lại."
+    },
+    "subscription": {
+      "featureLimitReached": "Bạn đã dùng hết giới hạn của gói hiện tại.",
+      "premiumRequired": "Tính năng này cần gói Premium."
+    }
+  },
+  "navigation": {
+    "bookingMessages": "Tin nhắn đặt lịch",
+    "cart": "Giỏ hàng",
+    "checkout": "Thanh toán",
+    "doctorAi": "Doctor AI",
+    "listClinic": "Danh sách phòng khám",
+    "listSpa": "Danh sách spa",
+    "notificationSettings": "Cài đặt thông báo",
+    "notifications": "Thông báo",
+    "photos": "Chia sẻ ảnh",
+    "planUsage": "Gói & mức dùng",
+    "shippingAddress": "Địa chỉ giao hàng"
+  },
+  "notificationSettings": {
+    "accessError": {
+      "description": "Vui lòng thử lại.",
+      "title": "Chưa kiểm tra được quyền thông báo"
+    },
+    "checking": {
+      "description": "YeuPet đang kiểm tra quyền thiết bị và tùy chọn của bạn.",
+      "title": "Đang kiểm tra quyền thông báo"
+    },
+    "devicePermission": {
+      "accessibilityLabel": "Mở cài đặt thông báo của thiết bị",
+      "button": "Mở cài đặt thiết bị",
+      "description": "Bật thông báo để nhận nhắc nhở chăm sóc.",
+      "title": "Thông báo đang tắt"
+    },
+    "enabled": {
+      "text": "YeuPet có thể gửi nhắc nhở chăm sóc đến thiết bị này.",
+      "title": "Đã bật thông báo"
+    },
+    "loadError": {
+      "description": "Kiểm tra kết nối rồi thử lại nhé.",
+      "title": "Chưa tải được cài đặt thông báo"
+    },
+    "loading": {
+      "description": "YeuPet đang chuẩn bị tùy chọn của bạn.",
+      "title": "Đang tải cài đặt thông báo"
+    },
+    "muted": "Đã tắt",
+    "notEnabled": {
+      "text": "Chưa bật được thông báo đẩy.",
+      "title": "Chưa bật thông báo"
+    },
+    "openSettingsFailed": {
+      "text": "Chưa mở được cài đặt thiết bị. Vui lòng thử lại.",
+      "title": "Chưa mở được cài đặt"
+    },
+    "preferences": {
+      "aiDescription": "Mức dùng và gợi ý chăm sóc",
+      "aiLabel": "Thông báo Pet Care AI",
+      "aiTitle": "Pet Care AI",
+      "bookingDescription": "Yêu cầu và tin nhắn",
+      "bookingLabel": "Thông báo đặt sitter",
+      "bookingTitle": "Đặt sitter",
+      "masterDescription": "Công tắc thông báo chính",
+      "photosDescription": "Bình luận và hoạt động",
+      "photosLabel": "Thông báo ảnh và tương tác",
+      "photosTitle": "Ảnh/tương tác",
+      "pushLabel": "Thông báo đẩy",
+      "pushTitle": "Thông báo đẩy",
+      "remindersDescription": "Vắc-xin, thuốc, grooming",
+      "remindersLabel": "Nhắc nhở chăm sóc",
+      "remindersTitle": "Nhắc nhở chăm sóc",
+      "section": "Tùy chọn thông báo"
+    },
+    "pushUnavailable": {
+      "text": "Thông báo đẩy chưa khả dụng trên trình giả lập này.",
+      "title": "Chưa dùng được thông báo đẩy"
+    },
+    "saveError": {
+      "text": "Chưa lưu được cài đặt thông báo. Vui lòng thử lại.",
+      "title": "Chưa lưu cài đặt thông báo"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "accessibilityLabel": "Tùy chọn giao diện",
+      "dark": "Tối",
+      "light": "Sáng",
+      "section": "Giao diện",
+      "system": "Hệ thống",
+      "theme": "Chủ đề"
+    },
+    "helpLegal": {
+      "contactSupport": "Liên hệ hỗ trợ",
+      "linkFailedText": "Kiểm tra kết nối rồi thử mở liên kết lại nhé.",
+      "linkFailedTitle": "Chưa mở được liên kết",
+      "privacyPolicy": "Chính sách bảo mật",
+      "section": "Hỗ trợ & pháp lý",
+      "termsOfService": "Điều khoản dịch vụ"
+    },
+    "language": {
+      "accessibilityLabel": "Tùy chọn ngôn ngữ",
+      "appLanguage": "Ngôn ngữ",
+      "english": "English",
+      "section": "Ngôn ngữ",
+      "updateFailedText": "Chưa lưu được ngôn ngữ. Vui lòng thử lại.",
+      "updateFailedTitle": "Chưa lưu ngôn ngữ",
+      "updatedText": "YeuPet sẽ dùng ngôn ngữ này từ bây giờ.",
+      "updatedTitle": "Đã đổi ngôn ngữ",
+      "vietnamese": "Tiếng Việt"
+    },
+    "loading": {
+      "description": "YeuPet đang chuẩn bị tùy chọn tài khoản của bạn.",
+      "title": "Đang tải cài đặt"
+    },
+    "loadError": {
+      "description": "Kiểm tra kết nối rồi thử lại nhé.",
+      "title": "Chưa tải được cài đặt"
+    },
+    "notifications": {
+      "accessibilityLabel": "Mở cài đặt thông báo",
+      "row": "Cài đặt thông báo",
+      "section": "Thông báo"
+    },
+    "profile": {
+      "edit": "Sửa",
+      "owner": "Chủ nuôi YeuPet"
+    },
+    "saveError": {
+      "text": "Chưa lưu được cài đặt. Vui lòng thử lại.",
+      "title": "Chưa lưu cài đặt"
+    },
+    "session": {
+      "description": "Đăng xuất khỏi thiết bị này",
+      "logout": "Đăng xuất",
+      "logoutButton": "Đăng xuất",
+      "logoutDescription": "Phiên đăng nhập trên thiết bị này sẽ được xóa.",
+      "logoutTitle": "Đăng xuất?",
+      "section": "Phiên đăng nhập",
+      "staySignedIn": "Ở lại"
+    },
+    "subscription": {
+      "currentAccessThrough": "Quyền truy cập hiện có đến {{date}}",
+      "loadingDescription": "YeuPet đang kiểm tra gói và mức dùng.",
+      "loadingTitle": "Đang tải gói",
+      "manage": "Quản lý gói",
+      "plan": "Gói {{plan}}",
+      "section": "Gói dịch vụ",
+      "unavailableDescription": "Thử lại để làm mới trạng thái gói.",
+      "unavailableTitle": "Chưa có thông tin gói",
+      "unlockCopy": "Theo dõi mức dùng và mở thêm tính năng chăm sóc thú cưng.",
+      "upgrade": "Nâng cấp",
+      "usage": "Xem mức dùng",
+      "viewPlanUsage": "Xem mức dùng gói {{plan}}"
+    },
+    "title": "Cài đặt"
+  },
+  "subscription": {
+    "period": {
+      "activePlan": "Gói đang hoạt động",
+      "currentAccessThrough": "Quyền truy cập hiện có đến {{date}}",
+      "unlockCopy": "Theo dõi mức dùng và mở thêm tính năng chăm sóc thú cưng."
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "cancelled": "Đã hủy",
+      "expired": "Đã hết hạn",
+      "free": "Miễn phí",
+      "grace_period": "Gia hạn thanh toán",
+      "trialing": "Đang dùng thử"
+    }
+  },
+  "state": {
+    "empty": {
+      "description": "Thêm mục đầu tiên để bắt đầu nhé.",
+      "title": "Chưa có gì ở đây"
+    },
+    "error": {
+      "description": "Vui lòng thử lại.",
+      "title": "Có lỗi xảy ra"
+    },
+    "loading": {
+      "description": "Vui lòng đợi một chút.",
+      "title": "Đang tải"
+    }
+  },
+  "toast": {
+    "notificationHint": "Mở màn hình liên quan"
+  }
+}

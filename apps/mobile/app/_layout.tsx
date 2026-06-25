@@ -21,6 +21,7 @@ import { markNotificationReadMutation } from "@/services";
 import { configureRevenueCat } from "@/services/revenuecat";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import "../global.css";
 
 export { ErrorBoundary } from "expo-router";
@@ -42,6 +43,7 @@ export default function RootLayout() {
 
 const RootNavigation = () => {
   const { user } = useUserInfoStore();
+  const { t } = useTranslation();
   const isAuthenticated = !!user;
   const isOnboardingComplete = !!user?.onboardingCompleted;
   const isVerified = !!user?.isVerified;
@@ -88,7 +90,7 @@ const RootNavigation = () => {
           name="list-clinic"
           options={{
             header: BackHeader,
-            title: "List Clinic",
+            title: t("navigation.listClinic"),
           }}
         />
 
@@ -96,7 +98,7 @@ const RootNavigation = () => {
           name="list-spa"
           options={{
             header: BackHeader,
-            title: "List Spa",
+            title: t("navigation.listSpa"),
           }}
         />
         <Stack.Screen name="budget" options={{ headerShown: false }} />
@@ -105,28 +107,28 @@ const RootNavigation = () => {
           name="photos"
           options={{
             header: BackHeader,
-            title: "Share photos",
+            title: t("navigation.photos"),
           }}
         />
         <Stack.Screen
           name="notifications"
           options={{
             header: BackHeader,
-            title: "Notifications",
+            title: t("navigation.notifications"),
           }}
         />
         <Stack.Screen
           name="notification-settings"
           options={{
             header: BackHeader,
-            title: "Notification settings",
+            title: t("navigation.notificationSettings"),
           }}
         />
         <Stack.Screen
           name="subscription"
           options={{
             header: BackHeader,
-            title: "Plan & Usage",
+            title: t("navigation.planUsage"),
           }}
         />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
@@ -138,14 +140,14 @@ const RootNavigation = () => {
           name="doctor-ai"
           options={{
             header: BackHeader,
-            title: "Doctor AI",
+            title: t("navigation.doctorAi"),
           }}
         />
         <Stack.Screen
           name="sitter-bookings/[id]/chat"
           options={{
             header: BackHeader,
-            title: "Booking messages",
+            title: t("navigation.bookingMessages"),
           }}
         />
         <Stack.Screen
@@ -158,21 +160,21 @@ const RootNavigation = () => {
           name="cart"
           options={{
             header: BackHeader,
-            title: "Cart",
+            title: t("navigation.cart"),
           }}
         />
         <Stack.Screen
           name="checkout"
           options={{
             header: BackHeader,
-            title: "Checkout",
+            title: t("navigation.checkout"),
           }}
         />
         <Stack.Screen
           name="shipping-address"
           options={{
             header: BackHeader,
-            title: "Shipping Address",
+            title: t("navigation.shippingAddress"),
           }}
         />
         <Stack.Screen name="training" options={{ headerShown: false }} />

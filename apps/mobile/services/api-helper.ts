@@ -1,5 +1,6 @@
 import { API_ROUTES } from "@/constants/api-routes";
 import { ENV } from "@/constants/common";
+import { getCurrentLanguage, i18n } from "@/i18n";
 import { useUserInfoStore } from "@/stores/user-info";
 import axios, {
   AxiosError,
@@ -40,6 +41,7 @@ class APIHelper {
         } else {
           config.headers["Authorization"] = undefined;
         }
+        config.headers["Accept-Language"] = getCurrentLanguage();
         return config;
       },
       (error) => {
@@ -111,7 +113,11 @@ class APIHelper {
       .then((res) => res.data)
       .catch((error: AxiosError) => {
         if (!error.response) {
-          throw new Error("Network error. Please try again later.");
+          throw {
+            errorCode: "NETWORK_ERROR",
+            message: i18n.t("apiError.networkText"),
+            messageKey: "apiError.networkText",
+          };
         }
 
         const payload = error.response.data;
@@ -120,7 +126,9 @@ class APIHelper {
         }
 
         throw {
-          message: String(payload || "Request failed. Please try again."),
+          errorCode: "REQUEST_FAILED",
+          message: String(payload || i18n.t("apiError.genericText")),
+          messageKey: "apiError.genericText",
           statusCode: error.response.status,
         };
       });

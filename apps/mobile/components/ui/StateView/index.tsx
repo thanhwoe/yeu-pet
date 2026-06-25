@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/utils";
 import { Button } from "../Button";
@@ -20,31 +21,36 @@ interface StateViewProps {
 
 const DEFAULT_COPY: Record<
   StateViewVariant,
-  { title: string; description: string }
+  { titleKey: string; descriptionKey: string }
 > = {
   loading: {
-    title: "Loading",
-    description: "Please wait a moment.",
+    titleKey: "state.loading.title",
+    descriptionKey: "state.loading.description",
   },
   empty: {
-    title: "Nothing here yet",
-    description: "Add the first item to get started.",
+    titleKey: "state.empty.title",
+    descriptionKey: "state.empty.description",
   },
   error: {
-    title: "Something went wrong",
-    description: "Please try again.",
+    titleKey: "state.error.title",
+    descriptionKey: "state.error.description",
   },
 };
 
 export const StateView = ({
   variant,
-  title = DEFAULT_COPY[variant].title,
-  description = DEFAULT_COPY[variant].description,
+  title,
+  description,
   actionLabel,
   onAction,
   icon,
   className,
 }: StateViewProps) => {
+  const { t } = useTranslation();
+  const copy = DEFAULT_COPY[variant];
+  const resolvedTitle = title ?? t(copy.titleKey);
+  const resolvedDescription = description ?? t(copy.descriptionKey);
+
   return (
     <View
       className={cn(
@@ -55,10 +61,10 @@ export const StateView = ({
       {variant === "loading" ? <Spinner /> : icon}
       <View className="items-center gap-8">
         <Heading variant="h6" weight="bold" className="text-center">
-          {title}
+          {resolvedTitle}
         </Heading>
         <Body variant="body3" className="text-center text-text-muted">
-          {description}
+          {resolvedDescription}
         </Body>
       </View>
       {actionLabel && onAction ? (

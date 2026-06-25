@@ -13,6 +13,12 @@ import { getPlanPeriodCopy } from "@/features/subscriptions/utils";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useLogout } from "@/hooks/useLogout";
+import {
+  LANGUAGE_OPTIONS,
+  changeAppLanguage,
+  normalizeLanguage,
+  type SupportedLanguage,
+} from "@/i18n";
 import { IUserSettingsForm, SubscriptionEntitlements } from "@/interfaces";
 import {
   getEntitlementsQuery,
@@ -20,24 +26,15 @@ import {
   updateUserSettingsMutation,
 } from "@/services";
 import { useUserInfoStore } from "@/stores";
+import { getApiErrorToast } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { CaretRightIcon } from "phosphor-react-native";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Alert, Linking, Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const CaretRight = withIconClassName(CaretRightIcon);
-
-const THEME_OPTIONS = [
-  { label: "System", value: "system" },
-  { label: "Light", value: "light" },
-  { label: "Dark", value: "dark" },
-] as const;
-
-const LANGUAGE_OPTIONS = [
-  { label: "English", value: "en" },
-  { label: "Tiếng Việt", value: "vi" },
-] as const;
 
 const SUPPORT_EMAIL = "support@yeupet.app";
 const PRIVACY_URL = "https://yeupet.app/privacy";
@@ -58,11 +55,13 @@ function ProfileCard({
   name,
   contact,
   avatarUrl,
+  editLabel,
   onEdit,
 }: {
   name: string;
   contact: string;
   avatarUrl?: string | null;
+  editLabel: string;
   onEdit: () => void;
 }) {
   return (
@@ -85,7 +84,7 @@ function ProfileCard({
         </Text>
       </View>
       <Button size="sm" variant="outline" onPress={onEdit}>
-        Edit
+        {editLabel}
       </Button>
     </View>
   );
@@ -112,11 +111,13 @@ function SubscriptionSummary({
   onRetry: () => void;
   onUpgrade: () => void;
 }) {
+  const { t } = useTranslation();
+
   if (loading && !entitlements) {
     return (
       <SettingsRow
-        title="Loading plan"
-        description="Checking plan and usage."
+        title={t("settings.subscription.loadingTitle")}
+        description={t("settings.subscription.loadingDescription")}
         loading
       />
     );
@@ -125,11 +126,11 @@ function SubscriptionSummary({
   if (error && !entitlements) {
     return (
       <SettingsRow
-        title="Plan details could not load"
-        description="Retry to refresh your subscription status."
+        title={t("settings.subscription.unavailableTitle")}
+        description={t("settings.subscription.unavailableDescription")}
       >
         <Button size="sm" variant="outline" onPress={onRetry}>
-          Retry
+          {t("common.retry")}
         </Button>
       </SettingsRow>
     );
@@ -138,26 +139,28 @@ function SubscriptionSummary({
   if (!entitlements) {
     return (
       <SettingsRow
-        title="Plan details unavailable"
-        description="Retry to refresh subscription status."
+        title={t("settings.subscription.unavailableTitle")}
+        description={t("settings.subscription.unavailableDescription")}
       />
     );
   }
 
-  const planLabel = entitlements.tier === "premium" ? "Premium" : "Free";
   const isPremium = entitlements.tier === "premium";
+  const planLabel = isPremium ? t("common.premium") : t("common.free");
 
   return (
     <View className="gap-12 border-b border-line-subtle px-16 py-14 ">
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`View ${planLabel} plan usage`}
+        accessibilityLabel={t("settings.subscription.viewPlanUsage", {
+          plan: planLabel,
+        })}
         className="min-h-44 flex-row items-center gap-12"
         onPress={onOpen}
       >
         <View className="flex-1 gap-2">
           <Text variant="body2" className="font-semibold">
-            {planLabel} plan
+            {t("settings.subscription.plan", { plan: planLabel })}
           </Text>
           <Text variant="footnote" className="text-text-muted">
             {getPlanPeriodCopy(entitlements)}
@@ -174,7 +177,7 @@ function SubscriptionSummary({
             wrapperClassName="flex-1"
             onPress={onOpen}
           >
-            View usage
+            {t("settings.subscription.usage")}
           </Button>
           <Button
             size="sm"
@@ -182,7 +185,7 @@ function SubscriptionSummary({
             loading={upgrading}
             onPress={onUpgrade}
           >
-            Upgrade
+            {t("settings.subscription.upgrade")}
           </Button>
         </View>
       ) : (
@@ -192,7 +195,7 @@ function SubscriptionSummary({
           loading={managing}
           onPress={onManage}
         >
-          Manage subscription
+          {t("settings.subscription.manage")}
         </Button>
       )}
     </View>
@@ -200,6 +203,7 @@ function SubscriptionSummary({
 }
 
 export function SettingsScreen() {
+  const { t } = useTranslation();
   const { loading, logout } = useLogout();
   const { setColorScheme } = useColorScheme();
   const user = useUserInfoStore.use.user();
@@ -215,6 +219,23 @@ export function SettingsScreen() {
     queryKey: SETTINGS_KEY.detail(),
     queryFn: getUserSettingsQuery,
   });
+  const themeOptions = useMemo(
+    () =>
+      [
+        { label: t("settings.appearance.system"), value: "system" },
+        { label: t("settings.appearance.light"), value: "light" },
+        { label: t("settings.appearance.dark"), value: "dark" },
+      ] as const,
+    [t],
+  );
+  const languageOptions = useMemo(
+    () =>
+      LANGUAGE_OPTIONS.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  );
   const {
     data: entitlements,
     isError: isEntitlementsError,
@@ -231,19 +252,27 @@ export function SettingsScreen() {
       onSuccess: (updatedSettings) => {
         queryClient.setQueryData(SETTINGS_KEY.detail(), updatedSettings);
       },
-      onError: (error: Error) => {
-        Toast.error({
-          title: "Settings not saved",
-          text: error.message || "Could not save settings. Please try again.",
-        });
-      },
     });
+
+  const showSettingsSaveError = useCallback((error: unknown) => {
+    Toast.error(
+      getApiErrorToast(error, {
+        textKey: "settings.saveError.text",
+        titleKey: "settings.saveError.title",
+      }),
+    );
+  }, []);
 
   const handleUpdateSettings = useCallback(
     async (params: IUserSettingsForm) => {
-      await updateSettings(params);
+      try {
+        await updateSettings(params);
+      } catch (error) {
+        showSettingsSaveError(error);
+        throw error;
+      }
     },
-    [updateSettings],
+    [showSettingsSaveError, updateSettings],
   );
 
   const handleThemeChange = useCallback(
@@ -252,12 +281,49 @@ export function SettingsScreen() {
 
       setColorScheme(theme);
       try {
-        await updateSettings({ theme });
+        await handleUpdateSettings({ theme });
       } catch {
         setColorScheme(previousTheme);
       }
     },
-    [setColorScheme, settings?.theme, updateSettings],
+    [handleUpdateSettings, setColorScheme, settings?.theme],
+  );
+
+  const handleLanguageChange = useCallback(
+    async (language: SupportedLanguage) => {
+      if (!settings || settings.language === language) {
+        return;
+      }
+
+      const previousLanguage = normalizeLanguage(settings.language);
+
+      queryClient.setQueryData(SETTINGS_KEY.detail(), {
+        ...settings,
+        language,
+      });
+      await changeAppLanguage(language);
+
+      try {
+        await updateSettings({ language });
+        Toast.success({
+          title: t("settings.language.updatedTitle"),
+          text: t("settings.language.updatedText"),
+        });
+      } catch (error) {
+        queryClient.setQueryData(SETTINGS_KEY.detail(), {
+          ...settings,
+          language: previousLanguage,
+        });
+        await changeAppLanguage(previousLanguage);
+        Toast.error(
+          getApiErrorToast(error, {
+            textKey: "settings.language.updateFailedText",
+            titleKey: "settings.language.updateFailedTitle",
+          }),
+        );
+      }
+    },
+    [queryClient, settings, t, updateSettings],
   );
 
   const openExternalLink = useCallback(async (url: string) => {
@@ -265,11 +331,11 @@ export function SettingsScreen() {
       await Linking.openURL(url);
     } catch {
       Toast.error({
-        title: "Link did not open",
-        text: "Check your connection and try opening the link again.",
+        title: t("settings.helpLegal.linkFailedTitle"),
+        text: t("settings.helpLegal.linkFailedText"),
       });
     }
-  }, []);
+  }, [t]);
 
   const openSubscription = useCallback(() => {
     router.push("/subscription");
@@ -277,26 +343,26 @@ export function SettingsScreen() {
 
   const handleLogoutPress = useCallback(() => {
     Alert.alert(
-      "Log out?",
-      "This will clear the local session on this device.",
+      t("settings.session.logoutTitle"),
+      t("settings.session.logoutDescription"),
       [
-        { text: "Stay signed in", style: "cancel" },
+        { text: t("settings.session.staySignedIn"), style: "cancel" },
         {
-          text: "Log out",
+          text: t("settings.session.logoutButton"),
           style: "destructive",
           onPress: logout,
         },
       ],
     );
-  }, [logout]);
+  }, [logout, t]);
 
   if (isLoadingSettings) {
     return (
       <ScreenContainer>
         <StateView
           variant="loading"
-          title="Loading settings"
-          description="Getting your account preferences ready."
+          title={t("settings.loading.title")}
+          description={t("settings.loading.description")}
           className="flex-1"
         />
       </ScreenContainer>
@@ -308,9 +374,9 @@ export function SettingsScreen() {
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Settings could not load"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("settings.loadError.title")}
+          description={t("settings.loadError.description")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => refetchSettings()}
           className="flex-1"
         />
@@ -319,8 +385,8 @@ export function SettingsScreen() {
   }
 
   const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ");
-  const displayName = fullName || "YeuPet owner";
-  const contact = user?.email || user?.phone || "Account details synced";
+  const displayName = fullName || t("settings.profile.owner");
+  const contact = user?.email || user?.phone || t("common.accountSynced");
 
   return (
     <ScreenContainer
@@ -331,7 +397,7 @@ export function SettingsScreen() {
       <View className="bg-background px-20 pb-10 pt-safe-offset-16">
         <View className="border-b border-line-subtle pb-10">
           <Text variant="largeTitle" className="font-bold">
-            Settings
+            {t("settings.title")}
           </Text>
         </View>
       </View>
@@ -341,10 +407,11 @@ export function SettingsScreen() {
           name={displayName}
           contact={contact}
           avatarUrl={user?.avatarUrl}
+          editLabel={t("settings.profile.edit")}
           onEdit={() => router.push("/profile")}
         />
 
-        <SettingsSection title="Subscription">
+        <SettingsSection title={t("settings.subscription.section")}>
           <SubscriptionSummary
             entitlements={entitlements}
             loading={isLoadingEntitlements}
@@ -358,21 +425,21 @@ export function SettingsScreen() {
           />
         </SettingsSection>
 
-        <SettingsSection title="Notifications">
+        <SettingsSection title={t("settings.notifications.section")}>
           <SettingsRow
-            title="Notification settings"
+            title={t("settings.notifications.row")}
             onPress={() => router.push("/notification-settings")}
-            accessibilityLabel="Open notification settings"
+            accessibilityLabel={t("settings.notifications.accessibilityLabel")}
           >
             <CaretRight size={20} className="text-icon-secondary" />
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection title="Appearance">
-          <SettingsRow title="Theme">
+        <SettingsSection title={t("settings.appearance.section")}>
+          <SettingsRow title={t("settings.appearance.theme")}>
             <SegmentedSetting
-              accessibilityLabel="Theme preference"
-              options={THEME_OPTIONS}
+              accessibilityLabel={t("settings.appearance.accessibilityLabel")}
+              options={themeOptions}
               value={settings.theme}
               disabled={isUpdatingSettings}
               onChange={handleThemeChange}
@@ -380,40 +447,40 @@ export function SettingsScreen() {
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection title="Language">
-          <SettingsRow title="App language">
+        <SettingsSection title={t("settings.language.section")}>
+          <SettingsRow title={t("settings.language.appLanguage")}>
             <SegmentedSetting
-              accessibilityLabel="Language preference"
-              options={LANGUAGE_OPTIONS}
+              accessibilityLabel={t("settings.language.accessibilityLabel")}
+              options={languageOptions}
               value={settings.language}
               disabled={isUpdatingSettings}
-              onChange={(language) => handleUpdateSettings({ language })}
+              onChange={handleLanguageChange}
             />
           </SettingsRow>
         </SettingsSection>
 
-        <SettingsSection title="Help & Legal">
+        <SettingsSection title={t("settings.helpLegal.section")}>
           <SettingsRow
-            title="Contact support"
-            value="Email"
+            title={t("settings.helpLegal.contactSupport")}
+            value={t("common.email")}
             onPress={() => openExternalLink(`mailto:${SUPPORT_EMAIL}`)}
           />
           <SettingsRow
-            title="Privacy policy"
-            value="Open"
+            title={t("settings.helpLegal.privacyPolicy")}
+            value={t("common.open")}
             onPress={() => openExternalLink(PRIVACY_URL)}
           />
           <SettingsRow
-            title="Terms of service"
-            value="Open"
+            title={t("settings.helpLegal.termsOfService")}
+            value={t("common.open")}
             onPress={() => openExternalLink(TERMS_URL)}
           />
         </SettingsSection>
 
-        <SettingsSection title="Session">
+        <SettingsSection title={t("settings.session.section")}>
           <SettingsRow
-            title="Logout"
-            description="Sign out of this device"
+            title={t("settings.session.logout")}
+            description={t("settings.session.description")}
             destructive
             className="bg-danger-surface"
           >
@@ -423,7 +490,7 @@ export function SettingsScreen() {
               onPress={handleLogoutPress}
               loading={loading}
             >
-              Logout
+              {t("settings.session.logout")}
             </Button>
           </SettingsRow>
         </SettingsSection>
