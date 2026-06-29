@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import {
   booking_message_type,
   sitter_bookings_status,
@@ -162,6 +162,7 @@ describe('SitterBookingMessagesService', () => {
 
   it.each([
     sitter_bookings_status.pending,
+    sitter_bookings_status.completed,
     sitter_bookings_status.rejected,
     sitter_bookings_status.cancelled,
   ])('does not allow messages on %s bookings', async (status) => {
@@ -174,7 +175,7 @@ describe('SitterBookingMessagesService', () => {
       service.create({ id: 'account-1' } as never, 'booking-1', {
         content: 'Hello?',
       }),
-    ).rejects.toBeInstanceOf(NotFoundException);
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('does not allow clients to spoof system messages', async () => {

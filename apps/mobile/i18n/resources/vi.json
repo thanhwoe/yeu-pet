@@ -1503,11 +1503,14 @@
         "couldNotLoadTitle": "Chưa tải được tin nhắn",
         "couldNotOpenDescription": "Kiểm tra lượt đặt rồi thử lại.",
         "couldNotOpenTitle": "Chưa mở được trò chuyện đặt chăm sóc",
+        "closedNotice": "Lịch đặt này không còn hoạt động. Cuộc trò chuyện đã được đóng.",
+        "completedNotice": "Lịch đặt này đã hoàn tất. Cuộc trò chuyện đã được đóng.",
         "fallbackTitle": "Trò chuyện đặt chăm sóc",
         "loadingMessages": "Đang tải tin nhắn",
         "newMessages": "Tin nhắn mới",
         "offline": "Đang ngoại tuyến. Tin nhắn mới sẽ được gửi qua kênh dự phòng bảo mật.",
         "opening": "Đang mở trò chuyện đặt chăm sóc",
+        "pendingNotice": "Cuộc trò chuyện sẽ mở sau khi lịch đặt được chấp nhận.",
         "placeholder": "Chia sẻ chi tiết chăm sóc hoặc giờ đến...",
         "reconnecting": "Đang kết nối lại và kiểm tra tin nhắn mới...",
         "sendFailedRetry": "Chưa gửi được tin nhắn. Chạm để thử lại.",
@@ -1517,6 +1520,12 @@
         "unavailableDescription": "Mở lại cuộc trò chuyện này từ một lượt đặt.",
         "unavailableTitle": "Trò chuyện đặt chăm sóc chưa khả dụng",
         "connecting": "Đang kết nối trò chuyện đặt chăm sóc..."
+      },
+      "completeConfirm": {
+        "cancel": "Hủy",
+        "confirm": "Hoàn tất",
+        "description": "Sau khi hoàn tất lịch đặt, tính năng chat với chủ thú cưng sẽ được đóng và bạn sẽ không thể gửi tin nhắn mới.",
+        "title": "Hoàn tất lịch đặt?"
       },
       "detail": {
         "bookingDetail": "Chi tiết đặt chăm sóc",

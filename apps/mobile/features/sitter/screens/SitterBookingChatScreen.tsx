@@ -1,7 +1,11 @@
 import { Spinner } from "@/components/ui/Spinner";
 import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
-import { getBookingStatusLabel } from "@/features/sitter/constants";
+import {
+  getBookingStatusLabel,
+  isSitterBookingChatActive,
+  isSitterBookingTerminal,
+} from "@/features/sitter/constants";
 import { useSitterBookingDetail } from "@/features/sitter/useSitters";
 import {
   getBookingPetName,
@@ -44,6 +48,10 @@ export const SitterBookingChatScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const bookingId = typeof id === "string" ? id : "";
   const bookingQuery = useSitterBookingDetail(bookingId);
+  const booking = bookingQuery.data;
+  const canSendMessages = booking
+    ? isSitterBookingChatActive(booking.status)
+    : false;
   const {
     messages,
     messagesQuery,
@@ -52,14 +60,13 @@ export const SitterBookingChatScreen = () => {
     currentUserId,
     sendMessage,
     retryMessage,
-  } = useSitterChat(bookingId);
+  } = useSitterChat(bookingId, { canSend: canSendMessages });
   const [draft, setDraft] = useState("");
   const [nearBottom, setNearBottom] = useState(true);
   const [showNewMessages, setShowNewMessages] = useState(false);
   const listRef = useRef<FlatList<LocalChatMessage>>(null);
   const previousCountRef = useRef(0);
 
-  const booking = bookingQuery.data;
   const isOwner = booking?.accountId === currentUserId;
   const partnerName = booking
     ? isOwner
@@ -71,6 +78,13 @@ export const SitterBookingChatScreen = () => {
     reconnecting: t("sitter.booking.chat.reconnecting"),
     offline: t("sitter.booking.chat.offline"),
   } as const;
+  const readOnlyNotice = booking
+    ? booking.status === "completed"
+      ? t("sitter.booking.chat.completedNotice")
+      : isSitterBookingTerminal(booking.status)
+        ? t("sitter.booking.chat.closedNotice")
+        : t("sitter.booking.chat.pendingNotice")
+    : undefined;
 
   useEffect(() => {
     if (messages.length > previousCountRef.current) {
@@ -94,6 +108,7 @@ export const SitterBookingChatScreen = () => {
   };
 
   const submit = () => {
+    if (!canSendMessages) return;
     if (sendMessage(draft)) setDraft("");
   };
 
@@ -167,7 +182,7 @@ export const SitterBookingChatScreen = () => {
         </View>
       );
 
-      return failed ? (
+      return failed && canSendMessages ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("sitter.accessibility.retryFailedMessage")}
@@ -179,7 +194,7 @@ export const SitterBookingChatScreen = () => {
         bubble
       );
     },
-    [currentUserId, retryMessage, t],
+    [canSendMessages, currentUserId, retryMessage, t],
   );
 
   if (!bookingId) {
@@ -242,6 +257,14 @@ export const SitterBookingChatScreen = () => {
         <View className="border-b border-status-danger-border bg-status-danger-surface px-16 py-8">
           <Body variant="body4" className="text-status-danger-text">
             {lastError}
+          </Body>
+        </View>
+      ) : null}
+
+      {!canSendMessages && readOnlyNotice ? (
+        <View className="border-b border-line-subtle bg-background-surface-muted px-16 py-8">
+          <Body variant="body4" className="text-text-muted">
+            {readOnlyNotice}
           </Body>
         </View>
       ) : null}
@@ -312,46 +335,48 @@ export const SitterBookingChatScreen = () => {
         </View>
       )}
 
-      <View className="gap-6 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
-        <View className="min-h-54 flex-row items-end gap-10 rounded-24 border border-line-subtle bg-background-surface px-14 py-8">
-          <TextInput
-            accessibilityLabel={t("sitter.accessibility.bookingMessage")}
-            autoCorrect
-            className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
-            maxLength={2000}
-            multiline
-            onChangeText={setDraft}
-            placeholder={t("sitter.booking.chat.placeholder")}
-            textAlignVertical="top"
-            value={draft}
-          />
-          <TouchableOpacity
-            accessibilityLabel={t("sitter.accessibility.sendBookingMessage")}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !draft.trim() }}
-            activeOpacity={0.82}
-            className={cn(
-              "h-44 w-44 items-center justify-center rounded-full bg-action-primary",
-              !draft.trim() && "bg-background-surface-muted",
-            )}
-            disabled={!draft.trim()}
-            onPress={submit}
-          >
-            <PaperPlaneTilt
-              size={20}
-              weight="fill"
-              className={
-                draft.trim()
-                  ? "text-action-primary-foreground"
-                  : "text-icon-secondary"
-              }
+      {canSendMessages ? (
+        <View className="gap-6 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
+          <View className="min-h-54 flex-row items-end gap-10 rounded-24 border border-line-subtle bg-background-surface px-14 py-8">
+            <TextInput
+              accessibilityLabel={t("sitter.accessibility.bookingMessage")}
+              autoCorrect
+              className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
+              maxLength={2000}
+              multiline
+              onChangeText={setDraft}
+              placeholder={t("sitter.booking.chat.placeholder")}
+              textAlignVertical="top"
+              value={draft}
             />
-          </TouchableOpacity>
+            <TouchableOpacity
+              accessibilityLabel={t("sitter.accessibility.sendBookingMessage")}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !draft.trim() }}
+              activeOpacity={0.82}
+              className={cn(
+                "h-44 w-44 items-center justify-center rounded-full bg-action-primary",
+                !draft.trim() && "bg-background-surface-muted",
+              )}
+              disabled={!draft.trim()}
+              onPress={submit}
+            >
+              <PaperPlaneTilt
+                size={20}
+                weight="fill"
+                className={
+                  draft.trim()
+                    ? "text-action-primary-foreground"
+                    : "text-icon-secondary"
+                }
+              />
+            </TouchableOpacity>
+          </View>
+          <Body variant="body5" className="text-right text-text-muted">
+            {draft.length}/2000
+          </Body>
         </View>
-        <Body variant="body5" className="text-right text-text-muted">
-          {draft.length}/2000
-        </Body>
-      </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };

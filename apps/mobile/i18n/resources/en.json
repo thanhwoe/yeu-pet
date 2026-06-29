@@ -1503,11 +1503,14 @@
         "couldNotLoadTitle": "Messages could not load",
         "couldNotOpenDescription": "Check the booking and try again.",
         "couldNotOpenTitle": "Booking chat could not open",
+        "closedNotice": "This booking is no longer active. Chat is closed.",
+        "completedNotice": "This booking has been completed. Chat is now closed.",
         "fallbackTitle": "Booking chat",
         "loadingMessages": "Loading messages",
         "newMessages": "New messages",
         "offline": "Offline. New messages will use secure fallback delivery.",
         "opening": "Opening booking chat",
+        "pendingNotice": "Chat opens after this booking is accepted.",
         "placeholder": "Share care or arrival details...",
         "reconnecting": "Reconnecting and checking for new messages...",
         "sendFailedRetry": "Message could not send. Tap it to try again.",
@@ -1517,6 +1520,12 @@
         "unavailableDescription": "Open this chat again from a booking.",
         "unavailableTitle": "Booking chat unavailable",
         "connecting": "Connecting to booking chat..."
+      },
+      "completeConfirm": {
+        "cancel": "Cancel",
+        "confirm": "Complete",
+        "description": "Once this booking is completed, the chat with the owner will be closed and you will not be able to send new messages.",
+        "title": "Complete booking?"
       },
       "detail": {
         "bookingDetail": "Booking detail",

@@ -50,6 +50,7 @@ export const Popup = memo<IProps>(
   }) => {
     const { t } = useTranslation();
     const isDelete = variant === "delete";
+    const confirmVariant = variant === "confirm" ? "primary" : "secondary";
     const showStatusIcon = variant !== "alert";
     const resolvedConfirmLabel = confirmLabel ?? t("common.confirm");
     const resolvedCancelLabel = cancelLabel ?? t("common.cancel");
@@ -202,7 +203,7 @@ export const Popup = memo<IProps>(
                   onPress={handleConfirm}
                   loading={loading}
                   wrapperClassName="flex-1"
-                  variant={isDelete ? "destructive" : "secondary"}
+                  variant={isDelete ? "destructive" : confirmVariant}
                 >
                   {resolvedConfirmLabel}
                 </Button>

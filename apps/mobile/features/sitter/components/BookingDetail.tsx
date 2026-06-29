@@ -11,6 +11,7 @@ import {
 } from "phosphor-react-native";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import { isSitterBookingChatActive } from "../constants";
 import {
   formatBookingHold,
   formatDateRange,
@@ -56,9 +57,7 @@ export const BookingDetail = ({
   const canComplete =
     role === "sitter" && ["confirmed", "active"].includes(booking.status);
   const canCancel = ["pending", "confirmed"].includes(booking.status);
-  const canMessage = ["confirmed", "active", "completed"].includes(
-    booking.status,
-  );
+  const canMessage = isSitterBookingChatActive(booking.status);
   const canReview = role === "owner" && booking.status === "completed";
 
   const holdLabel = formatBookingHold(booking);

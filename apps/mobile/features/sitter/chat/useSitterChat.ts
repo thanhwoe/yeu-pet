@@ -41,7 +41,10 @@ const mergeMessage = (
   return sortMessages(next);
 };
 
-export const useSitterChat = (bookingId: string) => {
+export const useSitterChat = (
+  bookingId: string,
+  options: { canSend?: boolean } = {},
+) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const messagesQuery = useSitterBookingMessages(bookingId);
@@ -54,6 +57,7 @@ export const useSitterChat = (bookingId: string) => {
   const socketRef = useRef<SitterChatSocket | null>(null);
   const joinedRef = useRef(false);
   const connectedOnceRef = useRef(false);
+  const canSend = options.canSend ?? true;
   const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
 
   const clearAckTimer = useCallback((clientMessageId?: string | null) => {
@@ -261,7 +265,7 @@ export const useSitterChat = (bookingId: string) => {
   const sendMessage = useCallback(
     (content: string) => {
       const trimmed = content.trim();
-      if (!trimmed || !currentUser) return false;
+      if (!canSend || !trimmed || !currentUser) return false;
 
       const clientMessageId = uuid();
       const optimistic: LocalChatMessage = {
@@ -282,11 +286,13 @@ export const useSitterChat = (bookingId: string) => {
       emitMessage(optimistic);
       return true;
     },
-    [bookingId, currentUser, emitMessage],
+    [bookingId, canSend, currentUser, emitMessage],
   );
 
   const retryMessage = useCallback(
     (message: LocalChatMessage) => {
+      if (!canSend) return;
+
       setMessages((current) =>
         current.map((item) =>
           item.clientMessageId === message.clientMessageId
@@ -297,7 +303,7 @@ export const useSitterChat = (bookingId: string) => {
       setLastError(undefined);
       emitMessage({ ...message, localStatus: "pending" });
     },
-    [emitMessage],
+    [canSend, emitMessage],
   );
 
   return {

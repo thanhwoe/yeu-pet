@@ -19,10 +19,11 @@ export const getServiceTypeOptions = (): {
   { label: i18n.t("sitter.serviceTypes.daily"), value: "daily" },
 ];
 
-export const getRatingOptions = () => [1, 2, 3, 4, 5].map((rating) => ({
-  label: i18n.t("sitter.form.ratingOption", { count: rating }),
-  value: String(rating),
-}));
+export const getRatingOptions = () =>
+  [1, 2, 3, 4, 5].map((rating) => ({
+    label: i18n.t("sitter.form.ratingOption", { count: rating }),
+    value: String(rating),
+  }));
 
 const STATUS_KEYS: Record<SitterBookingStatus, string> = {
   pending: "sitter.booking.statuses.pending",
@@ -35,6 +36,19 @@ const STATUS_KEYS: Record<SitterBookingStatus, string> = {
 
 export const getBookingStatusLabel = (status: SitterBookingStatus) =>
   i18n.t(STATUS_KEYS[status]);
+
+const CHAT_ACTIVE_STATUSES: SitterBookingStatus[] = ["confirmed", "active"];
+const TERMINAL_STATUSES: SitterBookingStatus[] = [
+  "completed",
+  "cancelled",
+  "rejected",
+];
+
+export const isSitterBookingChatActive = (status: SitterBookingStatus) =>
+  CHAT_ACTIVE_STATUSES.includes(status);
+
+export const isSitterBookingTerminal = (status: SitterBookingStatus) =>
+  TERMINAL_STATUSES.includes(status);
 
 export const getBookingStatusFilters = (): {
   label: string;

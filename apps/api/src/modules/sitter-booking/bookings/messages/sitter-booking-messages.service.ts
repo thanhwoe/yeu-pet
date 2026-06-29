@@ -1,9 +1,9 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import {
   accounts,
@@ -167,11 +167,10 @@ export class SitterBookingMessagesService {
   private assertCanMessage(status: sitter_bookings_status) {
     const canMessage =
       status === sitter_bookings_status.confirmed ||
-      status === sitter_bookings_status.active ||
-      status === sitter_bookings_status.completed;
+      status === sitter_bookings_status.active;
 
     if (!canMessage) {
-      throw new NotFoundException('Booking message thread is not available');
+      throw new ForbiddenException('Booking chat is closed');
     }
   }
 

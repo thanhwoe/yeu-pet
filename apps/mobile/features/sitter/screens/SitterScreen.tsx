@@ -1,4 +1,5 @@
 import { Tabs } from "@/components/Tabs";
+import { Popup } from "@/components/Popup";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { StateView } from "@/components/ui/StateView";
@@ -79,6 +80,8 @@ export const SitterScreen = () => {
     null,
   );
   const [bookingForCancel, setBookingForCancel] =
+    useState<ISitterBooking | null>(null);
+  const [bookingForComplete, setBookingForComplete] =
     useState<ISitterBooking | null>(null);
   const [bookingForReview, setBookingForReview] =
     useState<ISitterBooking | null>(null);
@@ -214,6 +217,19 @@ export const SitterScreen = () => {
     await cancelBooking({ id: bookingForCancel.id, reason: data.reason });
     setBookingForCancel(null);
     setSelectedBooking(null);
+  };
+
+  const handleCompleteBooking = async () => {
+    if (!bookingForComplete || isMutatingBooking) return;
+
+    try {
+      await completeBooking(bookingForComplete.id);
+      setSelectedBooking(null);
+    } catch {
+      // Toast copy is handled by the shared sitter mutation hook.
+    } finally {
+      setBookingForComplete(null);
+    }
   };
 
   const handleCreateReview = async (data: ISitterReviewFormValues) => {
@@ -502,11 +518,7 @@ export const SitterScreen = () => {
                 setSelectedBooking(null),
               );
             }}
-            onComplete={(booking) => {
-              void completeBooking(booking.id).then(() =>
-                setSelectedBooking(null),
-              );
-            }}
+            onComplete={setBookingForComplete}
             onReject={(booking) => {
               Alert.alert(
                 t("sitter.booking.rejectAlert.title"),
@@ -556,6 +568,18 @@ export const SitterScreen = () => {
       >
         <ReviewForm loading={isCreatingReview} onSubmit={handleCreateReview} />
       </BottomSheet>
+
+      <Popup
+        visible={!!bookingForComplete}
+        variant="confirm"
+        title={t("sitter.booking.completeConfirm.title")}
+        description={t("sitter.booking.completeConfirm.description")}
+        cancelLabel={t("sitter.booking.completeConfirm.cancel")}
+        confirmLabel={t("sitter.booking.completeConfirm.confirm")}
+        loading={isMutatingBooking}
+        onCancel={() => setBookingForComplete(null)}
+        onConfirm={handleCompleteBooking}
+      />
     </ScreenContainer>
   );
 };
