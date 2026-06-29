@@ -11,6 +11,7 @@ import {
   IUsersRepository,
 } from '@app/interfaces/users-repository.interface';
 import { PrismaService } from '@app/database/prisma/prisma.service';
+import { sitter_bookingsWhereInput } from '@app/generated/prisma/models';
 
 export const ACCOUNT_PUBLIC_SELECT = {
   id: true,
@@ -27,8 +28,7 @@ export const ACCOUNT_PUBLIC_SELECT = {
   is_verified: true,
 } as const;
 
-const ACTIVE_BOOKING_STATUSES = [
-  sitter_bookings_status.pending,
+const BLOCKING_BOOKING_STATUSES = [
   sitter_bookings_status.confirmed,
   sitter_bookings_status.active,
 ];
@@ -55,6 +55,52 @@ const deletedEmailFor = (accountId: string) =>
 
 const deletedPhoneFor = (accountId: string) =>
   `deleted-${accountId.replace(/-/g, '').slice(0, 12)}`;
+
+type BookingOwnershipWhere = sitter_bookingsWhereInput[];
+
+export const buildAccountDeletionBlockingBookingWhere = (
+  bookingOwnershipWhere: BookingOwnershipWhere,
+  now: Date,
+): sitter_bookingsWhereInput => ({
+  AND: [
+    { OR: bookingOwnershipWhere },
+    {
+      OR: [
+        {
+          status: {
+            in: BLOCKING_BOOKING_STATUSES,
+          },
+        },
+        {
+          status: sitter_bookings_status.pending,
+          OR: [
+            { expires_at: null },
+            {
+              expires_at: {
+                gt: now,
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+});
+
+export const buildAccountDeletionExpiredPendingBookingWhere = (
+  bookingOwnershipWhere: BookingOwnershipWhere,
+  now: Date,
+): sitter_bookingsWhereInput => ({
+  AND: [
+    { OR: bookingOwnershipWhere },
+    {
+      status: sitter_bookings_status.pending,
+      expires_at: {
+        lte: now,
+      },
+    },
+  ],
+});
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -160,13 +206,25 @@ export class UsersRepository implements IUsersRepository {
         const bookingOwnershipWhere = sitter
           ? [{ account_id: id }, { sitter_id: sitter.id }]
           : [{ account_id: id }];
-        const activeBookingCount = await tx.sitter_bookings.count({
-          where: {
-            OR: bookingOwnershipWhere,
-            status: {
-              in: ACTIVE_BOOKING_STATUSES,
-            },
+
+        await tx.sitter_bookings.updateMany({
+          where: buildAccountDeletionExpiredPendingBookingWhere(
+            bookingOwnershipWhere,
+            now,
+          ),
+          data: {
+            status: sitter_bookings_status.cancelled,
+            cancel_reason: 'Booking hold expired',
+            cancelled_at: now,
+            updated_at: now,
           },
+        });
+
+        const activeBookingCount = await tx.sitter_bookings.count({
+          where: buildAccountDeletionBlockingBookingWhere(
+            bookingOwnershipWhere,
+            now,
+          ),
         });
 
         if (activeBookingCount > 0) {

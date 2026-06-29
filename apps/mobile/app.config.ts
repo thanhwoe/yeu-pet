@@ -52,6 +52,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       ...config.android,
       package: value.package,
+      softwareKeyboardLayoutMode: "resize",
       googleServicesFile:
         androidGoogleServicesFile ?? config.android?.googleServicesFile,
     },
