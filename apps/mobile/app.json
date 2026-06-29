@@ -186,14 +186,7 @@
           "isAccessMediaLocationEnabled": true,
           "granularPermissions": ["photo", "video"]
         }
-      ],
-      [
-        "./modules/vnpay/withAndroidManifest.js",
-        {
-          "scheme": "petcare"
-        }
-      ],
-      ["./modules/vnpay/withAndroidGradleProperties.js"]
+      ]
     ],
     "experiments": {
       "typedRoutes": true

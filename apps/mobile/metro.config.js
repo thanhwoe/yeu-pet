@@ -18,10 +18,6 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, "node_modules"),
 ];
 
-config.resolver.extraNodeModules = {
-  "vnpay-merchant": "..",
-};
-
 config.watchFolders = [workspaceRoot];
 
 config.transformer.getTransformOptions = async () => ({

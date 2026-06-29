@@ -58,6 +58,31 @@ const CommentIcon = withIconClassName(ChatCircleTextIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 const Heart = withIconClassName(HeartIcon);
 type PhotoListCache = InfiniteData<IPagination<IPhoto>, number>;
+type PhotoLikeState = {
+  liked: boolean;
+  likes: number;
+};
+
+const getPhotoLikeState = (
+  photo: IPhoto,
+  fallback: PhotoLikeState,
+): PhotoLikeState => ({
+  liked: photo.liked ?? fallback.liked,
+  likes: photo.likes ?? photo.likeCount ?? fallback.likes,
+});
+
+const getAdjustedLikeCount = (
+  sourceLikes: number,
+  sourceLiked: boolean,
+  nextLiked: boolean,
+) => Math.max(0, sourceLikes + Number(nextLiked) - Number(sourceLiked));
+
+const mergePhotoLikeState = (photo: IPhoto, state: PhotoLikeState): IPhoto => ({
+  ...photo,
+  likeCount: state.likes,
+  liked: state.liked,
+  likes: state.likes,
+});
 
 export const PhotoView = ({
   data,
@@ -87,6 +112,7 @@ export const PhotoView = ({
   const serverLikedRef = useRef(initialLiked);
   const serverLikesRef = useRef(initialLikes);
   const isSyncingLikeRef = useRef(false);
+  const syncLikeToServerRef = useRef<() => void>(() => {});
 
   const account = useMemo(
     () => ({
@@ -146,11 +172,41 @@ export const PhotoView = ({
     [queryClient],
   );
 
-  const { mutate: toggleLikePhoto } = useMutation({
-    mutationFn: toggleLikePhotoMutation,
-  });
-  const { mutate: unlikePhoto } = useMutation({
-    mutationFn: unlikePhotoMutation,
+  const updatePhotoListLikeCache = useCallback(
+    (photoId: string, state: PhotoLikeState) => {
+      queryClient.setQueriesData<PhotoListCache>(
+        { queryKey: PHOTOS_KEY.lists() },
+        (current) => {
+          if (!current) {
+            return current;
+          }
+
+          let didUpdate = false;
+          const pages = current.pages.map((page) => {
+            let didUpdatePage = false;
+            const data = page.data.map((item) => {
+              if (item.id !== photoId) {
+                return item;
+              }
+
+              didUpdate = true;
+              didUpdatePage = true;
+              return mergePhotoLikeState(item, state);
+            });
+
+            return didUpdatePage ? { ...page, data } : page;
+          });
+
+          return didUpdate ? { ...current, pages } : current;
+        },
+      );
+    },
+    [queryClient],
+  );
+
+  const { mutate: syncLikePhoto } = useMutation({
+    mutationFn: ({ id, liked }: { id: string; liked: boolean }) =>
+      liked ? toggleLikePhotoMutation({ id }) : unlikePhotoMutation({ id }),
   });
 
   const { mutate: deletePhoto, isPending: isDeleting } = useMutation({
@@ -189,22 +245,29 @@ export const PhotoView = ({
   });
 
   useEffect(() => {
-    if (photoStats) {
-      const nextServerLiked = photoStats.liked ?? false;
-      const nextServerLikes = photoStats.likes ?? photoStats.likeCount ?? 0;
-
-      serverLikedRef.current = nextServerLiked;
-      serverLikesRef.current = nextServerLikes;
-
-      if (!isSyncingLikeRef.current) {
-        desiredLikedRef.current = nextServerLiked;
-        setLocalLiked(nextServerLiked);
-        setLocalLikes(nextServerLikes);
-      }
-
-      setLocalComments(photoStats.comments ?? photoStats.commentCount ?? 0);
+    if (!photoStats) {
+      return;
     }
-  }, [photoStats]);
+
+    const nextServerState = getPhotoLikeState(photoStats, {
+      liked: serverLikedRef.current,
+      likes: serverLikesRef.current,
+    });
+    const hasPendingLike =
+      isSyncingLikeRef.current ||
+      desiredLikedRef.current !== serverLikedRef.current;
+
+    if (!hasPendingLike) {
+      desiredLikedRef.current = nextServerState.liked;
+      serverLikedRef.current = nextServerState.liked;
+      serverLikesRef.current = nextServerState.likes;
+      setLocalLiked(nextServerState.liked);
+      setLocalLikes(nextServerState.likes);
+      updatePhotoListLikeCache(data.id, nextServerState);
+    }
+
+    setLocalComments(photoStats.comments ?? photoStats.commentCount ?? 0);
+  }, [data.id, photoStats, updatePhotoListLikeCache]);
 
   useEffect(() => {
     setHasImageError(false);
@@ -220,41 +283,56 @@ export const PhotoView = ({
     }
 
     isSyncingLikeRef.current = true;
-    const syncMutation = desiredLikedRef.current
-      ? toggleLikePhoto
-      : unlikePhoto;
+    const targetPhotoId = data.id;
+    const targetLiked = desiredLikedRef.current;
+    const baseState = {
+      liked: serverLikedRef.current,
+      likes: serverLikesRef.current,
+    };
 
-    syncMutation(
-      { id: data.id },
+    syncLikePhoto(
+      { id: targetPhotoId, liked: targetLiked },
       {
         onSuccess(updatedPhoto) {
-          const serverLiked = updatedPhoto.liked ?? desiredLikedRef.current;
-          const serverLikes =
-            updatedPhoto.likes ??
-            updatedPhoto.likeCount ??
-            serverLikesRef.current;
+          const serverState = getPhotoLikeState(updatedPhoto, {
+            liked: targetLiked,
+            likes: getAdjustedLikeCount(
+              baseState.likes,
+              baseState.liked,
+              targetLiked,
+            ),
+          });
+          const visibleLiked = desiredLikedRef.current;
+          const visibleState = {
+            liked: visibleLiked,
+            likes: getAdjustedLikeCount(
+              serverState.likes,
+              serverState.liked,
+              visibleLiked,
+            ),
+          };
 
-          serverLikedRef.current = serverLiked;
-          serverLikesRef.current = serverLikes;
-
-          if (desiredLikedRef.current === serverLiked) {
-            setLocalLiked(serverLiked);
-            setLocalLikes(serverLikes);
-          }
+          serverLikedRef.current = serverState.liked;
+          serverLikesRef.current = serverState.likes;
+          setLocalLiked(visibleState.liked);
+          setLocalLikes(visibleState.likes);
 
           setLocalComments(
             (current) =>
               updatedPhoto.comments ?? updatedPhoto.commentCount ?? current,
           );
-          queryClient.invalidateQueries({
-            queryKey: PHOTOS_KEY.detail(data.id),
+          updatePhotoListLikeCache(targetPhotoId, visibleState);
+          void queryClient.invalidateQueries({
+            queryKey: PHOTOS_KEY.detail(targetPhotoId),
           });
-          queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
         },
         onError(e) {
-          desiredLikedRef.current = serverLikedRef.current;
-          setLocalLiked(serverLikedRef.current);
-          setLocalLikes(serverLikesRef.current);
+          desiredLikedRef.current = baseState.liked;
+          serverLikedRef.current = baseState.liked;
+          serverLikesRef.current = baseState.likes;
+          setLocalLiked(baseState.liked);
+          setLocalLikes(baseState.likes);
+          updatePhotoListLikeCache(targetPhotoId, baseState);
           Toast.error(
             getApiErrorToast(e, {
               titleKey: "photos.view.reactionErrorTitle",
@@ -266,21 +344,37 @@ export const PhotoView = ({
           isSyncingLikeRef.current = false;
 
           if (desiredLikedRef.current !== serverLikedRef.current) {
-            syncLikeToServer();
+            syncLikeToServerRef.current();
           }
         },
       },
     );
-  }, [data.id, queryClient, toggleLikePhoto, unlikePhoto]);
+  }, [data.id, queryClient, syncLikePhoto, updatePhotoListLikeCache]);
+
+  useEffect(() => {
+    syncLikeToServerRef.current = syncLikeToServer;
+  }, [syncLikeToServer]);
 
   const handleToggleLike = useCallback(() => {
     const nextLiked = !desiredLikedRef.current;
+    const nextLikes = getAdjustedLikeCount(
+      serverLikesRef.current,
+      serverLikedRef.current,
+      nextLiked,
+    );
+
     desiredLikedRef.current = nextLiked;
 
+    void queryClient.cancelQueries({ queryKey: PHOTOS_KEY.detail(data.id) });
+    void queryClient.cancelQueries({ queryKey: PHOTOS_KEY.lists() });
     setLocalLiked(nextLiked);
-    setLocalLikes((current) => Math.max(0, current + (nextLiked ? 1 : -1)));
+    setLocalLikes(nextLikes);
+    updatePhotoListLikeCache(data.id, {
+      liked: nextLiked,
+      likes: nextLikes,
+    });
     syncLikeToServer();
-  }, [syncLikeToServer]);
+  }, [data.id, queryClient, syncLikeToServer, updatePhotoListLikeCache]);
 
   const handleOpenComments = useCallback(() => {
     commentsOpenRef.current = true;
@@ -293,18 +387,14 @@ export const PhotoView = ({
     onInteractionChange?.(false);
   }, [onInteractionChange]);
   const handleDeletePress = useCallback(() => {
-    Alert.alert(
-      t("photos.view.deleteTitle"),
-      t("photos.view.deleteMessage"),
-      [
-        { text: t("photos.view.deleteCancel"), style: "cancel" },
-        {
-          text: t("photos.view.delete"),
-          style: "destructive",
-          onPress: () => deletePhoto({ id: data.id }),
-        },
-      ],
-    );
+    Alert.alert(t("photos.view.deleteTitle"), t("photos.view.deleteMessage"), [
+      { text: t("photos.view.deleteCancel"), style: "cancel" },
+      {
+        text: t("photos.view.delete"),
+        style: "destructive",
+        onPress: () => deletePhoto({ id: data.id }),
+      },
+    ]);
   }, [data.id, deletePhoto, t]);
 
   useEffect(
