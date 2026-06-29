@@ -78,6 +78,12 @@ export const TRANSLATIONS: TranslationDictionary = {
     'errors.auth.otpExpired': 'Mã OTP đã hết hạn.',
     'errors.accountDeletion.activeBookings':
       'Không thể xóa tài khoản khi bạn còn lịch đặt đang hoạt động. Vui lòng hoàn tất hoặc hủy lịch đặt trước.',
+    'errors.sitterBooking.ownerActive':
+      'Bạn đã có yêu cầu hoặc lịch đặt đang hoạt động với người chăm sóc này.',
+    'errors.sitterBooking.ownerOverlap':
+      'Bạn đã có yêu cầu hoặc lịch đặt với người chăm sóc này trong khung giờ đã chọn.',
+    'errors.sitterBooking.fullyBooked':
+      'Người chăm sóc này đã kín lịch trong khung giờ đã chọn. Vui lòng chọn thời gian khác.',
     'errors.subscription.petLimitReached':
       'Bạn đã đạt giới hạn số thú cưng của gói hiện tại.',
     'errors.subscription.reminderLimitReached':
@@ -166,6 +172,12 @@ export const TRANSLATIONS: TranslationDictionary = {
     'errors.auth.otpExpired': 'OTP code has expired.',
     'errors.accountDeletion.activeBookings':
       'Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first.',
+    'errors.sitterBooking.ownerActive':
+      'You already have a pending or active booking with this sitter.',
+    'errors.sitterBooking.ownerOverlap':
+      'You already have a pending or active booking with this sitter during the selected time.',
+    'errors.sitterBooking.fullyBooked':
+      'This sitter is fully booked for the selected time. Please choose another time.',
     'errors.subscription.petLimitReached':
       'You have reached the pet limit for your current plan.',
     'errors.subscription.reminderLimitReached':

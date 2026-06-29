@@ -103,6 +103,98 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
     });
   }
 
+  findOwnerHeldActiveInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    account_id: string,
+    sitter_id: string,
+    now: Date,
+    excludeId?: string,
+  ) {
+    return tx.sitter_bookings.findFirst({
+      where: {
+        id: excludeId ? { not: excludeId } : undefined,
+        account_id,
+        sitter_id,
+        OR: [
+          {
+            status: {
+              in: [
+                sitter_bookings_status.confirmed,
+                sitter_bookings_status.active,
+              ],
+            },
+          },
+          {
+            status: sitter_bookings_status.pending,
+            OR: [
+              {
+                expires_at: null,
+              },
+              {
+                expires_at: {
+                  gt: now,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  }
+
+  findOwnerHeldOverlappingInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    account_id: string,
+    sitter_id: string,
+    start_time: Date,
+    end_time: Date,
+    now: Date,
+    excludeId?: string,
+  ) {
+    return tx.sitter_bookings.findFirst({
+      where: {
+        id: excludeId ? { not: excludeId } : undefined,
+        account_id,
+        sitter_id,
+        start_time: {
+          lt: end_time,
+        },
+        end_time: {
+          gt: start_time,
+        },
+        OR: [
+          {
+            status: {
+              in: [
+                sitter_bookings_status.confirmed,
+                sitter_bookings_status.active,
+              ],
+            },
+          },
+          {
+            status: sitter_bookings_status.pending,
+            OR: [
+              {
+                expires_at: null,
+              },
+              {
+                expires_at: {
+                  gt: now,
+                },
+              },
+            ],
+          },
+        ],
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+  }
+
   countHeldOverlappingInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     sitter_id: string,

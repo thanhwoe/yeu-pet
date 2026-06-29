@@ -34,6 +34,7 @@ import {
   rejectSitterBookingMutation,
   updateSitterMutation,
 } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import {
   useInfiniteQuery,
   useMutation,
@@ -46,11 +47,13 @@ const BOOKING_LIMIT = 20;
 const MESSAGE_LIMIT = 30;
 const REVIEW_LIMIT = 3;
 
-const showError = (titleKey: string) => (error: Error) => {
-  Toast.error({
-    title: i18n.t(titleKey),
-    text: error.message || i18n.t("sitter.toast.defaultErrorText"),
-  });
+const showError = (titleKey: string) => (error: unknown) => {
+  Toast.error(
+    getApiErrorToast(error, {
+      titleKey,
+      textKey: "sitter.toast.defaultErrorText",
+    }),
+  );
 };
 
 export const useSitters = (

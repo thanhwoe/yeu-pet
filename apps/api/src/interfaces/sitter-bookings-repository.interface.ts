@@ -127,6 +127,22 @@ export interface ISitterBookingsRepository {
     end_time: Date,
     excludeId: string,
   ): Promise<sitter_bookings | null>;
+  findOwnerHeldActiveInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    account_id: string,
+    sitter_id: string,
+    now: Date,
+    excludeId?: string,
+  ): Promise<sitter_bookings | null>;
+  findOwnerHeldOverlappingInTx(
+    tx: Omit<PrismaClient, ITXClientDenyList>,
+    account_id: string,
+    sitter_id: string,
+    start_time: Date,
+    end_time: Date,
+    now: Date,
+    excludeId?: string,
+  ): Promise<sitter_bookings | null>;
   countHeldOverlappingInTx(
     tx: Omit<PrismaClient, ITXClientDenyList>,
     sitter_id: string,

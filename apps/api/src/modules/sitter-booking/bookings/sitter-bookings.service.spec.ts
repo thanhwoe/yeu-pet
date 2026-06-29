@@ -156,6 +156,8 @@ const createSitterBookingsRepository = () =>
     findById: jest.fn(),
     findByIdempotencyKey: jest.fn(),
     findByIdempotencyKeyInTx: jest.fn(),
+    findOwnerHeldActiveInTx: jest.fn(),
+    findOwnerHeldOverlappingInTx: jest.fn(),
     findOverlappingInTx: jest.fn(),
     runSerializable: jest.fn((callback) => callback({} as never)),
     update: jest.fn(),
@@ -248,6 +250,10 @@ describe('SitterBookingsService', () => {
 
     sitterBookingsRepository.findByIdempotencyKey.mockResolvedValue(null);
     sitterBookingsRepository.findByIdempotencyKeyInTx.mockResolvedValue(null);
+    sitterBookingsRepository.findOwnerHeldActiveInTx.mockResolvedValue(null);
+    sitterBookingsRepository.findOwnerHeldOverlappingInTx.mockResolvedValue(
+      null,
+    );
     sitterBookingsRepository.countHeldOverlappingInTx.mockResolvedValue(0);
     sitterBookingsRepository.createInTx.mockResolvedValue(
       bookingWithRelations as never,
@@ -289,6 +295,23 @@ describe('SitterBookingsService', () => {
       },
     });
     expect(petSittersRepository.lock.mock.calls).toEqual([[{}, sitterId]]);
+    expect(
+      sitterBookingsRepository.findOwnerHeldActiveInTx.mock.calls[0].slice(
+        1,
+        4,
+      ),
+    ).toEqual([accountId, sitterId, expect.any(Date)]);
+    expect(
+      sitterBookingsRepository.findOwnerHeldOverlappingInTx.mock.calls[0].slice(
+        1,
+        5,
+      ),
+    ).toEqual([
+      accountId,
+      sitterId,
+      new Date(dto.startTime),
+      new Date(dto.endTime),
+    ]);
     expect(
       sitterBookingsRepository.countHeldOverlappingInTx.mock.calls[0].slice(
         1,
@@ -334,6 +357,38 @@ describe('SitterBookingsService', () => {
       ConflictException,
     );
 
+    expect(sitterBookingsRepository.createInTx.mock.calls).toHaveLength(0);
+    expect(eventBus.publish.mock.calls).toHaveLength(0);
+    expect(
+      notificationsService.sendSitterBookingRequestNotification.mock.calls,
+    ).toHaveLength(0);
+  });
+
+  it('rejects creation when the owner already has an active booking with the sitter', async () => {
+    sitterBookingsRepository.findOwnerHeldActiveInTx.mockResolvedValue({
+      ...booking,
+      id: '123e4567-e89b-42d3-a456-426614174005',
+      start_time: new Date('2026-07-02T10:00:00.000Z'),
+      end_time: new Date('2026-07-02T12:00:00.000Z'),
+    } as never);
+
+    try {
+      await service.create(user, dto);
+      fail('Expected create to reject with an owner active booking conflict');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ConflictException);
+      expect((error as ConflictException).getResponse()).toMatchObject({
+        errorCode: 'SITTER_BOOKING_OWNER_ACTIVE',
+        messageKey: 'errors.sitterBooking.ownerActive',
+      });
+    }
+
+    expect(
+      sitterBookingsRepository.findOwnerHeldOverlappingInTx.mock.calls,
+    ).toHaveLength(0);
+    expect(
+      sitterBookingsRepository.countHeldOverlappingInTx.mock.calls,
+    ).toHaveLength(0);
     expect(sitterBookingsRepository.createInTx.mock.calls).toHaveLength(0);
     expect(eventBus.publish.mock.calls).toHaveLength(0);
     expect(

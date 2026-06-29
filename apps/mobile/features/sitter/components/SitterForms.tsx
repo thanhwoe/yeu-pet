@@ -153,6 +153,7 @@ export const BookingRequestForm = ({
   const startTime = useWatch({ control, name: "startTime" });
   const endTime = useWatch({ control, name: "endTime" });
   const previousServiceTypeRef = useRef(serviceType);
+  const isSubmittingRef = useRef(false);
 
   useEffect(() => {
     if (previousServiceTypeRef.current === serviceType) {
@@ -246,7 +247,12 @@ export const BookingRequestForm = ({
           .add(1, "minute")
           .toDate();
 
-  const submit = (data: ISitterBookingFormValues) => {
+  const submit = async (data: ISitterBookingFormValues) => {
+    if (loading || isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
     const isDaily = data.type === "daily";
     const startTime = isDaily
       ? dayjs(data.startTime).startOf("day").toISOString()
@@ -255,16 +261,20 @@ export const BookingRequestForm = ({
       ? dayjs(data.endTime).endOf("day").toISOString()
       : data.endTime.toISOString();
 
-    return onSubmit({
-      idempotencyKey: createIdempotencyKey(),
-      petId: data.petId,
-      type: data.type,
-      sitterId: sitter.id,
-      startTime,
-      endTime,
-      ownerNotes: data.ownerNotes,
-      careInstructions: data.careInstructions,
-    });
+    try {
+      await onSubmit({
+        idempotencyKey: createIdempotencyKey(),
+        petId: data.petId,
+        type: data.type,
+        sitterId: sitter.id,
+        startTime,
+        endTime,
+        ownerNotes: data.ownerNotes,
+        careInstructions: data.careInstructions,
+      });
+    } finally {
+      isSubmittingRef.current = false;
+    }
   };
 
   if (!pets.length) {
@@ -371,7 +381,11 @@ export const BookingRequestForm = ({
         multiline
         numberOfLines={3}
       />
-      <Button loading={loading} onPress={() => handleSubmit(submit)()}>
+      <Button
+        loading={loading}
+        disabled={loading}
+        onPress={() => handleSubmit(submit)()}
+      >
         {t("sitter.form.sendBookingRequest")}
       </Button>
     </View>

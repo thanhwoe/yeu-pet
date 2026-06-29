@@ -5,6 +5,7 @@ import {
   sitter_bookings_status,
   sitter_bookings_type,
 } from '@app/generated/prisma/client';
+import { API_ERROR_CODES } from '@app/errors/api-error-codes';
 import { IEventBusService } from '@app/interfaces/event-bus.interface';
 import type { EmailJobParams } from '@app/interfaces/email-jobs.interface';
 import { IPetSittersRepository } from '@app/interfaces/pet-sitters-repository.interface';
@@ -44,6 +45,12 @@ import { LocalizationService } from '../../shared/localization/localization.serv
 const BOOKING_HOLD_MINUTES = 15;
 const EXTERNAL_PAYMENT_NOTE =
   'Payment is handled outside YeuPet in Phase 1. Coordinate directly with the sitter.';
+const OWNER_ACTIVE_MESSAGE =
+  'You already have a pending or active booking with this sitter.';
+const OWNER_OVERLAP_MESSAGE =
+  'You already have a pending or active booking with this sitter during the selected time.';
+const SITTER_FULLY_BOOKED_MESSAGE =
+  'This pet sitter is fully booked for the selected timeframe';
 
 type SitterBookingRelationSource = sitter_bookings &
   Partial<SitterBookingWithRelations>;
@@ -199,19 +206,56 @@ export class SitterBookingsService {
           );
         }
 
+        const now = new Date();
+        const ownerActiveBooking =
+          await this.sitterBookingsRepository.findOwnerHeldActiveInTx(
+            tx,
+            user.id,
+            lockedSitter.id,
+            now,
+          );
+
+        if (ownerActiveBooking) {
+          throw new ConflictException({
+            errorCode: API_ERROR_CODES.SITTER_BOOKING_OWNER_ACTIVE,
+            message: OWNER_ACTIVE_MESSAGE,
+            messageKey: 'errors.sitterBooking.ownerActive',
+          });
+        }
+
+        const ownerOverlappingBooking =
+          await this.sitterBookingsRepository.findOwnerHeldOverlappingInTx(
+            tx,
+            user.id,
+            lockedSitter.id,
+            startTime,
+            endTime,
+            now,
+          );
+
+        if (ownerOverlappingBooking) {
+          throw new ConflictException({
+            errorCode: API_ERROR_CODES.SITTER_BOOKING_OWNER_OVERLAP,
+            message: OWNER_OVERLAP_MESSAGE,
+            messageKey: 'errors.sitterBooking.ownerOverlap',
+          });
+        }
+
         const heldOverlappingBookings =
           await this.sitterBookingsRepository.countHeldOverlappingInTx(
             tx,
             lockedSitter.id,
             startTime,
             endTime,
-            new Date(),
+            now,
           );
 
         if (heldOverlappingBookings >= lockedSitter.max_concurrent_bookings) {
-          throw new ConflictException(
-            `This pet sitter is fully booked for the selected timeframe`,
-          );
+          throw new ConflictException({
+            errorCode: API_ERROR_CODES.SITTER_BOOKING_FULLY_BOOKED,
+            message: SITTER_FULLY_BOOKED_MESSAGE,
+            messageKey: 'errors.sitterBooking.fullyBooked',
+          });
         }
 
         const expiresAt = dayjs().add(BOOKING_HOLD_MINUTES, 'minute').toDate();
@@ -390,9 +434,11 @@ export class SitterBookingsService {
           );
 
         if (heldOverlappingBookings >= sitter.max_concurrent_bookings) {
-          throw new ConflictException(
-            `This pet sitter is fully booked for the selected timeframe`,
-          );
+          throw new ConflictException({
+            errorCode: API_ERROR_CODES.SITTER_BOOKING_FULLY_BOOKED,
+            message: SITTER_FULLY_BOOKED_MESSAGE,
+            messageKey: 'errors.sitterBooking.fullyBooked',
+          });
         }
 
         return this.sitterBookingsRepository.confirmInTx(tx, id);

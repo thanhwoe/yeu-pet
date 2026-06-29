@@ -6,8 +6,11 @@ import { IPetsRepository } from '@app/interfaces/pets-repository.interface';
 import { ISitterBookingsRepository } from '@app/interfaces/sitter-bookings-repository.interface';
 import { HttpCacheEvictInterceptor } from '@app/interceptors/http-cache-evict.interceptor';
 import { HttpCacheInterceptor } from '@app/interceptors/http-cache.interceptor';
+import { NotificationsService } from '@app/modules/notifications/notifications.service';
+import { LocalizationService } from '@app/modules/shared/localization/localization.service';
 import { SitterBookingsController } from '@app/modules/sitter-booking/bookings/sitter-bookings.controller';
 import { SitterBookingsService } from '@app/modules/sitter-booking/bookings/sitter-bookings.service';
+import { SitterReviewsService } from '@app/modules/sitter-booking/reviews/sitter-reviews.service';
 import { SubscriptionController } from '@app/modules/subscription/subscription.controller';
 import { SubscriptionService } from '@app/modules/subscription/subscription.service';
 import {
@@ -161,6 +164,19 @@ describe('Phase 5 integration verification (e2e)', () => {
             start_time: data.start_time,
             end_time: data.end_time,
             expires_at: data.expires_at,
+            pets: {
+              id: petId,
+              name: 'Mochi',
+            },
+            pet_sitters: {
+              id: sitterId,
+              account_id: sitterAccountId,
+              accounts: {
+                first_name: 'Sitter',
+                last_name: 'One',
+                avatar_url: null,
+              },
+            },
           };
 
           heldBookings.push({
@@ -182,6 +198,8 @@ describe('Phase 5 integration verification (e2e)', () => {
       ),
       findByIdempotencyKey: jest.fn(() => Promise.resolve(null)),
       findByIdempotencyKeyInTx: jest.fn(() => Promise.resolve(null)),
+      findOwnerHeldActiveInTx: jest.fn(() => Promise.resolve(null)),
+      findOwnerHeldOverlappingInTx: jest.fn(() => Promise.resolve(null)),
       runSerializable: jest.fn(
         (callback: (tx: Record<string, never>) => Promise<unknown>) =>
           callback({}),
@@ -224,6 +242,28 @@ describe('Phase 5 integration verification (e2e)', () => {
         {
           provide: IEventBusService,
           useValue: { publish: jest.fn(() => Promise.resolve()) },
+        },
+        {
+          provide: NotificationsService,
+          useValue: {
+            sendSitterBookingRequestNotification: jest.fn(() =>
+              Promise.resolve(),
+            ),
+            sendSitterBookingStatusNotification: jest.fn(() =>
+              Promise.resolve(),
+            ),
+          },
+        },
+        {
+          provide: LocalizationService,
+          useValue: {
+            resolveLanguageForAccount: jest.fn(() => Promise.resolve('en')),
+            translate: jest.fn((key: string) => key),
+          },
+        },
+        {
+          provide: SitterReviewsService,
+          useValue: { create: jest.fn() },
         },
       ],
     });

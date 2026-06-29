@@ -480,6 +480,11 @@
     "accountDeletion": {
       "activeBookings": "Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first."
     },
+    "sitterBooking": {
+      "fullyBooked": "This sitter is fully booked for the selected time. Please choose another time.",
+      "ownerActive": "You already have a pending or active booking with this sitter.",
+      "ownerOverlap": "You already have a pending or active booking with this sitter during the selected time."
+    },
     "auth": {
       "emailAlreadyExists": "This email is already registered.",
       "invalidCredentials": "The email or password is incorrect.",
