@@ -97,8 +97,35 @@
       [
         "./modules/firebase-messaging/withAndroidNotificationChannel.js",
         {
-          "channelId": "yeu-pet",
-          "channelName": "YeuPet notifications"
+          "defaultChannelId": "general-notifications-v1",
+          "sounds": [
+            {
+              "source": "./assets/sounds/notification.wav",
+              "androidResourceName": "notification",
+              "iosFileName": "notification.wav"
+            },
+            {
+              "source": "./assets/sounds/fallback_notification.wav",
+              "androidResourceName": "fallback_notification",
+              "iosFileName": "fallback_notification.wav"
+            }
+          ],
+          "channels": [
+            {
+              "id": "care-reminders-v1",
+              "name": "Care reminders",
+              "importance": "high",
+              "sound": "notification",
+              "vibration": true
+            },
+            {
+              "id": "general-notifications-v1",
+              "name": "General notifications",
+              "importance": "high",
+              "sound": "fallback_notification",
+              "vibration": true
+            }
+          ]
         }
       ],
       [

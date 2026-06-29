@@ -217,6 +217,11 @@ pnpm --filter @yeu-pet/mobile ios
 
 After adding or changing Firebase native modules, rebuild the development
 client before starting Metro so the Firebase Messaging native code is linked.
+Custom notification sounds are tied to versioned Android notification channels:
+`care-reminders-v1` uses `notification.wav`, and `general-notifications-v1`
+uses `fallback_notification.wav`. If Android keeps old sound or importance
+behavior, uninstall the app or bump the affected channel id in the mobile
+config plugin and API payload builder.
 
 RevenueCat Purchases and Customer Center also require a native development
 build. Configure the public SDK keys and matching entitlement identifier in the

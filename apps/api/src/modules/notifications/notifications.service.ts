@@ -50,6 +50,24 @@ type LocalizedNotificationCopy = {
   language: SupportedLanguage;
 };
 
+type PushNotificationSoundProfile = {
+  androidChannelId: string;
+  androidSound: string;
+  iosSound: string;
+};
+
+const CARE_REMINDER_PUSH_PROFILE: PushNotificationSoundProfile = {
+  androidChannelId: 'care-reminders-v1',
+  androidSound: 'notification',
+  iosSound: 'notification.wav',
+};
+
+const GENERAL_PUSH_PROFILE: PushNotificationSoundProfile = {
+  androidChannelId: 'general-notifications-v1',
+  androidSound: 'fallback_notification',
+  iosSound: 'fallback_notification.wav',
+};
+
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
@@ -340,6 +358,15 @@ export class NotificationsService {
     }
 
     try {
+      const notificationData = jsonValueToStringMap(notification.data);
+      const data: Record<string, string> = {
+        deepLink: notification.deep_link ?? '',
+        ...notificationData,
+        notificationId: notification.id,
+      };
+      const soundProfile = this.getPushNotificationSoundProfile(
+        notificationData.notificationType,
+      );
       const message: admin.messaging.Message = {
         token: device.push_token,
         notification: {
@@ -349,27 +376,22 @@ export class NotificationsService {
           // android only
           imageUrl: notification.image_url ?? undefined,
         },
-        data: {
-          deepLink: notification.deep_link ?? '',
-          ...jsonValueToStringMap(notification.data),
-          notificationId: notification.id,
-        },
+        data,
         android: {
           // behavior: show immediately or delay
           priority: 'high',
           notification: {
-            channelId: this.configService.getOrThrow<string>(
-              'NOTIFICATION_CHANNEL',
-            ),
+            channelId: soundProfile.androidChannelId,
             // behavior: how notification show on device: with sound or silent
             priority: 'max',
+            sound: soundProfile.androidSound,
             notificationCount: badge,
           },
         },
         apns: {
           payload: {
             aps: {
-              sound: 'default',
+              sound: soundProfile.iosSound,
               badge,
               interruptionLevel: 'time-sensitive',
               'mutable-content': 1,
@@ -416,6 +438,16 @@ export class NotificationsService {
         );
       }
     }
+  }
+
+  private getPushNotificationSoundProfile(
+    notificationType?: string,
+  ): PushNotificationSoundProfile {
+    if (notificationType === 'reminder_due') {
+      return CARE_REMINDER_PUSH_PROFILE;
+    }
+
+    return GENERAL_PUSH_PROFILE;
   }
 
   async findAll(account_id: string, pagination: PaginationDto) {

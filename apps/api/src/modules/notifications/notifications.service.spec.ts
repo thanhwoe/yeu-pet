@@ -20,7 +20,7 @@ const pushToken = 'fcm-registration-token';
 
 describe('NotificationsService booking notifications', () => {
   const configService = {
-    getOrThrow: jest.fn(() => 'yeu-pet'),
+    getOrThrow: jest.fn(() => './firebase-service-account.json'),
   };
   const notificationsRepository = {
     create: jest.fn(),
@@ -146,6 +146,19 @@ describe('NotificationsService booking notifications', () => {
           title: 'New booking request',
           body: 'You have a new booking request for Mochi.',
         }) as { title: string; body: string },
+        android: expect.objectContaining({
+          notification: expect.objectContaining({
+            channelId: 'general-notifications-v1',
+            sound: 'fallback_notification',
+          }) as { channelId: string; sound: string },
+        }) as { notification: { channelId: string; sound: string } },
+        apns: expect.objectContaining({
+          payload: expect.objectContaining({
+            aps: expect.objectContaining({
+              sound: 'fallback_notification.wav',
+            }) as { sound: string },
+          }) as { aps: { sound: string } },
+        }) as { payload: { aps: { sound: string } } },
         data: expect.objectContaining({
           bookingId,
           bodyKey: 'notifications.booking.request.body',
@@ -240,6 +253,19 @@ describe('NotificationsService booking notifications', () => {
     );
     expect(mockFirebaseSend).toHaveBeenCalledWith(
       expect.objectContaining({
+        android: expect.objectContaining({
+          notification: expect.objectContaining({
+            channelId: 'care-reminders-v1',
+            sound: 'notification',
+          }) as { channelId: string; sound: string },
+        }) as { notification: { channelId: string; sound: string } },
+        apns: expect.objectContaining({
+          payload: expect.objectContaining({
+            aps: expect.objectContaining({
+              sound: 'notification.wav',
+            }) as { sound: string },
+          }) as { aps: { sound: string } },
+        }) as { payload: { aps: { sound: string } } },
         data: expect.objectContaining({
           notificationId: 'reminder-notification-id',
           reminderId: 'reminder-id',
