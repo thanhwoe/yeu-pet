@@ -2,6 +2,18 @@ import { accounts } from '@app/generated/prisma/client';
 
 export const IUsersRepository = Symbol('IUsersRepository');
 
+export interface AccountDeletionFiles {
+  medicalRecordIds: string[];
+  notificationImageIds: string[];
+  petAvatarIds: string[];
+  photoIds: string[];
+  userAvatarIds: string[];
+}
+
+export interface AccountDeletionResult {
+  files: AccountDeletionFiles;
+}
+
 type AccountPublic = Pick<
   accounts,
   | 'id'
@@ -30,4 +42,8 @@ export interface IUsersRepository {
   create(data: any): Promise<accounts>;
   update(id: string, data: Partial<accounts>): Promise<AccountPublic>;
   delete(id: string): Promise<accounts>;
+  deleteAccountData(
+    id: string,
+    params: { passwordHash: string },
+  ): Promise<AccountDeletionResult>;
 }

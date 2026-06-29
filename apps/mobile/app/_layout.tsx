@@ -137,6 +137,7 @@ const RootNavigation = () => {
           name="profile/verify-email"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="delete-account" options={{ headerShown: false }} />
         <Stack.Screen
           name="doctor-ai"
           options={{

@@ -52,6 +52,28 @@ POST   /me/email-change/cancel
 `PATCH /me` only accepts safe profile fields such as `firstName` and `lastName`.
 Email changes must use the OTP flow below.
 
+Delete account:
+
+```http
+DELETE /me
+{
+  password: string;
+}
+```
+
+Response is `204 No Content`. The endpoint validates the password, blocks
+deletion while the user has pending, confirmed, or active sitter bookings as an
+owner or sitter, anonymizes retained account/booking data, clears session and
+device records, and queues storage cleanup for uploaded files.
+
+Public account deletion resource placeholder:
+`https://yeupet.app/account-deletion`
+
+TODO(store-compliance): replace the placeholder with the hosted Google Play
+account deletion page before store submission. The page must explain the in-app
+path, offer a deletion request path for users who cannot access the app, and
+state what data is deleted or retained.
+
 Request email change:
 
 ```ts

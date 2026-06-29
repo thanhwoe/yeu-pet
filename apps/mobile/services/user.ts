@@ -41,6 +41,9 @@ export const uploadMeAvatarMutation = (avatar: UploadFileParam) => {
 export const deleteMeAvatarMutation = () =>
   APIs.delete<IUser>(API_ROUTES.ME_AVATAR);
 
+export const deleteAccountMutation = (params: { password: string }) =>
+  APIs.delete<void>(API_ROUTES.ME, { data: params });
+
 export const requestEmailChangeMutation = (params: { newEmail: string }) =>
   APIs.post<IEmailChangeRequest>(API_ROUTES.ME_EMAIL_CHANGE_REQUEST, {
     data: params,

@@ -16,10 +16,12 @@ import { EmailService } from '../shared/email/email.service';
 import { LocalizationService } from '../shared/localization/localization.service';
 import { EmailChangeRequestsRepository } from './email-change-requests.repository';
 import { UsersService } from './users.service';
+import { AccountDeletionBlockedByActiveBookingsError } from './users.repository';
 
 describe('UsersService', () => {
   const usersRepository = {
     delete: jest.fn(),
+    deleteAccountData: jest.fn(),
     existsByEmail: jest.fn(),
     findByEmail: jest.fn(),
     findAccount: jest.fn(),
@@ -282,16 +284,58 @@ describe('UsersService', () => {
     });
   });
 
-  it('deactivates an account after password confirmation', async () => {
+  it('deletes an account after password confirmation', async () => {
     usersRepository.findAccount.mockResolvedValue({
       id: 'account-1',
       is_active: true,
       password_hash:
         '$2b$10$/JvMnDPVgbzT9MaxlEp3Num64usBICywAdHAR0AdQGm2CwGu4BbC6',
     });
+    usersRepository.deleteAccountData.mockResolvedValue({
+      files: {
+        medicalRecordIds: [],
+        notificationImageIds: [],
+        petAvatarIds: [],
+        photoIds: [],
+        userAvatarIds: [],
+      },
+    });
 
-    await service.deactivateAccount('account-1', 'password123');
+    await service.deleteAccount('account-1', { password: 'password123' });
 
-    expect(usersRepository.delete).toHaveBeenCalledWith('account-1');
+    expect(usersRepository.deleteAccountData).toHaveBeenCalledTimes(1);
+    expect(usersRepository.deleteAccountData).toHaveBeenCalledWith(
+      'account-1',
+      expect.anything(),
+    );
+    expect(usersRepository.delete).not.toHaveBeenCalled();
+  });
+
+  it('blocks account deletion when active sitter bookings exist', async () => {
+    usersRepository.findAccount.mockResolvedValue({
+      id: 'account-1',
+      is_active: true,
+      password_hash:
+        '$2b$10$/JvMnDPVgbzT9MaxlEp3Num64usBICywAdHAR0AdQGm2CwGu4BbC6',
+    });
+    usersRepository.deleteAccountData.mockRejectedValue(
+      new AccountDeletionBlockedByActiveBookingsError(1),
+    );
+
+    try {
+      await service.deleteAccount('account-1', { password: 'password123' });
+    } catch (error) {
+      expect(error).toBeInstanceOf(ConflictException);
+      const response = (error as ConflictException).getResponse();
+      expect(response).toMatchObject({
+        errorCode: 'ACCOUNT_DELETION_ACTIVE_BOOKINGS',
+        message:
+          'Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first.',
+        messageKey: 'errors.accountDeletion.activeBookings',
+      });
+      return;
+    }
+
+    throw new Error('Expected account deletion to be blocked');
   });
 });

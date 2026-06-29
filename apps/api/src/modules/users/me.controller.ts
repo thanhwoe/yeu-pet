@@ -97,10 +97,10 @@ export class MeController {
 
   @Delete('me')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deactivateMe(
+  deleteMe(
     @CurrentUser() user: accounts,
     @Body() deleteUserDto: DeleteUserDto,
   ) {
-    return this.usersService.deactivateAccount(user.id, deleteUserDto.password);
+    return this.usersService.deleteAccount(user.id, deleteUserDto);
   }
 }

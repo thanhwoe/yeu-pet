@@ -477,6 +477,9 @@
     "selectTime": "Select time"
   },
   "errors": {
+    "accountDeletion": {
+      "activeBookings": "Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first."
+    },
     "auth": {
       "emailAlreadyExists": "This email is already registered.",
       "invalidCredentials": "The email or password is incorrect.",
@@ -1264,7 +1267,9 @@
       "cancelErrorText": "Refresh the reminder and try again.",
       "cancelErrorTitle": "Reminder not cancelled",
       "updateErrorText": "Check the reminder details and try again.",
-      "updateErrorTitle": "Reminder not updated"
+      "updateErrorTitle": "Reminder not updated",
+      "updateSuccessText": "Your care task changes are saved.",
+      "updateSuccessTitle": "Reminder updated"
     },
     "type": {
       "feeding": "Feeding",
@@ -1313,6 +1318,50 @@
     }
   },
   "settings": {
+    "account": {
+      "deleteAccount": "Delete account",
+      "deleteAccountDescription": "Delete or anonymize your account data.",
+      "section": "Account"
+    },
+    "accountDeletion": {
+      "consequences": {
+        "care": "Pets, reminders, budget, medical records, and AI care history are removed or anonymized.",
+        "profile": "Your profile details are anonymized so they no longer identify you.",
+        "retention": "Some records may be retained if required for security, fraud prevention, legal obligations, or completed transactions.",
+        "session": "All sessions and push notification devices are cleared.",
+        "social": "Your public photos, comments, likes, and sitter profile may be deleted or anonymized."
+      },
+      "deletedDataTitle": "What will happen",
+      "description": "This will permanently delete or anonymize your YeuPet account data and sign you out of this device.",
+      "finalConfirm": {
+        "cancel": "Keep account",
+        "delete": "Delete account",
+        "description": "Your account will be deleted immediately after confirmation. This cannot be undone.",
+        "title": "Delete your account?"
+      },
+      "form": {
+        "immediateNotice": "Your account will be deleted immediately after confirmation.",
+        "passwordLabel": "Current password",
+        "passwordPlaceholder": "Enter your password",
+        "sectionTitle": "Confirm deletion",
+        "submit": "Delete account"
+      },
+      "subscription": {
+        "description": "Deleting your YeuPet account does not automatically cancel your App Store or Google Play subscription. Manage or cancel your subscription from your store account if needed.",
+        "manage": "Manage subscription",
+        "title": "Subscription note"
+      },
+      "title": "Delete account",
+      "toast": {
+        "errorText": "Check your password and try again.",
+        "errorTitle": "Account not deleted",
+        "successText": "Your YeuPet account was removed and this device has been signed out.",
+        "successTitle": "Account deleted"
+      },
+      "validation": {
+        "password": "Enter your current password."
+      }
+    },
     "appearance": {
       "accessibilityLabel": "Theme preference",
       "dark": "Dark",
@@ -1322,6 +1371,8 @@
       "theme": "Theme"
     },
     "helpLegal": {
+      "accountDeletionResource": "Account deletion web request",
+      "accountDeletionResourceDescription": "Use this page if you cannot access deletion in the app.",
       "contactSupport": "Contact support",
       "linkFailedText": "Check your connection and try opening the link again.",
       "linkFailedTitle": "Link did not open",

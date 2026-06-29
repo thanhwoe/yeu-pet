@@ -87,6 +87,10 @@ export function useReminderCalendar() {
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
       setAgendaEdit(undefined);
+      Toast.success({
+        title: t("reminders.toast.updateSuccessTitle"),
+        text: t("reminders.toast.updateSuccessText"),
+      });
     },
   });
 

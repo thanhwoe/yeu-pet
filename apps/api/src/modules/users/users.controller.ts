@@ -73,11 +73,11 @@ export class UsersController {
 
   @Delete('me')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deactivateAccount(
+  async deleteAccount(
     @CurrentUser() user: accounts,
     @Body() deleteUserDto: DeleteUserDto,
   ) {
-    return this.usersService.deactivateAccount(user.id, deleteUserDto.password);
+    return this.usersService.deleteAccount(user.id, deleteUserDto);
   }
 
   @Patch('me')

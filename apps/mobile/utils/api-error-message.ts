@@ -14,6 +14,7 @@ type ErrorToastFallback = {
 };
 
 const ERROR_CODE_TO_KEY: Record<string, string> = {
+  ACCOUNT_DELETION_ACTIVE_BOOKINGS: "errors.accountDeletion.activeBookings",
   BAD_REQUEST: "errors.common.badRequest",
   CONFLICT: "errors.common.conflict",
   EMAIL_ALREADY_EXISTS: "errors.auth.emailAlreadyExists",

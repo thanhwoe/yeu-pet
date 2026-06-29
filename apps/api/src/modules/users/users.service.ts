@@ -16,6 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 import dayjs from 'dayjs';
 import crypto from 'node:crypto';
+import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import {
   RequestResetPasswordDto,
@@ -37,6 +38,7 @@ import {
   VerifyEmailChangeDto,
 } from './dto/email-change.dto';
 import { EmailChangeRequestsRepository } from './email-change-requests.repository';
+import { AccountDeletionBlockedByActiveBookingsError } from './users.repository';
 
 @Injectable()
 export class UsersService {
@@ -210,6 +212,10 @@ export class UsersService {
   }
 
   async deactivateAccount(userId: string, password: string) {
+    return this.deleteAccount(userId, { password });
+  }
+
+  async deleteAccount(userId: string, deleteUserDto: DeleteUserDto) {
     const user = await this.getUser({ id: userId });
 
     if (!user.is_active) {
@@ -217,7 +223,7 @@ export class UsersService {
     }
 
     const isPasswordValid = await this.validatePassword(
-      password,
+      deleteUserDto.password,
       user.password_hash,
     );
 
@@ -225,7 +231,28 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    await this.usersRepository.delete(userId);
+    const passwordHash = await this.hashPassword(crypto.randomUUID());
+
+    try {
+      const result = await this.usersRepository.deleteAccountData(userId, {
+        passwordHash,
+      });
+      await this.queueAccountDeletionFileCleanup(result.files);
+    } catch (error) {
+      if (error instanceof AccountDeletionBlockedByActiveBookingsError) {
+        throw new ConflictException({
+          errorCode: API_ERROR_CODES.ACCOUNT_DELETION_ACTIVE_BOOKINGS,
+          message:
+            'Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first.',
+          messageKey: 'errors.accountDeletion.activeBookings',
+          params: {
+            count: error.activeBookingCount,
+          },
+        });
+      }
+
+      throw error;
+    }
   }
 
   async completeOnboarding(id: string) {
@@ -544,6 +571,54 @@ export class UsersService {
   private async hashPassword(value: string) {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(value, salt);
+  }
+
+  private async queueAccountDeletionFileCleanup(files: {
+    medicalRecordIds: string[];
+    notificationImageIds: string[];
+    petAvatarIds: string[];
+    photoIds: string[];
+    userAvatarIds: string[];
+  }) {
+    const photoIds = [
+      ...new Set([...files.photoIds, ...files.notificationImageIds]),
+    ];
+    const jobs = [
+      {
+        ids: files.userAvatarIds,
+        jobName: FILE_DELETE_JOBS.USER_AVATAR,
+      },
+      {
+        ids: files.petAvatarIds,
+        jobName: FILE_DELETE_JOBS.PET_AVATAR,
+      },
+      {
+        ids: files.medicalRecordIds,
+        jobName: FILE_DELETE_JOBS.MEDICAL_RECORDS,
+      },
+      {
+        ids: photoIds,
+        jobName: FILE_DELETE_JOBS.PHOTOS,
+      },
+    ].filter((job) => job.ids.length > 0);
+
+    try {
+      await Promise.all(
+        jobs.map((job) =>
+          this.fileUploadService.addDeleteJob({
+            ids: job.ids,
+            jobName: job.jobName,
+          }),
+        ),
+      );
+    } catch (error) {
+      this.logger.error(
+        `Account deletion completed but file cleanup could not be queued for account files: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 
   private async validatePassword(

@@ -86,6 +86,19 @@ export const getRevenueCatCustomerInfo = async () => {
   return Purchases.getCustomerInfo();
 };
 
+export const resetRevenueCatUser = async () => {
+  if (!(await configureRevenueCat())) {
+    return null;
+  }
+
+  try {
+    return await Purchases.logOut();
+  } catch (error) {
+    console.warn("[RevenueCat] Could not reset the signed-in user.", error);
+    return null;
+  }
+};
+
 export const addRevenueCatCustomerInfoListener = (
   listener: CustomerInfoUpdateListener,
 ) => {

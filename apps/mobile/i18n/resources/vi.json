@@ -477,6 +477,9 @@
     "selectTime": "Chọn giờ"
   },
   "errors": {
+    "accountDeletion": {
+      "activeBookings": "Không thể xóa tài khoản khi bạn còn lịch đặt đang hoạt động. Vui lòng hoàn tất hoặc hủy lịch đặt trước."
+    },
     "auth": {
       "emailAlreadyExists": "Email này đã được đăng ký.",
       "invalidCredentials": "Email hoặc mật khẩu chưa đúng.",
@@ -1264,7 +1267,9 @@
       "cancelErrorText": "Làm mới nhắc nhở rồi thử lại.",
       "cancelErrorTitle": "Chưa hủy được nhắc nhở",
       "updateErrorText": "Kiểm tra chi tiết nhắc nhở rồi thử lại.",
-      "updateErrorTitle": "Chưa cập nhật được nhắc nhở"
+      "updateErrorTitle": "Chưa cập nhật được nhắc nhở",
+      "updateSuccessText": "Thay đổi cho việc chăm sóc đã được lưu.",
+      "updateSuccessTitle": "Đã cập nhật nhắc nhở"
     },
     "type": {
       "feeding": "Ăn uống",
@@ -1313,6 +1318,50 @@
     }
   },
   "settings": {
+    "account": {
+      "deleteAccount": "Xóa tài khoản",
+      "deleteAccountDescription": "Xóa hoặc ẩn danh dữ liệu tài khoản của bạn.",
+      "section": "Tài khoản"
+    },
+    "accountDeletion": {
+      "consequences": {
+        "care": "Hồ sơ thú cưng, nhắc nhở, ngân sách, hồ sơ y tế và lịch sử AI sẽ được xóa hoặc ẩn danh.",
+        "profile": "Thông tin hồ sơ của bạn sẽ được ẩn danh để không còn nhận diện bạn.",
+        "retention": "Một số dữ liệu có thể được giữ lại nếu cần cho bảo mật, phòng chống gian lận, nghĩa vụ pháp lý hoặc giao dịch đã hoàn tất.",
+        "session": "Mọi phiên đăng nhập và thiết bị nhận thông báo sẽ được xóa.",
+        "social": "Ảnh công khai, bình luận, lượt thích và hồ sơ người chăm sóc của bạn có thể được xóa hoặc ẩn danh."
+      },
+      "deletedDataTitle": "Điều gì sẽ xảy ra",
+      "description": "Thao tác này sẽ xóa hoặc ẩn danh vĩnh viễn dữ liệu tài khoản YeuPet của bạn và đăng xuất thiết bị này.",
+      "finalConfirm": {
+        "cancel": "Giữ tài khoản",
+        "delete": "Xóa tài khoản",
+        "description": "Tài khoản của bạn sẽ được xóa ngay sau khi xác nhận. Bạn không thể hoàn tác thao tác này.",
+        "title": "Xóa tài khoản của bạn?"
+      },
+      "form": {
+        "immediateNotice": "Tài khoản của bạn sẽ được xóa ngay sau khi xác nhận.",
+        "passwordLabel": "Mật khẩu hiện tại",
+        "passwordPlaceholder": "Nhập mật khẩu",
+        "sectionTitle": "Xác nhận xóa tài khoản",
+        "submit": "Xóa tài khoản"
+      },
+      "subscription": {
+        "description": "Xóa tài khoản YeuPet không tự động hủy gói đăng ký trên App Store hoặc Google Play. Hãy quản lý hoặc hủy gói trong tài khoản cửa hàng nếu cần.",
+        "manage": "Quản lý gói",
+        "title": "Lưu ý về gói đăng ký"
+      },
+      "title": "Xóa tài khoản",
+      "toast": {
+        "errorText": "Kiểm tra mật khẩu rồi thử lại.",
+        "errorTitle": "Chưa xóa được tài khoản",
+        "successText": "Tài khoản YeuPet của bạn đã được xóa và thiết bị này đã đăng xuất.",
+        "successTitle": "Đã xóa tài khoản"
+      },
+      "validation": {
+        "password": "Nhập mật khẩu hiện tại của bạn."
+      }
+    },
     "appearance": {
       "accessibilityLabel": "Tùy chọn giao diện",
       "dark": "Tối",
@@ -1322,6 +1371,8 @@
       "theme": "Chủ đề"
     },
     "helpLegal": {
+      "accountDeletionResource": "Yêu cầu xóa tài khoản trên web",
+      "accountDeletionResourceDescription": "Dùng trang này nếu bạn không thể xóa tài khoản trong ứng dụng.",
       "contactSupport": "Liên hệ hỗ trợ",
       "linkFailedText": "Kiểm tra kết nối rồi thử mở liên kết lại nhé.",
       "linkFailedTitle": "Chưa mở được liên kết",

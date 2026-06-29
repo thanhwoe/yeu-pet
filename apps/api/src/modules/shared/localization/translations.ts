@@ -76,6 +76,8 @@ export const TRANSLATIONS: TranslationDictionary = {
     'errors.auth.emailAlreadyExists': 'Email này đã tồn tại.',
     'errors.auth.otpInvalid': 'Mã OTP không hợp lệ.',
     'errors.auth.otpExpired': 'Mã OTP đã hết hạn.',
+    'errors.accountDeletion.activeBookings':
+      'Không thể xóa tài khoản khi bạn còn lịch đặt đang hoạt động. Vui lòng hoàn tất hoặc hủy lịch đặt trước.',
     'errors.subscription.petLimitReached':
       'Bạn đã đạt giới hạn số thú cưng của gói hiện tại.',
     'errors.subscription.reminderLimitReached':
@@ -162,6 +164,8 @@ export const TRANSLATIONS: TranslationDictionary = {
     'errors.auth.emailAlreadyExists': 'Email already exists.',
     'errors.auth.otpInvalid': 'Invalid OTP code.',
     'errors.auth.otpExpired': 'OTP code has expired.',
+    'errors.accountDeletion.activeBookings':
+      'Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first.',
     'errors.subscription.petLimitReached':
       'You have reached the pet limit for your current plan.',
     'errors.subscription.reminderLimitReached':
