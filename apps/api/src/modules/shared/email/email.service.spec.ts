@@ -35,6 +35,17 @@ const createLocalizationService = () =>
       ) => {
         const translations: Record<string, Record<string, string>> = {
           en: {
+            'emails.otp.expiry':
+              'Please enter this code within the next {minutes} minutes.',
+            'emails.otp.greeting': 'Hello {userName},',
+            'emails.otp.heading': 'Welcome to YeuPet',
+            'emails.otp.ignore':
+              'If you did not register for a YeuPet account, you can ignore this email.',
+            'emails.otp.intro':
+              'Thank you for registering with YeuPet. To activate your account, use this code:',
+            'emails.otp.subject': 'Your YeuPet verification code',
+            'emails.otp.support':
+              'If you have any questions, please contact YeuPet.',
             'emails.emailChange.expiry':
               'This code expires in {minutes} minutes.',
             'emails.emailChange.greeting': 'Hi {name},',
@@ -46,6 +57,17 @@ const createLocalizationService = () =>
             'emails.emailChange.subject': 'Verify your new email for YeuPet',
           },
           vi: {
+            'emails.otp.expiry':
+              'Vui lòng nhập mã này trong vòng {minutes} phút.',
+            'emails.otp.greeting': 'Xin chào {userName},',
+            'emails.otp.heading': 'Chào mừng đến với YeuPet',
+            'emails.otp.ignore':
+              'Nếu bạn không đăng ký tài khoản YeuPet, bạn có thể bỏ qua email này.',
+            'emails.otp.intro':
+              'Cảm ơn bạn đã đăng ký YeuPet. Hãy dùng mã sau để kích hoạt tài khoản:',
+            'emails.otp.subject': 'Mã xác minh YeuPet của bạn',
+            'emails.otp.support':
+              'Nếu cần hỗ trợ, bạn có thể liên hệ với YeuPet.',
             'emails.emailChange.expiry':
               'Mã này sẽ hết hạn sau {minutes} phút.',
             'emails.emailChange.greeting': 'Xin chào {name},',
@@ -184,6 +206,29 @@ describe('EmailService', () => {
     expect('text' in payload ? payload.text : '').toContain('123456');
     expect(options).toEqual({
       idempotencyKey: 'email-change-otp/request-1/initial',
+    });
+  });
+
+  it('sends registration OTP email through Resend', async () => {
+    await service.sendOtpEmail({
+      to: 'user@example.com',
+      otp: '654321',
+      language: 'en',
+      userName: 'Thanh',
+      idempotencyKey: 'otp-email/job-1',
+    });
+
+    expect(resendClient.sendEmail.mock.calls).toHaveLength(1);
+    const payload = resendClient.sendEmail.mock.calls[0][0];
+    const options = resendClient.sendEmail.mock.calls[0][1];
+
+    expect(payload).toMatchObject({
+      to: 'user@example.com',
+      subject: 'Your YeuPet verification code',
+    });
+    expect('text' in payload ? payload.text : '').toContain('654321');
+    expect(options).toEqual({
+      idempotencyKey: 'otp-email/job-1',
     });
   });
 

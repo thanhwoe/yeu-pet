@@ -11,6 +11,7 @@
     "<rootDir>/src/interceptors/**/*.spec.ts",
     "<rootDir>/src/modules/shared/email/**/*.spec.ts",
     "<rootDir>/src/modules/shared/localization/**/*.spec.ts",
+    "<rootDir>/src/modules/shared/otp/**/*.spec.ts",
     "<rootDir>/src/modules/shared/queue/**/*.spec.ts",
     "<rootDir>/src/modules/auth/**/*.spec.ts",
     "<rootDir>/src/modules/ai/**/*.spec.ts",

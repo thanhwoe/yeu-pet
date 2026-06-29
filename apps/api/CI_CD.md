@@ -45,7 +45,7 @@ Your production server still needs an `.env` equivalent with the values from `.e
 - `JWT_REFRESH_SECRET`
 - `REDIS_HOST`
 - `REDIS_PORT`
-- Twilio, Cloudinary, SMTP, and Firebase credentials if those features are enabled
+- Infobip, Cloudinary, Resend, and Firebase credentials if those features are enabled
 
 Do not commit real secrets to the repository.
 

@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
-import { MailerModule } from './mailer/mailer.module';
-import { TwilioService } from './twilio/twilio.service';
+import { EmailModule } from '../email/email.module';
 import { OtpService } from './otp.service';
 import { OtpTokensRepository } from './otp-tokens.repository';
 import { CleanupTokensTask } from './tasks/cleanup-tokens.task';
 import { OtpProcessor } from './otp.processor';
+import {
+  InfobipService,
+  infobipHttpClientProvider,
+} from './infobip/infobip.service';
 
 @Module({
-  imports: [MailerModule],
+  imports: [EmailModule],
   providers: [
-    TwilioService,
+    infobipHttpClientProvider,
+    InfobipService,
     OtpService,
     OtpTokensRepository,
     OtpProcessor,

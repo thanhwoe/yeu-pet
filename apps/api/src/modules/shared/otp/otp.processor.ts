@@ -2,15 +2,15 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { BULLMQ_QUEUES } from '../bullmq/bullmq.queue';
 import { OTP_JOBS } from './otp.job';
-import { MailerService } from './mailer/mailer.service';
-import { TwilioService } from './twilio/twilio.service';
 import { OtpJobData } from '@app/interfaces/otp.interface';
+import { EmailService } from '../email/email.service';
+import { InfobipService } from './infobip/infobip.service';
 
 @Processor(BULLMQ_QUEUES.SEND_OTP, { concurrency: 2 })
 export class OtpProcessor extends WorkerHost {
   constructor(
-    private readonly mailerService: MailerService,
-    private readonly twilioService: TwilioService,
+    private readonly emailService: EmailService,
+    private readonly infobipService: InfobipService,
   ) {
     super();
   }
@@ -27,12 +27,18 @@ export class OtpProcessor extends WorkerHost {
     switch (job.name) {
       case OTP_JOBS.SEND_OTP_PHONE:
         if (phone) {
-          await this.twilioService.sendOtp(phone, token);
+          await this.infobipService.sendOtp(phone, token);
         }
         break;
       case OTP_JOBS.SEND_OTP_EMAIL:
-        if (email && userName) {
-          await this.mailerService.sendOtp(email, token, userName, language);
+        if (email && userName !== undefined) {
+          await this.emailService.sendOtpEmail({
+            to: email,
+            otp: token,
+            userName,
+            language,
+            idempotencyKey: this.toEmailOtpIdempotencyKey(job, email),
+          });
         }
         break;
       default:
@@ -44,5 +50,14 @@ export class OtpProcessor extends WorkerHost {
     return {
       success: true,
     };
+  }
+
+  private toEmailOtpIdempotencyKey(
+    job: Job<OtpJobData, any, keyof typeof OTP_JOBS>,
+    email: string,
+  ) {
+    const base = `otp-email/${String(job.id ?? email)}`.toLowerCase();
+
+    return base.replace(/[^a-z0-9._/-]+/g, '-').slice(0, 256);
   }
 }
