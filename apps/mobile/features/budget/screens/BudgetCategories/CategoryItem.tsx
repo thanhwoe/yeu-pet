@@ -4,6 +4,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IBudgetCategory } from "@/interfaces";
 import { hexToRgba } from "@/utils";
 import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const EditIcon = withIconClassName(PencilSimpleIcon);
@@ -17,13 +18,14 @@ interface IProps {
 }
 
 export const CategoryItem = ({ data, onEdit, onDelete }: IProps) => {
+  const { t } = useTranslation();
   const accessibilityHint =
     onEdit && onDelete
-      ? "Swipe right to edit or left to delete"
+      ? t("budget.accessibility.swipeEditDelete")
       : onEdit
-        ? "Swipe right to edit"
+        ? t("budget.accessibility.swipeEdit")
         : onDelete
-          ? "Swipe left to delete"
+          ? t("budget.accessibility.swipeDelete")
           : undefined;
 
   return (
@@ -46,7 +48,9 @@ export const CategoryItem = ({ data, onEdit, onDelete }: IProps) => {
               className:
                 "border-r border-status-info-border bg-status-info-surface",
               contentClassName: "gap-4",
-              accessibilityLabel: `Edit ${data.name} category`,
+              accessibilityLabel: t("budget.accessibility.editCategory", {
+                name: data.name,
+              }),
             }
           : undefined
       }
@@ -66,7 +70,9 @@ export const CategoryItem = ({ data, onEdit, onDelete }: IProps) => {
               className:
                 "border-l border-status-danger-border bg-status-danger-surface",
               contentClassName: "gap-4",
-              accessibilityLabel: `Delete ${data.name} category`,
+              accessibilityLabel: t("budget.accessibility.deleteCategory", {
+                name: data.name,
+              }),
             }
           : undefined
       }
@@ -75,7 +81,9 @@ export const CategoryItem = ({ data, onEdit, onDelete }: IProps) => {
     >
       <View
         accessible
-        accessibilityLabel={`${data.name} budget category`}
+        accessibilityLabel={t("budget.accessibility.category", {
+          name: data.name,
+        })}
         accessibilityHint={accessibilityHint}
         className="min-h-72 flex-row items-center gap-12 bg-background-surface px-14 py-12"
       >

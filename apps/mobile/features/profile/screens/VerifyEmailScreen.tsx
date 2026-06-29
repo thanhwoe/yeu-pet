@@ -17,21 +17,23 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon, EnvelopeSimpleIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from "react-native";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 const ArrowLeft = withIconClassName(ArrowLeftIcon);
 const EnvelopeSimple = withIconClassName(EnvelopeSimpleIcon);
 
-const otpSchema = z.object({
-  otp: z
-    .string()
-    .trim()
-    .regex(/^\d{6}$/, "Enter the 6-digit code"),
-});
-
-type OtpForm = z.output<typeof otpSchema>;
+type OtpForm = {
+  otp: string;
+};
 
 const getParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
@@ -48,6 +50,7 @@ const formatSeconds = (seconds: number) => {
 };
 
 export function VerifyEmailScreen() {
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{
     requestId?: string;
     newEmail?: string;
@@ -62,8 +65,15 @@ export function VerifyEmailScreen() {
   const [resendAvailableAt, setResendAvailableAt] = useState(
     getParam(params.resendAvailableAt) ?? "",
   );
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
   const maskedEmail = getParam(params.maskedEmail) || getParam(params.newEmail);
+  const otpSchema = useMemo(
+    () =>
+      z.object({
+        otp: z.string().trim().regex(/^\d{6}$/, t("profile.validation.otp")),
+      }),
+    [t],
+  );
 
   const {
     control,
@@ -80,11 +90,8 @@ export function VerifyEmailScreen() {
     return () => clearInterval(timer);
   }, []);
 
-  const expirySeconds = useMemo(() => secondsUntil(expiresAt), [expiresAt, tick]);
-  const resendSeconds = useMemo(
-    () => secondsUntil(resendAvailableAt),
-    [resendAvailableAt, tick],
-  );
+  const expirySeconds = secondsUntil(expiresAt);
+  const resendSeconds = secondsUntil(resendAvailableAt);
 
   const { mutateAsync: verifyEmail, isPending: isVerifying } = useMutation({
     mutationFn: verifyEmailChangeMutation,
@@ -100,8 +107,8 @@ export function VerifyEmailScreen() {
       setExpiresAt(request.expiresAt);
       setResendAvailableAt(request.resendAvailableAt ?? "");
       Toast.success({
-        title: "Code sent",
-        text: "Check your new email address for the verification code.",
+        title: t("profile.toast.codeSentTitle"),
+        text: t("profile.toast.codeSentText"),
       });
     },
   });
@@ -117,21 +124,21 @@ export function VerifyEmailScreen() {
       try {
         await verifyEmail({ requestId, otp });
         Toast.success({
-          title: "Email updated",
-          text: "Use your new email address the next time you sign in.",
+          title: t("profile.toast.emailUpdatedTitle"),
+          text: t("profile.toast.emailUpdatedText"),
         });
         router.replace("/profile");
       } catch (error) {
         Toast.error({
-          title: "Code not verified",
+          title: t("profile.toast.codeNotVerifiedTitle"),
           text:
             error instanceof Error
               ? error.message
-              : "Could not verify this code.",
+              : t("profile.toast.codeNotVerifiedFallback"),
         });
       }
     },
-    [requestId, verifyEmail],
+    [requestId, t, verifyEmail],
   );
 
   const handleResend = useCallback(async () => {
@@ -141,57 +148,57 @@ export function VerifyEmailScreen() {
       await resendCode({ requestId });
     } catch (error) {
       Toast.error({
-        title: "Code not sent",
+        title: t("profile.toast.codeNotSentTitle"),
         text:
           error instanceof Error
             ? error.message
-            : "Could not resend the code.",
+            : t("profile.toast.codeNotSentFallback"),
       });
     }
-  }, [requestId, resendCode, resendSeconds]);
+  }, [requestId, resendCode, resendSeconds, t]);
 
   const handleCancel = useCallback(() => {
     if (!requestId) return;
 
     Alert.alert(
-      "Cancel email change?",
-      "Your current email will stay on this account.",
+      t("profile.verifyEmail.cancelAlertTitle"),
+      t("profile.verifyEmail.cancelAlertMessage"),
       [
-        { text: "Keep verifying", style: "cancel" },
+        { text: t("profile.verifyEmail.cancelAlertKeep"), style: "cancel" },
         {
-          text: "Cancel change",
+          text: t("profile.verifyEmail.cancelAlertConfirm"),
           style: "destructive",
           onPress: async () => {
             try {
               await cancelChange({ requestId });
               Toast.success({
-                title: "Email change cancelled",
-                text: "Your current email address remains unchanged.",
+                title: t("profile.toast.emailChangeCancelledTitle"),
+                text: t("profile.toast.emailChangeCancelledText"),
               });
               router.replace("/profile");
             } catch (error) {
               Toast.error({
-                title: "Cancellation failed",
+                title: t("profile.toast.cancelFailedTitle"),
                 text:
                   error instanceof Error
                     ? error.message
-                    : "Could not cancel this change.",
+                    : t("profile.toast.cancelFailedFallback"),
               });
             }
           },
         },
       ],
     );
-  }, [cancelChange, requestId]);
+  }, [cancelChange, requestId, t]);
 
   if (!requestId || !maskedEmail) {
     return (
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Verification unavailable"
-          description="Start an email change from your profile."
-          actionLabel="Back to profile"
+          title={t("profile.verifyEmail.unavailableTitle")}
+          description={t("profile.verifyEmail.unavailableDescription")}
+          actionLabel={t("profile.verifyEmail.backToProfile")}
           onAction={() => router.replace("/profile")}
           className="flex-1"
         />
@@ -208,7 +215,7 @@ export function VerifyEmailScreen() {
         <View className="flex-row items-center gap-12">
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t("profile.accessibility.goBack")}
             onPress={() => router.back()}
             className="h-44 w-44 items-center justify-center rounded-full bg-background-surface"
           >
@@ -216,10 +223,10 @@ export function VerifyEmailScreen() {
           </Pressable>
           <View className="flex-1">
             <Text variant="largeTitle" className="font-bold">
-              Verify email
+              {t("profile.verifyEmail.title")}
             </Text>
             <Text variant="footnote" className="text-text-muted">
-              Code sent to {maskedEmail}
+              {t("profile.verifyEmail.codeSentTo", { email: maskedEmail })}
             </Text>
           </View>
         </View>
@@ -229,14 +236,16 @@ export function VerifyEmailScreen() {
             <EnvelopeSimple size={28} className="text-icon-secondary" />
           </View>
           <Text variant="title3" className="text-center font-bold">
-            Check your inbox
+            {t("profile.verifyEmail.checkInbox")}
           </Text>
           <Text variant="body2" className="text-center text-text-muted">
-            Enter the 6-digit code before it expires.
+            {t("profile.verifyEmail.description")}
           </Text>
           <View className="rounded-full bg-background-surface-muted px-12 py-6">
             <Text variant="caption1" className="font-semibold text-text-muted">
-              Expires in {formatSeconds(expirySeconds)}
+              {t("profile.verifyEmail.expiresIn", {
+                time: formatSeconds(expirySeconds),
+              })}
             </Text>
           </View>
         </View>
@@ -245,8 +254,8 @@ export function VerifyEmailScreen() {
           <InputController<{ otp: string }, OtpForm>
             control={control}
             name="otp"
-            label="Verification code"
-            placeholder="000000"
+            label={t("profile.form.verificationCode.label")}
+            placeholder={t("profile.form.verificationCode.placeholder")}
             keyboardType="number-pad"
             maxLength={6}
             format={(value) => value.replace(/\D/g, "").slice(0, 6)}
@@ -257,7 +266,7 @@ export function VerifyEmailScreen() {
             loading={isVerifying}
             onPress={() => handleSubmit(handleVerify)()}
           >
-            Verify email
+            {t("profile.verifyEmail.action")}
           </Button>
 
           <Button
@@ -267,13 +276,15 @@ export function VerifyEmailScreen() {
             onPress={handleResend}
           >
             {resendSeconds > 0
-              ? `Resend in ${formatSeconds(resendSeconds)}`
-              : "Resend code"}
+              ? t("profile.verifyEmail.resendIn", {
+                  time: formatSeconds(resendSeconds),
+                })
+              : t("profile.verifyEmail.resend")}
           </Button>
         </View>
 
         <Button variant="ghost" loading={isCancelling} onPress={handleCancel}>
-          Cancel email change
+          {t("profile.verifyEmail.cancel")}
         </Button>
       </KeyboardAvoidingView>
     </ScreenContainer>

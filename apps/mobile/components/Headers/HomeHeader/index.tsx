@@ -8,11 +8,13 @@ import { useUserInfoStore } from "@/stores/user-info";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { BellRingingIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 const BellIcon = withIconClassName(BellRingingIcon);
 
 export const HomeHeader = () => {
+  const { t } = useTranslation();
   const { user } = useUserInfoStore();
   const router = useRouter();
   const { data: badge } = useQuery({
@@ -30,7 +32,7 @@ export const HomeHeader = () => {
         </Heading>
         <View className="flex-row gap-16 items-center">
           <TouchableOpacity
-            accessibilityLabel="Open notifications"
+            accessibilityLabel={t("home.header.openNotifications")}
             accessibilityRole="button"
             className="relative bg-background-card p-8 rounded-full"
             onPress={() => router.navigate("/notifications")}
@@ -54,8 +56,10 @@ export const HomeHeader = () => {
       </View>
 
       <View>
-        <Heading variant="h4">Hi, {user?.firstName}</Heading>
-        <Heading variant="h6">Good morning!</Heading>
+        <Heading variant="h4">
+          {t("home.header.greeting", { name: user?.firstName ?? "" })}
+        </Heading>
+        <Heading variant="h6">{t("home.header.morning")}</Heading>
       </View>
     </View>
   );

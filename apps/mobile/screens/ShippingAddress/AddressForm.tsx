@@ -9,6 +9,7 @@ import {
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -21,6 +22,7 @@ const EnhancedPhoneInputController =
   withBottomSheetKeyboardEvents(PhoneInputController);
 
 export const AddressForm = ({ onSubmit, loading }: IProps) => {
+  const { t } = useTranslation();
   const { control, handleSubmit } = useForm<IShippingAddressForm>({
     resolver: zodResolver(shippingAddressSchema),
     mode: "onBlur",
@@ -35,25 +37,25 @@ export const AddressForm = ({ onSubmit, loading }: IProps) => {
       <EnhancedInputController
         control={control}
         name="full_name"
-        label="Name"
-        placeholder="Enter your full name"
+        label={t("commerce.address.form.nameLabel")}
+        placeholder={t("commerce.address.form.namePlaceholder")}
       />
       <EnhancedPhoneInputController
         control={control}
-        placeholder="Enter your phone number"
+        placeholder={t("commerce.address.form.phonePlaceholder")}
         name="phone"
-        label="Phone"
+        label={t("commerce.address.form.phoneLabel")}
       />
       <EnhancedInputController
         control={control}
         name="address"
-        label="Shipping Address"
-        placeholder="Enter your shipping address"
+        label={t("commerce.address.form.addressLabel")}
+        placeholder={t("commerce.address.form.addressPlaceholder")}
       />
       <CheckboxController<IShippingAddressForm>
         control={control}
         name="is_default"
-        label="Set as default address"
+        label={t("commerce.address.form.defaultLabel")}
       />
 
       <Button
@@ -62,7 +64,7 @@ export const AddressForm = ({ onSubmit, loading }: IProps) => {
         loading={loading}
         onPress={handleSubmit(handleSubmitForm)}
       >
-        Save address
+        {t("commerce.address.form.save")}
       </Button>
     </View>
   );

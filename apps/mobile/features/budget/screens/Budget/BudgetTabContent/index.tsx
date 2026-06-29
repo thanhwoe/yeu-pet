@@ -10,6 +10,7 @@ import {
   IChartPoints,
 } from "@/interfaces";
 import { memo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Animated, {
   Easing,
@@ -20,8 +21,8 @@ import Animated, {
 import { BudgetSection } from "../BudgetSection";
 
 export const TABS = [
-  { title: "Month", value: 1 },
-  { title: "Year", value: 2 },
+  { titleKey: "budget.tabs.month", value: 1 },
+  { titleKey: "budget.tabs.year", value: 2 },
 ];
 
 const LoadableBody = withLoading(Body);
@@ -54,36 +55,74 @@ const MonthContent = memo(
     budgetData,
     loadingBudget,
   }: IProps["month"]) => (
+    <MonthContentInner
+      budgetData={budgetData}
+      categoryData={categoryData}
+      chartData={chartData}
+      loading={loading}
+      loadingBudget={loadingBudget}
+    />
+  ),
+);
+
+const MonthContentInner = ({
+  chartData,
+  loading,
+  categoryData,
+  budgetData,
+  loadingBudget,
+}: IProps["month"]) => {
+  const { t } = useTranslation();
+
+  return (
     <View className="gap-20">
       <BudgetSection data={budgetData} loading={loadingBudget} />
       <View className="flex-row items-center justify-between mt-20">
         <Heading variant="h5" weight="bold">
-          Spending Trends
+          {t("budget.screen.spendingTrends")}
         </Heading>
         <View className="px-12 py-4 rounded-16 bg-background-secondary">
-          <Body variant="body3">Daily</Body>
+          <Body variant="body3">{t("budget.screen.daily")}</Body>
         </View>
       </View>
       <LineChart data={chartData} isLoading={loading} />
       <BudgetCategoryStatistic
         data={categoryData}
-        title="By Category"
+        title={t("budget.screen.byCategory")}
         allowManage
       />
     </View>
-  ),
-);
+  );
+};
 
 const YearContent = memo(
   ({ chartData, loading, categoryData, summary }: IProps["year"]) => (
+    <YearContentInner
+      categoryData={categoryData}
+      chartData={chartData}
+      loading={loading}
+      summary={summary}
+    />
+  ),
+);
+
+const YearContentInner = ({
+  chartData,
+  loading,
+  categoryData,
+  summary,
+}: IProps["year"]) => {
+  const { t } = useTranslation();
+
+  return (
     <View className="gap-20">
       <View className="rounded-16 bg-background-card-highlight py-16 px-24 gap-8">
         <Heading variant="h5" weight="semiBold" className="mb-12">
-          Yearly summary
+          {t("budget.screen.yearlySummary")}
         </Heading>
         <View className="justify-between flex-row gap-8">
           <Heading variant="h6" weight="light">
-            Total spent
+            {t("budget.screen.totalSpent")}
           </Heading>
           <View className="flex-1">
             <LoadableBody
@@ -98,7 +137,7 @@ const YearContent = memo(
         </View>
         <View className="justify-between flex-row">
           <Heading variant="h6" weight="light">
-            Total transaction
+            {t("budget.screen.totalTransaction")}
           </Heading>
           <View className="flex-1">
             <LoadableBody
@@ -114,21 +153,21 @@ const YearContent = memo(
       </View>
       <View className="flex-row items-center justify-between mt-20">
         <Heading variant="h5" weight="bold">
-          Spending Trends
+          {t("budget.screen.spendingTrends")}
         </Heading>
         <View className="px-12 py-4 rounded-16 bg-background-secondary">
-          <Body variant="body3">Monthly</Body>
+          <Body variant="body3">{t("budget.screen.monthly")}</Body>
         </View>
       </View>
       <BarChart data={chartData} isLoading={loading} />
       <BudgetCategoryStatistic
         data={categoryData}
-        title="By Category"
+        title={t("budget.screen.byCategory")}
         allowManage
       />
     </View>
-  ),
-);
+  );
+};
 
 MonthContent.displayName = "MonthContent";
 YearContent.displayName = "YearContent";

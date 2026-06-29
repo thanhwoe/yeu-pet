@@ -1,12 +1,13 @@
+import { i18n } from "@/i18n";
 import { SitterFilters, SitterMinimumRating } from "@/interfaces";
 
 export const MAX_SITTER_FILTER_PRICE = 10_000_000;
 
-export const SITTER_RATING_OPTIONS: {
+export const getSitterRatingOptions = (): {
   label: string;
   value?: SitterMinimumRating;
-}[] = [
-  { label: "Any" },
+}[] => [
+  { label: i18n.t("sitter.filters.any") },
   { label: "1.0+", value: 1 },
   { label: "2.0+", value: 2 },
   { label: "3.0+", value: 3 },
@@ -61,7 +62,7 @@ export const normalizeSitterFilterDraft = (
       maxPrice > MAX_SITTER_FILTER_PRICE)
   ) {
     return {
-      error: "Enter a max price from 0 to 10,000,000 ₫.",
+      error: i18n.t("sitter.filters.invalidPrice"),
     };
   }
 

@@ -5,7 +5,6 @@ import {
   VisibleReminderStatus,
 } from "@/interfaces";
 import { cn } from "@/utils";
-import { REMINDER_STATUS_LABELS } from "@/utils/reminder";
 import {
   BoneIcon as Bone,
   CheckCircleIcon,
@@ -19,6 +18,7 @@ import {
 import { ComponentType } from "react";
 import { View } from "react-native";
 import { Body } from "@/components/ui/Typography";
+import { useTranslation } from "react-i18next";
 
 const BoneIcon = withIconClassName(Bone);
 const SyringeIcon = withIconClassName(Syringe);
@@ -126,6 +126,8 @@ export const ReminderStatusChip = ({
   status,
   ...props
 }: ReminderStatusProps) => {
+  const { t } = useTranslation();
+
   if (!isVisibleStatus(status)) return null;
 
   const Icon = statusIconMapping[status];
@@ -141,10 +143,10 @@ export const ReminderStatusChip = ({
       <Icon size={20} weight="fill" className={color} {...props} />
       <Body
         variant="body2"
-        className={cn("capitalize", color)}
+        className={cn(color)}
         weight="semiBold"
       >
-        {REMINDER_STATUS_LABELS[status]}
+        {t(`reminders.status.${status}`)}
       </Body>
     </View>
   );

@@ -8,6 +8,7 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, TextInputProps } from "react-native";
 import { BottomSheet } from "../ui/BottomSheet";
 import { InputField } from "../ui/InputField";
@@ -36,6 +37,7 @@ export const OptionInputController = <
   options,
   ...props
 }: InputControllerProps<T, TTransformedValues>) => {
+  const { t } = useTranslation();
   const {
     field: { value: defaultValue, onChange, onBlur },
     fieldState: { error },
@@ -83,7 +85,9 @@ export const OptionInputController = <
       <BottomSheet
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
-        titleElement={<Body weight="semiBold">Select {label}</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("common.selectValue", { label })}</Body>
+        }
         useScrollView
         stackBehavior="push"
       >

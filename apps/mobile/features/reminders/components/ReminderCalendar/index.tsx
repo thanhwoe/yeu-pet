@@ -13,16 +13,16 @@ import {
 } from "@/features/reminders/hooks";
 import { IReminder, VisibleReminderStatus } from "@/interfaces";
 import {
-  formatReminderDate,
-  REMINDER_STATUS_LABELS,
-  REMINDER_TYPE_LABELS,
+  formatReminderDateLabel,
 } from "@/utils/reminder";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { AgendaItem } from "./AgendaItem";
 import { Calendar } from "./Calendar";
 
 export const ReminderCalendar = () => {
+  const { t } = useTranslation();
   const [selectedReminder, setSelectedReminder] = useState<IReminder>();
 
   const {
@@ -69,15 +69,15 @@ export const ReminderCalendar = () => {
     (v: IReminder) => {
       if (v.status !== "pending") {
         Toast.warn({
-          text: "Create a new reminder if this care task already changed status.",
-          title: "Cannot edit this reminder",
+          text: t("reminders.toast.cannotEditText"),
+          title: t("reminders.toast.cannotEditTitle"),
           duration: 10_000,
         });
         return;
       }
       setAgendaEdit(v);
     },
-    [setAgendaEdit],
+    [setAgendaEdit, t],
   );
 
   const handleResetFilters = useCallback(() => {
@@ -139,7 +139,9 @@ export const ReminderCalendar = () => {
         visible={openForm}
         onDismiss={handleCloseForm}
         useScrollView
-        titleElement={<Body weight="semiBold">Create reminder</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("reminders.sheet.createTitle")}</Body>
+        }
       >
         <ReminderForm onSubmit={handleCreateReminder} loading={isCreating} />
       </BottomSheet>
@@ -148,7 +150,9 @@ export const ReminderCalendar = () => {
         visible={!!agendaEdit}
         onDismiss={() => setAgendaEdit(undefined)}
         useScrollView
-        titleElement={<Body weight="semiBold">Edit reminder</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("reminders.sheet.editTitle")}</Body>
+        }
       >
         <ReminderForm
           onSubmit={handleUpdate}
@@ -161,8 +165,8 @@ export const ReminderCalendar = () => {
         visible={!!agendaDelete}
         onCancel={handleCancelDelete}
         onConfirm={handleDelete}
-        title="Remove reminder"
-        description="Are you sure you want to remove this reminder?"
+        title={t("reminders.popup.deleteTitle")}
+        description={t("reminders.popup.deleteDescription")}
         variant="delete"
         loading={isDeleting}
       />
@@ -181,9 +185,10 @@ const ActiveFilterSummary = ({
   petName?: string;
   onReset: () => void;
 }) => {
+  const { t } = useTranslation();
   const labels = [
-    status ? REMINDER_STATUS_LABELS[status] : undefined,
-    type ? REMINDER_TYPE_LABELS[type] : undefined,
+    status ? t(`reminders.status.${status}`) : undefined,
+    type ? t(`reminders.type.${type}`) : undefined,
     petName,
   ].filter(Boolean);
 
@@ -191,14 +196,14 @@ const ActiveFilterSummary = ({
     <View className="flex-row items-center justify-between gap-12 rounded-18 border border-line-subtle bg-background-card px-14 py-10">
       <View className="flex-1">
         <Body variant="body4" className="text-text-muted">
-          Filters
+          {t("reminders.filters.summaryTitle")}
         </Body>
         <Body variant="body3" weight="semiBold" numberOfLines={1}>
           {labels.join(" · ")}
         </Body>
       </View>
       <Button variant="ghost" size="sm" onPress={onReset}>
-        Reset
+        {t("reminders.actions.reset")}
       </Button>
     </View>
   );
@@ -233,23 +238,24 @@ const SelectedDateSection = ({
   onDelete: (v: IReminder) => void;
   onOpenReminder: (v: IReminder) => void;
 }) => {
-  const countLabel = `${reminders.length} care ${
-    reminders.length === 1 ? "task" : "tasks"
-  }`;
+  const { t } = useTranslation();
+  const countLabel = t("reminders.calendar.count", {
+    count: reminders.length,
+  });
 
   return (
     <View className="gap-12">
       <View className="flex-row items-start justify-between gap-12">
         <View className="flex-1">
           <Heading variant="h5" weight="bold">
-            {formatReminderDate(selectedDate)}
+            {formatReminderDateLabel(selectedDate, t)}
           </Heading>
           <Body variant="body3" className="text-text-muted">
-            {loading ? "Checking care tasks..." : countLabel}
+            {loading ? t("reminders.calendar.checking") : countLabel}
           </Body>
         </View>
         <Button size="sm" variant="secondary" onPress={onAddReminder}>
-          Add
+          {t("reminders.actions.add")}
         </Button>
       </View>
 
@@ -258,9 +264,9 @@ const SelectedDateSection = ({
       ) : error ? (
         <StateView
           variant="error"
-          title="Could not load reminders"
-          description="Please try again."
-          actionLabel="Retry"
+          title={t("reminders.calendar.loadErrorTitle")}
+          description={t("reminders.calendar.loadErrorDescription")}
+          actionLabel={t("common.retry")}
           onAction={onRetry}
           className="rounded-20 bg-background-card"
         />
@@ -283,15 +289,15 @@ const SelectedDateSection = ({
           variant="empty"
           title={
             allCount === 0 && !hasFilters
-              ? "No reminders yet"
-              : "No reminders for this day"
+              ? t("reminders.calendar.emptyAllTitle")
+              : t("reminders.calendar.emptyDayTitle")
           }
           description={
             allCount === 0 && !hasFilters
-              ? "Create your first care reminder for feeding, medicine, grooming, or vaccines."
-              : "Add a reminder to stay on top of your pet care."
+              ? t("reminders.calendar.emptyAllDescription")
+              : t("reminders.calendar.emptyDayDescription")
           }
-          actionLabel="Add reminder"
+          actionLabel={t("reminders.actions.addReminder")}
           onAction={onAddReminder}
           className="min-h-140 gap-8 rounded-20 bg-background-card px-20 py-20"
         />

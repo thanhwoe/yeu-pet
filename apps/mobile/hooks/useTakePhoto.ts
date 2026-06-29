@@ -1,18 +1,29 @@
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Linking } from "react-native";
 
-const openSettings = () =>
-  Alert.alert("Pet Land Would Like to Access the Camera", "Description", [
-    {
-      text: "Cancel",
-      style: "cancel",
-    },
-    { text: "Setting", onPress: Linking.openSettings },
-  ]);
-
 export const useTakePhoto = () => {
+  const { t } = useTranslation();
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset>();
+  const openSettings = useCallback(
+    () =>
+      Alert.alert(
+        t("photos.cameraPermission.title"),
+        t("photos.cameraPermission.description"),
+        [
+          {
+            text: t("photos.cameraPermission.cancel"),
+            style: "cancel",
+          },
+          {
+            text: t("photos.cameraPermission.openSettings"),
+            onPress: Linking.openSettings,
+          },
+        ],
+      ),
+    [t],
+  );
 
   const handleError = (err: unknown) => {
     console.log(err);

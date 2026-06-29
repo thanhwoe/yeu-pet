@@ -15,6 +15,7 @@ import { calculateAnimalAge } from "@/utils/pet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
 interface IProps {
@@ -28,12 +29,33 @@ const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
 const EnhancedUnitInputController =
   withBottomSheetKeyboardEvents(UnitInputController);
 
+const GENDER_OPTIONS = [
+  { labelKey: "pets.gender.male", value: "male" },
+  { labelKey: "pets.gender.female", value: "female" },
+  { labelKey: "pets.gender.unknown", value: "unknown" },
+];
+
+const SPECIES_OPTIONS = [
+  { labelKey: "pets.species.dog", value: "dog" },
+  { labelKey: "pets.species.cat", value: "cat" },
+  { labelKey: "pets.species.bird", value: "bird" },
+  { labelKey: "pets.species.rabbit", value: "rabbit" },
+  { labelKey: "pets.species.hamster", value: "hamster" },
+  { labelKey: "pets.species.other", value: "other" },
+];
+
+const WEIGHT_UNIT_OPTIONS = [
+  { labelKey: "pets.unit.kilogram", value: "kg" },
+  { labelKey: "pets.unit.pound", value: "lb" },
+];
+
 export const PetInfoForm = ({
   onSubmit,
   defaultValues,
   isSubmitting,
   disabled,
 }: IProps) => {
+  const { t } = useTranslation();
   const {
     control,
     handleSubmit,
@@ -53,6 +75,31 @@ export const PetInfoForm = ({
     }
   }, [defaultValues, reset]);
 
+  const genderOptions = useMemo(
+    () =>
+      GENDER_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+  const speciesOptions = useMemo(
+    () =>
+      SPECIES_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+  const weightUnitOptions = useMemo(
+    () =>
+      WEIGHT_UNIT_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+
   const age = useMemo(() => {
     const birthdateValue =
       birthdate instanceof Date || typeof birthdate === "string"
@@ -66,8 +113,13 @@ export const PetInfoForm = ({
     }
     const { days, humanYears, months, years } = result;
 
-    return `${years} years, ${months} months, ${days} days. ${humanYears} human years`;
-  }, [birthdate, species]);
+    return t("pets.form.ageSummary", {
+      days,
+      humanYears,
+      months,
+      years,
+    });
+  }, [birthdate, species, t]);
 
   return (
     <KeyboardAvoidingView
@@ -77,73 +129,59 @@ export const PetInfoForm = ({
       <AvatarInputController<IPetInfoFormInput, IPetInfoForm>
         control={control}
         name="avatar"
-        label="Upload avatar"
+        label={t("pets.form.avatar.label")}
       />
       <EnhancedInputController
         control={control}
         name="name"
-        label="Name"
-        placeholder="Your pet name"
+        label={t("pets.form.name.label")}
+        placeholder={t("pets.form.name.placeholder")}
       />
 
       <View className="flex-row gap-16">
         <OptionInputController<IPetInfoFormInput, IPetInfoForm>
           control={control}
           name="gender"
-          label="Gender"
-          placeholder="Gender"
-          options={[
-            { label: "Male", value: "male" },
-            { label: "Female", value: "female" },
-            { label: "Unknown", value: "unknown" },
-          ]}
+          label={t("pets.form.gender.label")}
+          placeholder={t("pets.form.gender.placeholder")}
+          options={genderOptions}
         />
         <OptionInputController<IPetInfoFormInput, IPetInfoForm>
           control={control}
           name="species"
-          label="Species"
-          placeholder="Species"
-          options={[
-            { label: "Dog", value: "dog" },
-            { label: "Cat", value: "cat" },
-            { label: "Bird", value: "bird" },
-            { label: "Rabbit", value: "rabbit" },
-            { label: "Hamster", value: "hamster" },
-            { label: "Other", value: "other" },
-          ]}
+          label={t("pets.form.species.label")}
+          placeholder={t("pets.form.species.placeholder")}
+          options={speciesOptions}
         />
       </View>
 
       <EnhancedInputController
         control={control}
         name="breed"
-        label="Breed"
-        placeholder="Husky"
+        label={t("pets.form.breed.label")}
+        placeholder={t("pets.form.breed.placeholder")}
       />
 
       <EnhancedInputController
         control={control}
         name="color"
-        label="Fur Color"
-        placeholder="Orange"
+        label={t("pets.form.color.label")}
+        placeholder={t("pets.form.color.placeholder")}
       />
 
       <EnhancedUnitInputController
         control={control}
         name="weight"
-        label="Weight"
+        label={t("pets.form.weight.label")}
         keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
-        placeholder="0.0"
-        options={[
-          { label: "Kilogram", value: "kg" },
-          { label: "Pound", value: "lb" },
-        ]}
+        placeholder={t("pets.form.weight.placeholder")}
+        options={weightUnitOptions}
       />
       <DateTimePickerController<IPetInfoFormInput, IPetInfoForm>
         name="birthdate"
         control={control}
-        label="Birthdate"
-        placeholder="Select date"
+        label={t("pets.form.birthdate.label")}
+        placeholder={t("pets.form.birthdate.placeholder")}
         mode="date"
         maximumDate={new Date()}
         format={(val) => date(val).format("LL")}
@@ -153,8 +191,8 @@ export const PetInfoForm = ({
       <EnhancedInputController
         control={control}
         name="notes"
-        label="Notes"
-        placeholder="Notes"
+        label={t("pets.form.notes.label")}
+        placeholder={t("pets.form.notes.placeholder")}
         multiline
       />
 
@@ -164,7 +202,7 @@ export const PetInfoForm = ({
         onPress={() => handleSubmit(onSubmit)()}
         loading={isSubmitting}
       >
-        {!!defaultValues ? "Update Pet" : "Add Pet"}
+        {defaultValues ? t("pets.actions.update") : t("pets.actions.add")}
       </Button>
     </KeyboardAvoidingView>
   );

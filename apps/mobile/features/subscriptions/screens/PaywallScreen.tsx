@@ -4,6 +4,7 @@ import { StateView } from "@/components/ui/StateView";
 import { usePremiumPaywall } from "@/features/subscriptions/usePremiumPaywall";
 import { configureRevenueCat } from "@/services/revenuecat";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import RevenueCatUI from "react-native-purchases-ui";
 
 type PaywallScreenProps = {
@@ -12,6 +13,7 @@ type PaywallScreenProps = {
 };
 
 export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
+  const { t } = useTranslation();
   const { syncBackend } = usePremiumPaywall();
   const [configured, setConfigured] = useState<boolean | null>(null);
 
@@ -32,14 +34,14 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
     try {
       await syncBackend();
       Toast.success({
-        title: "Premium unlocked",
-        text: "Your Premium care tools are ready to use.",
+        title: t("subscription.toast.premiumUnlockedTitle"),
+        text: t("subscription.toast.premiumUnlockedText"),
       });
       onSuccess();
     } catch {
       Toast.warn({
-        title: "Plan still syncing",
-        text: "Your store purchase succeeded. YeuPet is still refreshing your plan.",
+        title: t("subscription.toast.syncingTitle"),
+        text: t("subscription.toast.syncingAfterPurchaseText"),
       });
       onSuccess();
     }
@@ -50,8 +52,8 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
       <ScreenContainer>
         <StateView
           variant="loading"
-          title="Loading Premium options"
-          description="Checking the secure store connection."
+          title={t("subscription.paywall.loadingTitle")}
+          description={t("subscription.paywall.loadingDescription")}
           className="flex-1"
         />
       </ScreenContainer>
@@ -63,9 +65,9 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Premium options unavailable"
-          description="Please try again later. Your current plan is unchanged."
-          actionLabel="Close"
+          title={t("subscription.paywall.unavailableTitle")}
+          description={t("subscription.paywall.unavailableDescription")}
+          actionLabel={t("subscription.actions.close")}
           onAction={onDismiss}
           className="flex-1"
         />
@@ -81,15 +83,15 @@ export function PaywallScreen({ onDismiss, onSuccess }: PaywallScreenProps) {
       onPurchaseCompleted={() => void handleSuccess()}
       onPurchaseError={() =>
         Toast.error({
-          title: "Purchase failed",
-          text: "Premium was not activated. Please try again.",
+          title: t("subscription.paywall.purchaseErrorTitle"),
+          text: t("subscription.paywall.purchaseErrorText"),
         })
       }
       onRestoreCompleted={() => void handleSuccess()}
       onRestoreError={() =>
         Toast.error({
-          title: "Restore failed",
-          text: "We could not restore your purchases. Please try again.",
+          title: t("subscription.paywall.restoreErrorTitle"),
+          text: t("subscription.paywall.restoreErrorText"),
         })
       }
     />

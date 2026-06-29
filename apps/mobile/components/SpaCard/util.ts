@@ -1,11 +1,14 @@
+import { i18n } from "@/i18n";
 import { Alert, Linking } from "react-native";
 import { Toast } from "../Toast";
 
 export const makePhoneCall = async (phoneNumber?: string) => {
   if (!phoneNumber) {
     Toast.warn({
-      title: "Call unavailable",
-      text: "This spa has not provided a phone number.",
+      title: i18n.t("common.contact.missingPhoneTitleCall"),
+      text: i18n.t("common.contact.missingPhoneText", {
+        place: i18n.t("common.places.spa"),
+      }),
     });
     return;
   }
@@ -16,18 +19,26 @@ export const makePhoneCall = async (phoneNumber?: string) => {
       await Linking.openURL(phoneUrl);
       return;
     }
-    Alert.alert("Error", "Phone calls are not supported on this device");
+    Alert.alert(
+      i18n.t("common.contact.errorTitle"),
+      i18n.t("common.contact.callUnsupportedMessage"),
+    );
   } catch (error) {
     console.error("Error making phone call:", error);
-    Alert.alert("Error", "Failed to make phone call");
+    Alert.alert(
+      i18n.t("common.contact.errorTitle"),
+      i18n.t("common.contact.callFailedMessage"),
+    );
   }
 };
 
 export const sendSMS = async (phoneNumber?: string) => {
   if (!phoneNumber) {
     Toast.warn({
-      title: "Message unavailable",
-      text: "This spa has not provided a phone number.",
+      title: i18n.t("common.contact.missingPhoneTitleMessage"),
+      text: i18n.t("common.contact.missingPhoneText", {
+        place: i18n.t("common.places.spa"),
+      }),
     });
     return;
   }
@@ -39,18 +50,28 @@ export const sendSMS = async (phoneNumber?: string) => {
       await Linking.openURL(smsUrl);
       return;
     }
-    Alert.alert("Error", "SMS is not supported on this device");
+    Alert.alert(
+      i18n.t("common.contact.errorTitle"),
+      i18n.t("common.contact.messageUnsupportedMessage"),
+    );
   } catch (error) {
     console.error("Error sending SMS:", error);
-    Alert.alert("Error", "Failed to open SMS");
+    Alert.alert(
+      i18n.t("common.contact.errorTitle"),
+      i18n.t("common.contact.messageFailedMessage"),
+    );
   }
 };
 
 export const openSettings = () =>
-  Alert.alert("Pet Land Would Like to Access the Location", "Description", [
-    {
-      text: "Cancel",
-      style: "cancel",
-    },
-    { text: "Setting", onPress: Linking.openSettings },
-  ]);
+  Alert.alert(
+    i18n.t("common.permission.locationTitle"),
+    i18n.t("common.permission.locationDescription"),
+    [
+      {
+        text: i18n.t("common.cancel"),
+        style: "cancel",
+      },
+      { text: i18n.t("common.settings"), onPress: Linking.openSettings },
+    ],
+  );

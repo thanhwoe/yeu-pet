@@ -16,7 +16,9 @@ import { getListPetQuery } from "@/services";
 import { date } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
 const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
@@ -29,36 +31,37 @@ interface IProps {
 
 const TYPE_OPTIONS = [
   {
-    label: "Feeding",
+    labelKey: "reminders.type.feeding",
     value: "feeding",
     icon: <ReminderTypeIcon type="feeding" />,
   },
   {
-    label: "Grooming",
+    labelKey: "reminders.type.grooming",
     value: "grooming",
     icon: <ReminderTypeIcon type="grooming" />,
   },
   {
-    label: "Vaccination",
+    labelKey: "reminders.type.vaccination",
     value: "vaccination",
     icon: <ReminderTypeIcon type="vaccination" />,
   },
   {
-    label: "Medication",
+    labelKey: "reminders.type.medication",
     value: "medication",
     icon: <ReminderTypeIcon type="medication" />,
   },
 ];
 
 const REPEAT_OPTIONS = [
-  { label: "Does not repeat", value: "none" },
-  { label: "Daily", value: "daily" },
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
-  { label: "Yearly", value: "yearly" },
+  { labelKey: "reminders.repeat.none", value: "none" },
+  { labelKey: "reminders.repeat.daily", value: "daily" },
+  { labelKey: "reminders.repeat.weekly", value: "weekly" },
+  { labelKey: "reminders.repeat.monthly", value: "monthly" },
+  { labelKey: "reminders.repeat.yearly", value: "yearly" },
 ];
 
 export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
+  const { t } = useTranslation();
   const { control, handleSubmit } = useForm<IReminderForm>({
     resolver: zodResolver(reminderSchema),
     mode: "onBlur",
@@ -73,6 +76,29 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
 
   const repeatFrequency = useWatch({ control, name: "repeatFrequency" });
   const scheduledAt = useWatch({ control, name: "scheduledAt" });
+  const typeOptions = useMemo(
+    () =>
+      TYPE_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+  const repeatOptions = useMemo(
+    () =>
+      REPEAT_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+  const limitBenefits = useMemo(() => {
+    const benefits = t("reminders.form.limitReached.benefits", {
+      returnObjects: true,
+    });
+
+    return Array.isArray(benefits) ? benefits.map(String) : [];
+  }, [t]);
 
   const { data } = useQuery({
     queryKey: PET_KEY.list(),
@@ -98,16 +124,16 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
   const handleSubmitForm = async (data: IReminderForm) => {
     if (isCreating && !activeReminderLimit.allowed) {
       Toast.warn({
-        title: "Reminder limit reached",
-        text: "Upgrade to Premium to create more active reminders.",
+        title: t("reminders.toast.limitReachedTitle"),
+        text: t("reminders.toast.limitReachedText"),
       });
       return;
     }
 
     if (recurringReminderBlocked) {
       Toast.warn({
-        title: "Recurring reminders require Premium",
-        text: "Choose a one-time reminder or upgrade to Premium.",
+        title: t("reminders.toast.recurringBlockedTitle"),
+        text: t("reminders.toast.recurringBlockedText"),
       });
       return;
     }
@@ -131,8 +157,8 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       <View className="min-h-240 px-20 pb-safe-offset-8">
         <StateView
           variant="loading"
-          title="Checking your plan"
-          description="Making sure there is room for another reminder."
+          title={t("reminders.form.limitLoading.title")}
+          description={t("reminders.form.limitLoading.description")}
         />
       </View>
     );
@@ -143,9 +169,9 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       <View className="min-h-240 px-20 pb-safe-offset-8">
         <StateView
           variant="error"
-          title="Could not check your reminder limit"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("reminders.form.limitError.title")}
+          description={t("reminders.form.limitError.description")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void refetchEntitlements()}
         />
       </View>
@@ -160,13 +186,11 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       >
         <PaywallNotice
           variant="blocking"
-          title="Reminder limit reached"
-          description={`Free plan includes ${activeReminderLimit.limit} active reminders. Upgrade to Premium to keep every care routine on schedule.`}
-          benefits={[
-            "Unlimited active reminders",
-            "Recurring care schedules",
-            "More room for every pet",
-          ]}
+          title={t("reminders.form.limitReached.title")}
+          description={t("reminders.form.limitReached.description", {
+            limit: activeReminderLimit.limit,
+          })}
+          benefits={limitBenefits}
           loading={isUpgrading}
           onAction={() => void upgrade()}
         />
@@ -182,7 +206,7 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       <PetPickerController
         name="petId"
         control={control}
-        label="Pet"
+        label={t("reminders.form.pet.label")}
         options={data?.data ?? []}
         allowNone
       />
@@ -190,23 +214,23 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       <EnhancedInputController
         control={control}
         name="title"
-        label="Title"
-        placeholder="Reminder title"
+        label={t("reminders.form.titleField.label")}
+        placeholder={t("reminders.form.titleField.placeholder")}
       />
 
       <OptionInputController<IReminderForm>
         control={control}
         name="type"
-        label="Type"
-        placeholder="Select type"
-        options={TYPE_OPTIONS}
+        label={t("reminders.form.type.label")}
+        placeholder={t("reminders.form.type.placeholder")}
+        options={typeOptions}
       />
 
       <DateTimePickerController
         name="scheduledAt"
         control={control}
-        label="Scheduled date & time"
-        placeholder="Select date & time"
+        label={t("reminders.form.schedule.label")}
+        placeholder={t("reminders.form.schedule.placeholder")}
         mode="datetime"
         minimumDate={new Date()}
         format={(val) => date(val).format("LLL")}
@@ -215,8 +239,8 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
       <EnhancedInputController
         control={control}
         name="description"
-        label="Description"
-        placeholder="Optional notes"
+        label={t("reminders.form.description.label")}
+        placeholder={t("reminders.form.description.placeholder")}
         multiline
         numberOfLines={3}
       />
@@ -225,20 +249,20 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
         <OptionInputController<IReminderForm>
           control={control}
           name="repeatFrequency"
-          label="Repeat"
-          placeholder="Does not repeat"
-          options={REPEAT_OPTIONS}
+          label={t("reminders.form.repeat.label")}
+          placeholder={t("reminders.form.repeat.placeholder")}
+          options={repeatOptions}
         />
         {repeatFrequency && repeatFrequency !== "none" ? (
           <>
             <Body variant="body4" className="text-text-muted">
-              Repeats once every selected period.
+              {t("reminders.form.repeat.note")}
             </Body>
             <DateTimePickerController
               name="repeatUntil"
               control={control}
-              label="End repeat"
-              placeholder="Never"
+              label={t("reminders.form.endRepeat.label")}
+              placeholder={t("reminders.form.endRepeat.placeholder")}
               mode="date"
               minimumDate={scheduledAt ?? new Date()}
               format={(val) => date(val).format("LL")}
@@ -246,8 +270,8 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
             {recurringReminderBlocked ? (
               <PaywallNotice
                 variant="inline"
-                title="Recurring reminders are Premium"
-                description="Choose a one-time reminder or upgrade to repeat this care task automatically."
+                title={t("reminders.form.premiumRepeat.title")}
+                description={t("reminders.form.premiumRepeat.description")}
                 loading={isUpgrading}
                 onAction={() => void upgrade()}
               />
@@ -262,7 +286,9 @@ export const ReminderForm = ({ onSubmit, defaultValues, loading }: IProps) => {
         loading={loading}
         disabled={recurringReminderBlocked}
       >
-        {!!defaultValues ? "Update reminder" : "Create reminder"}
+        {defaultValues
+          ? t("reminders.actions.update")
+          : t("reminders.actions.create")}
       </Button>
     </KeyboardAvoidingView>
   );

@@ -7,9 +7,11 @@ import {
 import { syncSubscriptionMutation } from "@/services/subscriptions";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 export const usePremiumPaywall = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isPresenting, setIsPresenting] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
@@ -29,8 +31,8 @@ export const usePremiumPaywall = () => {
     try {
       if (!(await configureRevenueCat())) {
         Toast.warn({
-          title: "Premium unavailable",
-          text: "Premium options are unavailable right now. Please try again later.",
+          title: t("subscription.toast.premiumUnavailableTitle"),
+          text: t("subscription.toast.premiumUnavailableText"),
         });
         return null;
       }
@@ -55,22 +57,22 @@ export const usePremiumPaywall = () => {
             subscription.tier === "premium"
           ) {
             Toast.success({
-              title: "Premium unlocked",
-              text: "Your Premium care tools are ready to use.",
+              title: t("subscription.toast.premiumUnlockedTitle"),
+              text: t("subscription.toast.premiumUnlockedText"),
             });
           }
         } catch {
           Toast.warn({
-            title: "Plan still syncing",
+            title: t("subscription.toast.syncingTitle"),
             text: purchaseCompleted
-              ? "Your store purchase succeeded. YeuPet is still refreshing your plan."
-              : "YeuPet is still refreshing your plan. Please check again shortly.",
+              ? t("subscription.toast.syncingAfterPurchaseText")
+              : t("subscription.toast.syncingGenericText"),
           });
         }
       } else if (result === PAYWALL_RESULT.ERROR) {
         Toast.error({
-          title: "Checkout unavailable",
-          text: "Premium checkout could not open. Please try again.",
+          title: t("subscription.toast.checkoutUnavailableTitle"),
+          text: t("subscription.toast.checkoutUnavailableText"),
         });
       }
 
@@ -78,14 +80,14 @@ export const usePremiumPaywall = () => {
     } catch (error) {
       console.warn("[RevenueCat] Could not present the paywall.", error);
       Toast.error({
-        title: "Checkout unavailable",
-        text: "Premium checkout could not open. Please try again.",
+        title: t("subscription.toast.checkoutUnavailableTitle"),
+        text: t("subscription.toast.checkoutUnavailableText"),
       });
       return PAYWALL_RESULT.ERROR;
     } finally {
       setIsPresenting(false);
     }
-  }, [isPresenting, syncBackend]);
+  }, [isPresenting, syncBackend, t]);
 
   const presentCustomerCenter = useCallback(async () => {
     if (isManaging) {
@@ -96,8 +98,8 @@ export const usePremiumPaywall = () => {
     try {
       if (!(await configureRevenueCat())) {
         Toast.warn({
-          title: "Subscriptions unavailable",
-          text: "Subscription management is unavailable right now.",
+          title: t("subscription.toast.managementUnavailableTitle"),
+          text: t("subscription.toast.managementUnavailableText"),
         });
         return;
       }
@@ -130,20 +132,20 @@ export const usePremiumPaywall = () => {
           error,
         );
         Toast.warn({
-          title: "Changes still syncing",
-          text: "Your subscription changes are still refreshing in YeuPet.",
+          title: t("subscription.toast.changesSyncingTitle"),
+          text: t("subscription.toast.changesSyncingText"),
         });
       }
     } catch (error) {
       console.warn("[RevenueCat] Could not present Customer Center.", error);
       Toast.error({
-        title: "Subscriptions unavailable",
-        text: "Could not open subscription management. Please try again.",
+        title: t("subscription.toast.managementUnavailableTitle"),
+        text: t("subscription.toast.managementOpenErrorText"),
       });
     } finally {
       setIsManaging(false);
     }
-  }, [isManaging, syncBackend]);
+  }, [isManaging, syncBackend, t]);
 
   return {
     isManaging,

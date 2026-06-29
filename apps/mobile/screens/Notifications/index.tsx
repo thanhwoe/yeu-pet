@@ -13,7 +13,7 @@ import {
   markAllNotificationsReadMutation,
   markNotificationReadMutation,
 } from "@/services";
-import { cn, date } from "@/utils";
+import { cn, date, getApiErrorToast } from "@/utils";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import {
   InfiniteData,
@@ -22,6 +22,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { Href, router } from "expo-router";
+import { type TFunction } from "i18next";
 import {
   BellRingingIcon,
   CaretRightIcon,
@@ -29,6 +30,7 @@ import {
 } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
 import { Pressable, RefreshControl, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const LIMIT = 20;
 
@@ -37,45 +39,35 @@ const CaretRight = withIconClassName(CaretRightIcon);
 const Checks = withIconClassName(ChecksIcon);
 
 const FILTERS = [
-  { label: "All", value: "all" },
-  { label: "Unread", value: "unread" },
+  { labelKey: "notifications.filters.all", value: "all" },
+  { labelKey: "notifications.filters.unread", value: "unread" },
 ] as const;
 
 type NotificationFilter = (typeof FILTERS)[number]["value"];
-
-type MutationError = {
-  errors?: {
-    message: string;
-  }[];
-  message?: string;
-};
 
 type NotificationsInfiniteData = InfiniteData<
   IPagination<INotification>,
   number
 >;
 
-const getErrorMessage = (error: MutationError, fallback: string) =>
-  error.errors?.[0]?.message ?? error.message ?? fallback;
-
-const formatNotificationTime = (value?: string | null) => {
-  if (!value) return "Recently";
+const formatNotificationTime = (value: string | null | undefined, t: TFunction) => {
+  if (!value) return t("notifications.time.recently");
 
   const createdAt = date(value);
 
-  if (!createdAt.isValid()) return "Recently";
+  if (!createdAt.isValid()) return t("notifications.time.recently");
 
   const secondsAgo = date().diff(createdAt, "second");
 
   if (secondsAgo < 60) {
-    return date.locale() === "vi" ? "Vừa xong" : "Just now";
+    return t("notifications.time.justNow");
   }
 
   if (secondsAgo < 60 * 60 * 24 * 7) {
     return createdAt.fromNow();
   }
 
-  return createdAt.format("DD MMM YYYY");
+  return createdAt.format("ll");
 };
 
 const openNotificationLink = (notification: INotification) => {
@@ -146,6 +138,7 @@ const markAllNotificationsReadInCache = (
 };
 
 export const NotificationsScreen = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<NotificationFilter>("all");
 
@@ -237,7 +230,7 @@ export const NotificationsScreen = () => {
 
       return { previousBadge, previousNotificationQueries };
     },
-    onError(error: MutationError, _notificationId, context) {
+    onError(error, _notificationId, context) {
       context?.previousNotificationQueries.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
@@ -245,13 +238,12 @@ export const NotificationsScreen = () => {
         NOTIFICATIONS_KEY.badge(),
         context?.previousBadge,
       );
-      Toast.error({
-        title: "Notification not updated",
-        text: getErrorMessage(
-          error,
-          "Try marking this notification as read again.",
-        ),
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          textKey: "notifications.error.markOneText",
+          titleKey: "notifications.error.markOneTitle",
+        }),
+      );
     },
     onSettled: softInvalidateNotifications,
   });
@@ -286,11 +278,11 @@ export const NotificationsScreen = () => {
     },
     onSuccess() {
       Toast.success({
-        title: "Notifications updated",
-        text: "All notifications are now marked as read.",
+        title: t("notifications.success.markAllTitle"),
+        text: t("notifications.success.markAllText"),
       });
     },
-    onError(error: MutationError, _variables, context) {
+    onError(error, _variables, context) {
       context?.previousNotificationQueries.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
@@ -298,13 +290,12 @@ export const NotificationsScreen = () => {
         NOTIFICATIONS_KEY.badge(),
         context?.previousBadge,
       );
-      Toast.error({
-        title: "Notifications not updated",
-        text: getErrorMessage(
-          error,
-          "Try marking all notifications as read again.",
-        ),
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          textKey: "notifications.error.markAllText",
+          titleKey: "notifications.error.markAllTitle",
+        }),
+      );
     },
     onSettled: softInvalidateNotifications,
   });
@@ -335,12 +326,12 @@ export const NotificationsScreen = () => {
         <View className="flex-1 items-center justify-center gap-12">
           <BellIcon size={40} className="text-icon-secondary" />
           <Text variant="heading" className="text-center font-medium">
-            Could not load notifications
+            {t("notifications.error.title")}
           </Text>
           <Text variant="body2" className="text-center text-text-secondary">
-            Please try again.
+            {t("notifications.error.description")}
           </Text>
-          <Button onPress={() => refetch()}>Retry</Button>
+          <Button onPress={() => refetch()}>{t("common.retry")}</Button>
         </View>
       </ScreenContainer>
     );
@@ -394,38 +385,44 @@ const NotificationHeader = ({
   disabled?: boolean;
   isLoading?: boolean;
   onMarkAllRead?: () => void;
-}) => (
-  <View className="flex-row items-center justify-between gap-16">
-    <View className="flex-1">
-      <Text variant="heading" className="font-bold">
-        Inbox
-      </Text>
-      <Text variant="body2" className="text-text-secondary">
-        {unreadCount ? `${unreadCount} unread` : "All caught up"}
-      </Text>
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <View className="flex-row items-center justify-between gap-16">
+      <View className="flex-1">
+        <Text variant="heading" className="font-bold">
+          {t("notifications.header.title")}
+        </Text>
+        <Text variant="body2" className="text-text-secondary">
+          {unreadCount
+            ? t("notifications.header.unreadCount", { count: unreadCount })
+            : t("notifications.header.allCaughtUp")}
+        </Text>
+      </View>
+      <Pressable
+        accessibilityLabel={t("notifications.header.markAllReadAccessibility")}
+        accessibilityRole="button"
+        accessibilityState={{ disabled, busy: isLoading }}
+        disabled={disabled}
+        onPress={onMarkAllRead}
+        className={cn(
+          "h-38 flex-row items-center rounded-full border-hairline border-line-primary bg-background-card px-12",
+          disabled && "opacity-50",
+        )}
+      >
+        {isLoading ? (
+          <Spinner size={18} />
+        ) : (
+          <Checks size={18} className="mr-6 text-icon-primary" weight="bold" />
+        )}
+        <Text variant="footnote" className="font-medium">
+          {t("notifications.header.markAllRead")}
+        </Text>
+      </Pressable>
     </View>
-    <Pressable
-      accessibilityLabel="Mark all notifications as read"
-      accessibilityRole="button"
-      accessibilityState={{ disabled, busy: isLoading }}
-      disabled={disabled}
-      onPress={onMarkAllRead}
-      className={cn(
-        "h-38 flex-row items-center rounded-full border-hairline border-line-primary bg-background-card px-12",
-        disabled && "opacity-50",
-      )}
-    >
-      {isLoading ? (
-        <Spinner size={18} />
-      ) : (
-        <Checks size={18} className="mr-6 text-icon-primary" weight="bold" />
-      )}
-      <Text variant="footnote" className="font-medium">
-        Mark all read
-      </Text>
-    </Pressable>
-  </View>
-);
+  );
+};
 
 const NotificationFilters = ({
   value,
@@ -433,36 +430,40 @@ const NotificationFilters = ({
 }: {
   value: NotificationFilter;
   onChange: (value: NotificationFilter) => void;
-}) => (
-  <View className="flex-row gap-8">
-    {FILTERS.map((item) => {
-      const active = item.value === value;
+}) => {
+  const { t } = useTranslation();
 
-      return (
-        <Pressable
-          key={item.value}
-          accessibilityRole="button"
-          accessibilityState={{ selected: active }}
-          onPress={() => onChange(item.value)}
-          className={cn(
-            "h-36 min-w-72 items-center justify-center rounded-full border bg-background-card border-line-primary px-14",
-            active && "border-action-primary bg-action-primary",
-          )}
-        >
-          <Text
-            variant="footnote"
+  return (
+    <View className="flex-row gap-8">
+      {FILTERS.map((item) => {
+        const active = item.value === value;
+
+        return (
+          <Pressable
+            key={item.value}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
+            onPress={() => onChange(item.value)}
             className={cn(
-              "font-semibold text-text-muted",
-              active && "text-action-primary-foreground",
+              "h-36 min-w-72 items-center justify-center rounded-full border bg-background-card border-line-primary px-14",
+              active && "border-action-primary bg-action-primary",
             )}
           >
-            {item.label}
-          </Text>
-        </Pressable>
-      );
-    })}
-  </View>
-);
+            <Text
+              variant="footnote"
+              className={cn(
+                "font-semibold text-text-muted",
+                active && "text-action-primary-foreground",
+              )}
+            >
+              {t(item.labelKey)}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};
 
 const NotificationListItem = ({
   notification,
@@ -473,8 +474,10 @@ const NotificationListItem = ({
   disabled: boolean;
   onMarkRead: (id: string) => void;
 }) => {
+  const { t } = useTranslation();
   const isUnread = !notification.isRead;
   const hasDeepLink = Boolean(notification.deepLink?.trim().startsWith("/"));
+  const notificationTime = formatNotificationTime(notification.createdAt, t);
 
   const handlePress = useCallback(() => {
     if (isUnread) {
@@ -491,7 +494,7 @@ const NotificationListItem = ({
       accessibilityRole="button"
       accessibilityLabel={`${notification.title}. ${
         notification.body ?? ""
-      } ${formatNotificationTime(notification.createdAt)}`}
+      } ${notificationTime}`}
       accessibilityState={{ disabled, selected: isUnread }}
       className={cn(
         "rounded-16 bg-background-card px-14 py-13",
@@ -532,7 +535,7 @@ const NotificationListItem = ({
             </Text>
             {isUnread ? (
               <View
-                accessibilityLabel="Unread"
+                accessibilityLabel={t("notifications.unreadAccessibility")}
                 className="mt-8 h-7 w-7 rounded-full bg-action-primary"
               />
             ) : null}
@@ -559,7 +562,7 @@ const NotificationListItem = ({
           )}
 
           <Text variant="caption1" className="mt-2 text-text-secondary">
-            {formatNotificationTime(notification.createdAt)}
+            {notificationTime}
           </Text>
         </View>
       </View>
@@ -574,6 +577,8 @@ const NotificationEmptyState = ({
   filter: NotificationFilter;
   isLoading: boolean;
 }) => {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <View className="gap-10">
@@ -594,12 +599,14 @@ const NotificationEmptyState = ({
         <BellIcon size={26} className="text-icon-secondary" />
       </View>
       <Text variant="heading" className="text-center font-medium">
-        {filter === "unread" ? "You're all caught up" : "No notifications yet"}
+        {filter === "unread"
+          ? t("notifications.empty.unreadTitle")
+          : t("notifications.empty.allTitle")}
       </Text>
       <Text variant="body2" className="text-center text-text-secondary">
         {filter === "unread"
-          ? "No unread notifications right now."
-          : "Care reminders, booking updates, and social activity will appear here."}
+          ? t("notifications.empty.unreadDescription")
+          : t("notifications.empty.allDescription")}
       </Text>
     </View>
   );

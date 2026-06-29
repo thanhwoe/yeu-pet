@@ -35,12 +35,14 @@ import {
   getBudgetYearlyStatisticsQuery,
   updateBudgetMutation,
 } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import { groupBudgetTransactions } from "@/utils/budget";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Link, useNavigation } from "expo-router";
 import { CalendarBlankIcon, PlusIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import { BudgetInput } from "./BudgetSection/BudgetInput";
 import { BudgetTabContent, TABS, TabValue } from "./BudgetTabContent";
@@ -51,6 +53,7 @@ const CalendarIcon = withIconClassName(CalendarBlankIcon);
 type AddOptionAction = "budget" | "category" | "transaction";
 
 export function BudgetScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
@@ -62,6 +65,14 @@ export function BudgetScreen() {
   });
 
   const months = useRef(dayjs.monthsShort()).current;
+  const tabs = useMemo(
+    () =>
+      TABS.map((tab) => ({
+        title: t(tab.titleKey),
+        value: tab.value,
+      })),
+    [t],
+  );
 
   const [openAddOptions, setOpenAddOptions] = useState(false);
   const [openCategoryForm, setOpenCategoryForm] = useState(false);
@@ -75,6 +86,7 @@ export function BudgetScreen() {
     queryKey: BUDGET_CATEGORY_KEY.list({ limit: 20 }),
     queryFn: () => getBudgetCategoryQuery({ limit: 20 }),
   });
+  console.log(JSON.stringify(categories, null, 2));
 
   const { data: budgetData, isLoading: isLoadingBudget } = useQuery({
     queryKey: BUDGET_KEY.detail(`${actualMonth} ${monthYear.year}`),
@@ -133,10 +145,12 @@ export function BudgetScreen() {
         setOpenCategoryForm(false);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Category not created",
-          text: e.message || "Check the category details and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.categoryCreateErrorTitle",
+            textKey: "budget.toast.categoryCreateErrorText",
+          }),
+        );
       },
     });
 
@@ -175,10 +189,12 @@ export function BudgetScreen() {
         setOpenTransactionForm(false);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Transaction not added",
-          text: e.message || "Check the transaction details and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.transactionCreateErrorTitle",
+            textKey: "budget.toast.transactionCreateErrorText",
+          }),
+        );
       },
       onSettled: () => {
         queryClient.invalidateQueries({
@@ -201,10 +217,12 @@ export function BudgetScreen() {
         setOpenAddOptions(false);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Budget not updated",
-          text: e.message || "Check the amount and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.budgetUpdateErrorTitle",
+            textKey: "budget.toast.budgetUpdateErrorText",
+          }),
+        );
       },
     });
 
@@ -242,7 +260,7 @@ export function BudgetScreen() {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
-          accessibilityLabel="Open budget actions"
+          accessibilityLabel={t("budget.accessibility.openActions")}
           accessibilityRole="button"
           onPress={() => setOpenAddOptions(true)}
         >
@@ -250,41 +268,40 @@ export function BudgetScreen() {
         </TouchableOpacity>
       ),
     });
-  }, []);
+  }, [navigation, t]);
 
   const ListHeaderComponent = useMemo(() => {
     return (
       <View className="flex-row items-center justify-between pt-4">
         <Heading variant="h5" weight="bold">
-          Recent Transactions
+          {t("budget.screen.recentTransactions")}
         </Heading>
         {sections.length > 0 && (
           <Link href="/budget/transactions">
-            <Body className="text-text-link">See all</Body>
+            <Body className="text-text-link">{t("budget.actions.seeAll")}</Body>
           </Link>
         )}
       </View>
     );
-  }, [sections]);
+  }, [sections, t]);
   return (
     <ScreenContainer
       scrollEnabled
       contentContainerClassName="px-16 pb-safe-or-2 gap-20"
     >
-      <View className="flex-row bg-background-card-highlight justify-between p-8 rounded-24">
-        <Tabs tabs={TABS} active={activeTab} onChange={setActiveTab} />
-        <TouchableOpacity
-          className="flex-row items-center gap-8 pr-8"
-          accessibilityLabel="Select budget period"
-          accessibilityRole="button"
-          onPress={() => setOpenDatePicker(true)}
-        >
-          <Body weight="bold">
-            {months[monthYear.month]} {monthYear.year}
-          </Body>
-          <CalendarIcon weight="bold" className="text-icon-primary" />
-        </TouchableOpacity>
-      </View>
+      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} />
+
+      <TouchableOpacity
+        className="flex-row items-center gap-8 justify-center"
+        accessibilityLabel={t("budget.accessibility.selectPeriod")}
+        accessibilityRole="button"
+        onPress={() => setOpenDatePicker(true)}
+      >
+        <Body weight="bold">
+          {months[monthYear.month]} {monthYear.year}
+        </Body>
+        <CalendarIcon weight="bold" className="text-icon-primary" />
+      </TouchableOpacity>
 
       <BudgetTabContent
         active={activeTab}
@@ -311,7 +328,7 @@ export function BudgetScreen() {
         error={isTransactionError}
         onRetry={() => refetchTransactions()}
         onAdd={() => {
-          if (categories?.data.length) {
+          if (categories?.data?.length) {
             setOpenTransactionForm(true);
             return;
           }
@@ -319,13 +336,15 @@ export function BudgetScreen() {
           setOpenCategoryForm(true);
         }}
         compactEmpty
-        emptyTitle="No recent transactions"
-        emptyDescription="Add a pet-care expense when you are ready to track this period."
+        emptyTitle={t("budget.transactions.emptyRecentTitle")}
+        emptyDescription={t("budget.transactions.emptyRecentDescription")}
       />
       <BottomSheet
         useScrollView={false}
         visible={openDatePicker}
-        titleElement={<Body weight="semiBold">Select period</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("budget.screen.selectPeriod")}</Body>
+        }
         onDismiss={() => setOpenDatePicker(false)}
       >
         <MonthYearPicker
@@ -345,18 +364,18 @@ export function BudgetScreen() {
         <Options
           data={[
             {
-              label: "Set monthly budget",
+              label: t("budget.actions.setMonthlyBudget"),
               value: "budget",
               onPress: () => handleAddOptionPress("budget"),
             },
             {
-              label: "Add new category",
+              label: t("budget.actions.addNewCategory"),
               value: "category",
               onPress: () => handleAddOptionPress("category"),
             },
             {
-              label: "Add new transaction",
-              disabled: !Boolean(categories?.data.length),
+              label: t("budget.actions.addTransaction"),
+              disabled: !Boolean(categories?.data?.length),
               value: "transaction",
               onPress: () => handleAddOptionPress("transaction"),
             },
@@ -387,7 +406,9 @@ export function BudgetScreen() {
       <BottomSheet
         visible={openBudgetForm}
         onDismiss={() => setOpenBudgetForm(false)}
-        titleElement={<Body weight="semiBold">Set monthly budget</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("budget.actions.setMonthlyBudget")}</Body>
+        }
         useScrollView
         keyboardBehavior="interactive"
       >

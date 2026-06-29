@@ -7,6 +7,7 @@ import { useTakePhoto } from "@/hooks/useTakePhoto";
 import { nativeShadows } from "@/theme/shadows";
 import { CameraIcon } from "phosphor-react-native";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -14,19 +15,28 @@ const Camera = withIconClassName(CameraIcon);
 
 const PHOTO_TABS = [
   {
-    title: "Social Photos",
+    titleKey: "photos.tabs.social",
     value: 0,
   },
   {
-    title: "My Photos",
+    titleKey: "photos.tabs.mine",
     value: 1,
   },
 ];
 
 export const PhotosScreen = () => {
+  const { t } = useTranslation();
   const { handleTakePhoto, image, clearImage } = useTakePhoto();
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState(PHOTO_TABS[0].value);
+  const tabs = useMemo(
+    () =>
+      PHOTO_TABS.map((tab) => ({
+        title: t(tab.titleKey),
+        value: tab.value,
+      })),
+    [t],
+  );
 
   const activeContent = useMemo(() => {
     switch (activeTab) {
@@ -41,17 +51,16 @@ export const PhotosScreen = () => {
   return (
     <View className="flex-1 bg-background px-20 pt-8">
       <Tabs
-        tabs={PHOTO_TABS}
+        tabs={tabs}
         active={activeTab}
         onChange={setActiveTab}
-        size="large"
         className="mb-16 self-center"
       />
 
       <View className="flex-1">{activeContent}</View>
 
       <TouchableOpacity
-        accessibilityLabel="Take or choose a photo"
+        accessibilityLabel={t("photos.accessibility.choosePhoto")}
         accessibilityRole="button"
         activeOpacity={0.82}
         onPress={handleTakePhoto}

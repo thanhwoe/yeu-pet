@@ -9,6 +9,7 @@ import {
   PawPrintIcon,
   UserCircleIcon,
 } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import {
   formatBookingHold,
@@ -50,6 +51,7 @@ export const BookingDetail = ({
   onComplete: (booking: ISitterBooking) => void;
   onReview: (booking: ISitterBooking) => void;
 }) => {
+  const { t } = useTranslation();
   const canSitterRespond = role === "sitter" && booking.status === "pending";
   const canComplete =
     role === "sitter" && ["confirmed", "active"].includes(booking.status);
@@ -62,9 +64,9 @@ export const BookingDetail = ({
   const holdLabel = formatBookingHold(booking);
   const cancelledByLabel =
     booking.cancelledBy === booking.accountId
-      ? "Owner"
+      ? t("sitter.booking.detail.owner")
       : booking.cancelledBy && booking.cancelledBy === booking.sitter?.accountId
-        ? "Sitter"
+        ? t("sitter.booking.detail.sitter")
         : undefined;
 
   return (
@@ -90,7 +92,11 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label={role === "owner" ? "Sitter" : "Owner"}
+          label={
+            role === "owner"
+              ? t("sitter.booking.detail.sitter")
+              : t("sitter.booking.detail.owner")
+          }
           value={
             role === "owner"
               ? getBookingSitterName(booking)
@@ -105,7 +111,7 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label="Pet"
+          label={t("sitter.booking.detail.pet")}
           value={getBookingPetName(booking)}
         />
       </View>
@@ -119,7 +125,7 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label="Date and time"
+          label={t("sitter.booking.detail.dateAndTime")}
           value={formatDateRange(booking)}
         />
         <InfoRow
@@ -130,7 +136,7 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label="Service"
+          label={t("sitter.booking.detail.service")}
           value={getBookingServiceLabel(booking)}
         />
         <InfoRow
@@ -141,9 +147,11 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label="Estimated price"
+          label={t("sitter.booking.detail.estimatedPrice")}
           value={
-            booking.totalPrice ? formatRate(booking.totalPrice) : "To confirm"
+            booking.totalPrice
+              ? formatRate(booking.totalPrice)
+              : t("sitter.booking.detail.toConfirm")
           }
         />
       </View>
@@ -157,7 +165,7 @@ export const BookingDetail = ({
               className="text-feature-sitter-accent"
             />
           }
-          label="Request sent"
+          label={t("sitter.booking.detail.requestSent")}
           value={formatDateTime(booking.createdAt)}
         />
         {holdLabel ? (
@@ -169,7 +177,7 @@ export const BookingDetail = ({
                 className="text-feature-sitter-accent"
               />
             }
-            label="Booking hold"
+            label={t("sitter.booking.detail.bookingHold")}
             value={holdLabel}
           />
         ) : null}
@@ -182,7 +190,7 @@ export const BookingDetail = ({
                 className="text-feature-sitter-accent"
               />
             }
-            label="Confirmed"
+            label={t("sitter.booking.detail.confirmed")}
             value={formatDateTime(booking.confirmedAt)}
           />
         ) : null}
@@ -195,7 +203,7 @@ export const BookingDetail = ({
                 className="text-feature-sitter-accent"
               />
             }
-            label="Cancelled"
+            label={t("sitter.booking.detail.cancelled")}
             value={
               cancelledByLabel
                 ? `${formatDateTime(booking.cancelledAt)} · ${cancelledByLabel}`
@@ -211,26 +219,34 @@ export const BookingDetail = ({
       booking.cancelReason ? (
         <View className="gap-10 rounded-24 border border-line-subtle bg-background-surface px-16 py-16">
           <Heading variant="h6" weight="bold">
-            Notes
+            {t("sitter.booking.detail.notes")}
           </Heading>
           {booking.careInstructions ? (
             <Body variant="body3" className="text-text-muted">
-              Care: {booking.careInstructions}
+              {t("sitter.booking.detail.carePrefix", {
+                instructions: booking.careInstructions,
+              })}
             </Body>
           ) : null}
           {booking.ownerNotes ? (
             <Body variant="body3" className="text-text-muted">
-              Owner: {booking.ownerNotes}
+              {t("sitter.booking.detail.ownerPrefix", {
+                notes: booking.ownerNotes,
+              })}
             </Body>
           ) : null}
           {booking.sitterNotes ? (
             <Body variant="body3" className="text-text-muted">
-              Sitter: {booking.sitterNotes}
+              {t("sitter.booking.detail.sitterPrefix", {
+                notes: booking.sitterNotes,
+              })}
             </Body>
           ) : null}
           {booking.cancelReason ? (
             <Body variant="body3" className="text-text-muted">
-              Cancel: {booking.cancelReason}
+              {t("sitter.booking.detail.cancelPrefix", {
+                reason: booking.cancelReason,
+              })}
             </Body>
           ) : null}
         </View>
@@ -243,7 +259,7 @@ export const BookingDetail = ({
             variant="secondary"
             onPress={() => onOpenMessages(booking)}
           >
-            Message
+            {t("sitter.booking.actions.message")}
           </Button>
         ) : null}
         {canSitterRespond ? (
@@ -253,7 +269,7 @@ export const BookingDetail = ({
               loading={loading}
               onPress={() => onAccept(booking)}
             >
-              Accept
+              {t("sitter.booking.actions.accept")}
             </Button>
             <Button
               size="sm"
@@ -261,7 +277,7 @@ export const BookingDetail = ({
               loading={loading}
               onPress={() => onReject(booking)}
             >
-              Reject
+              {t("sitter.booking.actions.reject")}
             </Button>
           </>
         ) : null}
@@ -271,12 +287,12 @@ export const BookingDetail = ({
             loading={loading}
             onPress={() => onComplete(booking)}
           >
-            Complete
+            {t("sitter.booking.actions.complete")}
           </Button>
         ) : null}
         {canReview ? (
           <Button size="sm" onPress={() => onReview(booking)}>
-            Review
+            {t("sitter.booking.actions.review")}
           </Button>
         ) : null}
         {canCancel ? (
@@ -286,7 +302,7 @@ export const BookingDetail = ({
             loading={loading}
             onPress={() => onCancel(booking)}
           >
-            Cancel
+            {t("sitter.booking.actions.cancel")}
           </Button>
         ) : null}
       </View>

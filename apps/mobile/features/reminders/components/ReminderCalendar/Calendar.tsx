@@ -1,7 +1,10 @@
 import { Body, Heading } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { cn } from "@/utils";
-import { formatReminderMonth, REMINDER_DAY_KEY_FORMAT } from "@/utils/reminder";
+import {
+  formatReminderMonthLabel,
+  REMINDER_DAY_KEY_FORMAT,
+} from "@/utils/reminder";
 import dayjs from "dayjs";
 import {
   CaretLeftIcon,
@@ -10,13 +13,22 @@ import {
 } from "phosphor-react-native";
 import type { ReactNode } from "react";
 import { memo, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 const PrevIcon = withIconClassName(CaretLeftIcon);
 const NextIcon = withIconClassName(CaretRightIcon);
 const PawPrint = withIconClassName(PawPrintIcon);
 
-const WEEKDAY_LABELS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+const WEEKDAY_LABEL_KEYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
 
 interface CalendarProps {
   visibleMonth: string;
@@ -71,6 +83,7 @@ export const Calendar = memo(
     onPreviousMonth,
     onNextMonth,
   }: CalendarProps) => {
+    const { t } = useTranslation();
     const calendarDays = useMemo(
       () => buildCalendarDays(visibleMonth, selectedDate, markedDateCounts),
       [markedDateCounts, selectedDate, visibleMonth],
@@ -80,17 +93,17 @@ export const Calendar = memo(
       <View className="rounded-24 border border-line-subtle bg-background-card px-14 py-12">
         <View className="mb-8 flex-row items-center justify-between">
           <IconButton
-            label="Previous month"
+            label={t("reminders.accessibility.previousMonth")}
             onPress={onPreviousMonth}
             icon={
               <PrevIcon size={20} weight="bold" className="text-icon-primary" />
             }
           />
           <Heading variant="h6" weight="bold" className="capitalize">
-            {formatReminderMonth(visibleMonth)}
+            {formatReminderMonthLabel(visibleMonth, t)}
           </Heading>
           <IconButton
-            label="Next month"
+            label={t("reminders.accessibility.nextMonth")}
             onPress={onNextMonth}
             icon={
               <NextIcon size={20} weight="bold" className="text-icon-primary" />
@@ -99,10 +112,10 @@ export const Calendar = memo(
         </View>
 
         <View className="mb-6 flex-row">
-          {WEEKDAY_LABELS.map((label) => (
-            <View key={label} className="flex-1 items-center">
+          {WEEKDAY_LABEL_KEYS.map((labelKey) => (
+            <View key={labelKey} className="flex-1 items-center">
               <Body variant="body5" weight="bold" className="text-text-muted">
-                {label}
+                {t(`reminders.calendar.weekdays.${labelKey}`)}
               </Body>
             </View>
           ))}
@@ -113,9 +126,16 @@ export const Calendar = memo(
             <Pressable
               key={item.key}
               accessibilityRole="button"
-              accessibilityLabel={`Select ${item.key}${
-                item.reminderCount ? `, ${item.reminderCount} reminders` : ""
-              }`}
+              accessibilityLabel={
+                item.reminderCount
+                  ? t("reminders.accessibility.selectDateWithCount", {
+                      count: item.reminderCount,
+                      date: item.key,
+                    })
+                  : t("reminders.accessibility.selectDate", {
+                      date: item.key,
+                    })
+              }
               accessibilityState={{
                 selected: item.isSelected,
                 disabled: !item.inMonth,

@@ -5,26 +5,32 @@ import { Text } from "@/components/ui/Text";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { useLocalSearchParams } from "expo-router";
 import { BarbellIcon, SealCheckIcon } from "phosphor-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
-import { mockTrainingData } from "../Training/mock";
+import { getTrainingData } from "../Training/mock";
 
 const Barbell = withIconClassName(BarbellIcon);
 const SealCheck = withIconClassName(SealCheckIcon);
 
 export const TrainingLevelScreen = () => {
-  const [selectedItem, setSelectedItem] =
-    useState<(typeof mockTrainingData)[0]["exercises"][0]>();
+  const { t } = useTranslation();
+  const [selectedItemId, setSelectedItemId] = useState<string>();
 
   const { level } = useLocalSearchParams();
-  const trainingData = mockTrainingData.find((i) => i.level === Number(level));
+  const trainingData = useMemo(() => getTrainingData(t), [t]);
+  const currentLevel = trainingData.find((i) => i.level === Number(level));
+  const selectedItem = currentLevel?.exercises.find(
+    (item) => item.id === selectedItemId,
+  );
+
   return (
     <ScreenContainer scrollEnabled contentContainerClassName="!pt-2">
       <View className="gap-2">
-        {trainingData?.exercises.map((item) => (
+        {currentLevel?.exercises.map((item) => (
           <TouchableOpacity
             key={item.id}
-            onPress={() => setSelectedItem(item)}
+            onPress={() => setSelectedItemId(item.id)}
             className="flex-row p-2 bg-white rounded-2xl items-center gap-3"
           >
             <Image style={{ width: 50, height: 50 }} source={item.image_url} />
@@ -34,7 +40,7 @@ export const TrainingLevelScreen = () => {
       </View>
       <BottomSheet
         visible={!!selectedItem}
-        onDismiss={() => setSelectedItem(undefined)}
+        onDismiss={() => setSelectedItemId(undefined)}
         titleElement={<Text className="font-bold">{selectedItem?.title}</Text>}
       >
         <View className="px-6">
@@ -48,7 +54,7 @@ export const TrainingLevelScreen = () => {
           <View className="bg-background-secondary gap-2 p-4 rounded-2xl">
             <View className="flex-row gap-1">
               <Barbell />
-              <Text className="font-bold">Steps:</Text>
+              <Text className="font-bold">{t("training.steps")}</Text>
             </View>
             {selectedItem?.steps.map((item, index) => (
               <Text key={index}>
@@ -59,7 +65,7 @@ export const TrainingLevelScreen = () => {
           <View className="bg-background-secondary mt-4 gap-2 p-4 rounded-2xl">
             <View className="flex-row gap-1">
               <SealCheck />
-              <Text className="font-bold">Tricks:</Text>
+              <Text className="font-bold">{t("training.tricks")}</Text>
             </View>
             {selectedItem?.tricks.map((item, index) => (
               <Text key={index}>• {item}</Text>

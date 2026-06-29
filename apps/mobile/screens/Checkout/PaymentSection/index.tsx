@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
 import { PaymentMethod } from "@/hooks/usePayment";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const OPTIONS = [
@@ -26,9 +27,13 @@ export const PaymentSection = ({
   paymentMethod,
   setPaymentMethod,
 }: IPaymentSectionProps) => {
+  const { t } = useTranslation();
+
   return (
     <View className="border border-line-tertiary py-2 px-3 bg-background-card-info rounded-xl">
-      <Text className="font-semibold">Payment Method</Text>
+      <Text className="font-semibold">
+        {t("commerce.checkout.paymentMethod")}
+      </Text>
       <View className="gap-3 mt-3">
         {OPTIONS.map((option) => (
           <Checkbox

@@ -6,6 +6,7 @@ import {
   GRID_ITEM_RADIUS,
   ITEM_WIDTH,
 } from "@/features/photos/utils";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -19,10 +20,15 @@ interface IProps {
 export const EmptyPhotos = ({
   isLoading,
   isError,
-  title = "No photos yet",
-  description = "Start capturing and sharing your pet's moments.",
+  title,
+  description,
   onRetry,
 }: IProps) => {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("photos.empty.defaultTitle");
+  const resolvedDescription =
+    description ?? t("photos.empty.defaultDescription");
+
   if (isLoading) {
     return (
       <View className="flex-row flex-wrap">
@@ -48,9 +54,9 @@ export const EmptyPhotos = ({
     return (
       <StateView
         variant="error"
-        title="Photos could not load"
-        description="Try again to refresh these pet moments."
-        actionLabel="Retry"
+        title={t("photos.empty.loadErrorTitle")}
+        description={t("photos.empty.loadErrorDescription")}
+        actionLabel={t("common.retry")}
         onAction={onRetry}
         className="mt-32"
       />
@@ -60,8 +66,8 @@ export const EmptyPhotos = ({
   return (
     <StateView
       variant="empty"
-      title={title}
-      description={description}
+      title={resolvedTitle}
+      description={resolvedDescription}
       className="mt-32"
     />
   );

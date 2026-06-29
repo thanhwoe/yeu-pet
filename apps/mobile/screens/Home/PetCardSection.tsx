@@ -4,8 +4,10 @@ import { Body } from "@/components/ui/Typography";
 import { PetCardCarousel } from "@/features/pets/components/PetCardCarousel";
 import { PetInfoForm } from "@/features/pets/components/PetInfoForm";
 import { usePetCardSection } from "@/features/pets/usePetCardSection";
+import { useTranslation } from "react-i18next";
 
 export const PetCardSection = () => {
+  const { t } = useTranslation();
   const {
     petEdit,
     petDelete,
@@ -27,7 +29,7 @@ export const PetCardSection = () => {
         stackBehavior="push"
         visible={!!petEdit}
         onDismiss={closeEdit}
-        titleElement={<Body weight="semiBold">Edit pet</Body>}
+        titleElement={<Body weight="semiBold">{t("pets.popup.editTitle")}</Body>}
       >
         <PetInfoForm
           onSubmit={submitEdit}
@@ -40,8 +42,8 @@ export const PetCardSection = () => {
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
         loading={isDeleting}
-        title="Remove Pet"
-        description="Are you sure you want to remove this pet?"
+        title={t("pets.popup.deleteTitle")}
+        description={t("pets.popup.deleteDescription")}
         variant="delete"
       />
     </>

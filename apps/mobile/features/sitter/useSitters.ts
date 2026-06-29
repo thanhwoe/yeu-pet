@@ -1,4 +1,5 @@
 import { Toast } from "@/components/Toast";
+import { i18n } from "@/i18n";
 import {
   PET_KEY,
   SITTER_BOOKING_KEY,
@@ -45,10 +46,10 @@ const BOOKING_LIMIT = 20;
 const MESSAGE_LIMIT = 30;
 const REVIEW_LIMIT = 3;
 
-const showError = (title: string) => (error: Error) => {
+const showError = (titleKey: string) => (error: Error) => {
   Toast.error({
-    title,
-    text: error.message || "Please review the details and try again.",
+    title: i18n.t(titleKey),
+    text: error.message || i18n.t("sitter.toast.defaultErrorText"),
   });
 };
 
@@ -119,84 +120,84 @@ export const useSitters = (
     mutationFn: createSitterBookingMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Request sent",
-        text: "The sitter can now review your care request.",
+        title: i18n.t("sitter.toast.requestSentTitle"),
+        text: i18n.t("sitter.toast.requestSentText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Request not sent"),
+    onError: showError("sitter.toast.requestNotSent"),
   });
 
   const registerProfile = useMutation({
     mutationFn: registerSitterMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Sitter profile created",
-        text: "Pet owners can now discover your care services.",
+        title: i18n.t("sitter.toast.profileCreatedTitle"),
+        text: i18n.t("sitter.toast.profileCreatedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Profile not created"),
+    onError: showError("sitter.toast.profileNotCreated"),
   });
 
   const updateProfile = useMutation({
     mutationFn: updateSitterMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Sitter profile updated",
-        text: "Your latest care details are now visible.",
+        title: i18n.t("sitter.toast.profileUpdatedTitle"),
+        text: i18n.t("sitter.toast.profileUpdatedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Profile not updated"),
+    onError: showError("sitter.toast.profileNotUpdated"),
   });
 
   const acceptBooking = useMutation({
     mutationFn: confirmSitterBookingMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Booking confirmed",
-        text: "The pet owner can now see that you accepted the request.",
+        title: i18n.t("sitter.toast.bookingConfirmedTitle"),
+        text: i18n.t("sitter.toast.bookingConfirmedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Booking not confirmed"),
+    onError: showError("sitter.toast.bookingNotConfirmed"),
   });
 
   const rejectBooking = useMutation({
     mutationFn: rejectSitterBookingMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Booking declined",
-        text: "The pet owner can now make other care arrangements.",
+        title: i18n.t("sitter.toast.bookingDeclinedTitle"),
+        text: i18n.t("sitter.toast.bookingDeclinedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Booking not declined"),
+    onError: showError("sitter.toast.bookingNotDeclined"),
   });
 
   const completeBooking = useMutation({
     mutationFn: completeSitterBookingMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Booking completed",
-        text: "This care booking is now recorded as complete.",
+        title: i18n.t("sitter.toast.bookingCompletedTitle"),
+        text: i18n.t("sitter.toast.bookingCompletedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Booking not completed"),
+    onError: showError("sitter.toast.bookingNotCompleted"),
   });
 
   const cancelBooking = useMutation({
     mutationFn: cancelSitterBookingMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Booking cancelled",
-        text: "Both sides can now see that this booking was cancelled.",
+        title: i18n.t("sitter.toast.bookingCancelledTitle"),
+        text: i18n.t("sitter.toast.bookingCancelledText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Booking not cancelled"),
+    onError: showError("sitter.toast.bookingNotCancelled"),
   });
 
   const sendMessage = useMutation({
@@ -206,19 +207,19 @@ export const useSitters = (
         queryKey: SITTER_BOOKING_KEY.messages(variables.bookingId),
       });
     },
-    onError: showError("Message not sent"),
+    onError: showError("sitter.toast.messageNotSent"),
   });
 
   const createReview = useMutation({
     mutationFn: createSitterReviewMutation,
     onSuccess: async () => {
       Toast.success({
-        title: "Review submitted",
-        text: "Your feedback is now visible on the sitter profile.",
+        title: i18n.t("sitter.toast.reviewSubmittedTitle"),
+        text: i18n.t("sitter.toast.reviewSubmittedText"),
       });
       await invalidateSitterData();
     },
-    onError: showError("Review not submitted"),
+    onError: showError("sitter.toast.reviewNotSubmitted"),
   });
 
   return {

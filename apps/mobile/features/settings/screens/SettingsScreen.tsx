@@ -31,8 +31,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { CaretRightIcon } from "phosphor-react-native";
 import { useCallback, useMemo } from "react";
-import { Alert, Linking, Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Alert, Linking, Pressable, View } from "react-native";
 
 const CaretRight = withIconClassName(CaretRightIcon);
 
@@ -53,13 +53,15 @@ const getInitials = (name: string) => {
 
 function ProfileCard({
   name,
-  contact,
+  email,
+  phone,
   avatarUrl,
   editLabel,
   onEdit,
 }: {
   name: string;
-  contact: string;
+  phone: string;
+  email?: string;
   avatarUrl?: string | null;
   editLabel: string;
   onEdit: () => void;
@@ -80,8 +82,17 @@ function ProfileCard({
           {name}
         </Text>
         <Text variant="footnote" className="text-text-muted" numberOfLines={1}>
-          {contact}
+          {phone}
         </Text>
+        {email && (
+          <Text
+            variant="footnote"
+            className="text-text-muted"
+            numberOfLines={1}
+          >
+            {email}
+          </Text>
+        )}
       </View>
       <Button size="sm" variant="outline" onPress={onEdit}>
         {editLabel}
@@ -326,16 +337,19 @@ export function SettingsScreen() {
     [queryClient, settings, t, updateSettings],
   );
 
-  const openExternalLink = useCallback(async (url: string) => {
-    try {
-      await Linking.openURL(url);
-    } catch {
-      Toast.error({
-        title: t("settings.helpLegal.linkFailedTitle"),
-        text: t("settings.helpLegal.linkFailedText"),
-      });
-    }
-  }, [t]);
+  const openExternalLink = useCallback(
+    async (url: string) => {
+      try {
+        await Linking.openURL(url);
+      } catch {
+        Toast.error({
+          title: t("settings.helpLegal.linkFailedTitle"),
+          text: t("settings.helpLegal.linkFailedText"),
+        });
+      }
+    },
+    [t],
+  );
 
   const openSubscription = useCallback(() => {
     router.push("/subscription");
@@ -386,7 +400,7 @@ export function SettingsScreen() {
 
   const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ");
   const displayName = fullName || t("settings.profile.owner");
-  const contact = user?.email || user?.phone || t("common.accountSynced");
+  const contact = user?.phone || t("common.accountSynced");
 
   return (
     <ScreenContainer
@@ -405,7 +419,8 @@ export function SettingsScreen() {
       <View className="gap-22 px-20 pb-120">
         <ProfileCard
           name={displayName}
-          contact={contact}
+          phone={contact}
+          email={user?.email ?? undefined}
           avatarUrl={user?.avatarUrl}
           editLabel={t("settings.profile.edit")}
           onEdit={() => router.push("/profile")}

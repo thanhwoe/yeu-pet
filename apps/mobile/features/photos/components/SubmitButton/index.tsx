@@ -3,6 +3,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { nativeShadows } from "@/theme/shadows";
 import { cva } from "class-variance-authority";
 import { PaperPlaneTiltIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 
 const Icon = withIconClassName(PaperPlaneTiltIcon);
@@ -22,9 +23,11 @@ const variants = cva("self-center bg-background-primary", {
 });
 
 export const SubmitButton = ({ onPress, disabled }: IProps) => {
+  const { t } = useTranslation();
+
   return (
     <TouchableOpacity
-      accessibilityLabel="Upload photo"
+      accessibilityLabel={t("photos.accessibility.upload")}
       accessibilityRole="button"
       activeOpacity={0.82}
       className={variants({

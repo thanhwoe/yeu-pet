@@ -9,11 +9,11 @@ import { IReminder } from "@/interfaces";
 import { cn } from "@/utils";
 import {
   canDeleteReminder,
-  formatReminderRepeat,
+  formatReminderRepeatLabel,
   formatReminderTime,
-  REMINDER_TYPE_LABELS,
 } from "@/utils/reminder";
 import { ClockIcon, PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 const EditIcon = withIconClassName(PencilSimpleIcon);
@@ -38,13 +38,15 @@ export const AgendaItem = ({
   editing,
   deleting,
 }: ItemProps) => {
+  const { t } = useTranslation();
   const isMuted = item.status === "cancelled";
   const canDelete = canDeleteReminder(item.status);
   const canSwipeDelete = canDelete && Boolean(onDelete);
-  const petName = item.pets?.name ?? "No pet";
-  const repeatSummary = formatReminderRepeat(
+  const petName = item.pets?.name ?? t("reminders.noPet");
+  const repeatSummary = formatReminderRepeatLabel(
     item.repeatFrequency,
     item.repeatUntil,
+    t,
   );
 
   return (
@@ -68,7 +70,9 @@ export const AgendaItem = ({
               className:
                 "border-r border-status-info-border bg-status-info-surface",
               contentClassName: "gap-4",
-              accessibilityLabel: `Edit ${item.title} reminder`,
+              accessibilityLabel: t("reminders.accessibility.editReminder", {
+                title: item.title,
+              }),
             }
           : undefined
       }
@@ -89,7 +93,9 @@ export const AgendaItem = ({
               className:
                 "border-l border-status-danger-border bg-status-danger-surface",
               contentClassName: "gap-4",
-              accessibilityLabel: `Delete ${item.title} reminder`,
+              accessibilityLabel: t("reminders.accessibility.deleteReminder", {
+                title: item.title,
+              }),
             }
           : undefined
       }
@@ -104,7 +110,10 @@ export const AgendaItem = ({
       >
         <Pressable
           onPress={() => onPress?.(item)}
-          accessibilityLabel={`Open ${item.title} reminder for ${petName}`}
+          accessibilityLabel={t("reminders.accessibility.openReminder", {
+            petName,
+            title: item.title,
+          })}
           accessibilityRole="button"
           className="flex-row gap-12"
         >
@@ -121,7 +130,7 @@ export const AgendaItem = ({
                   numberOfLines={1}
                   className="text-text-muted"
                 >
-                  {petName} · {REMINDER_TYPE_LABELS[item.type]}
+                  {petName} · {t(`reminders.type.${item.type}`)}
                 </Body>
               </View>
               <ReminderStatusChip status={item.status} />

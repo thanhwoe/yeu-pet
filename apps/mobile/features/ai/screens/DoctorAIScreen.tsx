@@ -21,6 +21,7 @@ import {
   WarningCircleIcon,
 } from "phosphor-react-native";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -36,15 +37,6 @@ const LockKey = withIconClassName(LockKeyIcon);
 const WarningCircle = withIconClassName(WarningCircleIcon);
 const PawPrint = withIconClassName(PawPrintIcon);
 
-const SUGGESTED_PROMPTS = [
-  "My pet is not eating",
-  "Is this symptom urgent?",
-  "Build a feeding routine",
-  "Explain vaccine schedule",
-  "Grooming tips",
-  "Medication reminder help",
-];
-
 const URGENT_KEYWORDS =
   /\b(can'?t breathe|difficulty breathing|gasping|choking|seizure|convulsion|poison|toxin|ate chocolate|xylitol|rat bait|bleeding heavily|won'?t stop bleeding|collapsed|unconscious|extreme weakness|hit by car)\b/i;
 
@@ -52,6 +44,7 @@ type LoadingItem = { id: "loading"; type: "loading" };
 type ChatListItem = IChatMessage | LoadingItem;
 
 export const DoctorAIScreen = () => {
+  const { t } = useTranslation();
   const flatListRef = useRef<FlatList<ChatListItem>>(null);
   const userInfo = useUserInfoStore.use.user();
   const [composerValue, setComposerValue] = useState("");
@@ -61,7 +54,7 @@ export const DoctorAIScreen = () => {
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
-  const pets = petsQuery.data?.data ?? [];
+  const pets = useMemo(() => petsQuery.data?.data ?? [], [petsQuery.data?.data]);
   const {
     entitlements,
     getLimitState,
@@ -234,13 +227,11 @@ export const DoctorAIScreen = () => {
         <View className="border-t border-line-subtle bg-background px-16 pb-safe pt-10">
           <PaywallNotice
             variant="blocking"
-            title="AI message limit reached"
-            description="You have used your free AI messages for this month. Upgrade to Premium for more Pet Care AI support."
-            benefits={[
-              "300 AI messages each month",
-              "AI with pet context",
-              "AI with medical history context",
-            ]}
+            title={t("ai.paywall.blockingTitle")}
+            description={t("ai.paywall.blockingDescription")}
+            benefits={t("ai.paywall.benefits", {
+              returnObjects: true,
+            }) as string[]}
             loading={isUpgrading}
             onAction={() => void upgrade()}
           />
@@ -273,62 +264,70 @@ const PetContextSelector = memo(
     canUsePetContext: boolean;
     onChange: (petId: string | null) => void;
     onLockedPress: () => void;
-  }) => (
-    <View className="gap-8">
-      <View className="flex-row items-center justify-between">
-        <Body variant="body3" weight="semiBold" className="text-text-primary">
-          Pet context
-        </Body>
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerClassName="gap-8 pr-16"
-      >
-        <PetContextChip
-          label="General"
-          selected={selectedPetId === null}
-          onPress={() => onChange(null)}
-          accessibilityLabel="Use general AI context"
-        />
-        {loading ? (
-          <View className="h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14">
-            <Body variant="body4" className="text-text-muted">
-              Loading pets...
-            </Body>
-          </View>
-        ) : pets.length ? (
-          pets.map((pet) => {
-            const locked = !canUsePetContext;
-            const selected = selectedPetId === pet.id && canUsePetContext;
+  }) => {
+    const { t } = useTranslation();
 
-            return (
-              <PetContextChip
-                key={pet.id}
-                avatarUrl={pet.avatarUrl}
-                label={pet.name}
-                locked={locked}
-                selected={selected}
-                onPress={() => (locked ? onLockedPress() : onChange(pet.id))}
-                accessibilityLabel={
-                  locked
-                    ? `${pet.name} pet context requires Premium`
-                    : `Use ${pet.name} as AI pet context`
-                }
-              />
-            );
-          })
-        ) : (
-          <View className="h-44 flex-row items-center gap-8 rounded-full border border-line-subtle bg-background-surface px-14">
-            <PawPrint size={18} className="text-icon-secondary" />
-            <Body variant="body4" className="text-text-muted">
-              No pets yet
-            </Body>
-          </View>
-        )}
-      </ScrollView>
-    </View>
-  ),
+    return (
+      <View className="gap-8">
+        <View className="flex-row items-center justify-between">
+          <Body variant="body3" weight="semiBold" className="text-text-primary">
+            {t("ai.petContext.label")}
+          </Body>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerClassName="gap-8 pr-16"
+        >
+          <PetContextChip
+            label={t("ai.petContext.general")}
+            selected={selectedPetId === null}
+            onPress={() => onChange(null)}
+            accessibilityLabel={t("ai.petContext.generalAccessibility")}
+          />
+          {loading ? (
+            <View className="h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14">
+              <Body variant="body4" className="text-text-muted">
+                {t("ai.petContext.loading")}
+              </Body>
+            </View>
+          ) : pets.length ? (
+            pets.map((pet) => {
+              const locked = !canUsePetContext;
+              const selected = selectedPetId === pet.id && canUsePetContext;
+
+              return (
+                <PetContextChip
+                  key={pet.id}
+                  avatarUrl={pet.avatarUrl}
+                  label={pet.name}
+                  locked={locked}
+                  selected={selected}
+                  onPress={() => (locked ? onLockedPress() : onChange(pet.id))}
+                  accessibilityLabel={
+                    locked
+                      ? t("ai.petContext.lockedAccessibility", {
+                          name: pet.name,
+                        })
+                      : t("ai.petContext.usePetAccessibility", {
+                          name: pet.name,
+                        })
+                  }
+                />
+              );
+            })
+          ) : (
+            <View className="h-44 flex-row items-center gap-8 rounded-full border border-line-subtle bg-background-surface px-14">
+              <PawPrint size={18} className="text-icon-secondary" />
+              <Body variant="body4" className="text-text-muted">
+                {t("ai.petContext.noPets")}
+              </Body>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    );
+  },
 );
 
 PetContextSelector.displayName = "PetContextSelector";
@@ -417,6 +416,7 @@ const QuotaCard = memo(
     upgrading: boolean;
     onUpgrade: () => void;
   }) => {
+    const { t } = useTranslation();
     const safeLimit = limit ?? 0;
     const safeUsage = usage ?? 0;
     const safeRemaining = remaining ?? Math.max(0, safeLimit - safeUsage);
@@ -427,9 +427,9 @@ const QuotaCard = memo(
       return (
         <PaywallNotice
           variant="inline"
-          title={`${safeRemaining} free AI messages remaining`}
-          description="Premium adds more monthly messages plus pet and medical history context."
-          actionLabel="See Premium"
+          title={t("ai.paywall.inlineTitle", { count: safeRemaining })}
+          description={t("ai.paywall.inlineDescription")}
+          actionLabel={t("ai.paywall.inlineAction")}
           loading={upgrading}
           onAction={onUpgrade}
         />
@@ -445,12 +445,14 @@ const QuotaCard = memo(
               weight="semiBold"
               className="text-text-primary"
             >
-              {loading ? "Checking AI messages" : "Premium AI"}
+              {loading ? t("ai.quota.checking") : t("ai.quota.premiumAi")}
             </Body>
             <Body variant="body4" className="text-text-muted">
               {isPremium
-                ? `${Math.max(0, safeLimit - safeUsage)} messages remaining this month with pet context.`
-                : "Premium unlocks more messages, pet context, and recent medical history."}
+                ? t("ai.quota.premiumDescription", {
+                    count: Math.max(0, safeLimit - safeUsage),
+                  })
+                : t("ai.quota.upgradeDescription")}
             </Body>
           </View>
         </View>
@@ -474,44 +476,54 @@ const EmptyChatState = memo(
   }: {
     firstName?: string | null;
     onPromptPress: (prompt: string) => void;
-  }) => (
-    <View className="items-center gap-14 px-8 py-16">
-      <Image
-        contentFit="contain"
-        className="h-78 w-78"
-        source={require("@/assets/images/ai-doctor.png")}
-      />
-      <View className="gap-6">
-        <Text variant="heading" className="text-center text-text-primary">
-          Hi{firstName ? ` ${firstName}` : ""}, how can I help your pet today?
-        </Text>
-        <Text variant="body2" className="text-center text-text-muted">
-          Ask for care information about feeding, grooming, behavior, medication
-          routines, or symptoms.
-        </Text>
-      </View>
-      <View className="flex-row flex-wrap justify-center gap-8">
-        {SUGGESTED_PROMPTS.map((prompt) => (
-          <TouchableOpacity
-            key={prompt}
-            accessibilityLabel={`Use suggested prompt: ${prompt}`}
-            accessibilityRole="button"
-            activeOpacity={0.82}
-            className="min-h-38 justify-center rounded-full border border-line-subtle bg-background-surface px-12"
-            onPress={() => onPromptPress(prompt)}
-          >
-            <Body
-              variant="body4"
-              weight="semiBold"
-              className="text-text-primary"
+  }) => {
+    const { t } = useTranslation();
+    const suggestedPrompts = t("ai.empty.prompts", {
+      returnObjects: true,
+    }) as string[];
+
+    return (
+      <View className="items-center gap-14 px-8 py-16">
+        <Image
+          contentFit="contain"
+          className="h-78 w-78"
+          source={require("@/assets/images/ai-doctor.png")}
+        />
+        <View className="gap-6">
+          <Text variant="heading" className="text-center text-text-primary">
+            {t("ai.empty.greeting", {
+              name: firstName ? ` ${firstName}` : "",
+            })}
+          </Text>
+          <Text variant="body2" className="text-center text-text-muted">
+            {t("ai.empty.description")}
+          </Text>
+        </View>
+        <View className="flex-row flex-wrap justify-center gap-8">
+          {suggestedPrompts.map((prompt) => (
+            <TouchableOpacity
+              key={prompt}
+              accessibilityLabel={t("ai.empty.promptAccessibility", {
+                prompt,
+              })}
+              accessibilityRole="button"
+              activeOpacity={0.82}
+              className="min-h-38 justify-center rounded-full border border-line-subtle bg-background-surface px-12"
+              onPress={() => onPromptPress(prompt)}
             >
-              {prompt}
-            </Body>
-          </TouchableOpacity>
-        ))}
+              <Body
+                variant="body4"
+                weight="semiBold"
+                className="text-text-primary"
+              >
+                {prompt}
+              </Body>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
-  ),
+    );
+  },
 );
 
 EmptyChatState.displayName = "EmptyChatState";
@@ -530,6 +542,7 @@ const MessageComposer = memo(
     onChangeText: (value: string) => void;
     onSubmit: () => void;
   }) => {
+    const { t } = useTranslation();
     const trimmedValue = value.trim();
     const inputHasUrgentConcern = URGENT_KEYWORDS.test(value);
     const sendDisabled = disabled || !trimmedValue;
@@ -537,7 +550,7 @@ const MessageComposer = memo(
     return (
       <View className="gap-8 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
         {inputHasUrgentConcern ? (
-          <InlineWarning text="This may be urgent. Contact a veterinarian or emergency clinic now if your pet is in distress." />
+          <InlineWarning text={t("ai.composer.urgentWarning")} />
         ) : null}
         <View
           className={cn(
@@ -546,7 +559,7 @@ const MessageComposer = memo(
           )}
         >
           <TextInput
-            accessibilityLabel="Doctor AI message"
+            accessibilityLabel={t("ai.composer.messageAccessibility")}
             autoCorrect
             className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
             editable={!loading}
@@ -554,14 +567,14 @@ const MessageComposer = memo(
             onChangeText={onChangeText}
             placeholder={
               loading
-                ? "Pet Care AI is thinking..."
-                : "Ask about feeding, grooming, behavior, symptoms..."
+                ? t("ai.composer.thinking")
+                : t("ai.composer.placeholder")
             }
             textAlignVertical="top"
             value={value}
           />
           <TouchableOpacity
-            accessibilityLabel="Send Doctor AI message"
+            accessibilityLabel={t("ai.composer.sendAccessibility")}
             accessibilityRole="button"
             accessibilityState={{ disabled: sendDisabled, busy: loading }}
             activeOpacity={0.82}

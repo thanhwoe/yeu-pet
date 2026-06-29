@@ -1,6 +1,7 @@
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { ArrowLeftIcon as ArrowLeft, XIcon as X } from "phosphor-react-native";
 import { PropsWithChildren } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, TouchableOpacity, View } from "react-native";
 
 const XIcon = withIconClassName(X);
@@ -16,6 +17,7 @@ export const BottomSheetHeader = ({
   headerMode,
   handleSelectAndCloseOptions,
 }: PropsWithChildren<BottomSheetHeaderProps>) => {
+  const { t } = useTranslation();
   const handleDismiss = () => {
     if (Keyboard.isVisible()) {
       Keyboard.dismiss();
@@ -32,7 +34,7 @@ export const BottomSheetHeader = ({
         <TouchableOpacity
           onPress={handleDismiss}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel={t("common.accessibility.goBack")}
           className="w-[50px] h-[50px] flex-row items-center justify-center"
         >
           <ArrowLeftIcon
@@ -51,7 +53,7 @@ export const BottomSheetHeader = ({
         <TouchableOpacity
           onPress={handleDismiss}
           accessibilityRole="button"
-          accessibilityLabel="Close sheet"
+          accessibilityLabel={t("common.accessibility.closeSheet")}
           className="w-[50px] h-[50px] flex-row items-center justify-center"
         >
           <XIcon size={18} weight="bold" className="text-icon-primary" />

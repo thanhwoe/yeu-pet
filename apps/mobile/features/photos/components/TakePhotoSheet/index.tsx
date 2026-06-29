@@ -11,10 +11,12 @@ import { PHOTO_COMPOSER_PREVIEW_SIZE } from "@/features/photos/utils";
 import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { uploadPhotoMutation } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImagePickerAsset } from "expo-image-picker";
 import { XIcon } from "phosphor-react-native";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 const CloseIcon = withIconClassName(XIcon);
@@ -25,13 +27,8 @@ interface IProps {
   onDismiss: () => void;
 }
 
-type MutationError = {
-  errors?: {
-    message: string;
-  }[];
-};
-
 export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
+  const { t } = useTranslation();
   const [checked, setChecked] = useState<boolean>(true);
   const [caption, setCaption] = useState<string>("");
   const queryClient = useQueryClient();
@@ -45,26 +42,32 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
     upgrade,
   } = useEntitlements();
   const photoLimit = getLimitState("maxPhotos");
-  const photoUsage = entitlements?.usage.photos ?? photoLimit.usage ?? 0;
+  const limitBenefits = useMemo(() => {
+    const benefits = t("photos.limit.benefits", {
+      returnObjects: true,
+    });
+
+    return Array.isArray(benefits) ? benefits.map(String) : [];
+  }, [t]);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: uploadPhotoMutation,
     onSuccess() {
       Toast.success({
-        title: "Photo shared",
-        text: "Your pet photo is now available in the photo feed.",
+        title: t("photos.toast.sharedTitle"),
+        text: t("photos.toast.sharedText"),
       });
       queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
       setCaption("");
       onDismiss();
     },
-    onError(e: MutationError) {
-      Toast.error({
-        title: "Photo not shared",
-        text:
-          e.errors?.[0]?.message ??
-          "Check your connection and try uploading again.",
-      });
+    onError(e) {
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "photos.toast.shareErrorTitle",
+          textKey: "photos.toast.shareErrorText",
+        }),
+      );
     },
   });
 
@@ -83,7 +86,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
     () => (
       <View className="h-48 flex-row items-center justify-end px-20">
         <TouchableOpacity
-          accessibilityLabel="Close photo composer"
+          accessibilityLabel={t("photos.accessibility.closeComposer")}
           accessibilityRole="button"
           activeOpacity={0.82}
           className="h-40 w-40 mt-10 items-center justify-center rounded-full bg-background-card-highlight"
@@ -93,14 +96,14 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
         </TouchableOpacity>
       </View>
     ),
-    [handleDismiss],
+    [handleDismiss, t],
   );
 
   const handleSubmit = async () => {
     if (!photoLimit.allowed) {
       Toast.error({
-        title: "Photo limit reached",
-        text: `Free plan supports ${photoLimit.limit} photo uploads. Upgrade to continue.`,
+        title: t("photos.limit.reachedTitle"),
+        text: t("photos.limit.reachedText", { limit: photoLimit.limit }),
       });
       return;
     }
@@ -109,8 +112,8 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
 
     if (!trimmedCaption) {
       Toast.warn({
-        title: "Add a caption",
-        text: "Write a short caption before sharing this photo.",
+        title: t("photos.toast.captionRequiredTitle"),
+        text: t("photos.toast.captionRequiredText"),
       });
       return;
     }
@@ -135,29 +138,25 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
         {isEntitlementsLoading && !entitlements ? (
           <StateView
             variant="loading"
-            title="Checking your plan"
-            description="Making sure there is room for another memory."
+            title={t("photos.limit.loadingTitle")}
+            description={t("photos.limit.loadingDescription")}
             className="w-full"
           />
         ) : isEntitlementsError && !entitlements ? (
           <StateView
             variant="error"
-            title="Could not check your photo limit"
-            description="Check your connection and try again."
-            actionLabel="Try again"
+            title={t("photos.limit.errorTitle")}
+            description={t("photos.limit.errorDescription")}
+            actionLabel={t("common.tryAgain")}
             onAction={() => void refetchEntitlements()}
             className="w-full"
           />
         ) : !photoLimit.allowed ? (
           <PaywallNotice
             variant="blocking"
-            title="Photo limit reached"
-            description="Upgrade to Premium to save and share more pet memories."
-            benefits={[
-              "More photo storage",
-              "Share memories with the pet community",
-              "Keep every special moment",
-            ]}
+            title={t("photos.limit.reachedTitle")}
+            description={t("photos.limit.reachedDescription")}
+            benefits={limitBenefits}
             loading={isUpgrading}
             onAction={() => void upgrade()}
           />
@@ -166,7 +165,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
             <View style={styles.previewFrame}>
               <Image source={{ uri: image?.uri }} style={styles.previewImage} />
               <CaptionInput
-                placeholder="Bạn đang nghĩ gì?"
+                placeholder={t("photos.composer.captionPlaceholder")}
                 onChangeText={setCaption}
                 containerClassName="absolute bottom-12 left-12 right-12"
               />
@@ -174,7 +173,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
             <View className="w-full flex-row items-center justify-center gap-16">
               <SubmitButton onPress={handleSubmit} disabled={isPending} />
               <TouchableOpacity
-                accessibilityLabel="Toggle photo public visibility"
+                accessibilityLabel={t("photos.accessibility.togglePublic")}
                 accessibilityRole="button"
                 activeOpacity={0.82}
                 className="h-52 flex-row items-center gap-8 rounded-full border-hairline border-line-primary bg-background-card px-16"
@@ -192,7 +191,7 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
                   )}
                 </View>
                 <Text variant="subhead" className="font-medium">
-                  Public
+                  {t("photos.composer.public")}
                 </Text>
               </TouchableOpacity>
             </View>

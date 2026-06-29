@@ -8,6 +8,7 @@ import {
   RegisterOptions,
   useController,
 } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { FileItem } from "./FileItem";
 import { BYTES_PER_MB, DEFAULT_MAX_FILES, DEFAULT_MAX_SIZE_MB } from "./utils";
@@ -40,6 +41,7 @@ export const DocumentsInputController = <
   maxFiles = DEFAULT_MAX_FILES,
   maxSizeMB = DEFAULT_MAX_SIZE_MB,
 }: InputControllerProps<T, TTransformedValues>) => {
+  const { t } = useTranslation();
   const {
     field: { value: newFiles, onChange: onChangeNew, onBlur: onBlurNew },
     fieldState: { error },
@@ -63,8 +65,11 @@ export const DocumentsInputController = <
   const handleUpload = (uploaded: UploadFileParam) => {
     if (uploaded.size && uploaded.size > maxSizeMB * BYTES_PER_MB) {
       Toast.error({
-        title: "File is too large",
-        text: `${uploaded.name} must be smaller than ${maxSizeMB} MB.`,
+        title: t("common.documents.tooLargeTitle"),
+        text: t("common.documents.tooLargeText", {
+          name: uploaded.name,
+          size: maxSizeMB,
+        }),
       });
       return;
     }
@@ -75,16 +80,18 @@ export const DocumentsInputController = <
 
     if (isDuplicate) {
       Toast.error({
-        title: "File already added",
-        text: `${uploaded.name} is already attached to this record.`,
+        title: t("common.documents.alreadyAddedTitle"),
+        text: t("common.documents.alreadyAddedText", {
+          name: uploaded.name,
+        }),
       });
       return;
     }
 
     if (totalCount >= maxFiles) {
       Toast.error({
-        title: "Attachment limit reached",
-        text: `Remove a file before adding more than ${maxFiles} attachments.`,
+        title: t("common.documents.limitReachedTitle"),
+        text: t("common.documents.limitReachedText", { count: maxFiles }),
       });
       return;
     }

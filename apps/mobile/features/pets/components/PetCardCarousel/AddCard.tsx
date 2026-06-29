@@ -10,9 +10,11 @@ import { useEntitlements } from "@/features/subscriptions/useEntitlements";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPagination, IPet, SubscriptionEntitlements } from "@/interfaces";
 import { createPetMutation } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PawPrintIcon, PlusIcon } from "phosphor-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
   Extrapolation,
@@ -35,6 +37,7 @@ export const AddCard = ({
   scrollX: SharedValue<number>;
   currentPetCount: number;
 }) => {
+  const { t } = useTranslation();
   const [showForm, setShowForm] = useState(false);
   const {
     entitlements,
@@ -46,8 +49,13 @@ export const AddCard = ({
     upgrade,
   } = useEntitlements();
   const petLimit = getLimitState("maxPets", currentPetCount);
-  const petUsage =
-    petLimit.usage ?? entitlements?.usage.pets ?? currentPetCount;
+  const limitBenefits = useMemo(() => {
+    const benefits = t("pets.limit.reachedBenefits", {
+      returnObjects: true,
+    });
+
+    return Array.isArray(benefits) ? benefits.map(String) : [];
+  }, [t]);
 
   const zoomStyle = useAnimatedStyle(() => {
     const inputRange = [
@@ -70,10 +78,12 @@ export const AddCard = ({
   const { mutateAsync, isPending } = useMutation({
     mutationFn: createPetMutation,
     onError(e) {
-      Toast.error({
-        title: "Pet not added",
-        text: e.message || "Check the pet details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "pets.toast.addErrorTitle",
+          textKey: "pets.toast.addErrorText",
+        }),
+      );
     },
     onSuccess(res, variable) {
       queryClient.setQueryData(PET_KEY.list(), (old: IPagination<IPet>) => {
@@ -117,8 +127,8 @@ export const AddCard = ({
   const handleSubmit = async (data: IPetInfoForm) => {
     if (!petLimit.allowed) {
       Toast.error({
-        title: "Pet limit reached",
-        text: `Free plan supports ${petLimit.limit} pets. Upgrade to add more.`,
+        title: t("pets.toast.limitReachedTitle"),
+        text: t("pets.toast.limitReachedText", { limit: petLimit.limit }),
       });
       return;
     }
@@ -130,7 +140,7 @@ export const AddCard = ({
     <>
       <CardWrapper
         onPress={() => setShowForm(true)}
-        accessibilityLabel="Add new pet"
+        accessibilityLabel={t("pets.addCard.accessibilityLabel")}
         accessibilityRole="button"
         className="relative items-center justify-center overflow-hidden rounded-28 border-[1.5px] border-dashed border-line-subtle bg-background-surface shadow-sm"
         style={[{ width: CARD_WIDTH, height: CARD_HEIGHT }, zoomStyle]}
@@ -139,10 +149,10 @@ export const AddCard = ({
           <Plus size={30} className="text-feature-pet-accent" />
         </View>
         <Body weight="bold" className="text-text-primary">
-          Add New Pet
+          {t("pets.addCard.title")}
         </Body>
         <Body variant="body2" className="text-text-muted">
-          Tap to register your furry friend
+          {t("pets.addCard.subtitle")}
         </Body>
         <View className="absolute right-24 top-20" style={{ opacity: 0.12 }}>
           <PawPrint
@@ -163,33 +173,31 @@ export const AddCard = ({
         stackBehavior="push"
         visible={showForm}
         onDismiss={() => setShowForm(false)}
-        titleElement={<Body weight="semiBold">Add your pet</Body>}
+        titleElement={<Body weight="semiBold">{t("pets.addCard.sheetTitle")}</Body>}
       >
         <View className="min-h-220 gap-16">
           {isEntitlementsLoading && !entitlements ? (
             <StateView
               variant="loading"
-              title="Checking your plan"
-              description="Making sure there is room for another pet."
+              title={t("pets.limit.loadingTitle")}
+              description={t("pets.limit.loadingDescription")}
             />
           ) : isEntitlementsError && !entitlements ? (
             <StateView
               variant="error"
-              title="Could not check your pet limit"
-              description="Check your connection and try again."
-              actionLabel="Try again"
+              title={t("pets.limit.errorTitle")}
+              description={t("pets.limit.errorDescription")}
+              actionLabel={t("common.tryAgain")}
               onAction={() => void refetchEntitlements()}
             />
           ) : !petLimit.allowed ? (
             <PaywallNotice
               variant="blocking"
-              title="Pet limit reached"
-              description={`Free plan includes ${petLimit.limit} pets. Upgrade to Premium to add more pets and manage care for every companion.`}
-              benefits={[
-                "Unlimited pets",
-                "More reminders and records",
-                "More photos and AI support",
-              ]}
+              title={t("pets.limit.reachedTitle")}
+              description={t("pets.limit.reachedDescription", {
+                limit: petLimit.limit,
+              })}
+              benefits={limitBenefits}
               loading={isUpgrading}
               onAction={() => void upgrade()}
             />

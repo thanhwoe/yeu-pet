@@ -3,6 +3,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { cn } from "@/utils";
 import { ArrowLeftIcon as ArrowLeft } from "phosphor-react-native";
 import { ReactNode, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 const ArrowLeftIcon = withIconClassName(ArrowLeft);
@@ -24,6 +25,7 @@ interface BackHeaderProps {
 }
 
 export const BackHeader = ({ options, navigation }: BackHeaderProps) => {
+  const { t } = useTranslation();
   const [rightButtonWidth, setRightButtonWidth] = useState(27);
 
   const HeaderRight = options.headerRight;
@@ -44,7 +46,7 @@ export const BackHeader = ({ options, navigation }: BackHeaderProps) => {
         navigation.canGoBack() && (
           <TouchableOpacity
             onPress={navigation.goBack}
-            accessibilityLabel="Go back"
+            accessibilityLabel={t("common.accessibility.goBack")}
             accessibilityRole="button"
             style={{ width: MAX_TITLE_WIDTH, height: 27 }}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}

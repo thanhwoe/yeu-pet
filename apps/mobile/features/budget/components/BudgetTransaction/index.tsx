@@ -5,6 +5,7 @@ import {
   IBudgetTransactionSection,
 } from "@/utils/budget";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   SectionList,
   SectionListProps,
@@ -45,10 +46,16 @@ export const BudgetTransaction = memo<IProps>(
     onRetry,
     onAdd,
     compactEmpty,
-    emptyTitle = "No transactions yet",
-    emptyDescription = "Add your first pet-care expense to start tracking this budget.",
+    emptyTitle,
+    emptyDescription,
     ...props
   }) => {
+    const { t } = useTranslation();
+    const resolvedEmptyTitle =
+      emptyTitle ?? t("budget.transactions.emptyTitle");
+    const resolvedEmptyDescription =
+      emptyDescription ?? t("budget.transactions.emptyDescription");
+
     return (
       <SectionList
         keyExtractor={(item) => item.id}
@@ -106,9 +113,9 @@ export const BudgetTransaction = memo<IProps>(
             return (
               <StateView
                 variant="error"
-                title="Transactions could not load"
-                description="Try again to refresh your pet-care spending."
-                actionLabel="Retry"
+                title={t("budget.transactions.loadErrorTitle")}
+                description={t("budget.transactions.loadErrorDescription")}
+                actionLabel={t("common.retry")}
                 onAction={onRetry}
                 className="mt-20"
               />
@@ -121,19 +128,19 @@ export const BudgetTransaction = memo<IProps>(
                 activeOpacity={onAdd ? 0.82 : 1}
                 disabled={!onAdd}
                 accessibilityRole={onAdd ? "button" : undefined}
-                accessibilityLabel={emptyTitle}
+                accessibilityLabel={resolvedEmptyTitle}
                 onPress={onAdd}
                 className="mt-4 rounded-20 border border-dashed border-line-subtle bg-background-surface px-16 py-14"
               >
                 <Body weight="semiBold" className="text-text-primary">
-                  {emptyTitle}
+                  {resolvedEmptyTitle}
                 </Body>
                 <Body
                   variant="body4"
                   className="mt-4 text-text-muted"
                   numberOfLines={2}
                 >
-                  {emptyDescription}
+                  {resolvedEmptyDescription}
                 </Body>
               </TouchableOpacity>
             );
@@ -142,9 +149,9 @@ export const BudgetTransaction = memo<IProps>(
           return (
             <StateView
               variant="empty"
-              title={emptyTitle}
-              description={emptyDescription}
-              actionLabel={onAdd ? "Add transaction" : undefined}
+              title={resolvedEmptyTitle}
+              description={resolvedEmptyDescription}
+              actionLabel={onAdd ? t("budget.actions.addTransaction") : undefined}
               onAction={onAdd}
               className="mt-20"
             />

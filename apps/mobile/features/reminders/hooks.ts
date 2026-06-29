@@ -23,9 +23,11 @@ import {
   REMINDER_DAY_KEY_FORMAT,
   sortRemindersByTime,
 } from "@/utils/reminder";
+import { getApiErrorToast } from "@/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const toSupportedRepeatFrequency = (
   value: IReminder["repeatFrequency"],
@@ -33,6 +35,7 @@ const toSupportedRepeatFrequency = (
   value && value !== "custom" ? value : "none";
 
 export function useReminderCalendar() {
+  const { t } = useTranslation();
   const [agendaEdit, setAgendaEdit] = useState<IReminder>();
   const [agendaDelete, setAgendaDelete] = useState<IReminder>();
   const [selectedDate, setSelectedDate] = useState(
@@ -74,10 +77,12 @@ export function useReminderCalendar() {
   const { mutateAsync: updateReminder, isPending: isUpdating } = useMutation({
     mutationFn: updateReminderMutation,
     onError(e) {
-      Toast.error({
-        title: "Reminder not updated",
-        text: e.message || "Check the reminder details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "reminders.toast.updateErrorTitle",
+          textKey: "reminders.toast.updateErrorText",
+        }),
+      );
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -88,10 +93,12 @@ export function useReminderCalendar() {
   const { mutateAsync: deleteReminder, isPending: isDeleting } = useMutation({
     mutationFn: deleteReminderMutation,
     onError(e) {
-      Toast.error({
-        title: "Reminder not removed",
-        text: e.message || "Refresh your reminders and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "reminders.toast.deleteErrorTitle",
+          textKey: "reminders.toast.deleteErrorText",
+        }),
+      );
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -104,11 +111,13 @@ export function useReminderCalendar() {
 
   const { mutateAsync: cancelReminder, variables: cancellingId } = useMutation({
     mutationFn: cancelReminderMutation,
-    onError(e: Error) {
-      Toast.error({
-        title: "Reminder not cancelled",
-        text: e.message || "Refresh the reminder and try again.",
-      });
+    onError(e) {
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "reminders.toast.cancelErrorTitle",
+          textKey: "reminders.toast.cancelErrorText",
+        }),
+      );
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
@@ -150,14 +159,14 @@ export function useReminderCalendar() {
     if (!canDeleteReminder(agendaDelete.status)) {
       setAgendaDelete(undefined);
       Toast.warn({
-        title: "Cannot delete reminder",
-        text: "Sent or completed reminders are kept in your care history.",
+        title: t("reminders.toast.cannotDeleteTitle"),
+        text: t("reminders.toast.cannotDeleteText"),
       });
       return;
     }
 
     await deleteReminder(agendaDelete.id);
-  }, [agendaDelete, deleteReminder]);
+  }, [agendaDelete, deleteReminder, t]);
 
   const handleCancelDelete = useCallback(() => setAgendaDelete(undefined), []);
 
@@ -235,6 +244,7 @@ export function useReminderCalendar() {
 }
 
 export function useCreateReminderSheet() {
+  const { t } = useTranslation();
   const [openForm, setOpenForm] = useState(false);
   const queryClient = useQueryClient();
 
@@ -257,15 +267,17 @@ export function useCreateReminderSheet() {
       );
       setOpenForm(false);
       Toast.success({
-        title: "Reminder created",
-        text: "The new care task is now on your schedule.",
+        title: t("reminders.toast.createSuccessTitle"),
+        text: t("reminders.toast.createSuccessText"),
       });
     },
     onError: (e) => {
-      Toast.error({
-        title: "Reminder not created",
-        text: e.message || "Check the reminder details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "reminders.toast.createErrorTitle",
+          textKey: "reminders.toast.createErrorText",
+        }),
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });

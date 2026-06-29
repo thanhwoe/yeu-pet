@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/Button";
 import { InputField } from "@/components/ui/InputField";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const EnhancedInputField = withBottomSheetKeyboardEvents(InputField);
@@ -16,6 +17,7 @@ export const BudgetInput = ({
   isLoading,
   defaultValue,
 }: BudgetInputProps) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState<number>(defaultValue ?? 0);
 
   return (
@@ -25,7 +27,7 @@ export const BudgetInput = ({
         autoCorrect={false}
         className="h-50"
         keyboardType="numeric"
-        placeholder="Enter amount"
+        placeholder={t("budget.form.budgetAmount.placeholder")}
         autoFocus
         defaultValue={defaultValue?.toLocaleString()}
         value={value.toLocaleString()}
@@ -39,7 +41,7 @@ export const BudgetInput = ({
         disabled={!value || isLoading}
         onPress={() => onSubmit(value ?? 0)}
       >
-        Submit
+        {t("budget.actions.submit")}
       </Button>
     </View>
   );

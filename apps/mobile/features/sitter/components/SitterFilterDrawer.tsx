@@ -3,9 +3,9 @@ import { InputField } from "@/components/ui/InputField";
 import { Body, Heading } from "@/components/ui/Typography";
 import {
   formatCompactSitterPrice,
+  getSitterRatingOptions,
   MAX_SITTER_FILTER_PRICE,
   SITTER_PRICE_PRESETS,
-  SITTER_RATING_OPTIONS,
   SitterPriceChoice,
 } from "@/features/sitter/filters";
 import { useSitterFilters } from "@/features/sitter/SitterFiltersContext";
@@ -17,6 +17,7 @@ import {
 } from "@react-navigation/drawer";
 import { XIcon } from "phosphor-react-native";
 import { ReactNode, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -32,10 +33,12 @@ const X = withIconClassName(XIcon);
 export const SitterFilterDrawer = ({
   navigation,
 }: DrawerContentComponentProps) => {
+  const { t } = useTranslation();
   const { draftFilters, discardDraft, resetDraft, updateDraft, applyDraft } =
     useSitterFilters();
   const drawerStatus = useDrawerStatus();
   const [validationError, setValidationError] = useState<string>();
+  const ratingOptions = getSitterRatingOptions();
 
   const updateFilters = (filters: Parameters<typeof updateDraft>[0]) => {
     setValidationError(undefined);
@@ -81,11 +84,11 @@ export const SitterFilterDrawer = ({
       >
         <View className="flex-row items-center justify-between border-b border-line-subtle px-20 pb-16 pt-12">
           <Heading variant="h5" weight="bold">
-            Filter sitters
+            {t("sitter.filters.title")}
           </Heading>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Close sitter filters"
+            accessibilityLabel={t("sitter.accessibility.closeFilters")}
             hitSlop={8}
             onPress={closeDrawer}
             className="h-44 w-44 items-center justify-center rounded-full bg-background-surface-muted"
@@ -100,18 +103,18 @@ export const SitterFilterDrawer = ({
           keyboardShouldPersistTaps="handled"
           contentContainerClassName="gap-24 px-20 py-20"
         >
-          <FilterSection title="Location">
+          <FilterSection title={t("sitter.filters.location")}>
             <VietnamProvinceCitySelect
               value={draftFilters.city}
               onChange={(city) => updateFilters({ city })}
-              emptyLabel="All cities"
-              clearLabel="All cities"
+              emptyLabel={t("sitter.filters.allCities")}
+              clearLabel={t("sitter.filters.allCities")}
             />
           </FilterSection>
 
-          <FilterSection title="Minimum rating">
+          <FilterSection title={t("sitter.filters.minRating")}>
             <View className="flex-row flex-wrap gap-8">
-              {SITTER_RATING_OPTIONS.map((option) => (
+              {ratingOptions.map((option) => (
                 <FilterChip
                   key={option.label}
                   label={option.label}
@@ -122,10 +125,10 @@ export const SitterFilterDrawer = ({
             </View>
           </FilterSection>
 
-          <FilterSection title="Max price">
+          <FilterSection title={t("sitter.filters.maxPrice")}>
             <View className="flex-row flex-wrap gap-8">
               <FilterChip
-                label="Any"
+                label={t("sitter.filters.any")}
                 selected={draftFilters.priceChoice === "any"}
                 onPress={() => handlePriceChoice("any")}
               />
@@ -138,7 +141,7 @@ export const SitterFilterDrawer = ({
                 />
               ))}
               <FilterChip
-                label="Custom"
+                label={t("sitter.filters.custom")}
                 selected={draftFilters.priceChoice === "custom"}
                 onPress={() => handlePriceChoice("custom")}
               />
@@ -146,9 +149,9 @@ export const SitterFilterDrawer = ({
 
             {draftFilters.priceChoice === "custom" ? (
               <InputField
-                label="Custom max price"
-                accessibilityLabel="Custom max price in Vietnamese dong"
-                placeholder="Enter amount"
+                label={t("sitter.filters.customMaxPrice")}
+                accessibilityLabel={t("sitter.filters.customMaxPriceA11y")}
+                placeholder={t("sitter.filters.enterAmount")}
                 keyboardType="number-pad"
                 inputMode="numeric"
                 value={draftFilters.customPrice}
@@ -157,7 +160,9 @@ export const SitterFilterDrawer = ({
                   updateFilters({ customPrice: value.replace(/[^0-9]/g, "") })
                 }
                 suffix={<Body variant="body3">₫</Body>}
-                supportText={`Up to ${MAX_SITTER_FILTER_PRICE.toLocaleString("en-US")} ₫`}
+                supportText={t("sitter.filters.supportText", {
+                  price: MAX_SITTER_FILTER_PRICE.toLocaleString("en-US"),
+                })}
                 hasError={Boolean(validationError)}
                 errorMessage={validationError}
               />
@@ -175,7 +180,7 @@ export const SitterFilterDrawer = ({
               resetDraft();
             }}
           >
-            Reset
+            {t("sitter.filters.reset")}
           </Button>
           <Button
             variant="secondary"
@@ -183,7 +188,7 @@ export const SitterFilterDrawer = ({
             wrapperClassName="flex-1"
             onPress={handleApply}
           >
-            Apply filters
+            {t("sitter.filters.apply")}
           </Button>
         </View>
       </KeyboardAvoidingView>

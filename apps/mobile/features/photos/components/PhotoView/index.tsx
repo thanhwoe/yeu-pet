@@ -12,7 +12,7 @@ import {
   toggleLikePhotoMutation,
   unlikePhotoMutation,
 } from "@/services";
-import { abbreviateNumber } from "@/utils";
+import { abbreviateNumber, getApiErrorToast } from "@/utils";
 import {
   InfiniteData,
   useMutation,
@@ -27,6 +27,7 @@ import {
   XIcon,
 } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -40,12 +41,6 @@ interface IProps {
   onDismiss?: () => void;
   onInteractionChange?: (locked: boolean) => void;
 }
-
-type MutationError = {
-  errors?: {
-    message: string;
-  }[];
-};
 
 type PhotoAccount = IPhoto["accounts"] & {
   avatarUrl?: string | null;
@@ -74,6 +69,7 @@ export const PhotoView = ({
   onDismiss,
   onInteractionChange,
 }: IProps) => {
+  const { t } = useTranslation();
   const [showComments, setShowComments] = useState(false);
   const [hasImageError, setHasImageError] = useState(false);
   const commentsOpenRef = useRef(false);
@@ -162,8 +158,8 @@ export const PhotoView = ({
     onSuccess() {
       removePhotoFromListCache(data.id);
       Toast.success({
-        title: "Photo removed",
-        text: "The photo is no longer visible in your feed.",
+        title: t("photos.view.removedTitle"),
+        text: t("photos.view.removedText"),
       });
       void queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
 
@@ -173,11 +169,13 @@ export const PhotoView = ({
         onDismiss?.();
       }
     },
-    onError(e: MutationError) {
-      Toast.error({
-        title: "Photo not removed",
-        text: e.errors?.[0]?.message ?? "Refresh the photo and try again.",
-      });
+    onError(e) {
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "photos.view.removeErrorTitle",
+          textKey: "photos.view.removeErrorText",
+        }),
+      );
     },
     onSettled() {
       onInteractionChange?.(false);
@@ -253,16 +251,16 @@ export const PhotoView = ({
           });
           queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.lists() });
         },
-        onError(e: MutationError) {
+        onError(e) {
           desiredLikedRef.current = serverLikedRef.current;
           setLocalLiked(serverLikedRef.current);
           setLocalLikes(serverLikesRef.current);
-          Toast.error({
-            title: "Reaction not saved",
-            text:
-              e.errors?.[0]?.message ??
-              "Check your connection and try reacting again.",
-          });
+          Toast.error(
+            getApiErrorToast(e, {
+              titleKey: "photos.view.reactionErrorTitle",
+              textKey: "photos.view.reactionErrorText",
+            }),
+          );
         },
         onSettled() {
           isSyncingLikeRef.current = false;
@@ -296,18 +294,18 @@ export const PhotoView = ({
   }, [onInteractionChange]);
   const handleDeletePress = useCallback(() => {
     Alert.alert(
-      "Delete this photo?",
-      "This removes the photo from My Photos and the social feed if it was public.",
+      t("photos.view.deleteTitle"),
+      t("photos.view.deleteMessage"),
       [
-        { text: "Keep photo", style: "cancel" },
+        { text: t("photos.view.deleteCancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("photos.view.delete"),
           style: "destructive",
           onPress: () => deletePhoto({ id: data.id }),
         },
       ],
     );
-  }, [data.id, deletePhoto]);
+  }, [data.id, deletePhoto, t]);
 
   useEffect(
     () => () => {
@@ -329,13 +327,13 @@ export const PhotoView = ({
       ) : (
         <View className="flex-1 items-center justify-center gap-8 px-32">
           <Text variant="heading" className="text-center text-white">
-            Photo unavailable
+            {t("photos.view.photoUnavailableTitle")}
           </Text>
           <Text
             variant="body2"
             className="text-center text-text-tertiary-inverse"
           >
-            Swipe to another photo or close the viewer and try again.
+            {t("photos.view.photoUnavailableDescription")}
           </Text>
         </View>
       )}
@@ -352,7 +350,7 @@ export const PhotoView = ({
       />
 
       <TouchableOpacity
-        accessibilityLabel="Close photo"
+        accessibilityLabel={t("photos.view.close")}
         accessibilityRole="button"
         activeOpacity={0.82}
         className="absolute h-44 w-44 items-center justify-center rounded-full bg-black/35"
@@ -367,7 +365,9 @@ export const PhotoView = ({
         style={{ bottom: insets.bottom + 112, right: 16 }}
       >
         <ActionButton
-          accessibilityLabel={localLiked ? "Unlike photo" : "Like photo"}
+          accessibilityLabel={
+            localLiked ? t("photos.view.unlike") : t("photos.view.like")
+          }
           icon={
             <Heart
               size={31}
@@ -380,7 +380,7 @@ export const PhotoView = ({
         />
 
         <ActionButton
-          accessibilityLabel="Open comments"
+          accessibilityLabel={t("photos.view.openComments")}
           icon={<CommentIcon size={31} weight="bold" className="text-white" />}
           label={abbreviateNumber(localComments)}
           onPress={handleOpenComments}
@@ -388,10 +388,10 @@ export const PhotoView = ({
 
         {deleteAble && (
           <ActionButton
-            accessibilityLabel="Delete photo"
+            accessibilityLabel={t("photos.view.deleteAccessibility")}
             disabled={isDeleting}
             icon={<DeleteIcon size={29} weight="bold" className="text-white" />}
-            label="Delete"
+            label={t("photos.view.delete")}
             onPress={handleDeletePress}
           />
         )}

@@ -1,43 +1,50 @@
+import { i18n } from "@/i18n";
 import { SitterBookingStatus, SitterBookingType } from "@/interfaces";
 
-export const SCREEN_TABS = [
-  { title: "Find care", value: 0 },
-  { title: "Bookings", value: 1 },
+export const getScreenTabs = () => [
+  { title: i18n.t("sitter.booking.tabs.findCare"), value: 0 },
+  { title: i18n.t("sitter.booking.tabs.bookings"), value: 1 },
 ];
 
-export const BOOKING_ROLE_TABS = [
-  { title: "Owner", value: 0 },
-  { title: "Sitter", value: 1 },
+export const getBookingRoleTabs = () => [
+  { title: i18n.t("sitter.booking.roles.owner"), value: 0 },
+  { title: i18n.t("sitter.booking.roles.sitter"), value: 1 },
 ];
 
-export const SERVICE_TYPE_OPTIONS: { label: string; value: SitterBookingType }[] = [
-  { label: "Hourly care", value: "hourly" },
-  { label: "Daily care", value: "daily" },
+export const getServiceTypeOptions = (): {
+  label: string;
+  value: SitterBookingType;
+}[] => [
+  { label: i18n.t("sitter.serviceTypes.hourly"), value: "hourly" },
+  { label: i18n.t("sitter.serviceTypes.daily"), value: "daily" },
 ];
 
-export const RATING_OPTIONS = [1, 2, 3, 4, 5].map((rating) => ({
-  label: `${rating} star${rating > 1 ? "s" : ""}`,
+export const getRatingOptions = () => [1, 2, 3, 4, 5].map((rating) => ({
+  label: i18n.t("sitter.form.ratingOption", { count: rating }),
   value: String(rating),
 }));
 
-export const STATUS_COPY: Record<SitterBookingStatus, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  active: "Active",
-  completed: "Completed",
-  cancelled: "Cancelled",
-  rejected: "Rejected",
+const STATUS_KEYS: Record<SitterBookingStatus, string> = {
+  pending: "sitter.booking.statuses.pending",
+  confirmed: "sitter.booking.statuses.confirmed",
+  active: "sitter.booking.statuses.active",
+  completed: "sitter.booking.statuses.completed",
+  cancelled: "sitter.booking.statuses.cancelled",
+  rejected: "sitter.booking.statuses.rejected",
 };
 
-export const BOOKING_STATUS_FILTERS: {
+export const getBookingStatusLabel = (status: SitterBookingStatus) =>
+  i18n.t(STATUS_KEYS[status]);
+
+export const getBookingStatusFilters = (): {
   label: string;
   value?: SitterBookingStatus;
-}[] = [
-  { label: "All" },
-  { label: "Pending", value: "pending" },
-  { label: "Confirmed", value: "confirmed" },
-  { label: "Completed", value: "completed" },
-  { label: "Cancelled", value: "cancelled" },
+}[] => [
+  { label: i18n.t("sitter.booking.statuses.all") },
+  { label: i18n.t("sitter.booking.statuses.pending"), value: "pending" },
+  { label: i18n.t("sitter.booking.statuses.confirmed"), value: "confirmed" },
+  { label: i18n.t("sitter.booking.statuses.completed"), value: "completed" },
+  { label: i18n.t("sitter.booking.statuses.cancelled"), value: "cancelled" },
 ];
 
 export const SITTER_SKELETON_ITEMS = [0, 1, 2, 3];

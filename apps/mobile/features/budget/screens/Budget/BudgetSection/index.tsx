@@ -11,7 +11,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { withLoading } from "@/hocs/withLoading";
 import { IBudget } from "@/interfaces";
 import { updateBudgetMutation } from "@/services";
-import { cn } from "@/utils";
+import { cn, getApiErrorToast } from "@/utils";
 import { formatBudgetCurrency } from "@/utils/budget";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WalletIcon } from "phosphor-react-native";
@@ -22,6 +22,7 @@ import {
   useImperativeHandle,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import { BudgetInput } from "./BudgetInput";
 
@@ -40,6 +41,7 @@ interface IProps {
 
 export const BudgetSection = memo(
   forwardRef<BudgetSectionRef, IProps>(({ data, loading }, ref) => {
+    const { t } = useTranslation();
     const [showBottomSheet, setShowBottomSheet] = useState(false);
 
     const queryClient = useQueryClient();
@@ -51,10 +53,12 @@ export const BudgetSection = memo(
         setShowBottomSheet(false);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Budget not updated",
-          text: e.message || "Check the amount and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.budgetUpdateErrorTitle",
+            textKey: "budget.toast.budgetUpdateErrorText",
+          }),
+        );
       },
     });
 
@@ -83,7 +87,7 @@ export const BudgetSection = memo(
         <View className="rounded-16 bg-background-card-highlight py-16 px-24 gap-8">
           <View className="flex-row justify-between items-center">
             <View className="gap-8 flex-1 mr-12">
-              <Body>Monthly budget</Body>
+              <Body>{t("budget.screen.monthlyBudget")}</Body>
               <LoadableHeading
                 loading={loading}
                 loadingSize="w-120 h-50"
@@ -94,7 +98,7 @@ export const BudgetSection = memo(
             </View>
             <TouchableOpacity
               disabled={loading}
-              accessibilityLabel="Edit monthly budget"
+              accessibilityLabel={t("budget.accessibility.editMonthlyBudget")}
               accessibilityRole="button"
               accessibilityState={{ disabled: loading }}
               onPress={() => setShowBottomSheet(true)}
@@ -116,7 +120,9 @@ export const BudgetSection = memo(
               weight="bold"
               className="flex-1 mr-8"
             >
-              Spent: {formatBudgetCurrency(spent)}
+              {t("budget.screen.spent", {
+                amount: formatBudgetCurrency(spent),
+              })}
             </LoadableBody>
             <LoadableBody loading={loading} loadingSize="w-40 h-20">
               {usagePercent}%
@@ -124,7 +130,7 @@ export const BudgetSection = memo(
           </View>
           <ProgressBar progress={usagePercent} height={12} key={usagePercent} />
           <View className="flex-row justify-between items-center mt-8">
-            <Body weight="semiBold">Remaining</Body>
+            <Body weight="semiBold">{t("budget.screen.remaining")}</Body>
             <View className="flex-1 ml-8">
               <LoadableHeading
                 loading={loading}
@@ -144,7 +150,9 @@ export const BudgetSection = memo(
         <BottomSheet
           visible={showBottomSheet}
           onDismiss={() => setShowBottomSheet(false)}
-          titleElement={<Body weight="semiBold">Set monthly budget</Body>}
+          titleElement={
+            <Body weight="semiBold">{t("budget.actions.setMonthlyBudget")}</Body>
+          }
           useScrollView
           keyboardBehavior="interactive"
         >

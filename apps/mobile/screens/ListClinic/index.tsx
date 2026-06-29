@@ -14,11 +14,13 @@ import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CaretDownIcon } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
 
 export function ListClinicScreen() {
+  const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
   const [showCityFilter, setShowCityFilter] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
@@ -70,16 +72,18 @@ export function ListClinicScreen() {
 
   const listEmptyComponent = useMemo(
     () => (
-      <Text className="text-center text-gray-500 mt-5">No clinics found</Text>
+      <Text className="text-center text-gray-500 mt-5">
+        {t("common.places.noClinicFound")}
+      </Text>
     ),
-    [],
+    [t],
   );
 
   return (
     <ScreenContainer className="!pt-0">
       <SearchInput
         onChange={setSearchKey}
-        placeholder="Enter clinic name"
+        placeholder={t("common.places.enterClinicName")}
         className="mb-4"
       />
       <TouchableOpacity
@@ -96,7 +100,7 @@ export function ListClinicScreen() {
             "text-text-secondary": !selectedCity,
           })}
         >
-          {selectedCityLabel ?? "City"}
+          {selectedCityLabel ?? t("common.places.city")}
         </Text>
         <CaretDown size={20} />
       </TouchableOpacity>
@@ -112,7 +116,9 @@ export function ListClinicScreen() {
       <BottomSheet
         visible={showCityFilter}
         onDismiss={closeCityFilter}
-        titleElement={<Text className="font-medium">Select City</Text>}
+        titleElement={
+          <Text className="font-medium">{t("common.places.selectCity")}</Text>
+        }
       >
         {LIST_CITY.map((item) => (
           <TouchableOpacity

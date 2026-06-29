@@ -14,11 +14,13 @@ import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CaretDownIcon } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
 
 export function ListSpaScreen() {
+  const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
   const [showCityFilter, setShowCityFilter] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
@@ -70,16 +72,18 @@ export function ListSpaScreen() {
 
   const listEmptyComponent = useMemo(
     () => (
-      <Text className="text-center text-gray-500 mt-5">No spas found</Text>
+      <Text className="text-center text-gray-500 mt-5">
+        {t("common.places.noSpaFound")}
+      </Text>
     ),
-    [],
+    [t],
   );
 
   return (
     <ScreenContainer className="!pt-0">
       <SearchInput
         onChange={setSearchKey}
-        placeholder="Enter spa name"
+        placeholder={t("common.places.enterSpaName")}
         className="mb-4"
       />
       <TouchableOpacity
@@ -97,7 +101,7 @@ export function ListSpaScreen() {
             "text-text-secondary": !selectedCity,
           })}
         >
-          {selectedCityLabel ?? "City"}
+          {selectedCityLabel ?? t("common.places.city")}
         </Text>
         <CaretDown size={20} />
       </TouchableOpacity>
@@ -112,7 +116,9 @@ export function ListSpaScreen() {
       />
       <BottomSheet
         visible={showCityFilter}
-        titleElement={<Text className="font-medium">Select City</Text>}
+        titleElement={
+          <Text className="font-medium">{t("common.places.selectCity")}</Text>
+        }
         onDismiss={closeCityFilter}
       >
         {LIST_CITY.map((item) => (

@@ -16,6 +16,7 @@ import { StateView } from "@/components/ui/StateView";
 import { AddCard } from "./AddCard";
 import { DetailCard } from "./DetailCard";
 import { CARD_HEIGHT, CARD_WIDTH } from "./utils";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
   onEdit: (value: IPet) => void;
@@ -23,6 +24,7 @@ interface IProps {
 }
 
 export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
+  const { t } = useTranslation();
   const {
     data: petData,
     isError,
@@ -75,9 +77,9 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
       <View className="mx-20 mt-40 rounded-24 border border-line-subtle bg-background-surface">
         <StateView
           variant="error"
-          title="Pets could not load"
-          description="Try again to see your pet cards."
-          actionLabel="Retry"
+          title={t("pets.carousel.loadErrorTitle")}
+          description={t("pets.carousel.loadErrorDescription")}
+          actionLabel={t("common.retry")}
           onAction={() => refetch()}
         />
       </View>

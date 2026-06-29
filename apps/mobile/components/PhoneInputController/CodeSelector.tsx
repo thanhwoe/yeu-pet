@@ -1,6 +1,7 @@
 import { PHONE_CODE, PHONE_CODE_PREFIX } from "@/constants/phoneCodes";
 import { cn } from "@/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { BottomSheet } from "../ui/BottomSheet";
@@ -15,6 +16,7 @@ export const CountryCodeSelector = ({
   onSelect,
   value,
 }: CountryCodeSelectorProps) => {
+  const { t } = useTranslation();
   const [showOptions, setShowOptions] = useState(false);
 
   const renderItem = ({ item }: { item: (typeof PHONE_CODE)[0] }) => (
@@ -29,7 +31,7 @@ export const CountryCodeSelector = ({
           setShowOptions(false);
         }}
       >
-        {item.countryName} (+{item.code})
+        {t(item.countryKey)} (+{item.code})
       </Body>
     </View>
   );
@@ -47,7 +49,9 @@ export const CountryCodeSelector = ({
         visible={showOptions}
         onDismiss={() => setShowOptions(false)}
         useScrollView
-        titleElement={<Body weight="semiBold">Select country code</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("common.selectCountryCode")}</Body>
+        }
       >
         <FlatList
           scrollEnabled={false}

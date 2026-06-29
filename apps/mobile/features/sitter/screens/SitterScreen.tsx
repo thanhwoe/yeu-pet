@@ -22,7 +22,7 @@ import {
   SitterSkeleton,
   StatusFilterRow,
 } from "@/features/sitter/components";
-import { BOOKING_ROLE_TABS, SCREEN_TABS } from "@/features/sitter/constants";
+import { getBookingRoleTabs, getScreenTabs } from "@/features/sitter/constants";
 import { hasSitterFilters } from "@/features/sitter/filters";
 import { useSitterFilters } from "@/features/sitter/SitterFiltersContext";
 import {
@@ -43,12 +43,14 @@ import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { PencilSimpleIcon, SlidersHorizontalIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Pressable, View } from "react-native";
 
 const PencilSimple = withIconClassName(PencilSimpleIcon);
 const SlidersHorizontal = withIconClassName(SlidersHorizontalIcon);
 
 export const SitterScreen = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
   const { appliedFilters, filterRevision, beginEditing, clearAppliedFilters } =
@@ -61,9 +63,11 @@ export const SitterScreen = () => {
   const openedBookingIdRef = useRef<string | undefined>(undefined);
   const { data: linkedBooking } = useSitterBookingDetail(bookingId);
   const currentUser = useUserInfoStore.use.user();
-  const [activeTab, setActiveTab] = useState(SCREEN_TABS[0].value);
+  const screenTabs = getScreenTabs();
+  const bookingRoleTabs = getBookingRoleTabs();
+  const [activeTab, setActiveTab] = useState(screenTabs[0].value);
   const [bookingRoleTab, setBookingRoleTab] = useState(
-    BOOKING_ROLE_TABS[0].value,
+    bookingRoleTabs[0].value,
   );
   const [bookingStatus, setBookingStatus] = useState<
     SitterBookingStatus | undefined
@@ -156,12 +160,12 @@ export const SitterScreen = () => {
 
   useEffect(() => {
     if (tab === "bookings" || bookingId) {
-      setActiveTab(SCREEN_TABS[1].value);
+      setActiveTab(screenTabs[1].value);
     }
     if (role === "sitter" || bookingId) {
-      setBookingRoleTab(BOOKING_ROLE_TABS[1].value);
+      setBookingRoleTab(bookingRoleTabs[1].value);
     }
-  }, [bookingId, role, tab]);
+  }, [bookingId, bookingRoleTabs, role, screenTabs, tab]);
 
   useEffect(() => {
     if (!bookingId || openedBookingIdRef.current === bookingId) {
@@ -252,13 +256,13 @@ export const SitterScreen = () => {
         <View className="flex-row items-start justify-between gap-12">
           <View className="flex-1">
             <Heading variant="h4" weight="bold">
-              Sitter
+              {t("sitter.screen.title")}
             </Heading>
           </View>
           <View className="flex-row gap-8">
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Filter sitters"
+              accessibilityLabel={t("sitter.accessibility.filterSitters")}
               accessibilityState={{ selected: hasActiveFilters }}
               onPress={() => {
                 beginEditing();
@@ -282,8 +286,8 @@ export const SitterScreen = () => {
               accessibilityRole="button"
               accessibilityLabel={
                 mySitterProfile
-                  ? "Edit sitter profile"
-                  : "Create sitter profile"
+                  ? t("sitter.accessibility.editProfile")
+                  : t("sitter.accessibility.createProfile")
               }
               onPress={() => setProfileFormOpen(true)}
               className="h-44 w-44 items-center justify-center rounded-full border border-line-subtle bg-background-surface"
@@ -296,10 +300,9 @@ export const SitterScreen = () => {
       </View>
 
       <Tabs
-        tabs={SCREEN_TABS}
+        tabs={screenTabs}
         active={activeTab}
         onChange={setActiveTab}
-        size="large"
         className="mb-16 self-center"
       />
 
@@ -322,9 +325,9 @@ export const SitterScreen = () => {
               return (
                 <StateView
                   variant="error"
-                  title="Could not load sitters"
-                  description="Check your connection and try again."
-                  actionLabel="Try again"
+                  title={t("sitter.screen.loadErrorTitle")}
+                  description={t("sitter.screen.loadErrorDescription")}
+                  actionLabel={t("common.tryAgain")}
                   onAction={() => refetch()}
                 />
               );
@@ -333,13 +336,15 @@ export const SitterScreen = () => {
             return (
               <StateView
                 variant="empty"
-                title="No sitters match"
+                title={t("sitter.screen.emptySittersTitle")}
                 description={
                   hasActiveFilters
-                    ? "Clear filters to see more trusted sitters nearby."
-                    : "Available pet sitters will appear here."
+                    ? t("sitter.screen.emptyFilteredDescription")
+                    : t("sitter.screen.emptySittersDescription")
                 }
-                actionLabel={hasActiveFilters ? "Clear filters" : undefined}
+                actionLabel={
+                  hasActiveFilters ? t("sitter.filters.reset") : undefined
+                }
                 onAction={hasActiveFilters ? clearAppliedFilters : undefined}
               />
             );
@@ -349,7 +354,7 @@ export const SitterScreen = () => {
         <View className="flex-1">
           <SitterProfileStatus profile={mySitterProfile} />
           <Tabs
-            tabs={BOOKING_ROLE_TABS}
+            tabs={bookingRoleTabs}
             active={bookingRoleTab}
             onChange={setBookingRoleTab}
             className="mb-14 self-center"
@@ -372,9 +377,11 @@ export const SitterScreen = () => {
                   return (
                     <StateView
                       variant="error"
-                      title="Bookings could not load"
-                      description="Try again to refresh your sitter bookings."
-                      actionLabel="Retry"
+                      title={t("sitter.booking.empty.bookingsErrorTitle")}
+                      description={t(
+                        "sitter.booking.empty.bookingsErrorDescription",
+                      )}
+                      actionLabel={t("common.retry")}
                       onAction={refetchAll}
                     />
                   );
@@ -384,8 +391,10 @@ export const SitterScreen = () => {
                   return (
                     <StateView
                       variant="empty"
-                      title="Create your sitter profile"
-                      description="Use the pencil in the header to create your sitter profile before receiving requests."
+                      title={t("sitter.booking.empty.createProfileTitle")}
+                      description={t(
+                        "sitter.booking.empty.createProfileDescription",
+                      )}
                     />
                   );
                 }
@@ -393,11 +402,11 @@ export const SitterScreen = () => {
                 return (
                   <StateView
                     variant="empty"
-                    title="No bookings yet"
+                    title={t("sitter.booking.empty.noBookingsTitle")}
                     description={
                       activeBookingRole === "owner"
-                        ? "Requests you send to sitters will appear here."
-                        : "Requests from pet owners will appear here after your profile is available."
+                        ? t("sitter.booking.empty.noBookingsOwner")
+                        : t("sitter.booking.empty.noBookingsSitter")
                     }
                   />
                 );
@@ -410,7 +419,9 @@ export const SitterScreen = () => {
       <BottomSheet
         visible={!!selectedSitter}
         onDismiss={() => setSelectedSitter(null)}
-        titleElement={<Body weight="semiBold">Sitter profile</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("sitter.profile.profileTitle")}</Body>
+        }
         useScrollView
       >
         {selectedSitter ? (
@@ -431,7 +442,9 @@ export const SitterScreen = () => {
       <BottomSheet
         visible={!!bookingSitter}
         onDismiss={() => setBookingSitter(null)}
-        titleElement={<Body weight="semiBold">Request care</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("sitter.screen.requestCare")}</Body>
+        }
         useScrollView
       >
         {bookingSitter ? (
@@ -449,7 +462,9 @@ export const SitterScreen = () => {
         onDismiss={() => setProfileFormOpen(false)}
         titleElement={
           <Body weight="semiBold">
-            {mySitterProfile ? "Edit sitter profile" : "Become a sitter"}
+            {mySitterProfile
+              ? t("sitter.profile.edit")
+              : t("sitter.profile.become")}
           </Body>
         }
         useScrollView
@@ -467,7 +482,11 @@ export const SitterScreen = () => {
       <BottomSheet
         visible={!!selectedBooking}
         onDismiss={() => setSelectedBooking(null)}
-        titleElement={<Body weight="semiBold">Booking detail</Body>}
+        titleElement={
+          <Body weight="semiBold">
+            {t("sitter.booking.detail.bookingDetail")}
+          </Body>
+        }
         useScrollView
       >
         {selectedBooking ? (
@@ -490,12 +509,15 @@ export const SitterScreen = () => {
             }}
             onReject={(booking) => {
               Alert.alert(
-                "Reject booking?",
-                "This will let the owner know you cannot take this request.",
+                t("sitter.booking.rejectAlert.title"),
+                t("sitter.booking.rejectAlert.message"),
                 [
-                  { text: "Keep", style: "cancel" },
                   {
-                    text: "Reject",
+                    text: t("sitter.booking.rejectAlert.keep"),
+                    style: "cancel",
+                  },
+                  {
+                    text: t("sitter.booking.rejectAlert.confirm"),
                     style: "destructive",
                     onPress: () => {
                       void rejectBooking(booking.id).then(() =>
@@ -513,7 +535,9 @@ export const SitterScreen = () => {
       <BottomSheet
         visible={!!bookingForCancel}
         onDismiss={() => setBookingForCancel(null)}
-        titleElement={<Body weight="semiBold">Cancel booking</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("sitter.booking.actions.cancel")}</Body>
+        }
         useScrollView
       >
         <CancelForm
@@ -525,7 +549,9 @@ export const SitterScreen = () => {
       <BottomSheet
         visible={!!bookingForReview}
         onDismiss={() => setBookingForReview(null)}
-        titleElement={<Body weight="semiBold">Review sitter</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("sitter.screen.reviewSitter")}</Body>
+        }
         useScrollView
       >
         <ReviewForm loading={isCreatingReview} onSubmit={handleCreateReview} />

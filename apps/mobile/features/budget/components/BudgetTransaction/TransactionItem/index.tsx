@@ -6,6 +6,7 @@ import { hexToRgba } from "@/utils";
 import { formatBudgetCurrency } from "@/utils/budget";
 import { PencilSimpleIcon, TrashIcon } from "phosphor-react-native";
 import { memo, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 const EditIcon = withIconClassName(PencilSimpleIcon);
@@ -23,7 +24,9 @@ interface IProps {
 
 export const TransactionItem = memo(
   ({ data, onDelete, onEdit, deleting, editing }: IProps) => {
-    const description = data.description?.trim() || "Pet-care expense";
+    const { t } = useTranslation();
+    const description =
+      data.description?.trim() || t("budget.transactions.defaultDescription");
     const categoryName = data.budgetCategories.name?.trim();
     const petName = data.pets?.name?.trim();
     const amountLabel = formatBudgetCurrency(data.amount, { expense: true });
@@ -65,7 +68,9 @@ export const TransactionItem = memo(
                 className:
                   "border-r border-status-info-border bg-status-info-surface",
                 contentClassName: "gap-4",
-                accessibilityLabel: `Edit ${description}`,
+                accessibilityLabel: t("budget.accessibility.editTransaction", {
+                  description,
+                }),
               }
             : undefined
         }
@@ -87,7 +92,12 @@ export const TransactionItem = memo(
                 className:
                   "border-l border-status-danger-border bg-status-danger-surface",
                 contentClassName: "gap-4",
-                accessibilityLabel: `Delete ${description}`,
+                accessibilityLabel: t(
+                  "budget.accessibility.deleteTransaction",
+                  {
+                    description,
+                  },
+                ),
               }
             : undefined
         }

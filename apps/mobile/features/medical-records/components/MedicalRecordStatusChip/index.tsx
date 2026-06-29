@@ -1,17 +1,12 @@
 import { Body } from "@/components/ui/Typography";
 import { IMedicalRecord } from "@/interfaces";
 import { cva } from "class-variance-authority";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface MedicalRecordStatusChipProps {
   status: IMedicalRecord["attachmentStatus"];
 }
-
-const STATUS_LABEL: Record<IMedicalRecord["attachmentStatus"], string> = {
-  ready: "Ready",
-  processing: "Processing",
-  failed: "Failed",
-};
 
 const wrapperStyle = cva(
   "self-start rounded-full border px-10 py-5",
@@ -39,10 +34,12 @@ const textStyle = cva("font-semiBold", {
 export const MedicalRecordStatusChip = ({
   status,
 }: MedicalRecordStatusChipProps) => {
+  const { t } = useTranslation();
+
   return (
     <View className={wrapperStyle({ status })}>
       <Body variant="body5" className={textStyle({ status })}>
-        {STATUS_LABEL[status]}
+        {t(`medicalRecords.status.${status}`)}
       </Body>
     </View>
   );

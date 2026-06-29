@@ -24,6 +24,7 @@ import {
 } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -38,22 +39,26 @@ const Camera = withIconClassName(CameraIcon);
 const EnvelopeSimple = withIconClassName(EnvelopeSimpleIcon);
 
 const MAX_AVATAR_SIZE = 5 * 1024 * 1024;
-const profileDetailSchema = z.object({
-  firstName: z.string().trim().min(2, "First name is too short").max(50),
-  lastName: z.string().trim().min(2, "Last name is too short").max(50),
-  email: z.email("Enter a valid email").trim().toLowerCase(),
-});
 
-type ProfileDetailInput = z.input<typeof profileDetailSchema>;
-type ProfileDetailForm = z.output<typeof profileDetailSchema>;
+type ProfileDetailInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+type ProfileDetailForm = ProfileDetailInput;
 
 const normalizeEmail = (email?: string | null) =>
   email?.trim().toLowerCase() ?? "";
 
-const getDisplayName = (firstName?: string, lastName?: string) =>
-  [firstName, lastName].filter(Boolean).join(" ") || "YeuPet owner";
+const getDisplayName = (
+  firstName: string | undefined,
+  lastName: string | undefined,
+  fallback: string,
+) => [firstName, lastName].filter(Boolean).join(" ") || fallback;
 
 export function ProfileDetailScreen() {
+  const { t } = useTranslation();
   const user = useUserInfoStore.use.user();
   const updateUser = useUserInfoStore.use.updateUser();
   const setOptimisticUserAvatar =
@@ -62,6 +67,23 @@ export function ProfileDetailScreen() {
     useUserInfoStore.use.rollbackOptimisticUserAvatar();
   const queryClient = useQueryClient();
   const [avatar, setAvatar] = useState<UploadFileParam | null>(null);
+  const profileDetailSchema = useMemo(
+    () =>
+      z.object({
+        firstName: z
+          .string()
+          .trim()
+          .min(2, t("profile.validation.firstName"))
+          .max(50),
+        lastName: z
+          .string()
+          .trim()
+          .min(2, t("profile.validation.lastName"))
+          .max(50),
+        email: z.email(t("profile.validation.email")).trim().toLowerCase(),
+      }),
+    [t],
+  );
 
   const defaultValues = useMemo<ProfileDetailInput>(
     () => ({
@@ -88,7 +110,10 @@ export function ProfileDetailScreen() {
       updateUser(updatedUser);
       const effectiveUser = useUserInfoStore.getState().user ?? updatedUser;
 
-      queryClient.setQueryData(USER_KEY.detail(effectiveUser.id), effectiveUser);
+      queryClient.setQueryData(
+        USER_KEY.detail(effectiveUser.id),
+        effectiveUser,
+      );
     },
     [queryClient, updateUser],
   );
@@ -153,9 +178,9 @@ export function ProfileDetailScreen() {
 
     if (!permission.granted) {
       Alert.alert(
-        "Photo access needed",
-        "Allow photo access to choose a new profile picture.",
-        [{ text: "OK" }],
+        t("profile.photoPermission.title"),
+        t("profile.photoPermission.message"),
+        [{ text: t("common.ok") }],
       );
       return;
     }
@@ -172,8 +197,8 @@ export function ProfileDetailScreen() {
     const asset = result.assets[0];
     if (asset.fileSize && asset.fileSize > MAX_AVATAR_SIZE) {
       Toast.error({
-        title: "Image is too large",
-        text: "Choose a profile image smaller than 5 MB.",
+        title: t("profile.toast.avatarTooLargeTitle"),
+        text: t("profile.toast.avatarTooLargeText"),
       });
       return;
     }
@@ -184,7 +209,7 @@ export function ProfileDetailScreen() {
       name: asset.fileName ?? `avatar_${Date.now()}.jpg`,
       size: asset.fileSize,
     });
-  }, []);
+  }, [t]);
 
   const handleSave = useCallback(
     async (data: ProfileDetailForm) => {
@@ -197,8 +222,8 @@ export function ProfileDetailScreen() {
 
       if (!nameChanged && !emailChanged && !avatar) {
         Toast.warn({
-          title: "Nothing to save",
-          text: "Update your name, email, or photo before saving.",
+          title: t("profile.toast.nothingToSaveTitle"),
+          text: t("profile.toast.nothingToSaveText"),
         });
         return;
       }
@@ -232,28 +257,28 @@ export function ProfileDetailScreen() {
         }
 
         Toast.success({
-          title: "Profile updated",
-          text: "Your account details are now up to date.",
+          title: t("profile.toast.profileUpdatedTitle"),
+          text: t("profile.toast.profileUpdatedText"),
         });
         router.back();
       } catch (error) {
         Toast.error({
-          title: "Profile not updated",
+          title: t("profile.toast.profileNotUpdatedTitle"),
           text:
             error instanceof Error
               ? error.message
-              : "Could not save profile. Please try again.",
+              : t("profile.toast.profileNotUpdatedFallback"),
         });
       }
     },
-    [avatar, requestEmailChange, updateProfile, uploadAvatar, user],
+    [avatar, requestEmailChange, t, updateProfile, uploadAvatar, user],
   );
 
   if (!user) {
     return (
       <ScreenContainer className="items-center justify-center">
         <Text variant="title3" className="text-center font-semibold">
-          Profile unavailable
+          {t("profile.detail.profileUnavailable")}
         </Text>
       </ScreenContainer>
     );
@@ -268,7 +293,7 @@ export function ProfileDetailScreen() {
         <View className="flex-row items-center gap-12">
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t("profile.accessibility.goBack")}
             onPress={() => router.back()}
             className="h-44 w-44 items-center justify-center rounded-full bg-background-surface"
           >
@@ -282,11 +307,11 @@ export function ProfileDetailScreen() {
               size="huge"
               source={{ uri: avatarUri }}
               onPress={handlePickAvatar}
-              accessibilityLabel="Profile avatar"
+              accessibilityLabel={t("profile.accessibility.profileAvatar")}
             />
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Change profile photo"
+              accessibilityLabel={t("profile.accessibility.changePhoto")}
               onPress={handlePickAvatar}
               className="absolute -bottom-2 -right-6 h-38 w-38 items-center justify-center rounded-full bg-background-primary"
             >
@@ -299,14 +324,23 @@ export function ProfileDetailScreen() {
           </View>
           <View className="items-center gap-2">
             <Text variant="title3" className="font-bold">
-              {getDisplayName(user.firstName, user.lastName)}
+              {getDisplayName(
+                user.firstName,
+                user.lastName,
+                t("profile.detail.fallbackName"),
+              )}
             </Text>
             <Text variant="footnote" className="text-text-muted">
-              {user.email ?? user.phone}
+              {user.phone}
             </Text>
+            {user.email && (
+              <Text variant="footnote" className="text-text-muted">
+                {user.email}
+              </Text>
+            )}
           </View>
           <Button size="sm" variant="outline" onPress={handlePickAvatar}>
-            Change photo
+            {t("profile.detail.changePhoto")}
           </Button>
         </View>
 
@@ -314,22 +348,22 @@ export function ProfileDetailScreen() {
           <InputController<ProfileDetailInput, ProfileDetailForm>
             control={control}
             name="firstName"
-            label="First name"
-            placeholder="First name"
+            label={t("profile.form.firstName.label")}
+            placeholder={t("profile.form.firstName.placeholder")}
             autoCapitalize="words"
           />
           <InputController<ProfileDetailInput, ProfileDetailForm>
             control={control}
             name="lastName"
-            label="Last name"
-            placeholder="Last name"
+            label={t("profile.form.lastName.label")}
+            placeholder={t("profile.form.lastName.placeholder")}
             autoCapitalize="words"
           />
           <InputController<ProfileDetailInput, ProfileDetailForm>
             control={control}
             name="email"
-            label="Email"
-            placeholder="Email"
+            label={t("profile.form.email.label")}
+            placeholder={t("profile.form.email.placeholder")}
             keyboardType="email-address"
             autoCapitalize="none"
             prefix={
@@ -343,7 +377,7 @@ export function ProfileDetailScreen() {
           loading={isSaving}
           onPress={() => handleSubmit(handleSave)()}
         >
-          Save changes
+          {t("profile.detail.saveChanges")}
         </Button>
       </KeyboardAvoidingView>
     </ScreenContainer>

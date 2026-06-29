@@ -2,6 +2,7 @@ import { SCREEN_WIDTH } from "@/constants/common";
 import { IPet } from "@/interfaces";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { Image } from "@/components/ui/Image";
@@ -16,6 +17,7 @@ interface IProps {
 const itemWidth = SCREEN_WIDTH - 24;
 
 export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
+  const { t } = useTranslation();
   const listRef = useRef<FlatList<IPet>>(null);
   const router = useRouter();
 
@@ -74,24 +76,24 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
               source={require("@/assets/images/funny-cat.png")}
             />
           </View>
-          <Text>Don&apos;t forget to add a reminder</Text>
+          <Text>{t("medicalRecords.timeline.emptyReminder")}</Text>
           <Button
             variant="secondary"
             onPress={() => router.push("/(tabs)/(reminder)")}
           >
-            Add reminder
+            {t("medicalRecords.timeline.addReminder")}
           </Button>
         </View>
       </View>
     ),
-    [router],
+    [router, t],
   );
 
   const keyExtractor = (item: IPet) => item.id;
   if (isLoading) {
     return (
       <View>
-        <Text variant="caption2">loading</Text>
+        <Text variant="caption2">{t("medicalRecords.timeline.loading")}</Text>
       </View>
     );
   }

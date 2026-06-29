@@ -18,10 +18,30 @@ import { PetPickerController } from "@/components/PetPickerController";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { withBottomSheetKeyboardEvents } from "@/hocs/withBottomSheetKeyboardEvents";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, View } from "react-native";
 
 const EnhancedInputController = withBottomSheetKeyboardEvents(InputController);
+const RECORD_TYPE_OPTIONS = [
+  {
+    labelKey: "medicalRecords.type.vaccination",
+    value: "vaccination",
+  },
+  {
+    labelKey: "medicalRecords.type.checkup",
+    value: "checkup",
+  },
+  {
+    labelKey: "medicalRecords.type.surgery",
+    value: "surgery",
+  },
+  {
+    labelKey: "medicalRecords.type.medication",
+    value: "medication",
+  },
+];
 
 interface IProps {
   onSubmit: (data: IMedicalRecordForm) => Promise<void>;
@@ -34,6 +54,7 @@ export const MedicalRecordForm = ({
   defaultValues,
   loading,
 }: IProps) => {
+  const { t } = useTranslation();
   const {
     control,
     handleSubmit,
@@ -59,12 +80,25 @@ export const MedicalRecordForm = ({
     upgrade,
   } = useEntitlements();
   const recordLimit = getLimitState("maxMedicalRecords");
-  const recordUsage =
-    entitlements?.usage.medicalRecords ?? recordLimit.usage ?? 0;
   const maxFiles =
     entitlements?.limits.maxImagesPerMedicalRecord ??
     getLimitState("maxImagesPerMedicalRecord").limit ??
     5;
+  const recordTypeOptions = useMemo(
+    () =>
+      RECORD_TYPE_OPTIONS.map(({ labelKey, ...item }) => ({
+        ...item,
+        label: t(labelKey),
+      })),
+    [t],
+  );
+  const limitBenefits = useMemo(() => {
+    const benefits = t("medicalRecords.limit.benefits", {
+      returnObjects: true,
+    });
+
+    return Array.isArray(benefits) ? benefits.map(String) : [];
+  }, [t]);
 
   const handleSubmitForm = (data: IMedicalRecordForm) => {
     onSubmit(data);
@@ -75,8 +109,8 @@ export const MedicalRecordForm = ({
       <View className="min-h-240 px-26 pb-safe-offset-8">
         <StateView
           variant="loading"
-          title="Checking your plan"
-          description="Making sure there is room for another health record."
+          title={t("medicalRecords.limit.loadingTitle")}
+          description={t("medicalRecords.limit.loadingDescription")}
         />
       </View>
     );
@@ -87,9 +121,9 @@ export const MedicalRecordForm = ({
       <View className="min-h-240 px-26 pb-safe-offset-8">
         <StateView
           variant="error"
-          title="Could not check your record limit"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("medicalRecords.limit.errorTitle")}
+          description={t("medicalRecords.limit.errorDescription")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void refetchEntitlements()}
         />
       </View>
@@ -104,13 +138,9 @@ export const MedicalRecordForm = ({
       >
         <PaywallNotice
           variant="blocking"
-          title="Medical record limit reached"
-          description="Upgrade to Premium to keep unlimited health records and attach more images to each record."
-          benefits={[
-            "Unlimited medical records",
-            "Up to 5 images per record",
-            "Export medical summaries",
-          ]}
+          title={t("medicalRecords.limit.reachedTitle")}
+          description={t("medicalRecords.limit.reachedDescription")}
+          benefits={limitBenefits}
           loading={isUpgrading}
           onAction={() => void upgrade()}
         />
@@ -126,20 +156,20 @@ export const MedicalRecordForm = ({
       <PetPickerController
         name="petId"
         control={control}
-        label="Choose your pet"
+        label={t("medicalRecords.form.pet")}
         options={data?.data ?? []}
       />
       <EnhancedInputController
         control={control}
         name="title"
-        label="Title"
-        placeholder="Title"
+        label={t("medicalRecords.form.title.label")}
+        placeholder={t("medicalRecords.form.title.placeholder")}
       />
       <DateTimePickerController
         name="date"
         control={control}
-        label="Date"
-        placeholder="Select date"
+        label={t("medicalRecords.form.date.label")}
+        placeholder={t("medicalRecords.form.date.placeholder")}
         mode="date"
         format={(val) => date(val).format("LL")}
       />
@@ -147,52 +177,35 @@ export const MedicalRecordForm = ({
       <OptionInputController<IMedicalRecordForm>
         control={control}
         name="recordType"
-        label="Type"
-        placeholder="Type"
-        options={[
-          {
-            label: "Vaccination",
-            value: "vaccination",
-          },
-          {
-            label: "Checkup",
-            value: "checkup",
-          },
-          {
-            label: "Surgery",
-            value: "surgery",
-          },
-          {
-            label: "Medication",
-            value: "medication",
-          },
-        ]}
+        label={t("medicalRecords.form.type.label")}
+        placeholder={t("medicalRecords.form.type.placeholder")}
+        options={recordTypeOptions}
       />
       <EnhancedInputController
         control={control}
         name="vetClinic"
-        label="Vet Clinic Name"
-        placeholder="Enter vet clinic name"
+        label={t("medicalRecords.form.vetClinic.label")}
+        placeholder={t("medicalRecords.form.vetClinic.placeholder")}
       />
       <EnhancedInputController
         control={control}
         name="vetName"
-        label="Vet Name"
-        placeholder="Enter vet name"
+        label={t("medicalRecords.form.vetName.label")}
+        placeholder={t("medicalRecords.form.vetName.placeholder")}
       />
 
       <EnhancedInputController
         control={control}
         name="description"
-        label="Description"
-        placeholder="Description"
+        label={t("medicalRecords.form.description.label")}
+        placeholder={t("medicalRecords.form.description.placeholder")}
         multiline
       />
       <DocumentsInputController<IMedicalRecordForm>
         control={control}
         name="attachments"
         existingName="attachmentIds"
-        label="Medical files"
+        label={t("medicalRecords.form.attachments")}
         maxFiles={maxFiles}
       />
 
@@ -202,7 +215,9 @@ export const MedicalRecordForm = ({
         disabled={!isDirty}
         loading={loading}
       >
-        {!!defaultValues ? "Update Medical Record" : "Create Medical Record"}
+        {defaultValues
+          ? t("medicalRecords.actions.update")
+          : t("medicalRecords.actions.create")}
       </Button>
     </KeyboardAvoidingView>
   );

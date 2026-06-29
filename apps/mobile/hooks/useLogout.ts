@@ -2,9 +2,11 @@ import { Toast } from "@/components/Toast";
 import { signOutMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { logout, tokens, deviceInfo } = useUserInfoStore();
 
@@ -16,8 +18,8 @@ export const useLogout = () => {
     },
     onError: (e) => {
       Toast.error({
-        title: "Sign out failed",
-        text: e.message || "Please try signing out again.",
+        title: t("auth.toast.signOutFailedTitle"),
+        text: e.message || t("auth.toast.signOutFailedText"),
       });
     },
   });

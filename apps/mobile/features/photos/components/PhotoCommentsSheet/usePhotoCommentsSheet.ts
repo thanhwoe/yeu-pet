@@ -1,5 +1,6 @@
 import { Toast } from "@/components/Toast";
 import { PHOTO_COMMENTS_KEY, PHOTOS_KEY } from "@/constants/query-keys";
+import { i18n } from "@/i18n";
 import { IPhoto, IPhotoComment, IPhotoCommentDeleteResult } from "@/interfaces";
 import {
   createPhotoCommentMutation,
@@ -209,8 +210,11 @@ export const usePhotoCommentsSheet = ({
     mutationFn: createPhotoCommentMutation,
     onError(error: MutationError) {
       Toast.error({
-        title: "Comment not posted",
-        text: getErrorMessage(error, "Check your connection and try again."),
+        title: i18n.t("photos.comments.toastPostErrorTitle"),
+        text: getErrorMessage(
+          error,
+          i18n.t("photos.comments.toastPostErrorText"),
+        ),
       });
     },
   });
@@ -219,8 +223,11 @@ export const usePhotoCommentsSheet = ({
     mutationFn: createPhotoReplyMutation,
     onError(error: MutationError) {
       Toast.error({
-        title: "Reply not posted",
-        text: getErrorMessage(error, "Check your connection and try again."),
+        title: i18n.t("photos.comments.toastReplyErrorTitle"),
+        text: getErrorMessage(
+          error,
+          i18n.t("photos.comments.toastPostErrorText"),
+        ),
       });
     },
   });
@@ -229,8 +236,8 @@ export const usePhotoCommentsSheet = ({
     mutationFn: deletePhotoCommentMutation,
     onSuccess(result) {
       Toast.success({
-        title: "Comment removed",
-        text: "The comment is no longer visible on this photo.",
+        title: i18n.t("photos.comments.toastDeletedTitle"),
+        text: i18n.t("photos.comments.toastDeletedText"),
       });
       setActionComment(null);
       applyDeletedCommentResult(result);
@@ -238,8 +245,11 @@ export const usePhotoCommentsSheet = ({
     },
     onError(error: MutationError) {
       Toast.error({
-        title: "Comment not removed",
-        text: getErrorMessage(error, "Refresh the comments and try again."),
+        title: i18n.t("photos.comments.toastDeleteErrorTitle"),
+        text: getErrorMessage(
+          error,
+          i18n.t("photos.comments.toastDeleteErrorText"),
+        ),
       });
     },
   });

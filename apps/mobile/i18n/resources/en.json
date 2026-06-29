@@ -5,6 +5,59 @@
     "networkTitle": "Connection issue",
     "networkText": "Check your connection and try again."
   },
+  "ai": {
+    "composer": {
+      "messageAccessibility": "Doctor AI message",
+      "placeholder": "Ask about feeding, grooming, behavior, symptoms...",
+      "sendAccessibility": "Send Doctor AI message",
+      "thinking": "Pet Care AI is thinking...",
+      "urgentWarning": "This may be urgent. Contact a veterinarian or emergency clinic now if your pet is in distress."
+    },
+    "fallback": {
+      "assistantErrorMessage": "I could not reply right now. Please try again in a moment. For urgent symptoms, contact a veterinarian or emergency clinic now.",
+      "generateResponse": "Sorry, I could not generate a response. Please try again."
+    },
+    "empty": {
+      "description": "Ask for care information about feeding, grooming, behavior, medication routines, or symptoms.",
+      "greeting": "Hi{{name}}, how can I help your pet today?",
+      "promptAccessibility": "Use suggested prompt: {{prompt}}",
+      "prompts": [
+        "My pet is not eating",
+        "Is this symptom urgent?",
+        "Build a feeding routine",
+        "Explain vaccine schedule",
+        "Grooming tips",
+        "Medication reminder help"
+      ]
+    },
+    "paywall": {
+      "benefits": [
+        "300 AI messages each month",
+        "AI with pet context",
+        "AI with medical history context"
+      ],
+      "blockingDescription": "You have used your free AI messages for this month. Upgrade to Premium for more Pet Care AI support.",
+      "blockingTitle": "AI message limit reached",
+      "inlineAction": "See Premium",
+      "inlineDescription": "Premium adds more monthly messages plus pet and medical history context.",
+      "inlineTitle": "{{count}} free AI messages remaining"
+    },
+    "petContext": {
+      "general": "General",
+      "generalAccessibility": "Use general AI context",
+      "label": "Pet context",
+      "loading": "Loading pets...",
+      "lockedAccessibility": "{{name}} pet context requires Premium",
+      "noPets": "No pets yet",
+      "usePetAccessibility": "Use {{name}} as AI pet context"
+    },
+    "quota": {
+      "checking": "Checking AI messages",
+      "premiumAi": "Premium AI",
+      "premiumDescription": "{{count}} messages remaining this month with pet context.",
+      "upgradeDescription": "Premium unlocks more messages, pet context, and recent medical history."
+    }
+  },
   "auth": {
     "common": {
       "createAccount": "Create an account",
@@ -76,6 +129,8 @@
       "resetCodeNotSentTitle": "Reset code not sent",
       "signInFailedText": "Check your details and try again.",
       "signInFailedTitle": "Sign in failed",
+      "signOutFailedText": "Please try signing out again.",
+      "signOutFailedTitle": "Sign out failed",
       "welcomeBackText": "You are signed in to YeuPet.",
       "welcomeBackTitle": "Welcome back"
     },
@@ -95,20 +150,326 @@
       "title": "Welcome to YeuPet"
     }
   },
+  "budget": {
+    "accessibility": {
+      "addCategory": "Add budget category",
+      "addTransaction": "Add budget transaction",
+      "category": "{{name}} budget category",
+      "deleteCategory": "Delete {{name}} category",
+      "deleteTransaction": "Delete {{description}}",
+      "editCategory": "Edit {{name}} category",
+      "editMonthlyBudget": "Edit monthly budget",
+      "editTransaction": "Edit {{description}}",
+      "openActions": "Open budget actions",
+      "selectPeriod": "Select budget period",
+      "swipeDelete": "Swipe left to delete",
+      "swipeEdit": "Swipe right to edit",
+      "swipeEditDelete": "Swipe right to edit or left to delete"
+    },
+    "actions": {
+      "addCategory": "Add Category",
+      "addNewCategory": "Add new category",
+      "addTransaction": "Add transaction",
+      "manage": "Manage",
+      "seeAll": "See all",
+      "setMonthlyBudget": "Set monthly budget",
+      "submit": "Submit",
+      "updateCategory": "Update Category",
+      "updateTransaction": "Update transaction"
+    },
+    "categories": {
+      "emptyDescription": "Create categories to understand where your pet budget goes.",
+      "emptyTitle": "No category added yet",
+      "popupDescription": "Remove {{name}} from your budget categories?",
+      "popupTitle": "Remove Category"
+    },
+    "colors": {
+      "blue": "Blue",
+      "cyan": "Cyan",
+      "green": "Green",
+      "grey": "Grey",
+      "lilac": "Lilac",
+      "lime": "Lime",
+      "orange": "Orange",
+      "pink": "Pink",
+      "purple": "Purple",
+      "red": "Red",
+      "teal": "Teal",
+      "yellow": "Yellow"
+    },
+    "form": {
+      "amount": {
+        "label": "Amount",
+        "placeholder": "Amount"
+      },
+      "budgetAmount": {
+        "placeholder": "Enter amount"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category"
+      },
+      "categoryName": {
+        "label": "Name",
+        "placeholder": "Category name"
+      },
+      "color": {
+        "label": "Color",
+        "placeholder": "Color theme"
+      },
+      "date": {
+        "label": "Date",
+        "placeholder": "Select date"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description"
+      },
+      "emoji": {
+        "label": "Emoji Icon",
+        "placeholder": "E.g 🐶"
+      },
+      "pet": {
+        "label": "Pet",
+        "noSpecific": "No specific pet"
+      }
+    },
+    "limit": {
+      "checkMonthDescription": "Confirming how many transactions are already saved.",
+      "checkMonthTitle": "Checking this month",
+      "confirmErrorText": "Try checking your plan again before adding this transaction.",
+      "confirmErrorTitle": "Could not confirm your transaction limit",
+      "limitReachedDescription": "Free plan includes {{limit}} transactions for {{period}}. Choose another month or upgrade to Premium.",
+      "limitReachedText": "Choose another month or upgrade to Premium.",
+      "limitReachedTitle": "Monthly transaction limit reached",
+      "loadingDescription": "Making sure there is room for another transaction.",
+      "loadingTitle": "Checking your plan",
+      "monthErrorDescription": "Try again before adding this transaction.",
+      "monthErrorTitle": "Could not check this month",
+      "transactionLimitErrorDescription": "Check your connection and try again.",
+      "transactionLimitErrorTitle": "Could not check your transaction limit"
+    },
+    "screen": {
+      "byCategory": "By Category",
+      "daily": "Daily",
+      "monthly": "Monthly",
+      "monthlyBudget": "Monthly budget",
+      "recentTransactions": "Recent Transactions",
+      "remaining": "Remaining",
+      "selectPeriod": "Select period",
+      "spendingTrends": "Spending Trends",
+      "spent": "Spent: {{amount}}",
+      "totalSpent": "Total spent",
+      "totalTransaction": "Total transaction",
+      "yearlySummary": "Yearly summary"
+    },
+    "tabs": {
+      "month": "Month",
+      "year": "Year"
+    },
+    "routes": {
+      "categories": "My categories",
+      "statistics": "Budget statistics",
+      "transactions": "Spent transactions"
+    },
+    "toast": {
+      "budgetUpdateErrorText": "Check the amount and try again.",
+      "budgetUpdateErrorTitle": "Budget not updated",
+      "categoryCreateErrorText": "Check the category details and try again.",
+      "categoryCreateErrorTitle": "Category not created",
+      "categoryDeleteErrorText": "Move its transactions or try again.",
+      "categoryDeleteErrorTitle": "Category not removed",
+      "categoryUpdateErrorText": "Check the category details and try again.",
+      "categoryUpdateErrorTitle": "Category not updated",
+      "transactionCreateErrorText": "Check the transaction details and try again.",
+      "transactionCreateErrorTitle": "Transaction not added",
+      "transactionDeleteErrorText": "Refresh your transactions and try again.",
+      "transactionDeleteErrorTitle": "Transaction not removed",
+      "transactionUpdateErrorText": "Check the transaction details and try again.",
+      "transactionUpdateErrorTitle": "Transaction not updated"
+    },
+    "transactions": {
+      "defaultDescription": "Pet-care expense",
+      "emptyDescription": "Add your first pet-care expense to start tracking this budget.",
+      "emptyRecentDescription": "Add a pet-care expense when you are ready to track this period.",
+      "emptyRecentTitle": "No recent transactions",
+      "emptyTitle": "No transactions yet",
+      "loadErrorDescription": "Try again to refresh your pet-care spending.",
+      "loadErrorTitle": "Transactions could not load",
+      "popupDescription": "Are you sure you want to remove this transaction?",
+      "popupTitle": "Remove Transaction"
+    }
+  },
   "common": {
+    "accessibility": {
+      "closeSheet": "Close sheet",
+      "dismissNotification": "Dismiss notification",
+      "goBack": "Go back"
+    },
     "accountSynced": "Account details synced",
     "activePlan": "Active plan",
     "cancel": "Cancel",
     "confirm": "Confirm",
+    "contact": {
+      "callFailedMessage": "Failed to make phone call",
+      "callUnsupportedMessage": "Phone calls are not supported on this device",
+      "errorTitle": "Error",
+      "messageFailedMessage": "Failed to open SMS",
+      "messageUnsupportedMessage": "SMS is not supported on this device",
+      "missingPhoneText": "This {{place}} has not provided a phone number.",
+      "missingPhoneTitleCall": "Call unavailable",
+      "missingPhoneTitleMessage": "Message unavailable"
+    },
+    "countries": {
+      "australia": "Australia",
+      "belgium": "Belgium",
+      "brazil": "Brazil",
+      "brunei": "Brunei",
+      "china": "China",
+      "croatia": "Croatia",
+      "cuba": "Cuba",
+      "germany": "Germany",
+      "hongKong": "Hong Kong",
+      "india": "India",
+      "italy": "Italy",
+      "korea": "Korea",
+      "northKorea": "North Korea",
+      "oman": "Oman",
+      "panama": "Panama",
+      "peru": "Peru",
+      "qatar": "Qatar",
+      "romania": "Romania",
+      "serbia": "Serbia",
+      "thailand": "Thailand",
+      "unitedKingdom": "United Kingdom",
+      "usa": "USA",
+      "vietnam": "Viet Nam"
+    },
     "done": "Done",
+    "documents": {
+      "alreadyAddedText": "{{name}} is already attached to this record.",
+      "alreadyAddedTitle": "File already added",
+      "browseFiles": "Browse Files",
+      "limitReachedText": "Remove a file before adding more than {{count}} attachments.",
+      "limitReachedTitle": "Attachment limit reached",
+      "maxSize": "Image up to {{size}}MB",
+      "tooLargeText": "{{name}} must be smaller than {{size}} MB.",
+      "tooLargeTitle": "File is too large",
+      "uploadMedicalImages": "Upload medical images"
+    },
     "email": "Email",
     "free": "Free",
     "loading": "Loading",
     "notSet": "Not set",
+    "ok": "OK",
     "open": "Open",
+    "permission": {
+      "galleryDescription": "Please enable permission in Settings.",
+      "galleryTitle": "YeuPet would like to access the gallery to save images",
+      "locationDescription": "Allow location access in Settings to find nearby pet places.",
+      "locationTitle": "YeuPet would like to access your location"
+    },
+    "places": {
+      "address": "Address: {{address}}",
+      "clinic": "clinic",
+      "clinicTitle": "Pet Clinic",
+      "closeTime": "Close time: {{time}}",
+      "enable": "Enable",
+      "city": "City",
+      "enterClinicName": "Enter clinic name",
+      "enterSpaName": "Enter spa name",
+      "noClinicFound": "No clinic found",
+      "noSpaFound": "No spas found",
+      "openTime": "Open time: {{time}}",
+      "phone": "Phone: {{phone}}",
+      "pleaseEnableLocation": "Please enable location",
+      "seeAll": "See all",
+      "selectCity": "Select City",
+      "spa": "spa",
+      "unsupportedCountry": "Your country is not supported"
+    },
     "premium": "Premium",
     "retry": "Retry",
+    "selectCountryCode": "Select country code",
+    "selectValue": "Select {{label}}",
+    "settings": "Settings",
+    "sync": {
+      "deviceFailedText": "Notification setup will retry later.",
+      "deviceFailedTitle": "Device sync failed"
+    },
     "tryAgain": "Try again"
+  },
+  "commerce": {
+    "address": {
+      "add": "Add new address",
+      "deleteConfirm": "Remove",
+      "deleteMessage": "Are you sure you want to remove this address?",
+      "deleteTitle": "Delete shipping address",
+      "default": "Default",
+      "emptyDescription": "You haven't added any shipping addresses yet.",
+      "emptyTitle": "No shipping addresses",
+      "form": {
+        "addressLabel": "Shipping Address",
+        "addressPlaceholder": "Enter your shipping address",
+        "defaultLabel": "Set as default address",
+        "nameLabel": "Name",
+        "namePlaceholder": "Enter your full name",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "Enter your phone number",
+        "save": "Save address"
+      },
+      "notAddedFallback": "Check the address details and try again.",
+      "notAddedTitle": "Address not added",
+      "notRemovedFallback": "Try removing this address again.",
+      "notRemovedTitle": "Address not removed"
+    },
+    "cart": {
+      "checkout": "Checkout",
+      "emptyAction": "Start Shopping",
+      "emptyDescription": "Time to find some new favorites for your furry friend!",
+      "emptyTitle": "Your cart is empty!",
+      "itemNotRemovedFallback": "Try removing this cart item again.",
+      "itemNotRemovedTitle": "Item not removed",
+      "notUpdatedFallback": "Check the quantity and try updating your cart again.",
+      "notUpdatedTitle": "Cart not updated",
+      "selectAll": "Select all"
+    },
+    "checkout": {
+      "orderSummary": "Order Summary",
+      "originalTotal": "Original total",
+      "paymentMethod": "Payment Method",
+      "placeOrder": "Place Order",
+      "productDiscount": "Product discount",
+      "shippingFee": "Shipping fee",
+      "subtotal": "Subtotal",
+      "total": "Total"
+    },
+    "payment": {
+      "bankUnavailableText": "Your bank is under maintenance. Please try again later.",
+      "bankUnavailableTitle": "Bank temporarily unavailable",
+      "cancelledText": "No payment was completed. You can try again when ready.",
+      "cancelledTitle": "Payment cancelled",
+      "completeText": "Your payment was confirmed successfully.",
+      "completeTitle": "Payment complete",
+      "declinedText": "The bank did not approve this payment. Try another method.",
+      "declinedTitle": "Transaction declined",
+      "failedText": "The payment was not completed. Please try again.",
+      "failedTitle": "Payment failed",
+      "serviceErrorText": "The payment provider could not respond. Please try again.",
+      "serviceErrorTitle": "Payment service error",
+      "unavailableText": "Choose one of the supported payment methods to continue.",
+      "unavailableTitle": "Payment method unavailable"
+    },
+    "product": {
+      "addedToCartText": "This item is ready for checkout in your cart.",
+      "addedToCartTitle": "Added to cart",
+      "buyNow": "Buy Now",
+      "detail": "Product detail",
+      "itemNotAddedFallback": "Check the item and try adding it to your cart again.",
+      "itemNotAddedTitle": "Item not added",
+      "searchPlaceholder": "Enter product name",
+      "sold": "Sold {{count}}"
+    }
   },
   "datePicker": {
     "selectDate": "Select date",
@@ -137,6 +498,42 @@
       "premiumRequired": "This feature needs a premium plan."
     }
   },
+  "home": {
+    "header": {
+      "greeting": "Hi, {{name}}",
+      "morning": "Good morning!",
+      "openNotifications": "Open notifications"
+    },
+    "budget": {
+      "action": "Open Budget",
+      "actionAccessibility": "Open budget",
+      "emptyDescription": "Track food, clinic visits, medication and grooming costs.",
+      "emptyTitle": "No spending recorded this month",
+      "errorDescription": "Try again to refresh this month's care spending.",
+      "errorTitle": "Spending could not load",
+      "loadingAccessibility": "Loading budget summary",
+      "subtitle": "This month's care spending",
+      "title": "Budget Summary"
+    },
+    "reminders": {
+      "action": "View all reminders",
+      "actionAccessibility": "View all reminders",
+      "allPets": "All pets",
+      "dueDate": "{{date}} · {{time}}",
+      "emptyDescription": "Add the next vaccine, medication, feeding or grooming reminder.",
+      "emptyAction": "Add Reminder",
+      "emptyTitle": "No upcoming reminders",
+      "errorDescription": "Try again to see the next care tasks.",
+      "errorTitle": "Reminders could not load",
+      "loadingAccessibility": "Loading upcoming reminders",
+      "next": "Next",
+      "subtitle": "Next care tasks",
+      "timeNotSet": "Time not set",
+      "title": "Upcoming Reminders",
+      "today": "Today · {{time}}",
+      "tomorrow": "Tomorrow · {{time}}"
+    }
+  },
   "navigation": {
     "bookingMessages": "Booking messages",
     "cart": "Cart",
@@ -149,6 +546,33 @@
     "photos": "Share photos",
     "planUsage": "Plan & Usage",
     "shippingAddress": "Shipping Address"
+  },
+  "notFound": {
+    "action": "Go to home screen!",
+    "message": "This screen does not exist.",
+    "title": "Oops!"
+  },
+  "onboarding": {
+    "slides": [
+      {
+        "subtitle": "Just turn on your location and you will find the nearest pet care you wish.",
+        "title": "Find pet care services around your location"
+      },
+      {
+        "subtitle": "Get the best treatment for your animal with us. We will take care of the rest.",
+        "title": "Let us give the best treatment"
+      },
+      {
+        "subtitle": "What do you think? Book our veterinarians now.",
+        "title": "Book an appointment with us!"
+      }
+    ],
+    "toast": {
+      "completeText": "YeuPet is ready for your pet-care routine.",
+      "completeTitle": "Setup complete",
+      "errorFallback": "Please sign in and try again.",
+      "errorTitle": "Setup could not finish"
+    }
   },
   "notificationSettings": {
     "accessError": {
@@ -211,6 +635,681 @@
     "saveError": {
       "text": "Could not save notification settings. Please try again.",
       "title": "Notification settings not saved"
+    }
+  },
+  "notifications": {
+    "foreground": {
+      "fallbackMessage": "You have a new notification.",
+      "fallbackTitle": {
+        "ai": "Pet Care AI",
+        "booking": "Booking update",
+        "reminder": "Care reminder",
+        "social": "New pet activity",
+        "system": "YeuPet notification"
+      }
+    },
+    "empty": {
+      "allDescription": "Care reminders, booking updates, and social activity will appear here.",
+      "allTitle": "No notifications yet",
+      "unreadDescription": "No unread notifications right now.",
+      "unreadTitle": "You're all caught up"
+    },
+    "error": {
+      "description": "Please try again.",
+      "markAllText": "Try marking all notifications as read again.",
+      "markAllTitle": "Notifications not updated",
+      "markOneText": "Try marking this notification as read again.",
+      "markOneTitle": "Notification not updated",
+      "title": "Could not load notifications"
+    },
+    "filters": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "header": {
+      "allCaughtUp": "All caught up",
+      "markAllRead": "Mark all read",
+      "markAllReadAccessibility": "Mark all notifications as read",
+      "title": "Inbox",
+      "unreadCount": "{{count}} unread"
+    },
+    "success": {
+      "markAllText": "All notifications are now marked as read.",
+      "markAllTitle": "Notifications updated"
+    },
+    "time": {
+      "justNow": "Just now",
+      "recently": "Recently"
+    },
+    "unreadAccessibility": "Unread"
+  },
+  "medicalRecords": {
+    "actions": {
+      "create": "Create Medical Record",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save",
+      "update": "Update Medical Record"
+    },
+    "routes": {
+      "detail": "Medical record detail",
+      "index": "Medical record",
+      "petRecords": "Medical records"
+    },
+    "attachments": {
+      "attachmentId": "Attachment {{id}}",
+      "image": "Medical image",
+      "label": "Medical attachments",
+      "noneDescription": "Add photos or documents when you edit this record.",
+      "noneTitle": "No attachments yet",
+      "processingDescription": "Images will appear here when processing finishes.",
+      "processingFailedDescription": "Edit this record and upload the image again.",
+      "processingFailedTitle": "Attachment processing failed",
+      "processingTitle": "Attachments are processing",
+      "uploaded": "Uploaded {{date}}",
+      "viewAttachment": "View medical attachment {{index}}",
+      "view": "View"
+    },
+    "detail": {
+      "date": "Date: {{date}}",
+      "description": "Description",
+      "editTitle": "Edit medical record",
+      "information": "Information",
+      "notProvided": "Not provided",
+      "options": "Medical record options",
+      "recordId": "Record ID: {{id}}",
+      "vetClinic": "Vet Clinic",
+      "vetName": "Vet Name"
+    },
+    "form": {
+      "attachments": "Medical files",
+      "date": {
+        "label": "Date",
+        "placeholder": "Select date"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Description"
+      },
+      "pet": "Choose your pet",
+      "title": {
+        "label": "Title",
+        "placeholder": "Title"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Type"
+      },
+      "vetClinic": {
+        "label": "Vet Clinic Name",
+        "placeholder": "Enter vet clinic name"
+      },
+      "vetName": {
+        "label": "Vet Name",
+        "placeholder": "Enter vet name"
+      }
+    },
+    "limit": {
+      "benefits": [
+        "Unlimited medical records",
+        "Up to 5 images per record",
+        "Export medical summaries"
+      ],
+      "errorDescription": "Check your connection and try again.",
+      "errorTitle": "Could not check your record limit",
+      "loadingDescription": "Making sure there is room for another health record.",
+      "loadingTitle": "Checking your plan",
+      "reachedDescription": "Upgrade to Premium to keep unlimited health records and attach more images to each record.",
+      "reachedTitle": "Medical record limit reached"
+    },
+    "list": {
+      "empty": "No medical records yet",
+      "petRecordsTitle": "{{petName}} Records",
+      "popupDescription": "Are you sure you want to remove this medical record?",
+      "popupTitle": "Remove medical record",
+      "seeAll": "See all",
+      "uploadTitle": "Upload your medical record"
+    },
+    "status": {
+      "failed": "Failed",
+      "processing": "Processing",
+      "ready": "Ready"
+    },
+    "toast": {
+      "addPetFirstText": "A medical record must be linked to one of your pets.",
+      "addPetFirstTitle": "Add a pet first",
+      "createErrorText": "Check the medical record and try again.",
+      "createErrorTitle": "Record not created",
+      "deleteErrorText": "Refresh the records and try again.",
+      "deleteErrorTitle": "Record not removed",
+      "detailDeleteErrorText": "Refresh the record and try again.",
+      "updateErrorText": "Check the medical record and try again.",
+      "updateErrorTitle": "Record not updated"
+    },
+    "type": {
+      "checkup": "Checkup",
+      "medication": "Medication",
+      "surgery": "Surgery",
+      "vaccination": "Vaccination"
+    },
+    "timeline": {
+      "addReminder": "Add reminder",
+      "emptyReminder": "Don't forget to add a reminder",
+      "loading": "Loading",
+      "petReminders": "{{name}}'s reminders"
+    }
+  },
+  "pets": {
+    "actions": {
+      "add": "Add Pet",
+      "update": "Update Pet"
+    },
+    "addCard": {
+      "accessibilityLabel": "Add new pet",
+      "sheetTitle": "Add your pet",
+      "subtitle": "Tap to register your furry friend",
+      "title": "Add New Pet"
+    },
+    "carousel": {
+      "loadErrorDescription": "Try again to see your pet cards.",
+      "loadErrorTitle": "Pets could not load"
+    },
+    "detail": {
+      "about": "About",
+      "ageSummary": "{{years}}y old · {{humanYears}} human years",
+      "birthdate": "Birthdate",
+      "deleteAccessibility": "Delete {{name}}",
+      "editAccessibility": "Edit {{name}}",
+      "furColor": "Fur color",
+      "gender": "Gender",
+      "hideDetailsAccessibility": "Hide {{name}} details",
+      "showDetailsAccessibility": "Show {{name}} details",
+      "weight": "Weight"
+    },
+    "form": {
+      "ageSummary": "{{years}}y {{months}}m {{days}}d · about {{humanYears}} human years",
+      "avatar": {
+        "label": "Upload avatar"
+      },
+      "birthdate": {
+        "label": "Birthdate",
+        "placeholder": "Select date"
+      },
+      "breed": {
+        "label": "Breed",
+        "placeholder": "Husky"
+      },
+      "color": {
+        "label": "Fur Color",
+        "placeholder": "Orange"
+      },
+      "gender": {
+        "label": "Gender",
+        "placeholder": "Gender"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "Your pet name"
+      },
+      "notes": {
+        "label": "Notes",
+        "placeholder": "Notes"
+      },
+      "species": {
+        "label": "Species",
+        "placeholder": "Species"
+      },
+      "weight": {
+        "label": "Weight",
+        "placeholder": "0.0"
+      }
+    },
+    "gender": {
+      "female": "Female",
+      "male": "Male",
+      "unknown": "Unknown"
+    },
+    "limit": {
+      "errorDescription": "Check your connection and try again.",
+      "errorTitle": "Could not check your pet limit",
+      "loadingDescription": "Making sure there is room for another pet.",
+      "loadingTitle": "Checking your plan",
+      "reachedBenefits": [
+        "Unlimited pets",
+        "More reminders and records",
+        "More photos and AI support"
+      ],
+      "reachedDescription": "Free plan includes {{limit}} pets. Upgrade to Premium to add more pets and manage care for every companion.",
+      "reachedTitle": "Pet limit reached"
+    },
+    "popup": {
+      "deleteDescription": "Are you sure you want to remove this pet?",
+      "deleteTitle": "Remove Pet",
+      "editTitle": "Edit pet"
+    },
+    "species": {
+      "bird": "Bird",
+      "cat": "Cat",
+      "dog": "Dog",
+      "hamster": "Hamster",
+      "other": "Other",
+      "rabbit": "Rabbit"
+    },
+    "toast": {
+      "addErrorText": "Check the pet details and try again.",
+      "addErrorTitle": "Pet not added",
+      "deleteErrorText": "Please try removing this pet again.",
+      "deleteErrorTitle": "Pet not removed",
+      "limitReachedText": "Free plan supports {{limit}} pets. Upgrade to add more.",
+      "limitReachedTitle": "Pet limit reached",
+      "updateErrorText": "Check the pet details and try again.",
+      "updateErrorTitle": "Pet not updated",
+      "updateSuccessText": "{{name}}'s information is now up to date.",
+      "updateSuccessTitle": "Pet details updated"
+    },
+    "unit": {
+      "kilogram": "Kilogram",
+      "pound": "Pound"
+    }
+  },
+  "photos": {
+    "accessibility": {
+      "choosePhoto": "Take or choose a photo",
+      "closeComposer": "Close photo composer",
+      "openPhoto": "Open photo",
+      "openPhotoBy": "Open photo by {{name}}",
+      "openPhotoWithCaption": "Open photo: {{caption}}",
+      "togglePublic": "Toggle photo public visibility",
+      "upload": "Upload photo"
+    },
+    "cameraPermission": {
+      "cancel": "Cancel",
+      "description": "Allow camera access in Settings to take pet photos.",
+      "openSettings": "Settings",
+      "title": "YeuPet would like to access the camera"
+    },
+    "composer": {
+      "captionPlaceholder": "What are you thinking?",
+      "public": "Public"
+    },
+    "comments": {
+      "actionHint": "Long press to open comment actions.",
+      "actionSheetTitle": "Comment options",
+      "commentAccessibility": "Comment",
+      "delete": "Delete comment",
+      "deleteAccessibility": "Delete comment",
+      "emptyDescription": "Be the first to start the conversation.",
+      "emptyTitle": "No comments yet",
+      "errorDescription": "We could not load comments for this photo right now.",
+      "errorTitle": "Comments unavailable",
+      "hide": "Hide",
+      "hideReplies": "Hide replies",
+      "loadMoreReplies": "Load more replies",
+      "loadingReplies": "Loading replies...",
+      "noActions": "No actions available for this comment.",
+      "recently": "Recently",
+      "reply": "Reply",
+      "replyAccessibility": "Reply",
+      "replyActionHint": "Long press to open reply actions.",
+      "replyPlaceholder": "Replying to {{name}}",
+      "replyToCommentAccessibility": "Reply to comment",
+      "sendAccessibility": "Send comment",
+      "sheetTitle": "Comments",
+      "toastDeleteErrorText": "Refresh the comments and try again.",
+      "toastDeleteErrorTitle": "Comment not removed",
+      "toastDeletedText": "The comment is no longer visible on this photo.",
+      "toastDeletedTitle": "Comment removed",
+      "toastEmptyText": "Add some text before posting your comment.",
+      "toastEmptyTitle": "Write a comment",
+      "toastPostErrorText": "Check your connection and try again.",
+      "toastPostErrorTitle": "Comment not posted",
+      "toastReplyErrorTitle": "Reply not posted",
+      "viewMoreReplies": "View more replies",
+      "viewReplies": "View replies",
+      "viewRepliesCount_one": "View {{count}} reply",
+      "viewRepliesCount_other": "View {{count}} replies",
+      "writePlaceholder": "Write a comment"
+    },
+    "empty": {
+      "defaultDescription": "Start capturing and sharing your pet's moments.",
+      "defaultTitle": "No photos yet",
+      "loadErrorDescription": "Try again to refresh these pet moments.",
+      "loadErrorTitle": "Photos could not load",
+      "socialDescription": "When the community shares public pet moments, they will appear here.",
+      "socialTitle": "No shared photos yet",
+      "userDescription": "Your public and private pet memories will collect here after you upload them.",
+      "userTitle": "No photos saved yet"
+    },
+    "limit": {
+      "benefits": [
+        "More photo storage",
+        "Share memories with the pet community",
+        "Keep every special moment"
+      ],
+      "errorDescription": "Check your connection and try again.",
+      "errorTitle": "Could not check your photo limit",
+      "loadingDescription": "Making sure there is room for another memory.",
+      "loadingTitle": "Checking your plan",
+      "reachedDescription": "Upgrade to Premium to save and share more pet memories.",
+      "reachedText": "Free plan supports {{limit}} photo uploads. Upgrade to continue.",
+      "reachedTitle": "Photo limit reached"
+    },
+    "tabs": {
+      "mine": "My Photos",
+      "social": "Social Photos"
+    },
+    "toast": {
+      "captionRequiredText": "Write a short caption before sharing this photo.",
+      "captionRequiredTitle": "Add a caption",
+      "shareErrorText": "Check your connection and try uploading again.",
+      "shareErrorTitle": "Photo not shared",
+      "sharedText": "Your pet photo is now available in the photo feed.",
+      "sharedTitle": "Photo shared"
+    },
+    "view": {
+      "close": "Close photo",
+      "delete": "Delete",
+      "deleteAccessibility": "Delete photo",
+      "deleteCancel": "Keep photo",
+      "deleteMessage": "This removes the photo from My Photos and the social feed if it was public.",
+      "deleteTitle": "Delete this photo?",
+      "like": "Like photo",
+      "openComments": "Open comments",
+      "photoUnavailableDescription": "Swipe to another photo or close the viewer and try again.",
+      "photoUnavailableTitle": "Photo unavailable",
+      "reactionErrorText": "Check your connection and try reacting again.",
+      "reactionErrorTitle": "Reaction not saved",
+      "removedText": "The photo is no longer visible in your feed.",
+      "removedTitle": "Photo removed",
+      "removeErrorText": "Refresh the photo and try again.",
+      "removeErrorTitle": "Photo not removed",
+      "retryLoadingMore": "Retry loading more photos",
+      "retryLoadingPhotos": "Retry loading photos",
+      "savedText": "You can find it in your device gallery.",
+      "savedTitle": "Image saved",
+      "unlike": "Unlike photo"
+    }
+  },
+  "profile": {
+    "accessibility": {
+      "changePhoto": "Change profile photo",
+      "goBack": "Go back",
+      "profileAvatar": "Profile avatar"
+    },
+    "detail": {
+      "changePhoto": "Change photo",
+      "fallbackName": "YeuPet owner",
+      "profileUnavailable": "Profile unavailable",
+      "saveChanges": "Save changes"
+    },
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Email"
+      },
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name"
+      },
+      "verificationCode": {
+        "label": "Verification code",
+        "placeholder": "000000"
+      }
+    },
+    "toast": {
+      "avatarTooLargeText": "Choose a profile image smaller than 5 MB.",
+      "avatarTooLargeTitle": "Image is too large",
+      "cancelFailedFallback": "Could not cancel this change.",
+      "cancelFailedTitle": "Cancellation failed",
+      "codeNotSentFallback": "Could not resend the code.",
+      "codeNotSentTitle": "Code not sent",
+      "codeNotVerifiedFallback": "Could not verify this code.",
+      "codeNotVerifiedTitle": "Code not verified",
+      "codeSentText": "Check your new email address for the verification code.",
+      "codeSentTitle": "Code sent",
+      "emailChangeCancelledText": "Your current email address remains unchanged.",
+      "emailChangeCancelledTitle": "Email change cancelled",
+      "emailUpdatedText": "Use your new email address the next time you sign in.",
+      "emailUpdatedTitle": "Email updated",
+      "nothingToSaveText": "Update your name, email, or photo before saving.",
+      "nothingToSaveTitle": "Nothing to save",
+      "profileNotUpdatedFallback": "Could not save profile. Please try again.",
+      "profileNotUpdatedTitle": "Profile not updated",
+      "profileUpdatedText": "Your account details are now up to date.",
+      "profileUpdatedTitle": "Profile updated"
+    },
+    "verifyEmail": {
+      "action": "Verify email",
+      "backToProfile": "Back to profile",
+      "cancel": "Cancel email change",
+      "cancelAlertKeep": "Keep verifying",
+      "cancelAlertMessage": "Your current email will stay on this account.",
+      "cancelAlertTitle": "Cancel email change?",
+      "cancelAlertConfirm": "Cancel change",
+      "checkInbox": "Check your inbox",
+      "codeSentTo": "Code sent to {{email}}",
+      "description": "Enter the 6-digit code before it expires.",
+      "expiresIn": "Expires in {{time}}",
+      "resend": "Resend code",
+      "resendIn": "Resend in {{time}}",
+      "title": "Verify email",
+      "unavailableDescription": "Start an email change from your profile.",
+      "unavailableTitle": "Verification unavailable"
+    },
+    "validation": {
+      "email": "Enter a valid email",
+      "firstName": "First name is too short",
+      "lastName": "Last name is too short",
+      "otp": "Enter the 6-digit code"
+    },
+    "photoPermission": {
+      "message": "Allow photo access to choose a new profile picture.",
+      "title": "Photo access needed"
+    }
+  },
+  "reminders": {
+    "accessibility": {
+      "cancelReminder": "Cancel reminder",
+      "deleteReminder": "Delete {{title}} reminder",
+      "editReminder": "Edit {{title}} reminder",
+      "nextMonth": "Next month",
+      "openReminder": "Open {{title}} reminder for {{petName}}",
+      "previousMonth": "Previous month",
+      "selectDate": "Select {{date}}",
+      "selectDateWithCount": "Select {{date}}, {{count}} reminders"
+    },
+    "actions": {
+      "add": "Add",
+      "addReminder": "Add reminder",
+      "apply": "Apply",
+      "create": "Create reminder",
+      "reset": "Reset",
+      "update": "Update reminder"
+    },
+    "calendar": {
+      "checking": "Checking care tasks...",
+      "count_one": "{{count}} care task",
+      "count_other": "{{count}} care tasks",
+      "emptyAllDescription": "Create your first care reminder for feeding, medicine, grooming, or vaccines.",
+      "emptyAllTitle": "No reminders yet",
+      "emptyDayDescription": "Add a reminder to stay on top of your pet care.",
+      "emptyDayTitle": "No reminders for this day",
+      "loadErrorDescription": "Please try again.",
+      "loadErrorTitle": "Could not load reminders",
+      "thisMonth": "This month",
+      "today": "Today",
+      "unknownDate": "Unknown date",
+      "weekdays": {
+        "friday": "Fri",
+        "monday": "Mon",
+        "saturday": "Sat",
+        "sunday": "Sun",
+        "thursday": "Thu",
+        "tuesday": "Tue",
+        "wednesday": "Wed"
+      }
+    },
+    "detail": {
+      "date": "Date",
+      "repeat": "Repeat",
+      "time": "Time",
+      "title": "Reminder details"
+    },
+    "filters": {
+      "all": "All",
+      "allPets": "All pets",
+      "allTypes": "All types",
+      "pet": "Pet",
+      "status": "Status",
+      "summaryTitle": "Filters",
+      "title": "Filter reminders",
+      "type": "Type"
+    },
+    "screen": {
+      "title": "My Reminders"
+    },
+    "form": {
+      "description": {
+        "label": "Description",
+        "placeholder": "Optional notes"
+      },
+      "endRepeat": {
+        "label": "End repeat",
+        "placeholder": "Never"
+      },
+      "limitError": {
+        "description": "Check your connection and try again.",
+        "title": "Could not check your reminder limit"
+      },
+      "limitLoading": {
+        "description": "Making sure there is room for another reminder.",
+        "title": "Checking your plan"
+      },
+      "limitReached": {
+        "benefits": [
+          "Unlimited active reminders",
+          "Recurring care schedules",
+          "More room for every pet"
+        ],
+        "description": "Free plan includes {{limit}} active reminders. Upgrade to Premium to keep every care routine on schedule.",
+        "title": "Reminder limit reached"
+      },
+      "pet": {
+        "label": "Pet"
+      },
+      "premiumRepeat": {
+        "description": "Choose a one-time reminder or upgrade to repeat this care task automatically.",
+        "title": "Recurring reminders are Premium"
+      },
+      "repeat": {
+        "label": "Repeat",
+        "note": "Repeats once every selected period.",
+        "placeholder": "Does not repeat"
+      },
+      "schedule": {
+        "label": "Scheduled date & time",
+        "placeholder": "Select date & time"
+      },
+      "titleField": {
+        "label": "Title",
+        "placeholder": "Reminder title"
+      },
+      "type": {
+        "label": "Type",
+        "placeholder": "Select type"
+      }
+    },
+    "noPet": "No pet",
+    "popup": {
+      "deleteDescription": "Are you sure you want to remove this reminder?",
+      "deleteTitle": "Remove reminder"
+    },
+    "repeat": {
+      "custom": "Custom repeat",
+      "daily": "Every day",
+      "monthly": "Every month",
+      "none": "Does not repeat",
+      "until": "{{repeat}} until {{date}}",
+      "weekly": "Every week",
+      "yearly": "Every year"
+    },
+    "sheet": {
+      "createTitle": "Create reminder",
+      "editTitle": "Edit reminder"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "pending": "Pending",
+      "sent": "Sent"
+    },
+    "toast": {
+      "cannotDeleteText": "Sent or completed reminders are kept in your care history.",
+      "cannotDeleteTitle": "Cannot delete reminder",
+      "cannotEditText": "Create a new reminder if this care task already changed status.",
+      "cannotEditTitle": "Cannot edit this reminder",
+      "createErrorText": "Check the reminder details and try again.",
+      "createErrorTitle": "Reminder not created",
+      "createSuccessText": "The new care task is now on your schedule.",
+      "createSuccessTitle": "Reminder created",
+      "deleteErrorText": "Refresh your reminders and try again.",
+      "deleteErrorTitle": "Reminder not removed",
+      "limitReachedText": "Upgrade to Premium to create more active reminders.",
+      "limitReachedTitle": "Reminder limit reached",
+      "recurringBlockedText": "Choose a one-time reminder or upgrade to Premium.",
+      "recurringBlockedTitle": "Recurring reminders require Premium",
+      "cancelErrorText": "Refresh the reminder and try again.",
+      "cancelErrorTitle": "Reminder not cancelled",
+      "updateErrorText": "Check the reminder details and try again.",
+      "updateErrorTitle": "Reminder not updated"
+    },
+    "type": {
+      "feeding": "Feeding",
+      "grooming": "Grooming",
+      "medication": "Medication",
+      "vaccination": "Vaccination"
+    }
+  },
+  "serviceLauncher": {
+    "comingSoonDescription": "This feature is being developed and will be available in a future update.",
+    "comingSoonTitle": "Coming soon",
+    "gotIt": "Got it",
+    "modules": {
+      "budget": {
+        "subtitle": "Track pet care expenses",
+        "title": "Budget"
+      },
+      "doctorAi": {
+        "subtitle": "Ask pet-care questions",
+        "title": "Doctor AI"
+      },
+      "events": {
+        "subtitle": "Pet events and activities",
+        "title": "Events"
+      },
+      "groomingClinic": {
+        "subtitle": "Book grooming and vet visits",
+        "title": "Grooming & Clinic"
+      },
+      "medicalRecord": {
+        "subtitle": "Health records & medical images",
+        "title": "Medical Record"
+      },
+      "photosSocial": {
+        "subtitle": "Share pet moments",
+        "title": "Photos Social"
+      },
+      "sos": {
+        "subtitle": "Emergency help for pets",
+        "title": "SOS"
+      },
+      "training": {
+        "subtitle": "Learn care & training tips",
+        "title": "Training"
+      }
     }
   },
   "settings": {
@@ -287,11 +1386,379 @@
     },
     "title": "Settings"
   },
+  "sitter": {
+    "accessibility": {
+      "bookingMessage": "Booking message",
+      "closeCitySelection": "Close city selection",
+      "closeFilters": "Close sitter filters",
+      "createProfile": "Create sitter profile",
+      "editProfile": "Edit sitter profile",
+      "filterSitters": "Filter sitters",
+      "loadingBookings": "Loading bookings",
+      "loadingReviews": "Loading sitter reviews",
+      "loadingSitters": "Loading sitters",
+      "openBooking": "Open {{title}} booking",
+      "openProfile": "Open {{name}} sitter profile",
+      "rated": "Rated {{rating}} out of 5",
+      "removeFilter": "Remove {{label}} filter",
+      "retryFailedMessage": "Retry failed message",
+      "retryLoadingReviews": "Retry loading more sitter reviews",
+      "searchCity": "Search province or city",
+      "sendBookingMessage": "Send booking message",
+      "showMoreReviews": "Show more sitter reviews",
+      "showNewMessages": "Show new messages"
+    },
+    "availability": {
+      "available": "Available",
+      "paused": "Paused"
+    },
+    "booking": {
+      "actions": {
+        "accept": "Accept",
+        "cancel": "Cancel",
+        "complete": "Complete",
+        "message": "Message",
+        "reject": "Reject",
+        "review": "Review"
+      },
+      "chat": {
+        "couldNotLoadDescription": "Your draft is safe. Try loading the thread again.",
+        "couldNotLoadTitle": "Messages could not load",
+        "couldNotOpenDescription": "Check the booking and try again.",
+        "couldNotOpenTitle": "Booking chat could not open",
+        "fallbackTitle": "Booking chat",
+        "loadingMessages": "Loading messages",
+        "newMessages": "New messages",
+        "offline": "Offline. New messages will use secure fallback delivery.",
+        "opening": "Opening booking chat",
+        "placeholder": "Share care or arrival details...",
+        "reconnecting": "Reconnecting and checking for new messages...",
+        "sendFailedRetry": "Message could not send. Tap it to try again.",
+        "startDescription": "Confirm care instructions, arrival details, or anything your sitter should know.",
+        "startTitle": "Start the conversation",
+        "tapToRetry": "Tap to retry",
+        "unavailableDescription": "Open this chat again from a booking.",
+        "unavailableTitle": "Booking chat unavailable",
+        "connecting": "Connecting to booking chat..."
+      },
+      "detail": {
+        "bookingDetail": "Booking detail",
+        "bookingHold": "Booking hold",
+        "cancelled": "Cancelled",
+        "cancelPrefix": "Cancel: {{reason}}",
+        "carePrefix": "Care: {{instructions}}",
+        "confirmed": "Confirmed",
+        "dateAndTime": "Date and time",
+        "estimatedPrice": "Estimated price",
+        "externalPayment": "External payment",
+        "externalPaymentNotice": "YeuPet connects owners and sitters in this phase. Final payment and care arrangements happen between both sides.",
+        "holdExpires": "Hold expires {{time}}",
+        "notes": "Notes",
+        "owner": "Owner",
+        "ownerPrefix": "Owner: {{notes}}",
+        "pet": "Pet",
+        "petFallback": "Pet {{id}}",
+        "priceToConfirm": "Price to confirm",
+        "requestSent": "Request sent",
+        "service": "Service",
+        "sitter": "Sitter",
+        "sitterFallback": "Sitter {{id}}",
+        "sitterPrefix": "Sitter: {{notes}}",
+        "toConfirm": "To confirm"
+      },
+      "empty": {
+        "bookingsErrorDescription": "Try again to refresh your sitter bookings.",
+        "bookingsErrorTitle": "Bookings could not load",
+        "createProfileDescription": "Use the pencil in the header to create your sitter profile before receiving requests.",
+        "createProfileTitle": "Create your sitter profile",
+        "noBookingsOwner": "Requests you send to sitters will appear here.",
+        "noBookingsSitter": "Requests from pet owners will appear here after your profile is available.",
+        "noBookingsTitle": "No bookings yet"
+      },
+      "rejectAlert": {
+        "confirm": "Reject",
+        "keep": "Keep",
+        "message": "This will let the owner know you cannot take this request.",
+        "title": "Reject booking?"
+      },
+      "roles": {
+        "owner": "Owner",
+        "sitter": "Sitter"
+      },
+      "statuses": {
+        "active": "Active",
+        "all": "All",
+        "cancelled": "Cancelled",
+        "completed": "Completed",
+        "confirmed": "Confirmed",
+        "pending": "Pending",
+        "rejected": "Rejected"
+      },
+      "tabs": {
+        "bookings": "Bookings",
+        "findCare": "Find care"
+      },
+      "title": {
+        "careRequest": "Care request",
+        "petCareRequest": "{{name}}'s care request"
+      }
+    },
+    "detail": {
+      "about": "About",
+      "allReviewsLoaded": "All reviews loaded",
+      "bioFallback": "This sitter has not added a bio yet.",
+      "careDetails": "Care details",
+      "daily": "Daily",
+      "experience": "Experience",
+      "hourly": "Hourly",
+      "moreReviewsError": "More reviews could not load.",
+      "noReviewsDescription": "Reviews will appear after completed bookings.",
+      "noReviewsTitle": "No reviews yet",
+      "requestCare": "Request care",
+      "reviews": "Reviews",
+      "reviewsErrorDescription": "Try again to refresh sitter reviews.",
+      "reviewsErrorTitle": "Reviews could not load",
+      "serviceArea": "Service area",
+      "showMoreReviews": "Show more reviews",
+      "totalReviews": "{{count}} total"
+    },
+    "estimate": {
+      "dailySummary_one": "{{count}} day · {{rate}} / day",
+      "dailySummary_other": "{{count}} days · {{rate}} / day",
+      "hourlySummary_one": "{{count}} hour · {{rate}} / hour",
+      "hourlySummary_other": "{{count}} hours · {{rate}} / hour",
+      "total": "Estimated total",
+      "validTime": "Select a valid care time"
+    },
+    "filters": {
+      "allCities": "All cities",
+      "any": "Any",
+      "apply": "Apply filters",
+      "custom": "Custom",
+      "customMaxPrice": "Custom max price",
+      "customMaxPriceA11y": "Custom max price in Vietnamese dong",
+      "enterAmount": "Enter amount",
+      "invalidPrice": "Enter a max price from 0 to 10,000,000 ₫.",
+      "location": "Location",
+      "maxPrice": "Max price",
+      "minRating": "Minimum rating",
+      "rateChip": "Rate ≤ {{price}}",
+      "reset": "Reset",
+      "supportText": "Up to {{price}} ₫",
+      "title": "Filter sitters"
+    },
+    "form": {
+      "addPetDescription": "Create a pet profile before requesting sitter care.",
+      "addPetTitle": "Add a pet first",
+      "acceptRequests": "Accept new requests",
+      "bio": "Bio",
+      "bioPlaceholder": "Share your pet-care experience",
+      "cancelBooking": "Cancel booking",
+      "careInstructions": "Care instructions",
+      "careInstructionsPlaceholder": "Food, medicine, walks, or routines",
+      "city": "City",
+      "cityClear": "Not selected",
+      "cityEmpty": "Select city",
+      "comment": "Review",
+      "commentPlaceholder": "What went well?",
+      "createProfile": "Create sitter profile",
+      "dailyRate": "Daily rate",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "How owners will see you",
+      "district": "District",
+      "districtPlaceholder": "Hai Chau",
+      "endDate": "End date",
+      "endTime": "End time",
+      "experience": "Experience",
+      "experiencePlaceholder": "3 years caring for dogs and cats",
+      "hourlyRate": "Hourly rate",
+      "maxBookings": "Max bookings",
+      "message": "Message",
+      "messagePlaceholder": "Ask or share care details",
+      "ownerNotes": "Owner notes",
+      "ownerNotesPlaceholder": "Anything the sitter should know",
+      "pauseDescription": "Pause your profile when you are not available.",
+      "pet": "Pet",
+      "profile": "Profile",
+      "rating": "Rating",
+      "ratingOption_one": "{{count}} star",
+      "ratingOption_other": "{{count}} stars",
+      "reason": "Reason",
+      "reasonPlaceholder": "Optional note for the other person",
+      "saveProfile": "Save sitter profile",
+      "sendBookingRequest": "Send booking request",
+      "sendMessage": "Send message",
+      "serviceNotes": "Service notes",
+      "serviceNotesPlaceholder": "Small pets, daytime walks, overnight care",
+      "serviceType": "Service type",
+      "services": "Services",
+      "startDate": "Start date",
+      "startTime": "Start time",
+      "submitReview": "Submit review",
+      "ward": "Ward",
+      "wardPlaceholder": "Optional"
+    },
+    "messages": {
+      "emptyDescription": "Use this thread to confirm care details before the visit.",
+      "emptyTitle": "No messages yet",
+      "errorDescription": "Try again to refresh this booking thread.",
+      "errorTitle": "Messages could not load",
+      "justNow": "Just now"
+    },
+    "profile": {
+      "become": "Become a sitter",
+      "edit": "Edit sitter profile",
+      "fallbackName": "Pet sitter",
+      "ownerFallback": "Pet owner",
+      "profileTitle": "Sitter profile",
+      "serviceSummaryFallback": "Pet care by hour or day.",
+      "statusDescriptionAvailable": "Owners can discover you while your profile is available.",
+      "statusDescriptionPaused": "Your profile is paused and hidden from new requests.",
+      "statusFallbackName": "Profile visible to owners",
+      "statusNotSetDescription": "Use the pencil in the header to create your sitter profile.",
+      "statusNotSetTitle": "Not set up yet"
+    },
+    "screen": {
+      "emptyFilteredDescription": "Clear filters to see more trusted sitters nearby.",
+      "emptySittersDescription": "Available pet sitters will appear here.",
+      "emptySittersTitle": "No sitters match",
+      "loadErrorDescription": "Check your connection and try again.",
+      "loadErrorTitle": "Could not load sitters",
+      "requestCare": "Request care",
+      "reviewSitter": "Review sitter",
+      "title": "Sitter"
+    },
+    "selectCity": {
+      "emptySearch": "No province or city matches your search.",
+      "searchPlaceholder": "Search province or city",
+      "title": "Select city"
+    },
+    "serviceTypes": {
+      "daily": "Daily care",
+      "hourly": "Hourly care"
+    },
+    "toast": {
+      "bookingCancelledText": "Both sides can now see that this booking was cancelled.",
+      "bookingCancelledTitle": "Booking cancelled",
+      "bookingCompletedText": "This care booking is now recorded as complete.",
+      "bookingCompletedTitle": "Booking completed",
+      "bookingConfirmedText": "The pet owner can now see that you accepted the request.",
+      "bookingConfirmedTitle": "Booking confirmed",
+      "bookingDeclinedText": "The pet owner can now make other care arrangements.",
+      "bookingDeclinedTitle": "Booking declined",
+      "defaultErrorText": "Please review the details and try again.",
+      "messageNotSent": "Message not sent",
+      "profileCreatedText": "Pet owners can now discover your care services.",
+      "profileCreatedTitle": "Sitter profile created",
+      "profileNotCreated": "Profile not created",
+      "profileNotUpdated": "Profile not updated",
+      "profileUpdatedText": "Your latest care details are now visible.",
+      "profileUpdatedTitle": "Sitter profile updated",
+      "requestNotSent": "Request not sent",
+      "requestSentText": "The sitter can now review your care request.",
+      "requestSentTitle": "Request sent",
+      "reviewNotSubmitted": "Review not submitted",
+      "reviewSubmittedText": "Your feedback is now visible on the sitter profile.",
+      "reviewSubmittedTitle": "Review submitted",
+      "bookingNotCancelled": "Booking not cancelled",
+      "bookingNotCompleted": "Booking not completed",
+      "bookingNotConfirmed": "Booking not confirmed",
+      "bookingNotDeclined": "Booking not declined"
+    }
+  },
   "subscription": {
+    "accessibility": {
+      "loadingDetails": "Loading subscription details",
+      "managePremium": "Manage Premium subscription",
+      "toggleDeveloperTools": "Toggle subscription developer tools",
+      "upgradePremium": "Upgrade to Premium"
+    },
+    "actions": {
+      "close": "Close",
+      "manage": "Manage subscription",
+      "mockDowngrade": "Mock Downgrade",
+      "mockUpgrade": "Mock Upgrade",
+      "upgrade": "Upgrade to Premium"
+    },
+    "benefits": {
+      "activeDescription": "Your expanded pet-care tools are ready to use.",
+      "activeIntro": "Everything below is active on your plan.",
+      "disclaimer": "Pet Care AI offers general guidance and does not replace veterinary diagnosis or treatment.",
+      "items": [
+        "Unlimited pets, reminders, records, and budget entries",
+        "Recurring care reminders",
+        "More images for each health record",
+        "Yearly budget insights and medical summary export",
+        "More photo memories",
+        "300 AI messages with pet and medical context"
+      ],
+      "upgradeDescription": "More room for daily care, records, memories, and AI support.",
+      "upgradeIntro": "Premium keeps everyday care flexible as your pet family grows.",
+      "upgradeTitle": "Upgrade to Premium",
+      "activeTitle": "Premium benefits"
+    },
+    "developer": {
+      "currentTier": "Current mock tier: {{tier}}. These controls are unavailable in production.",
+      "freeEnabledText": "Development entitlements now use the Free plan.",
+      "freeEnabledTitle": "Free test enabled",
+      "premiumEnabledText": "Development entitlements now use the Premium plan.",
+      "premiumEnabledTitle": "Premium test enabled",
+      "title": "Developer tools",
+      "updateErrorFreeText": "Try enabling the Free test plan again.",
+      "updateErrorPremiumText": "Try enabling the Premium test plan again.",
+      "updateErrorTitle": "Test plan not changed"
+    },
+    "featureGroups": {
+      "ai": "Pet Care AI",
+      "budget": "Budget",
+      "health": "Health records",
+      "petCare": "Pet care",
+      "photos": "Photos"
+    },
+    "features": {
+      "activeReminders": "Active reminders",
+      "aiMedicalHistory": "Medical history context",
+      "aiMessagesPerMonth": "AI messages per month",
+      "aiPetContext": "Pet context",
+      "budgetTransactions": "Monthly transactions",
+      "exportMedicalSummary": "Export medical summary",
+      "imagesPerRecord": "Images per record",
+      "medicalRecords": "Medical records",
+      "pets": "Pets",
+      "photos": "Photos",
+      "recurringReminders": "Recurring reminders",
+      "yearlyStatistics": "Yearly statistics"
+    },
+    "loading": {
+      "errorDescription": "Check your connection and try again.",
+      "errorTitle": "Could not load subscription details"
+    },
+    "paywall": {
+      "loadingDescription": "Checking the secure store connection.",
+      "loadingTitle": "Loading Premium options",
+      "purchaseErrorText": "Premium was not activated. Please try again.",
+      "purchaseErrorTitle": "Purchase failed",
+      "restoreErrorText": "We could not restore your purchases. Please try again.",
+      "restoreErrorTitle": "Restore failed",
+      "unavailableDescription": "Please try again later. Your current plan is unchanged.",
+      "unavailableTitle": "Premium options unavailable"
+    },
     "period": {
       "activePlan": "Active plan",
       "currentAccessThrough": "Current access through {{date}}",
       "unlockCopy": "Track your usage and unlock more pet-care features."
+    },
+    "plan": {
+      "free": "Free",
+      "freePlan": "Free plan",
+      "premiumPlan": "Premium plan",
+      "upgradeCopy": "Upgrade to support more pets, reminders, photos, health records, and AI care conversations."
+    },
+    "sections": {
+      "featureLimitsDescription": "What your current plan includes across pet care.",
+      "featureLimitsTitle": "Feature limits",
+      "usageDescription": "Live counts from your current YeuPet account.",
+      "usageTitle": "Usage overview"
     },
     "status": {
       "active": "Active",
@@ -300,6 +1767,43 @@
       "free": "Free",
       "grace_period": "Grace period",
       "trialing": "Trialing"
+    },
+    "toast": {
+      "changesSyncingText": "Your subscription changes are still refreshing in YeuPet.",
+      "changesSyncingTitle": "Changes still syncing",
+      "checkoutUnavailableText": "Premium checkout could not open. Please try again.",
+      "checkoutUnavailableTitle": "Checkout unavailable",
+      "managementOpenErrorText": "Could not open subscription management. Please try again.",
+      "managementUnavailableText": "Subscription management is unavailable right now.",
+      "managementUnavailableTitle": "Subscriptions unavailable",
+      "premiumUnavailableText": "Premium options are unavailable right now. Please try again later.",
+      "premiumUnavailableTitle": "Premium unavailable",
+      "premiumUnlockedText": "Your Premium care tools are ready to use.",
+      "premiumUnlockedTitle": "Premium unlocked",
+      "syncingAfterPurchaseText": "Your store purchase succeeded. YeuPet is still refreshing your plan.",
+      "syncingGenericText": "YeuPet is still refreshing your plan. Please check again shortly.",
+      "syncingTitle": "Plan still syncing"
+    },
+    "usage": {
+      "items": {
+        "activeReminders": "Active reminders",
+        "aiMessages": "AI messages",
+        "budgetTransactions": "Budget transactions",
+        "medicalRecords": "Medical records",
+        "pets": "Pets",
+        "photos": "Photos"
+      },
+      "period": {
+        "thisMonth": "this month"
+      }
+    },
+    "values": {
+      "included": "Included",
+      "notAvailable": "Not available",
+      "overLimit": "You are over this plan's limit. Existing items remain available.",
+      "premiumOnly": "Premium only",
+      "unlimited": "Unlimited",
+      "usageOfLimit": "{{usage}} of {{limit}}"
     }
   },
   "state": {
@@ -319,19 +1823,177 @@
   "toast": {
     "notificationHint": "Opens the related screen"
   },
+  "training": {
+    "levelTitle": "Level {{level}}",
+    "levelCard": "Level: {{level}} - {{title}}",
+    "levels": {
+      "advanced": {
+        "title": "Advanced"
+      },
+      "basic": {
+        "title": "Basic"
+      },
+      "intermediate": {
+        "title": "Intermediate"
+      }
+    },
+    "exercises": {
+      "callName": {
+        "goal": "Your dog responds when hearing their name",
+        "steps": [
+          "Call your dog's name",
+          "When your dog looks at you",
+          "Praise and reward"
+        ],
+        "title": "Name response",
+        "tricks": ["Keep your voice cheerful and friendly"]
+      },
+      "comeHere": {
+        "goal": "Your dog runs to you when called",
+        "steps": [
+          "Sit down and call their name",
+          "Say \"Come here\"",
+          "Reward when your dog comes close"
+        ],
+        "title": "Come here",
+        "tricks": ["Always use a happy voice to encourage them"]
+      },
+      "fetch": {
+        "goal": "Your dog picks up an item and brings it back",
+        "steps": [
+          "Give your dog a toy to hold",
+          "Say \"Bring it back\"",
+          "Reward when your dog brings it to you"
+        ],
+        "title": "Fetch",
+        "tricks": ["Start with a short distance"]
+      },
+      "jumpThroughHoop": {
+        "goal": "Your dog jumps through a hoop on cue",
+        "steps": [
+          "Hold the hoop close to the ground",
+          "Encourage your dog to step through",
+          "Raise the hoop gradually",
+          "Reward each successful try"
+        ],
+        "title": "Jump through a hoop",
+        "tricks": ["Use a strong encouraging voice"]
+      },
+      "lieDown": {
+        "goal": "Your dog lies down on cue",
+        "steps": [
+          "Ask your dog to sit",
+          "Lower the treat toward the floor",
+          "Say \"Down\"",
+          "Reward when your dog lies down"
+        ],
+        "title": "Lie down",
+        "tricks": ["Practice when your dog is a little tired"]
+      },
+      "rollOver": {
+        "goal": "Your dog rolls over on the floor",
+        "steps": [
+          "Ask your dog to lie down",
+          "Guide a treat around your dog's shoulder",
+          "Say \"Roll\"",
+          "Reward when your dog rolls over"
+        ],
+        "title": "Roll over",
+        "tricks": ["Move slowly and clearly, breaking the motion into steps"]
+      },
+      "shake": {
+        "goal": "Your dog offers a paw on cue",
+        "steps": [
+          "Sit facing your dog",
+          "Offer your hand and say \"Shake\"",
+          "Reward when your dog places a paw on your hand"
+        ],
+        "title": "Shake",
+        "tricks": ["You can gently hold the paw at first to guide them"]
+      },
+      "sit": {
+        "goal": "Your dog sits on cue",
+        "steps": [
+          "Hold a treat in your hand",
+          "Move your hand above your dog's head",
+          "Say \"Sit\"",
+          "Reward when your dog sits"
+        ],
+        "title": "Sit",
+        "tricks": ["Do not push your dog's hips down; let them sit naturally"]
+      },
+      "stay": {
+        "goal": "Your dog holds position when asked",
+        "steps": [
+          "Give the \"Stay\" cue",
+          "Step back a little",
+          "Return and reward if your dog does not move"
+        ],
+        "title": "Stay",
+        "tricks": ["Start with short durations and increase gradually"]
+      }
+    },
+    "title": "Training",
+    "steps": "Steps:",
+    "tricks": "Tricks:"
+  },
   "validation": {
+    "birthdateFuture": "Birthdate cannot be in the future",
+    "dailyStartTomorrow": "Start date must be tomorrow or later for daily care.",
+    "endAfterStart": "End must be after the start.",
     "exactLength": "{{field}} must be exactly {{length}} characters",
     "fields": {
+      "address": "Address",
+      "age": "Age",
+      "amount": "Amount",
+      "attachments": "Attachments",
+      "bio": "Bio",
+      "birthdate": "Birthdate",
+      "careInstructions": "Care instructions",
+      "category": "Category",
+      "city": "City",
+      "color": "Color",
+      "dailyRate": "Daily rate",
+      "date": "Date",
+      "description": "Description",
+      "displayName": "Display name",
+      "district": "District",
       "email": "Email",
+      "emoji": "Emoji",
+      "endTime": "End time",
+      "experience": "Experience",
       "firstName": "First name",
+      "hourlyRate": "Hourly rate",
       "lastName": "Last name",
+      "message": "Message",
+      "name": "Name",
       "otpCode": "OTP code",
+      "ownerNotes": "Owner notes",
       "password": "Password",
-      "phoneNumber": "Phone number"
+      "pet": "Pet",
+      "phoneNumber": "Phone number",
+      "rating": "Rating",
+      "reason": "Reason",
+      "recordType": "Record type",
+      "reminderName": "Reminder name",
+      "review": "Review",
+      "schedule": "Schedule",
+      "serviceNotes": "Service notes",
+      "serviceType": "Service type",
+      "startTime": "Start time",
+      "title": "Title",
+      "type": "Type",
+      "ward": "Ward"
     },
+    "fileSizeMaxMb": "File size must be less than {{size}}MB",
+    "imageTypes": "Only .jpg, .jpeg, .png, .webp formats are accepted",
     "invalid": "Invalid {{field}}",
+    "maxBookingsRange": "Max bookings must be between {{min}} and {{max}}.",
+    "maxLength": "{{field}} must be at most {{count}} characters.",
     "numbersOnly": "{{field}} must contain numbers only",
     "passwordMin": "Password cannot be less than 8 characters",
-    "required": "{{field}} cannot be empty"
+    "required": "{{field}} cannot be empty",
+    "selectVietnamCity": "Select a city from the Vietnam province and city list.",
+    "startTimeFuture": "Start time must be in the future."
   }
 }

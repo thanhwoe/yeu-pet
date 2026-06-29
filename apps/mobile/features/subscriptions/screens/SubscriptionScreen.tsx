@@ -33,7 +33,8 @@ import {
   SparkleIcon,
   WalletIcon,
 } from "phosphor-react-native";
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 const CaretDown = withIconClassName(CaretDownIcon);
@@ -47,7 +48,7 @@ const Sparkle = withIconClassName(SparkleIcon);
 const Wallet = withIconClassName(WalletIcon);
 
 type UsageItem = {
-  label: string;
+  labelKey: string;
   usageKey: keyof SubscriptionUsage;
   limitKey: keyof Pick<
     SubscriptionLimits,
@@ -58,43 +59,42 @@ type UsageItem = {
     | "maxPhotos"
     | "aiMessagesPerMonth"
   >;
-  periodLabel?: string;
+  periodLabelKey?: string;
 };
 
 const USAGE_ITEMS: UsageItem[] = [
-  { label: "Pets", usageKey: "pets", limitKey: "maxPets" },
   {
-    label: "Active reminders",
+    labelKey: "subscription.usage.items.pets",
+    usageKey: "pets",
+    limitKey: "maxPets",
+  },
+  {
+    labelKey: "subscription.usage.items.activeReminders",
     usageKey: "activeReminders",
     limitKey: "maxActiveReminders",
   },
   {
-    label: "Medical records",
+    labelKey: "subscription.usage.items.medicalRecords",
     usageKey: "medicalRecords",
     limitKey: "maxMedicalRecords",
   },
   {
-    label: "Budget transactions",
+    labelKey: "subscription.usage.items.budgetTransactions",
     usageKey: "budgetTransactionsThisMonth",
     limitKey: "maxBudgetTransactionsPerMonth",
-    periodLabel: "this month",
+    periodLabelKey: "subscription.usage.period.thisMonth",
   },
-  { label: "Photos", usageKey: "photos", limitKey: "maxPhotos" },
   {
-    label: "AI messages",
+    labelKey: "subscription.usage.items.photos",
+    usageKey: "photos",
+    limitKey: "maxPhotos",
+  },
+  {
+    labelKey: "subscription.usage.items.aiMessages",
     usageKey: "aiMessagesThisMonth",
     limitKey: "aiMessagesPerMonth",
-    periodLabel: "this month",
+    periodLabelKey: "subscription.usage.period.thisMonth",
   },
-];
-
-const PREMIUM_BENEFITS = [
-  "Unlimited pets, reminders, records, and budget entries",
-  "Recurring care reminders",
-  "More images for each health record",
-  "Yearly budget insights and medical summary export",
-  "More photo memories",
-  "300 AI messages with pet and medical context",
 ];
 
 function SectionHeading({
@@ -131,10 +131,11 @@ function PlanCard({
   subscription: SubscriptionEntitlements;
   onUpgrade: () => void;
 }) {
+  const { t } = useTranslation();
   const isPremium = subscription.tier === "premium";
   const statusLabel = isPremium
     ? formatSubscriptionStatus(subscription.status)
-    : "Free";
+    : t("subscription.plan.free");
 
   return (
     <View
@@ -163,7 +164,9 @@ function PlanCard({
         <View className="flex-1 gap-6">
           <View className="flex-row flex-wrap items-center gap-8">
             <Text variant="title2" className="font-bold">
-              {isPremium ? "Premium plan" : "Free plan"}
+              {isPremium
+                ? t("subscription.plan.premiumPlan")
+                : t("subscription.plan.freePlan")}
             </Text>
             <View
               className={
@@ -192,25 +195,24 @@ function PlanCard({
 
       {isPremium ? (
         <Button
-          accessibilityLabel="Manage Premium subscription"
+          accessibilityLabel={t("subscription.accessibility.managePremium")}
           variant="outline"
           loading={isManaging}
           onPress={onManage}
         >
-          Manage subscription
+          {t("subscription.actions.manage")}
         </Button>
       ) : (
         <View className="gap-14">
           <Text variant="body2" className="text-text-secondary">
-            Upgrade to support more pets, reminders, photos, health records, and
-            AI care conversations.
+            {t("subscription.plan.upgradeCopy")}
           </Text>
           <Button
-            accessibilityLabel="Upgrade to Premium"
+            accessibilityLabel={t("subscription.accessibility.upgradePremium")}
             loading={isUpgrading}
             onPress={onUpgrade}
           >
-            Upgrade to Premium
+            {t("subscription.actions.upgrade")}
           </Button>
         </View>
       )}
@@ -229,6 +231,7 @@ function UsageRow({
   limit: number;
   periodLabel?: string;
 }) {
+  const { t } = useTranslation();
   const usageAvailable = typeof usage === "number" && Number.isFinite(usage);
   const unlimited = limit < 0;
   const overLimit = usageAvailable && !unlimited && usage > limit;
@@ -256,7 +259,7 @@ function UsageRow({
               variant="caption1"
               className="font-semibold text-status-success-text"
             >
-              Unlimited
+              {t("subscription.values.unlimited")}
             </Text>
           </View>
         ) : (
@@ -266,7 +269,9 @@ function UsageRow({
               overLimit ? "font-semibold text-text-warning" : "text-text-muted"
             }
           >
-            {usageAvailable ? `${usage} of ${limit}` : "Not available"}
+            {usageAvailable
+              ? t("subscription.values.usageOfLimit", { limit, usage })
+              : t("subscription.values.notAvailable")}
           </Text>
         )}
       </View>
@@ -279,7 +284,7 @@ function UsageRow({
 
       {overLimit ? (
         <Text variant="caption1" className="text-text-warning">
-          You are over this plan&apos;s limit. Existing items remain available.
+          {t("subscription.values.overLimit")}
         </Text>
       ) : null}
     </View>
@@ -295,14 +300,15 @@ function FeatureRow({
   value?: number;
   included?: boolean;
 }) {
+  const { t } = useTranslation();
   const valueLabel =
     included === undefined
       ? value === -1
-        ? "Unlimited"
-        : String(value ?? "Not available")
+        ? t("subscription.values.unlimited")
+        : (value ?? t("subscription.values.notAvailable")).toString()
       : included
-        ? "Included"
-        : "Premium only";
+        ? t("subscription.values.included")
+        : t("subscription.values.premiumOnly");
 
   return (
     <View className="min-h-48 flex-row items-center gap-10 border-b border-line-subtle px-16 py-10 last:border-b-0">
@@ -355,15 +361,24 @@ function FeatureGroup({
 }
 
 function BenefitsCard({ premium }: { premium: boolean }) {
+  const { t } = useTranslation();
+  const benefits = useMemo(() => {
+    const items = t("subscription.benefits.items", {
+      returnObjects: true,
+    });
+
+    return Array.isArray(items) ? items.map(String) : [];
+  }, [t]);
+
   return (
     <View className="gap-14 rounded-22 border-hairline border-line-subtle bg-background-surface px-16 py-16">
       <Text variant="body2" className="text-text-muted">
         {premium
-          ? "Everything below is active on your plan."
-          : "Premium keeps everyday care flexible as your pet family grows."}
+          ? t("subscription.benefits.activeIntro")
+          : t("subscription.benefits.upgradeIntro")}
       </Text>
       <View className="gap-11">
-        {PREMIUM_BENEFITS.map((benefit) => (
+        {benefits.map((benefit) => (
           <View key={benefit} className="flex-row items-start gap-10">
             <CheckCircle
               size={19}
@@ -389,6 +404,7 @@ function DeveloperTools({
 }: {
   subscription: SubscriptionEntitlements;
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const queryClient = useQueryClient();
 
@@ -402,14 +418,14 @@ function DeveloperTools({
     onSuccess: (nextSubscription) => {
       syncSubscription(nextSubscription);
       Toast.success({
-        title: "Premium test enabled",
-        text: "Development entitlements now use the Premium plan.",
+        title: t("subscription.developer.premiumEnabledTitle"),
+        text: t("subscription.developer.premiumEnabledText"),
       });
     },
     onError: (error: Error) =>
       Toast.error({
-        title: "Test plan not changed",
-        text: error.message || "Try enabling the Premium test plan again.",
+        title: t("subscription.developer.updateErrorTitle"),
+        text: error.message || t("subscription.developer.updateErrorPremiumText"),
       }),
   });
   const downgradeMutation = useMutation({
@@ -417,14 +433,14 @@ function DeveloperTools({
     onSuccess: (nextSubscription) => {
       syncSubscription(nextSubscription);
       Toast.success({
-        title: "Free test enabled",
-        text: "Development entitlements now use the Free plan.",
+        title: t("subscription.developer.freeEnabledTitle"),
+        text: t("subscription.developer.freeEnabledText"),
       });
     },
     onError: (error: Error) =>
       Toast.error({
-        title: "Test plan not changed",
-        text: error.message || "Try enabling the Free test plan again.",
+        title: t("subscription.developer.updateErrorTitle"),
+        text: error.message || t("subscription.developer.updateErrorFreeText"),
       }),
   });
 
@@ -432,13 +448,13 @@ function DeveloperTools({
     <View className="overflow-hidden rounded-20 border-hairline border-line-subtle bg-background-surface">
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Toggle subscription developer tools"
+        accessibilityLabel={t("subscription.accessibility.toggleDeveloperTools")}
         accessibilityState={{ expanded }}
         className="min-h-48 flex-row items-center gap-10 px-16 py-12"
         onPress={() => setExpanded((current) => !current)}
       >
         <Text variant="body2" className="flex-1 font-semibold">
-          Developer tools
+          {t("subscription.developer.title")}
         </Text>
         <CaretDown
           size={20}
@@ -450,8 +466,9 @@ function DeveloperTools({
       {expanded ? (
         <View className="gap-12 border-t border-line-subtle px-16 py-14">
           <Text variant="footnote" className="text-text-muted">
-            Current mock tier: {subscription.tier}. These controls are
-            unavailable in production.
+            {t("subscription.developer.currentTier", {
+              tier: subscription.tier,
+            })}
           </Text>
           <View className="flex-row flex-wrap gap-10">
             <Button
@@ -461,7 +478,7 @@ function DeveloperTools({
               disabled={subscription.tier === "premium"}
               onPress={() => upgradeMutation.mutate()}
             >
-              Mock Upgrade
+              {t("subscription.actions.mockUpgrade")}
             </Button>
             <Button
               size="sm"
@@ -470,7 +487,7 @@ function DeveloperTools({
               disabled={subscription.tier === "free"}
               onPress={() => downgradeMutation.mutate()}
             >
-              Mock Downgrade
+              {t("subscription.actions.mockDowngrade")}
             </Button>
           </View>
         </View>
@@ -480,10 +497,12 @@ function DeveloperTools({
 }
 
 function SubscriptionLoading() {
+  const { t } = useTranslation();
+
   return (
     <ScreenContainer
       scrollEnabled
-      accessibilityLabel="Loading subscription details"
+      accessibilityLabel={t("subscription.accessibility.loadingDetails")}
     >
       <View className="gap-24 px-20 pb-40 pt-18">
         <View className="gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-18 py-20">
@@ -506,6 +525,7 @@ function SubscriptionLoading() {
 }
 
 export function SubscriptionScreen() {
+  const { t } = useTranslation();
   const { isManaging, isPresenting, presentCustomerCenter, presentPaywall } =
     usePremiumPaywall();
   const {
@@ -528,9 +548,9 @@ export function SubscriptionScreen() {
       <ScreenContainer>
         <StateView
           variant="error"
-          title="Could not load subscription details"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("subscription.loading.errorTitle")}
+          description={t("subscription.loading.errorDescription")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void refetch()}
           className="flex-1"
         />
@@ -555,17 +575,19 @@ export function SubscriptionScreen() {
 
         <View className="gap-10">
           <SectionHeading
-            title="Usage overview"
-            description="Live counts from your current YeuPet account."
+            title={t("subscription.sections.usageTitle")}
+            description={t("subscription.sections.usageDescription")}
           />
           <View className="overflow-hidden rounded-22 border-hairline border-line-subtle bg-background-surface">
             {USAGE_ITEMS.map((item) => (
               <UsageRow
                 key={item.usageKey}
-                label={item.label}
+                label={t(item.labelKey)}
                 usage={subscription.usage?.[item.usageKey]}
                 limit={subscription.limits[item.limitKey]}
-                periodLabel={item.periodLabel}
+                periodLabel={
+                  item.periodLabelKey ? t(item.periodLabelKey) : undefined
+                }
               />
             ))}
           </View>
@@ -573,11 +595,11 @@ export function SubscriptionScreen() {
 
         <View className="gap-12">
           <SectionHeading
-            title="Feature limits"
-            description="What your current plan includes across pet care."
+            title={t("subscription.sections.featureLimitsTitle")}
+            description={t("subscription.sections.featureLimitsDescription")}
           />
           <FeatureGroup
-            title="Pet care"
+            title={t("subscription.featureGroups.petCare")}
             icon={
               <PawPrint
                 size={21}
@@ -586,18 +608,21 @@ export function SubscriptionScreen() {
               />
             }
           >
-            <FeatureRow label="Pets" value={subscription.limits.maxPets} />
             <FeatureRow
-              label="Active reminders"
+              label={t("subscription.features.pets")}
+              value={subscription.limits.maxPets}
+            />
+            <FeatureRow
+              label={t("subscription.features.activeReminders")}
               value={subscription.limits.maxActiveReminders}
             />
             <FeatureRow
-              label="Recurring reminders"
+              label={t("subscription.features.recurringReminders")}
               included={subscription.limits.recurringReminders}
             />
           </FeatureGroup>
           <FeatureGroup
-            title="Health records"
+            title={t("subscription.featureGroups.health")}
             icon={
               <Heartbeat
                 size={21}
@@ -607,20 +632,20 @@ export function SubscriptionScreen() {
             }
           >
             <FeatureRow
-              label="Medical records"
+              label={t("subscription.features.medicalRecords")}
               value={subscription.limits.maxMedicalRecords}
             />
             <FeatureRow
-              label="Images per record"
+              label={t("subscription.features.imagesPerRecord")}
               value={subscription.limits.maxImagesPerMedicalRecord}
             />
             <FeatureRow
-              label="Export medical summary"
+              label={t("subscription.features.exportMedicalSummary")}
               included={subscription.limits.exportMedicalSummary}
             />
           </FeatureGroup>
           <FeatureGroup
-            title="Budget"
+            title={t("subscription.featureGroups.budget")}
             icon={
               <Wallet
                 size={21}
@@ -630,16 +655,16 @@ export function SubscriptionScreen() {
             }
           >
             <FeatureRow
-              label="Monthly transactions"
+              label={t("subscription.features.budgetTransactions")}
               value={subscription.limits.maxBudgetTransactionsPerMonth}
             />
             <FeatureRow
-              label="Yearly statistics"
+              label={t("subscription.features.yearlyStatistics")}
               included={subscription.limits.yearlyBudgetStats}
             />
           </FeatureGroup>
           <FeatureGroup
-            title="Photos"
+            title={t("subscription.featureGroups.photos")}
             icon={
               <Image
                 size={21}
@@ -648,24 +673,27 @@ export function SubscriptionScreen() {
               />
             }
           >
-            <FeatureRow label="Photos" value={subscription.limits.maxPhotos} />
+            <FeatureRow
+              label={t("subscription.features.photos")}
+              value={subscription.limits.maxPhotos}
+            />
           </FeatureGroup>
           <FeatureGroup
-            title="Pet Care AI"
+            title={t("subscription.featureGroups.ai")}
             icon={
               <Sparkle size={21} weight="duotone" className="text-icon-info" />
             }
           >
             <FeatureRow
-              label="AI messages per month"
+              label={t("subscription.features.aiMessagesPerMonth")}
               value={subscription.limits.aiMessagesPerMonth}
             />
             <FeatureRow
-              label="Pet context"
+              label={t("subscription.features.aiPetContext")}
               included={subscription.limits.aiWithPetContext}
             />
             <FeatureRow
-              label="Medical history context"
+              label={t("subscription.features.aiMedicalHistory")}
               included={subscription.limits.aiWithMedicalHistory}
             />
           </FeatureGroup>
@@ -673,25 +701,28 @@ export function SubscriptionScreen() {
 
         <View className="gap-10">
           <SectionHeading
-            title={isPremium ? "Premium benefits" : "Upgrade to Premium"}
+            title={
+              isPremium
+                ? t("subscription.benefits.activeTitle")
+                : t("subscription.benefits.upgradeTitle")
+            }
             description={
               isPremium
-                ? "Your expanded pet-care tools are ready to use."
-                : "More room for daily care, records, memories, and AI support."
+                ? t("subscription.benefits.activeDescription")
+                : t("subscription.benefits.upgradeDescription")
             }
           />
           <BenefitsCard premium={isPremium} />
           <Text variant="caption1" className="px-2 text-text-muted">
-            Pet Care AI offers general guidance and does not replace veterinary
-            diagnosis or treatment.
+            {t("subscription.benefits.disclaimer")}
           </Text>
           {!isPremium ? (
             <Button
-              accessibilityLabel="Upgrade to Premium"
+              accessibilityLabel={t("subscription.accessibility.upgradePremium")}
               loading={isPresenting}
               onPress={handleUpgrade}
             >
-              Upgrade to Premium
+              {t("subscription.actions.upgrade")}
             </Button>
           ) : null}
         </View>

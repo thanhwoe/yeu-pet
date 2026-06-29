@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { PlusIcon, ShoppingCartSimpleIcon } from "phosphor-react-native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, View } from "react-native";
 
 const Plus = withIconClassName(PlusIcon);
@@ -19,6 +20,7 @@ interface IProps {
 }
 
 export const BottomActions = ({ loading }: IProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { productId } = useLocalSearchParams();
   const [quantity, setQuantity] = useState(1);
@@ -30,16 +32,16 @@ export const BottomActions = ({ loading }: IProps) => {
       queryClient.invalidateQueries({ queryKey: CART_KEY.all });
 
       Toast.success({
-        title: "Added to cart",
-        text: "This item is ready for checkout in your cart.",
+        title: t("commerce.product.addedToCartTitle"),
+        text: t("commerce.product.addedToCartText"),
       });
     },
     onError: (e) => {
       Toast.error({
         text:
           e.errors?.[0].message ??
-          "Check the item and try adding it to your cart again.",
-        title: "Item not added",
+          t("commerce.product.itemNotAddedFallback"),
+        title: t("commerce.product.itemNotAddedTitle"),
       });
     },
   });
@@ -89,7 +91,7 @@ export const BottomActions = ({ loading }: IProps) => {
           })
         }
       >
-        Buy Now
+        {t("commerce.product.buyNow")}
       </Button>
     </BottomActionWrapper>
   );

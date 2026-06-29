@@ -1,4 +1,5 @@
 import type { NotificationCategory } from "@/interfaces";
+import { i18n } from "@/i18n";
 import type { RemoteMessage } from "@react-native-firebase/messaging";
 
 export type ForegroundNotification = {
@@ -11,12 +12,12 @@ export type ForegroundNotification = {
   deepLink?: string;
 };
 
-const FALLBACK_TITLES: Record<NotificationCategory, string> = {
-  reminder: "Care reminder",
-  booking: "Booking update",
-  social: "New pet activity",
-  ai: "Pet Care AI",
-  system: "YeuPet notification",
+const FALLBACK_TITLE_KEYS: Record<NotificationCategory, string> = {
+  reminder: "notifications.foreground.fallbackTitle.reminder",
+  booking: "notifications.foreground.fallbackTitle.booking",
+  social: "notifications.foreground.fallbackTitle.social",
+  ai: "notifications.foreground.fallbackTitle.ai",
+  system: "notifications.foreground.fallbackTitle.system",
 };
 
 const asNonEmptyString = (value: unknown) => {
@@ -61,8 +62,8 @@ export const normalizeForegroundNotification = (
     notificationId,
     type,
     category,
-    title: title ?? FALLBACK_TITLES[category],
-    message: message ?? "You have a new notification.",
+    title: title ?? i18n.t(FALLBACK_TITLE_KEYS[category]),
+    message: message ?? i18n.t("notifications.foreground.fallbackMessage"),
     deepLink,
   };
 };

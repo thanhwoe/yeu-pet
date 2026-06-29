@@ -23,10 +23,12 @@ import { IPet, IPetSitter, ISitterBookingForm } from "@/interfaces";
 import { cn } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import { TFunction } from "i18next";
 import { useEffect, useMemo, useRef } from "react";
 import { useController, useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { RATING_OPTIONS, SERVICE_TYPE_OPTIONS } from "../constants";
+import { getRatingOptions, getServiceTypeOptions } from "../constants";
 import {
   createIdempotencyKey,
   formatRate,
@@ -63,12 +65,14 @@ const getBookingEstimate = ({
   hourlyRate,
   startTime,
   type,
+  t,
 }: {
   dailyRate: string | number;
   endTime?: Date;
   hourlyRate: string | number;
   startTime?: Date;
   type?: "hourly" | "daily";
+  t: TFunction;
 }) => {
   if (!type || !startTime || !endTime) {
     return null;
@@ -89,7 +93,10 @@ const getBookingEstimate = ({
 
     return {
       total: rate * days,
-      summary: `${days} day${days > 1 ? "s" : ""} · ${formatRate(rate)} / day`,
+      summary: t("sitter.estimate.dailySummary", {
+        count: days,
+        rate: formatRate(rate),
+      }),
       range: `${start.format("DD MMM")} - ${end.format("DD MMM YYYY")}`,
     };
   }
@@ -97,11 +104,13 @@ const getBookingEstimate = ({
   const hours = diffMs / HOUR_MS;
   const normalizedHours = Number(hours.toFixed(2));
   const rate = getNumberRate(hourlyRate);
-  const hourLabel = `hour${normalizedHours > 1 ? "s" : ""}`;
 
   return {
     total: rate * normalizedHours,
-    summary: `${normalizedHours} ${hourLabel} · ${formatRate(rate)} / hour`,
+    summary: t("sitter.estimate.hourlySummary", {
+      count: normalizedHours,
+      rate: formatRate(rate),
+    }),
     range: `${start.format("DD MMM, HH:mm")} - ${end.format("HH:mm")}`,
   };
 };
@@ -117,10 +126,12 @@ export const BookingRequestForm = ({
   onSubmit: (data: ISitterBookingForm) => Promise<void>;
   loading: boolean;
 }) => {
+  const { t } = useTranslation();
   const petOptions = useMemo(
     () => pets.map((pet) => ({ label: pet.name, value: pet.id })),
     [pets],
   );
+  const serviceTypeOptions = getServiceTypeOptions();
 
   const { control, handleSubmit, setValue } = useForm<
     ISitterBookingFormInput,
@@ -218,8 +229,9 @@ export const BookingRequestForm = ({
         hourlyRate: sitter.hourlyRate,
         startTime,
         type: serviceType,
+        t,
       }),
-    [endTime, serviceType, sitter.dailyRate, sitter.hourlyRate, startTime],
+    [endTime, serviceType, sitter.dailyRate, sitter.hourlyRate, startTime, t],
   );
 
   const dailyMinimumDate = useMemo(() => getDefaultDailyStart().toDate(), []);
@@ -259,8 +271,8 @@ export const BookingRequestForm = ({
     return (
       <StateView
         variant="empty"
-        title="Add a pet first"
-        description="Create a pet profile before requesting sitter care."
+        title={t("sitter.form.addPetTitle")}
+        description={t("sitter.form.addPetDescription")}
         className="min-h-160"
       />
     );
@@ -286,14 +298,14 @@ export const BookingRequestForm = ({
       <OptionInputController<ISitterBookingFormInput, ISitterBookingFormValues>
         control={control}
         name="petId"
-        label="Pet"
+        label={t("sitter.form.pet")}
         options={petOptions}
       />
       <OptionInputController<ISitterBookingFormInput, ISitterBookingFormValues>
         control={control}
         name="type"
-        label="Service type"
-        options={SERVICE_TYPE_OPTIONS}
+        label={t("sitter.form.serviceType")}
+        options={serviceTypeOptions}
       />
       <DateTimePickerController<
         ISitterBookingFormInput,
@@ -301,7 +313,11 @@ export const BookingRequestForm = ({
       >
         control={control}
         name="startTime"
-        label={serviceType === "daily" ? "Start date" : "Start time"}
+        label={
+          serviceType === "daily"
+            ? t("sitter.form.startDate")
+            : t("sitter.form.startTime")
+        }
         mode={serviceType === "daily" ? "date" : "datetime"}
         minimumDate={startMinimumDate}
       />
@@ -311,7 +327,11 @@ export const BookingRequestForm = ({
       >
         control={control}
         name="endTime"
-        label={serviceType === "daily" ? "End date" : "End time"}
+        label={
+          serviceType === "daily"
+            ? t("sitter.form.endDate")
+            : t("sitter.form.endTime")
+        }
         mode={serviceType === "daily" ? "date" : "datetime"}
         minimumDate={endMinimumDate}
       />
@@ -319,10 +339,10 @@ export const BookingRequestForm = ({
         <View className="flex-row items-start justify-between gap-12">
           <View className="flex-1">
             <Body variant="body4" className="text-text-muted">
-              Estimated total
+              {t("sitter.estimate.total")}
             </Body>
             <Body variant="body3" weight="semiBold">
-              {estimate ? estimate.summary : "Select a valid care time"}
+              {estimate ? estimate.summary : t("sitter.estimate.validTime")}
             </Body>
           </View>
           <Heading variant="h6" weight="bold">
@@ -338,21 +358,21 @@ export const BookingRequestForm = ({
       <BottomSheetInputController
         control={control}
         name="careInstructions"
-        label="Care instructions"
-        placeholder="Food, medicine, walks, or routines"
+        label={t("sitter.form.careInstructions")}
+        placeholder={t("sitter.form.careInstructionsPlaceholder")}
         multiline
         numberOfLines={3}
       />
       <BottomSheetInputController
         control={control}
         name="ownerNotes"
-        label="Owner notes"
-        placeholder="Anything the sitter should know"
+        label={t("sitter.form.ownerNotes")}
+        placeholder={t("sitter.form.ownerNotesPlaceholder")}
         multiline
         numberOfLines={3}
       />
       <Button loading={loading} onPress={() => handleSubmit(submit)()}>
-        Send booking request
+        {t("sitter.form.sendBookingRequest")}
       </Button>
     </View>
   );
@@ -367,6 +387,7 @@ export const SitterProfileForm = ({
   onSubmit: (data: ISitterProfileForm) => Promise<void>;
   loading: boolean;
 }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit } = useForm<
     ISitterProfileFormInput,
     unknown,
@@ -409,17 +430,17 @@ export const SitterProfileForm = ({
       {defaultValues ? (
         <Pressable
           accessibilityRole="switch"
-          accessibilityLabel="Sitter availability"
+          accessibilityLabel={t("sitter.form.acceptRequests")}
           accessibilityState={{ checked: Boolean(isAvailable) }}
           onPress={() => setIsAvailable(!isAvailable)}
           className="flex-row items-center justify-between gap-16 rounded-22 border border-line-subtle bg-background-surface px-16 py-14"
         >
           <View className="flex-1">
             <Body variant="body3" weight="semiBold">
-              Accept new requests
+              {t("sitter.form.acceptRequests")}
             </Body>
             <Body variant="body4" className="text-text-muted">
-              Pause your profile when you are not available.
+              {t("sitter.form.pauseDescription")}
             </Body>
           </View>
           <View
@@ -439,26 +460,26 @@ export const SitterProfileForm = ({
       ) : null}
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
-        <SectionLabel>Profile</SectionLabel>
+        <SectionLabel>{t("sitter.form.profile")}</SectionLabel>
         <BottomSheetInputController
           control={control}
           name="displayName"
-          label="Display name"
-          placeholder="How owners will see you"
+          label={t("sitter.form.displayName")}
+          placeholder={t("sitter.form.displayNamePlaceholder")}
         />
         <BottomSheetInputController
           control={control}
           name="bio"
-          label="Bio"
-          placeholder="Share your pet-care experience"
+          label={t("sitter.form.bio")}
+          placeholder={t("sitter.form.bioPlaceholder")}
           multiline
           numberOfLines={3}
         />
         <BottomSheetInputController
           control={control}
           name="experience"
-          label="Experience"
-          placeholder="3 years caring for dogs and cats"
+          label={t("sitter.form.experience")}
+          placeholder={t("sitter.form.experiencePlaceholder")}
         />
       </View>
 
@@ -466,35 +487,35 @@ export const SitterProfileForm = ({
         <VietnamProvinceCitySelect
           value={city}
           onChange={setCity}
-          emptyLabel="Select city"
-          clearLabel="Not selected"
+          emptyLabel={t("sitter.form.cityEmpty")}
+          clearLabel={t("sitter.form.cityClear")}
           errorMessage={cityError?.message}
         />
         <View className="flex-row gap-12">
           <BottomSheetInputController
             control={control}
             name="district"
-            label="District"
-            placeholder="Hai Chau"
+            label={t("sitter.form.district")}
+            placeholder={t("sitter.form.districtPlaceholder")}
             className="flex-1"
           />
           <BottomSheetInputController
             control={control}
             name="ward"
-            label="Ward"
-            placeholder="Optional"
+            label={t("sitter.form.ward")}
+            placeholder={t("sitter.form.wardPlaceholder")}
             className="flex-1"
           />
         </View>
       </View>
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
-        <SectionLabel>Services</SectionLabel>
+        <SectionLabel>{t("sitter.form.services")}</SectionLabel>
         <View className="flex-row gap-12">
           <BottomSheetInputController
             control={control}
             name="hourlyRate"
-            label="Hourly rate"
+            label={t("sitter.form.hourlyRate")}
             keyboardType="numeric"
             placeholder="100000"
             className="flex-1"
@@ -502,7 +523,7 @@ export const SitterProfileForm = ({
           <BottomSheetInputController
             control={control}
             name="dailyRate"
-            label="Daily rate"
+            label={t("sitter.form.dailyRate")}
             keyboardType="numeric"
             placeholder="700000"
             className="flex-1"
@@ -511,15 +532,15 @@ export const SitterProfileForm = ({
         <BottomSheetInputController
           control={control}
           name="maxConcurrentBookings"
-          label="Max bookings"
+          label={t("sitter.form.maxBookings")}
           keyboardType="numeric"
           placeholder="1"
         />
         <BottomSheetInputController
           control={control}
           name="serviceNotes"
-          label="Service notes"
-          placeholder="Small pets, daytime walks, overnight care"
+          label={t("sitter.form.serviceNotes")}
+          placeholder={t("sitter.form.serviceNotesPlaceholder")}
           multiline
           numberOfLines={3}
         />
@@ -530,7 +551,9 @@ export const SitterProfileForm = ({
         loading={loading}
         onPress={() => handleSubmit(onSubmit)()}
       >
-        {defaultValues ? "Save sitter profile" : "Create sitter profile"}
+        {defaultValues
+          ? t("sitter.form.saveProfile")
+          : t("sitter.form.createProfile")}
       </Button>
     </View>
   );
@@ -543,6 +566,7 @@ export const CancelForm = ({
   onSubmit: (data: ISitterCancelForm) => Promise<void>;
   loading: boolean;
 }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit } = useForm<ISitterCancelForm>({
     resolver: zodResolver(sitterCancelSchema),
     defaultValues: { reason: "" },
@@ -553,8 +577,8 @@ export const CancelForm = ({
       <BottomSheetInputController
         control={control}
         name="reason"
-        label="Reason"
-        placeholder="Optional note for the other person"
+        label={t("sitter.form.reason")}
+        placeholder={t("sitter.form.reasonPlaceholder")}
         multiline
         numberOfLines={3}
       />
@@ -563,7 +587,7 @@ export const CancelForm = ({
         loading={loading}
         onPress={() => handleSubmit(onSubmit)()}
       >
-        Cancel booking
+        {t("sitter.form.cancelBooking")}
       </Button>
     </View>
   );
@@ -576,6 +600,8 @@ export const ReviewForm = ({
   onSubmit: (data: ISitterReviewFormValues) => Promise<void>;
   loading: boolean;
 }) => {
+  const { t } = useTranslation();
+  const ratingOptions = getRatingOptions();
   const { control, handleSubmit } = useForm<ISitterReviewFormValues>({
     resolver: zodResolver(sitterReviewSchema),
     defaultValues: { rating: "5", comment: "" },
@@ -586,19 +612,19 @@ export const ReviewForm = ({
       <OptionInputController<ISitterReviewFormValues>
         control={control}
         name="rating"
-        label="Rating"
-        options={RATING_OPTIONS}
+        label={t("sitter.form.rating")}
+        options={ratingOptions}
       />
       <BottomSheetInputController
         control={control}
         name="comment"
-        label="Review"
-        placeholder="What went well?"
+        label={t("sitter.form.comment")}
+        placeholder={t("sitter.form.commentPlaceholder")}
         multiline
         numberOfLines={4}
       />
       <Button loading={loading} onPress={() => handleSubmit(onSubmit)()}>
-        Submit review
+        {t("sitter.form.submitReview")}
       </Button>
     </View>
   );

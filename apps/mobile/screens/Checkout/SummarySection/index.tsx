@@ -2,6 +2,7 @@ import { Text } from "@/components/ui/Text";
 import { IOrderSummaryResponse } from "@/interfaces";
 import { cn } from "@/utils";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, ListRenderItem, View } from "react-native";
 
 interface IProps {
@@ -9,24 +10,25 @@ interface IProps {
 }
 
 export const SummarySection = ({ data }: IProps) => {
+  const { t } = useTranslation();
   const dataMapping = useMemo(
     () => [
       {
-        label: "Subtotal",
+        label: t("commerce.checkout.subtotal"),
         value: data?.sale_total,
       },
       {
-        label: "Tổng giá gốc",
+        label: t("commerce.checkout.originalTotal"),
         value: data?.original_total,
         color: "text-text-secondary",
       },
       {
-        label: "Giảm giá sản phẩm",
+        label: t("commerce.checkout.productDiscount"),
         value: data?.discount_total,
         color: "text-text-negative",
       },
       {
-        label: "Phí vận chuyển",
+        label: t("commerce.checkout.shippingFee"),
         value: data?.shipping_fee,
       },
     ],
@@ -35,6 +37,7 @@ export const SummarySection = ({ data }: IProps) => {
       data?.original_total,
       data?.sale_total,
       data?.shipping_fee,
+      t,
     ]
   );
 
@@ -51,7 +54,9 @@ export const SummarySection = ({ data }: IProps) => {
 
   return (
     <View className="border border-line-tertiary py-2 px-3 bg-background-card-info rounded-xl">
-      <Text className="font-semibold">Order Summary</Text>
+      <Text className="font-semibold">
+        {t("commerce.checkout.orderSummary")}
+      </Text>
       <FlatList
         data={dataMapping}
         scrollEnabled={false}
@@ -60,7 +65,7 @@ export const SummarySection = ({ data }: IProps) => {
       />
       <View className="border-t border-line-inverse flex-row justify-between pt-2">
         <Text className="font-semibold" variant="body2">
-          Total
+          {t("commerce.checkout.total")}
         </Text>
         <Text className="font-semibold" variant="body2">
           {data?.total}

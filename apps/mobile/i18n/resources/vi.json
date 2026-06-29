@@ -1,9 +1,62 @@
 {
   "apiError": {
-    "genericTitle": "Không thể hoàn tất",
-    "genericText": "Vui lòng thử lại sau ít phút.",
+    "genericTitle": "Không thể hoàn tất yêu cầu",
+    "genericText": "Vui lòng thử lại sau vài phút.",
     "networkTitle": "Kết nối không ổn định",
     "networkText": "Kiểm tra kết nối rồi thử lại nhé."
+  },
+  "ai": {
+    "composer": {
+      "messageAccessibility": "Tin nhắn Doctor AI",
+      "placeholder": "Hỏi về ăn uống, chăm sóc lông, hành vi, triệu chứng...",
+      "sendAccessibility": "Gửi tin nhắn Doctor AI",
+      "thinking": "Pet Care AI đang suy nghĩ...",
+      "urgentWarning": "Tình huống này có thể khẩn cấp. Hãy liên hệ bác sĩ thú y hoặc phòng khám cấp cứu ngay nếu thú cưng đang có dấu hiệu nguy hiểm."
+    },
+    "fallback": {
+      "assistantErrorMessage": "Hiện tôi chưa thể trả lời. Vui lòng thử lại sau vài phút. Nếu có triệu chứng khẩn cấp, hãy liên hệ bác sĩ thú y hoặc phòng khám cấp cứu ngay.",
+      "generateResponse": "Xin lỗi, tôi chưa tạo được phản hồi. Vui lòng thử lại."
+    },
+    "empty": {
+      "description": "Hỏi thông tin chăm sóc về ăn uống, chăm sóc lông, hành vi, lịch dùng thuốc hoặc triệu chứng.",
+      "greeting": "Chào{{name}}, hôm nay tôi có thể giúp gì cho thú cưng của bạn?",
+      "promptAccessibility": "Dùng gợi ý: {{prompt}}",
+      "prompts": [
+        "Thú cưng của tôi bỏ ăn",
+        "Triệu chứng này có khẩn cấp không?",
+        "Tạo lịch ăn uống",
+        "Giải thích lịch vắc-xin",
+        "Mẹo chăm sóc lông",
+        "Hỗ trợ nhắc dùng thuốc"
+      ]
+    },
+    "paywall": {
+      "benefits": [
+        "300 tin nhắn AI mỗi tháng",
+        "AI có ngữ cảnh thú cưng",
+        "AI có ngữ cảnh lịch sử y tế"
+      ],
+      "blockingDescription": "Bạn đã dùng hết tin nhắn AI miễn phí trong tháng này. Nâng cấp Premium để được hỗ trợ Pet Care AI nhiều hơn.",
+      "blockingTitle": "Đã đạt giới hạn tin nhắn AI",
+      "inlineAction": "Xem Premium",
+      "inlineDescription": "Premium bổ sung nhiều tin nhắn hằng tháng cùng ngữ cảnh thú cưng và lịch sử y tế.",
+      "inlineTitle": "Còn {{count}} tin nhắn AI miễn phí"
+    },
+    "petContext": {
+      "general": "Chung",
+      "generalAccessibility": "Dùng ngữ cảnh AI chung",
+      "label": "Ngữ cảnh thú cưng",
+      "loading": "Đang tải thú cưng...",
+      "lockedAccessibility": "Ngữ cảnh thú cưng {{name}} cần Premium",
+      "noPets": "Chưa có thú cưng",
+      "usePetAccessibility": "Dùng {{name}} làm ngữ cảnh thú cưng cho AI"
+    },
+    "quota": {
+      "checking": "Đang kiểm tra tin nhắn AI",
+      "premiumAi": "AI Premium",
+      "premiumDescription": "Còn {{count}} tin nhắn trong tháng này với ngữ cảnh thú cưng.",
+      "upgradeDescription": "Premium mở thêm tin nhắn, ngữ cảnh thú cưng và lịch sử y tế gần đây."
+    }
   },
   "auth": {
     "common": {
@@ -47,7 +100,7 @@
     },
     "login": {
       "noAccount": "Bạn chưa có tài khoản?",
-      "subtitle": "Đăng nhập vào tài khoản của bạn",
+      "subtitle": "Đăng nhập vào tài khoản YeuPet của bạn",
       "title": "Chào mừng trở lại"
     },
     "register": {
@@ -76,6 +129,8 @@
       "resetCodeNotSentTitle": "Chưa gửi được mã",
       "signInFailedText": "Kiểm tra thông tin rồi thử lại nhé.",
       "signInFailedTitle": "Chưa đăng nhập được",
+      "signOutFailedText": "Vui lòng thử đăng xuất lại.",
+      "signOutFailedTitle": "Chưa đăng xuất được",
       "welcomeBackText": "Bạn đã đăng nhập vào YeuPet.",
       "welcomeBackTitle": "Chào mừng trở lại"
     },
@@ -86,7 +141,7 @@
       "inputLabel": "Chữ số {{index}} của mã xác minh",
       "resend": "Gửi lại",
       "resendIn": "Gửi lại sau {{time}}",
-      "sentCode": "YeuPet đã gửi mã gồm {{count}} chữ số đến",
+      "sentCode": "YeuPet đã gửi mã {{count}} chữ số đến",
       "title": "Xác minh số điện thoại",
       "verify": "Xác minh"
     },
@@ -95,20 +150,326 @@
       "title": "Chào mừng đến YeuPet"
     }
   },
+  "budget": {
+    "accessibility": {
+      "addCategory": "Thêm danh mục ngân sách",
+      "addTransaction": "Thêm giao dịch ngân sách",
+      "category": "Danh mục ngân sách {{name}}",
+      "deleteCategory": "Xóa danh mục {{name}}",
+      "deleteTransaction": "Xóa {{description}}",
+      "editCategory": "Sửa danh mục {{name}}",
+      "editMonthlyBudget": "Sửa ngân sách tháng",
+      "editTransaction": "Sửa {{description}}",
+      "openActions": "Mở hành động ngân sách",
+      "selectPeriod": "Chọn kỳ ngân sách",
+      "swipeDelete": "Vuốt sang trái để xóa",
+      "swipeEdit": "Vuốt sang phải để sửa",
+      "swipeEditDelete": "Vuốt sang phải để sửa hoặc sang trái để xóa"
+    },
+    "actions": {
+      "addCategory": "Thêm danh mục",
+      "addNewCategory": "Thêm danh mục mới",
+      "addTransaction": "Thêm giao dịch",
+      "manage": "Quản lý",
+      "seeAll": "Xem tất cả",
+      "setMonthlyBudget": "Đặt ngân sách tháng",
+      "submit": "Lưu",
+      "updateCategory": "Cập nhật danh mục",
+      "updateTransaction": "Cập nhật giao dịch"
+    },
+    "categories": {
+      "emptyDescription": "Tạo danh mục để biết ngân sách thú cưng đang được dùng vào đâu.",
+      "emptyTitle": "Chưa có danh mục",
+      "popupDescription": "Xóa {{name}} khỏi danh mục ngân sách?",
+      "popupTitle": "Xóa danh mục"
+    },
+    "colors": {
+      "blue": "Xanh dương",
+      "cyan": "Xanh cyan",
+      "green": "Xanh lá",
+      "grey": "Xám",
+      "lilac": "Tím lilac",
+      "lime": "Xanh lime",
+      "orange": "Cam",
+      "pink": "Hồng",
+      "purple": "Tím",
+      "red": "Đỏ",
+      "teal": "Xanh teal",
+      "yellow": "Vàng"
+    },
+    "form": {
+      "amount": {
+        "label": "Số tiền",
+        "placeholder": "Số tiền"
+      },
+      "budgetAmount": {
+        "placeholder": "Nhập số tiền"
+      },
+      "category": {
+        "label": "Danh mục",
+        "placeholder": "Chọn danh mục"
+      },
+      "categoryName": {
+        "label": "Tên",
+        "placeholder": "Tên danh mục"
+      },
+      "color": {
+        "label": "Màu",
+        "placeholder": "Chủ đề màu"
+      },
+      "date": {
+        "label": "Ngày",
+        "placeholder": "Chọn ngày"
+      },
+      "description": {
+        "label": "Mô tả",
+        "placeholder": "Mô tả"
+      },
+      "emoji": {
+        "label": "Biểu tượng emoji",
+        "placeholder": "Ví dụ 🐶"
+      },
+      "pet": {
+        "label": "Thú cưng",
+        "noSpecific": "Không chọn thú cưng cụ thể"
+      }
+    },
+    "limit": {
+      "checkMonthDescription": "Đang xác nhận số giao dịch đã lưu.",
+      "checkMonthTitle": "Đang kiểm tra tháng này",
+      "confirmErrorText": "Thử kiểm tra lại gói trước khi thêm giao dịch này.",
+      "confirmErrorTitle": "Chưa xác nhận được giới hạn giao dịch",
+      "limitReachedDescription": "Gói miễn phí gồm {{limit}} giao dịch cho {{period}}. Chọn tháng khác hoặc nâng cấp Premium.",
+      "limitReachedText": "Chọn tháng khác hoặc nâng cấp Premium.",
+      "limitReachedTitle": "Đã đạt giới hạn giao dịch tháng",
+      "loadingDescription": "YeuPet đang kiểm tra giới hạn trước khi thêm giao dịch mới.",
+      "loadingTitle": "Đang kiểm tra gói",
+      "monthErrorDescription": "Thử lại trước khi thêm giao dịch này.",
+      "monthErrorTitle": "Chưa kiểm tra được tháng này",
+      "transactionLimitErrorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "transactionLimitErrorTitle": "Chưa kiểm tra được giới hạn giao dịch"
+    },
+    "screen": {
+      "byCategory": "Theo danh mục",
+      "daily": "Theo ngày",
+      "monthly": "Theo tháng",
+      "monthlyBudget": "Ngân sách tháng",
+      "recentTransactions": "Giao dịch gần đây",
+      "remaining": "Còn lại",
+      "selectPeriod": "Chọn kỳ",
+      "spendingTrends": "Xu hướng chi tiêu",
+      "spent": "Đã chi: {{amount}}",
+      "totalSpent": "Tổng đã chi",
+      "totalTransaction": "Tổng số giao dịch",
+      "yearlySummary": "Tóm tắt năm"
+    },
+    "tabs": {
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "routes": {
+      "categories": "Danh mục của tôi",
+      "statistics": "Thống kê ngân sách",
+      "transactions": "Giao dịch chi tiêu"
+    },
+    "toast": {
+      "budgetUpdateErrorText": "Kiểm tra số tiền rồi thử lại.",
+      "budgetUpdateErrorTitle": "Chưa cập nhật được ngân sách",
+      "categoryCreateErrorText": "Kiểm tra chi tiết danh mục rồi thử lại.",
+      "categoryCreateErrorTitle": "Chưa tạo được danh mục",
+      "categoryDeleteErrorText": "Chuyển các giao dịch của danh mục hoặc thử lại.",
+      "categoryDeleteErrorTitle": "Chưa xóa được danh mục",
+      "categoryUpdateErrorText": "Kiểm tra chi tiết danh mục rồi thử lại.",
+      "categoryUpdateErrorTitle": "Chưa cập nhật được danh mục",
+      "transactionCreateErrorText": "Kiểm tra chi tiết giao dịch rồi thử lại.",
+      "transactionCreateErrorTitle": "Chưa thêm được giao dịch",
+      "transactionDeleteErrorText": "Làm mới giao dịch rồi thử lại.",
+      "transactionDeleteErrorTitle": "Chưa xóa được giao dịch",
+      "transactionUpdateErrorText": "Kiểm tra chi tiết giao dịch rồi thử lại.",
+      "transactionUpdateErrorTitle": "Chưa cập nhật được giao dịch"
+    },
+    "transactions": {
+      "defaultDescription": "Chi phí chăm sóc thú cưng",
+      "emptyDescription": "Thêm chi phí chăm sóc thú cưng đầu tiên để bắt đầu theo dõi ngân sách.",
+      "emptyRecentDescription": "Thêm chi phí chăm sóc thú cưng khi bạn muốn theo dõi kỳ này.",
+      "emptyRecentTitle": "Chưa có giao dịch gần đây",
+      "emptyTitle": "Chưa có giao dịch",
+      "loadErrorDescription": "Thử lại để làm mới chi tiêu chăm sóc thú cưng.",
+      "loadErrorTitle": "Chưa tải được giao dịch",
+      "popupDescription": "Bạn có chắc muốn xóa giao dịch này không?",
+      "popupTitle": "Xóa giao dịch"
+    }
+  },
   "common": {
+    "accessibility": {
+      "closeSheet": "Đóng bảng trượt",
+      "dismissNotification": "Đóng thông báo",
+      "goBack": "Quay lại"
+    },
     "accountSynced": "Thông tin tài khoản đã đồng bộ",
     "activePlan": "Gói đang hoạt động",
     "cancel": "Hủy",
     "confirm": "Xác nhận",
+    "contact": {
+      "callFailedMessage": "Chưa thể gọi điện",
+      "callUnsupportedMessage": "Thiết bị này không hỗ trợ gọi điện",
+      "errorTitle": "Lỗi",
+      "messageFailedMessage": "Chưa thể mở SMS",
+      "messageUnsupportedMessage": "Thiết bị này không hỗ trợ SMS",
+      "missingPhoneText": "{{place}} này chưa cung cấp số điện thoại.",
+      "missingPhoneTitleCall": "Chưa thể gọi",
+      "missingPhoneTitleMessage": "Chưa thể nhắn tin"
+    },
+    "countries": {
+      "australia": "Úc",
+      "belgium": "Bỉ",
+      "brazil": "Brazil",
+      "brunei": "Brunei",
+      "china": "Trung Quốc",
+      "croatia": "Croatia",
+      "cuba": "Cuba",
+      "germany": "Đức",
+      "hongKong": "Hồng Kông",
+      "india": "Ấn Độ",
+      "italy": "Ý",
+      "korea": "Hàn Quốc",
+      "northKorea": "Triều Tiên",
+      "oman": "Oman",
+      "panama": "Panama",
+      "peru": "Peru",
+      "qatar": "Qatar",
+      "romania": "Romania",
+      "serbia": "Serbia",
+      "thailand": "Thái Lan",
+      "unitedKingdom": "Vương quốc Anh",
+      "usa": "Hoa Kỳ",
+      "vietnam": "Việt Nam"
+    },
     "done": "Xong",
+    "documents": {
+      "alreadyAddedText": "{{name}} đã được đính kèm vào hồ sơ này.",
+      "alreadyAddedTitle": "Tệp đã được đính kèm",
+      "browseFiles": "Duyệt tệp",
+      "limitReachedText": "Xóa một tệp trước khi thêm hơn {{count}} tệp đính kèm.",
+      "limitReachedTitle": "Đã đạt giới hạn đính kèm",
+      "maxSize": "Ảnh tối đa {{size}}MB",
+      "tooLargeText": "{{name}} phải nhỏ hơn {{size}} MB.",
+      "tooLargeTitle": "Tệp quá lớn",
+      "uploadMedicalImages": "Tải ảnh hồ sơ y tế lên"
+    },
     "email": "Email",
     "free": "Miễn phí",
     "loading": "Đang tải",
     "notSet": "Chưa đặt",
+    "ok": "OK",
     "open": "Mở",
+    "permission": {
+      "galleryDescription": "Vui lòng bật quyền truy cập trong Cài đặt.",
+      "galleryTitle": "YeuPet muốn truy cập thư viện ảnh của bạn",
+      "locationDescription": "Cho phép truy cập vị trí trong Cài đặt để tìm địa điểm thú cưng gần bạn.",
+      "locationTitle": "YeuPet muốn truy cập vị trí của bạn"
+    },
+    "places": {
+      "address": "Địa chỉ: {{address}}",
+      "clinic": "phòng khám",
+      "clinicTitle": "Phòng khám thú cưng",
+      "closeTime": "Giờ đóng cửa: {{time}}",
+      "enable": "Bật",
+      "city": "Thành phố",
+      "enterClinicName": "Nhập tên phòng khám",
+      "enterSpaName": "Nhập tên spa",
+      "noClinicFound": "Không tìm thấy phòng khám",
+      "noSpaFound": "Không tìm thấy spa",
+      "openTime": "Giờ mở cửa: {{time}}",
+      "phone": "Điện thoại: {{phone}}",
+      "pleaseEnableLocation": "Vui lòng bật vị trí",
+      "seeAll": "Xem tất cả",
+      "selectCity": "Chọn thành phố",
+      "spa": "spa",
+      "unsupportedCountry": "Quốc gia của bạn chưa được hỗ trợ"
+    },
     "premium": "Premium",
     "retry": "Thử lại",
+    "selectCountryCode": "Chọn mã quốc gia",
+    "selectValue": "Chọn {{label}}",
+    "settings": "Cài đặt",
+    "sync": {
+      "deviceFailedText": "Thiết lập thông báo sẽ tự thử lại sau.",
+      "deviceFailedTitle": "Chưa đồng bộ được thiết bị"
+    },
     "tryAgain": "Thử lại"
+  },
+  "commerce": {
+    "address": {
+      "add": "Thêm địa chỉ mới",
+      "deleteConfirm": "Xóa",
+      "deleteMessage": "Bạn có chắc muốn xóa địa chỉ này không?",
+      "deleteTitle": "Xóa địa chỉ giao hàng",
+      "default": "Mặc định",
+      "emptyDescription": "Bạn chưa thêm địa chỉ giao hàng nào.",
+      "emptyTitle": "Chưa có địa chỉ giao hàng",
+      "form": {
+        "addressLabel": "Địa chỉ giao hàng",
+        "addressPlaceholder": "Nhập địa chỉ giao hàng",
+        "defaultLabel": "Đặt làm địa chỉ mặc định",
+        "nameLabel": "Tên",
+        "namePlaceholder": "Nhập họ tên",
+        "phoneLabel": "Điện thoại",
+        "phonePlaceholder": "Nhập số điện thoại",
+        "save": "Lưu địa chỉ"
+      },
+      "notAddedFallback": "Kiểm tra chi tiết địa chỉ rồi thử lại.",
+      "notAddedTitle": "Chưa thêm được địa chỉ",
+      "notRemovedFallback": "Thử xóa địa chỉ này lần nữa.",
+      "notRemovedTitle": "Chưa xóa được địa chỉ"
+    },
+    "cart": {
+      "checkout": "Thanh toán",
+      "emptyAction": "Mua sắm ngay",
+      "emptyDescription": "Tìm vài món mới yêu thích cho bé cưng của bạn nào!",
+      "emptyTitle": "Giỏ hàng đang trống!",
+      "itemNotRemovedFallback": "Thử xóa sản phẩm này khỏi giỏ hàng lần nữa.",
+      "itemNotRemovedTitle": "Chưa xóa được sản phẩm",
+      "notUpdatedFallback": "Kiểm tra số lượng rồi thử cập nhật giỏ hàng lần nữa.",
+      "notUpdatedTitle": "Chưa cập nhật được giỏ hàng",
+      "selectAll": "Chọn tất cả"
+    },
+    "checkout": {
+      "orderSummary": "Tóm tắt đơn hàng",
+      "originalTotal": "Tổng giá gốc",
+      "paymentMethod": "Phương thức thanh toán",
+      "placeOrder": "Đặt hàng",
+      "productDiscount": "Giảm giá sản phẩm",
+      "shippingFee": "Phí vận chuyển",
+      "subtotal": "Tạm tính",
+      "total": "Tổng cộng"
+    },
+    "payment": {
+      "bankUnavailableText": "Ngân hàng đang bảo trì. Vui lòng thử lại sau.",
+      "bankUnavailableTitle": "Ngân hàng tạm thời chưa khả dụng",
+      "cancelledText": "Chưa có thanh toán nào được hoàn tất. Bạn có thể thử lại khi sẵn sàng.",
+      "cancelledTitle": "Đã hủy thanh toán",
+      "completeText": "Thanh toán của bạn đã được xác nhận thành công.",
+      "completeTitle": "Thanh toán hoàn tất",
+      "declinedText": "Ngân hàng chưa phê duyệt thanh toán này. Hãy thử phương thức khác.",
+      "declinedTitle": "Giao dịch bị từ chối",
+      "failedText": "Thanh toán chưa hoàn tất. Vui lòng thử lại.",
+      "failedTitle": "Thanh toán thất bại",
+      "serviceErrorText": "Dịch vụ thanh toán chưa phản hồi. Vui lòng thử lại.",
+      "serviceErrorTitle": "Lỗi dịch vụ thanh toán",
+      "unavailableText": "Chọn một phương thức thanh toán được hỗ trợ để tiếp tục.",
+      "unavailableTitle": "Phương thức thanh toán chưa khả dụng"
+    },
+    "product": {
+      "addedToCartText": "Sản phẩm đã sẵn sàng thanh toán trong giỏ hàng.",
+      "addedToCartTitle": "Đã thêm vào giỏ hàng",
+      "buyNow": "Mua ngay",
+      "detail": "Chi tiết sản phẩm",
+      "itemNotAddedFallback": "Kiểm tra sản phẩm rồi thử thêm vào giỏ hàng lần nữa.",
+      "itemNotAddedTitle": "Chưa thêm được sản phẩm",
+      "searchPlaceholder": "Nhập tên sản phẩm",
+      "sold": "Đã bán {{count}}"
+    }
   },
   "datePicker": {
     "selectDate": "Chọn ngày",
@@ -137,6 +498,42 @@
       "premiumRequired": "Tính năng này cần gói Premium."
     }
   },
+  "home": {
+    "header": {
+      "greeting": "Chào {{name}}",
+      "morning": "Chào buổi sáng!",
+      "openNotifications": "Mở thông báo"
+    },
+    "budget": {
+      "action": "Mở ngân sách",
+      "actionAccessibility": "Mở ngân sách",
+      "emptyDescription": "Theo dõi chi phí thức ăn, phòng khám, thuốc và chăm sóc lông.",
+      "emptyTitle": "Tháng này chưa có chi tiêu",
+      "errorDescription": "Thử lại để làm mới chi tiêu chăm sóc tháng này.",
+      "errorTitle": "Chưa tải được chi tiêu",
+      "loadingAccessibility": "Đang tải tóm tắt ngân sách",
+      "subtitle": "Chi tiêu chăm sóc trong tháng",
+      "title": "Tóm tắt ngân sách"
+    },
+    "reminders": {
+      "action": "Xem tất cả nhắc nhở",
+      "actionAccessibility": "Xem tất cả nhắc nhở",
+      "allPets": "Tất cả thú cưng",
+      "dueDate": "{{date}} · {{time}}",
+      "emptyDescription": "Thêm lịch vắc-xin, thuốc, ăn uống hoặc chăm sóc lông tiếp theo.",
+      "emptyAction": "Thêm nhắc nhở",
+      "emptyTitle": "Chưa có nhắc nhở sắp tới",
+      "errorDescription": "Thử lại để xem các việc chăm sóc tiếp theo.",
+      "errorTitle": "Chưa tải được nhắc nhở",
+      "loadingAccessibility": "Đang tải nhắc nhở sắp tới",
+      "next": "Tiếp theo",
+      "subtitle": "Việc chăm sóc tiếp theo",
+      "timeNotSet": "Chưa đặt giờ",
+      "title": "Nhắc nhở sắp tới",
+      "today": "Hôm nay · {{time}}",
+      "tomorrow": "Ngày mai · {{time}}"
+    }
+  },
   "navigation": {
     "bookingMessages": "Tin nhắn đặt lịch",
     "cart": "Giỏ hàng",
@@ -147,8 +544,35 @@
     "notificationSettings": "Cài đặt thông báo",
     "notifications": "Thông báo",
     "photos": "Chia sẻ ảnh",
-    "planUsage": "Gói & mức dùng",
+    "planUsage": "Gói & mức sử dụng",
     "shippingAddress": "Địa chỉ giao hàng"
+  },
+  "notFound": {
+    "action": "Về màn hình chính",
+    "message": "Màn hình này không tồn tại.",
+    "title": "Rất tiếc!"
+  },
+  "onboarding": {
+    "slides": [
+      {
+        "subtitle": "Bật vị trí để tìm dịch vụ chăm sóc thú cưng gần bạn.",
+        "title": "Tìm dịch vụ chăm sóc thú cưng quanh bạn"
+      },
+      {
+        "subtitle": "YeuPet giúp bé được chăm sóc tốt hơn, phần còn lại cứ để chúng tôi lo.",
+        "title": "Để YeuPet chăm sóc bé tốt hơn"
+      },
+      {
+        "subtitle": "Sẵn sàng chưa? Đặt lịch với bác sĩ thú y ngay nhé.",
+        "title": "Đặt lịch hẹn với YeuPet!"
+      }
+    ],
+    "toast": {
+      "completeText": "YeuPet đã sẵn sàng cho lịch chăm sóc thú cưng của bạn.",
+      "completeTitle": "Thiết lập xong",
+      "errorFallback": "Vui lòng đăng nhập rồi thử lại.",
+      "errorTitle": "Chưa hoàn tất thiết lập"
+    }
   },
   "notificationSettings": {
     "accessError": {
@@ -187,19 +611,19 @@
       "title": "Chưa mở được cài đặt"
     },
     "preferences": {
-      "aiDescription": "Mức dùng và gợi ý chăm sóc",
+      "aiDescription": "Lượt dùng và gợi ý chăm sóc",
       "aiLabel": "Thông báo Pet Care AI",
       "aiTitle": "Pet Care AI",
-      "bookingDescription": "Yêu cầu và tin nhắn",
-      "bookingLabel": "Thông báo đặt sitter",
-      "bookingTitle": "Đặt sitter",
-      "masterDescription": "Công tắc thông báo chính",
-      "photosDescription": "Bình luận và hoạt động",
+      "bookingDescription": "Yêu cầu đặt chăm sóc và tin nhắn",
+      "bookingLabel": "Thông báo đặt người chăm sóc",
+      "bookingTitle": "Đặt người chăm sóc",
+      "masterDescription": "Bật/tắt tất cả thông báo",
+      "photosDescription": "Bình luận và tương tác",
       "photosLabel": "Thông báo ảnh và tương tác",
-      "photosTitle": "Ảnh/tương tác",
+      "photosTitle": "Ảnh & tương tác",
       "pushLabel": "Thông báo đẩy",
       "pushTitle": "Thông báo đẩy",
-      "remindersDescription": "Vắc-xin, thuốc, grooming",
+      "remindersDescription": "Vắc-xin, thuốc, chăm sóc lông",
       "remindersLabel": "Nhắc nhở chăm sóc",
       "remindersTitle": "Nhắc nhở chăm sóc",
       "section": "Tùy chọn thông báo"
@@ -211,6 +635,681 @@
     "saveError": {
       "text": "Chưa lưu được cài đặt thông báo. Vui lòng thử lại.",
       "title": "Chưa lưu cài đặt thông báo"
+    }
+  },
+  "notifications": {
+    "foreground": {
+      "fallbackMessage": "Bạn có thông báo mới.",
+      "fallbackTitle": {
+        "ai": "Pet Care AI",
+        "booking": "Cập nhật đặt chăm sóc",
+        "reminder": "Nhắc nhở chăm sóc",
+        "social": "Hoạt động thú cưng mới",
+        "system": "Thông báo YeuPet"
+      }
+    },
+    "empty": {
+      "allDescription": "Nhắc nhở chăm sóc, cập nhật đặt lịch và hoạt động cộng đồng sẽ xuất hiện ở đây.",
+      "allTitle": "Chưa có thông báo",
+      "unreadDescription": "Hiện không có thông báo chưa đọc.",
+      "unreadTitle": "Bạn đã xem hết rồi"
+    },
+    "error": {
+      "description": "Vui lòng thử lại.",
+      "markAllText": "Thử đánh dấu tất cả thông báo là đã đọc lại nhé.",
+      "markAllTitle": "Chưa cập nhật được thông báo",
+      "markOneText": "Thử đánh dấu thông báo này là đã đọc lại nhé.",
+      "markOneTitle": "Chưa cập nhật được thông báo",
+      "title": "Chưa tải được thông báo"
+    },
+    "filters": {
+      "all": "Tất cả",
+      "unread": "Chưa đọc"
+    },
+    "header": {
+      "allCaughtUp": "Đã xem hết",
+      "markAllRead": "Đánh dấu đã đọc",
+      "markAllReadAccessibility": "Đánh dấu tất cả thông báo là đã đọc",
+      "title": "Hộp thư",
+      "unreadCount": "{{count}} chưa đọc"
+    },
+    "success": {
+      "markAllText": "Tất cả thông báo đã được đánh dấu là đã đọc.",
+      "markAllTitle": "Đã cập nhật thông báo"
+    },
+    "time": {
+      "justNow": "Vừa xong",
+      "recently": "Gần đây"
+    },
+    "unreadAccessibility": "Chưa đọc"
+  },
+  "medicalRecords": {
+    "actions": {
+      "create": "Tạo hồ sơ y tế",
+      "delete": "Xóa",
+      "edit": "Sửa",
+      "save": "Lưu",
+      "update": "Cập nhật hồ sơ y tế"
+    },
+    "routes": {
+      "detail": "Chi tiết hồ sơ y tế",
+      "index": "Hồ sơ y tế",
+      "petRecords": "Hồ sơ y tế"
+    },
+    "attachments": {
+      "attachmentId": "Tệp đính kèm {{id}}",
+      "image": "Ảnh hồ sơ y tế",
+      "label": "Tệp đính kèm y tế",
+      "noneDescription": "Thêm ảnh hoặc tài liệu khi bạn sửa hồ sơ này.",
+      "noneTitle": "Chưa có tệp đính kèm",
+      "processingDescription": "Ảnh sẽ xuất hiện ở đây khi xử lý xong.",
+      "processingFailedDescription": "Sửa hồ sơ này và tải lại ảnh.",
+      "processingFailedTitle": "Xử lý tệp đính kèm thất bại",
+      "processingTitle": "Tệp đính kèm đang được xử lý",
+      "uploaded": "Đã tải lên {{date}}",
+      "viewAttachment": "Xem tệp đính kèm y tế {{index}}",
+      "view": "Xem"
+    },
+    "detail": {
+      "date": "Ngày: {{date}}",
+      "description": "Mô tả",
+      "editTitle": "Sửa hồ sơ y tế",
+      "information": "Thông tin",
+      "notProvided": "Chưa cung cấp",
+      "options": "Tùy chọn hồ sơ y tế",
+      "recordId": "Mã hồ sơ: {{id}}",
+      "vetClinic": "Phòng khám thú y",
+      "vetName": "Bác sĩ thú y"
+    },
+    "form": {
+      "attachments": "Tệp y tế",
+      "date": {
+        "label": "Ngày",
+        "placeholder": "Chọn ngày"
+      },
+      "description": {
+        "label": "Mô tả",
+        "placeholder": "Mô tả"
+      },
+      "pet": "Chọn thú cưng",
+      "title": {
+        "label": "Tiêu đề",
+        "placeholder": "Tiêu đề"
+      },
+      "type": {
+        "label": "Loại",
+        "placeholder": "Loại"
+      },
+      "vetClinic": {
+        "label": "Tên phòng khám thú y",
+        "placeholder": "Nhập tên phòng khám thú y"
+      },
+      "vetName": {
+        "label": "Tên bác sĩ thú y",
+        "placeholder": "Nhập tên bác sĩ thú y"
+      }
+    },
+    "limit": {
+      "benefits": [
+        "Không giới hạn hồ sơ y tế",
+        "Tối đa 5 ảnh mỗi hồ sơ",
+        "Xuất tóm tắt hồ sơ y tế"
+      ],
+      "errorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "errorTitle": "Chưa kiểm tra được giới hạn hồ sơ",
+      "loadingDescription": "YeuPet đang kiểm tra giới hạn trước khi thêm hồ sơ sức khỏe mới.",
+      "loadingTitle": "Đang kiểm tra gói",
+      "reachedDescription": "Nâng cấp Premium để lưu hồ sơ sức khỏe không giới hạn và đính kèm thêm ảnh cho mỗi hồ sơ.",
+      "reachedTitle": "Đã đạt giới hạn hồ sơ y tế"
+    },
+    "list": {
+      "empty": "Chưa có hồ sơ y tế",
+      "petRecordsTitle": "Hồ sơ của {{petName}}",
+      "popupDescription": "Bạn có chắc muốn xóa hồ sơ y tế này không?",
+      "popupTitle": "Xóa hồ sơ y tế",
+      "seeAll": "Xem tất cả",
+      "uploadTitle": "Tải hồ sơ y tế lên"
+    },
+    "status": {
+      "failed": "Thất bại",
+      "processing": "Đang xử lý",
+      "ready": "Sẵn sàng"
+    },
+    "toast": {
+      "addPetFirstText": "Hồ sơ y tế cần được liên kết với một thú cưng của bạn.",
+      "addPetFirstTitle": "Hãy thêm thú cưng trước",
+      "createErrorText": "Kiểm tra hồ sơ y tế rồi thử lại.",
+      "createErrorTitle": "Chưa tạo được hồ sơ",
+      "deleteErrorText": "Làm mới danh sách hồ sơ rồi thử lại.",
+      "deleteErrorTitle": "Chưa xóa được hồ sơ",
+      "detailDeleteErrorText": "Làm mới hồ sơ rồi thử lại.",
+      "updateErrorText": "Kiểm tra hồ sơ y tế rồi thử lại.",
+      "updateErrorTitle": "Chưa cập nhật được hồ sơ"
+    },
+    "type": {
+      "checkup": "Khám tổng quát",
+      "medication": "Thuốc",
+      "surgery": "Phẫu thuật",
+      "vaccination": "Vắc-xin"
+    },
+    "timeline": {
+      "addReminder": "Thêm nhắc nhở",
+      "emptyReminder": "Đừng quên thêm nhắc nhở",
+      "loading": "Đang tải",
+      "petReminders": "Nhắc nhở của {{name}}"
+    }
+  },
+  "pets": {
+    "actions": {
+      "add": "Thêm thú cưng",
+      "update": "Cập nhật thú cưng"
+    },
+    "addCard": {
+      "accessibilityLabel": "Thêm thú cưng mới",
+      "sheetTitle": "Thêm thú cưng",
+      "subtitle": "Chạm để thêm bé cưng của bạn",
+      "title": "Thêm thú cưng"
+    },
+    "carousel": {
+      "loadErrorDescription": "Thử lại để xem thẻ thú cưng của bạn.",
+      "loadErrorTitle": "Chưa tải được thú cưng"
+    },
+    "detail": {
+      "about": "Giới thiệu",
+      "ageSummary": "{{years}} tuổi · {{humanYears}} tuổi người",
+      "birthdate": "Ngày sinh",
+      "deleteAccessibility": "Xóa {{name}}",
+      "editAccessibility": "Sửa {{name}}",
+      "furColor": "Màu lông",
+      "gender": "Giới tính",
+      "hideDetailsAccessibility": "Ẩn chi tiết của {{name}}",
+      "showDetailsAccessibility": "Xem chi tiết của {{name}}",
+      "weight": "Cân nặng"
+    },
+    "form": {
+      "ageSummary": "{{years}} năm {{months}} tháng {{days}} ngày · khoảng {{humanYears}} tuổi người",
+      "avatar": {
+        "label": "Ảnh đại diện"
+      },
+      "birthdate": {
+        "label": "Ngày sinh",
+        "placeholder": "Chọn ngày"
+      },
+      "breed": {
+        "label": "Giống",
+        "placeholder": "Husky"
+      },
+      "color": {
+        "label": "Màu lông",
+        "placeholder": "Cam"
+      },
+      "gender": {
+        "label": "Giới tính",
+        "placeholder": "Giới tính"
+      },
+      "name": {
+        "label": "Tên",
+        "placeholder": "Tên thú cưng"
+      },
+      "notes": {
+        "label": "Ghi chú",
+        "placeholder": "Ghi chú"
+      },
+      "species": {
+        "label": "Loài",
+        "placeholder": "Loài"
+      },
+      "weight": {
+        "label": "Cân nặng",
+        "placeholder": "0.0"
+      }
+    },
+    "gender": {
+      "female": "Cái",
+      "male": "Đực",
+      "unknown": "Chưa rõ"
+    },
+    "limit": {
+      "errorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "errorTitle": "Chưa kiểm tra được giới hạn thú cưng",
+      "loadingDescription": "YeuPet đang kiểm tra giới hạn trước khi thêm thú cưng mới.",
+      "loadingTitle": "Đang kiểm tra gói",
+      "reachedBenefits": [
+        "Không giới hạn thú cưng",
+        "Thêm nhắc nhở và hồ sơ",
+        "Thêm ảnh và hỗ trợ AI"
+      ],
+      "reachedDescription": "Gói miễn phí gồm {{limit}} thú cưng. Nâng cấp Premium để thêm thú cưng và quản lý chăm sóc cho mọi bạn nhỏ.",
+      "reachedTitle": "Đã đạt giới hạn thú cưng"
+    },
+    "popup": {
+      "deleteDescription": "Bạn có chắc muốn xóa thú cưng này không?",
+      "deleteTitle": "Xóa thú cưng",
+      "editTitle": "Sửa thú cưng"
+    },
+    "species": {
+      "bird": "Chim",
+      "cat": "Mèo",
+      "dog": "Chó",
+      "hamster": "Hamster",
+      "other": "Khác",
+      "rabbit": "Thỏ"
+    },
+    "toast": {
+      "addErrorText": "Kiểm tra chi tiết thú cưng rồi thử lại.",
+      "addErrorTitle": "Chưa thêm được thú cưng",
+      "deleteErrorText": "Vui lòng thử xóa thú cưng này lần nữa.",
+      "deleteErrorTitle": "Chưa xóa được thú cưng",
+      "limitReachedText": "Gói miễn phí hỗ trợ {{limit}} thú cưng. Nâng cấp để thêm nữa.",
+      "limitReachedTitle": "Đã đạt giới hạn thú cưng",
+      "updateErrorText": "Kiểm tra chi tiết thú cưng rồi thử lại.",
+      "updateErrorTitle": "Chưa cập nhật được thú cưng",
+      "updateSuccessText": "Thông tin của {{name}} đã được cập nhật.",
+      "updateSuccessTitle": "Đã cập nhật thú cưng"
+    },
+    "unit": {
+      "kilogram": "Kilogram",
+      "pound": "Pound"
+    }
+  },
+  "photos": {
+    "accessibility": {
+      "choosePhoto": "Chụp hoặc chọn ảnh",
+      "closeComposer": "Đóng trình soạn ảnh",
+      "openPhoto": "Mở ảnh",
+      "openPhotoBy": "Mở ảnh của {{name}}",
+      "openPhotoWithCaption": "Mở ảnh: {{caption}}",
+      "togglePublic": "Bật tắt hiển thị công khai của ảnh",
+      "upload": "Tải ảnh lên"
+    },
+    "cameraPermission": {
+      "cancel": "Hủy",
+      "description": "Cho phép truy cập camera trong Cài đặt để chụp ảnh thú cưng.",
+      "openSettings": "Cài đặt",
+      "title": "YeuPet muốn truy cập camera"
+    },
+    "composer": {
+      "captionPlaceholder": "Bạn đang nghĩ gì?",
+      "public": "Công khai"
+    },
+    "comments": {
+      "actionHint": "Nhấn giữ để mở hành động bình luận.",
+      "actionSheetTitle": "Tùy chọn bình luận",
+      "commentAccessibility": "Bình luận",
+      "delete": "Xóa bình luận",
+      "deleteAccessibility": "Xóa bình luận",
+      "emptyDescription": "Hãy là người đầu tiên bắt đầu cuộc trò chuyện.",
+      "emptyTitle": "Chưa có bình luận",
+      "errorDescription": "Hiện YeuPet chưa tải được bình luận cho ảnh này.",
+      "errorTitle": "Chưa dùng được bình luận",
+      "hide": "Ẩn",
+      "hideReplies": "Ẩn phản hồi",
+      "loadMoreReplies": "Tải thêm phản hồi",
+      "loadingReplies": "Đang tải phản hồi...",
+      "noActions": "Không có hành động nào cho bình luận này.",
+      "recently": "Gần đây",
+      "reply": "Trả lời",
+      "replyAccessibility": "Phản hồi",
+      "replyActionHint": "Nhấn giữ để mở hành động phản hồi.",
+      "replyPlaceholder": "Đang trả lời {{name}}",
+      "replyToCommentAccessibility": "Trả lời bình luận",
+      "sendAccessibility": "Gửi bình luận",
+      "sheetTitle": "Bình luận",
+      "toastDeleteErrorText": "Làm mới bình luận rồi thử lại.",
+      "toastDeleteErrorTitle": "Chưa xóa được bình luận",
+      "toastDeletedText": "Bình luận không còn hiển thị trên ảnh này.",
+      "toastDeletedTitle": "Đã xóa bình luận",
+      "toastEmptyText": "Thêm nội dung trước khi đăng bình luận.",
+      "toastEmptyTitle": "Viết bình luận",
+      "toastPostErrorText": "Kiểm tra kết nối rồi thử lại.",
+      "toastPostErrorTitle": "Chưa đăng được bình luận",
+      "toastReplyErrorTitle": "Chưa đăng được phản hồi",
+      "viewMoreReplies": "Xem thêm phản hồi",
+      "viewReplies": "Xem phản hồi",
+      "viewRepliesCount_one": "Xem {{count}} phản hồi",
+      "viewRepliesCount_other": "Xem {{count}} phản hồi",
+      "writePlaceholder": "Viết bình luận"
+    },
+    "empty": {
+      "defaultDescription": "Bắt đầu ghi lại và chia sẻ khoảnh khắc của thú cưng.",
+      "defaultTitle": "Chưa có ảnh",
+      "loadErrorDescription": "Thử lại để làm mới các khoảnh khắc thú cưng này.",
+      "loadErrorTitle": "Chưa tải được ảnh",
+      "socialDescription": "Khi cộng đồng chia sẻ khoảnh khắc thú cưng công khai, ảnh sẽ xuất hiện ở đây.",
+      "socialTitle": "Chưa có ảnh chia sẻ",
+      "userDescription": "Kỷ niệm công khai và riêng tư của bạn sẽ nằm ở đây sau khi tải lên.",
+      "userTitle": "Chưa lưu ảnh"
+    },
+    "limit": {
+      "benefits": [
+        "Thêm dung lượng ảnh",
+        "Chia sẻ kỷ niệm với cộng đồng thú cưng",
+        "Giữ lại mọi khoảnh khắc đặc biệt"
+      ],
+      "errorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "errorTitle": "Chưa kiểm tra được giới hạn ảnh",
+      "loadingDescription": "YeuPet đang kiểm tra giới hạn trước khi thêm kỷ niệm mới.",
+      "loadingTitle": "Đang kiểm tra gói",
+      "reachedDescription": "Nâng cấp Premium để lưu và chia sẻ thêm kỷ niệm thú cưng.",
+      "reachedText": "Gói miễn phí hỗ trợ {{limit}} lượt tải ảnh. Nâng cấp để tiếp tục.",
+      "reachedTitle": "Đã đạt giới hạn ảnh"
+    },
+    "tabs": {
+      "mine": "Của tôi",
+      "social": "Cộng đồng"
+    },
+    "toast": {
+      "captionRequiredText": "Viết một chú thích ngắn trước khi chia sẻ ảnh này.",
+      "captionRequiredTitle": "Thêm chú thích",
+      "shareErrorText": "Kiểm tra kết nối rồi thử tải lên lại.",
+      "shareErrorTitle": "Chưa chia sẻ được ảnh",
+      "sharedText": "Ảnh thú cưng của bạn đã xuất hiện trong bảng tin cộng đồng.",
+      "sharedTitle": "Đã chia sẻ ảnh"
+    },
+    "view": {
+      "close": "Đóng ảnh",
+      "delete": "Xóa",
+      "deleteAccessibility": "Xóa ảnh",
+      "deleteCancel": "Giữ ảnh",
+      "deleteMessage": "Ảnh sẽ bị xóa khỏi Ảnh của tôi và bảng tin cộng đồng nếu đang công khai.",
+      "deleteTitle": "Xóa ảnh này?",
+      "like": "Thích ảnh",
+      "openComments": "Mở bình luận",
+      "photoUnavailableDescription": "Vuốt sang ảnh khác hoặc đóng trình xem rồi thử lại.",
+      "photoUnavailableTitle": "Ảnh chưa khả dụng",
+      "reactionErrorText": "Kiểm tra kết nối rồi thử thả cảm xúc lại.",
+      "reactionErrorTitle": "Chưa lưu được cảm xúc",
+      "removedText": "Ảnh không còn hiển thị trong bảng tin cộng đồng.",
+      "removedTitle": "Đã xóa ảnh",
+      "removeErrorText": "Làm mới ảnh rồi thử lại.",
+      "removeErrorTitle": "Chưa xóa được ảnh",
+      "retryLoadingMore": "Thử tải thêm ảnh lại",
+      "retryLoadingPhotos": "Thử tải ảnh lại",
+      "savedText": "Bạn có thể tìm ảnh trong thư viện thiết bị.",
+      "savedTitle": "Đã lưu ảnh",
+      "unlike": "Bỏ thích ảnh"
+    }
+  },
+  "profile": {
+    "accessibility": {
+      "changePhoto": "Đổi ảnh hồ sơ",
+      "goBack": "Quay lại",
+      "profileAvatar": "Ảnh đại diện hồ sơ"
+    },
+    "detail": {
+      "changePhoto": "Đổi ảnh",
+      "fallbackName": "Chủ thú cưng YeuPet",
+      "profileUnavailable": "Chưa có hồ sơ",
+      "saveChanges": "Lưu thay đổi"
+    },
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Email"
+      },
+      "firstName": {
+        "label": "Tên",
+        "placeholder": "Tên"
+      },
+      "lastName": {
+        "label": "Họ",
+        "placeholder": "Họ"
+      },
+      "verificationCode": {
+        "label": "Mã xác minh",
+        "placeholder": "000000"
+      }
+    },
+    "toast": {
+      "avatarTooLargeText": "Chọn ảnh hồ sơ nhỏ hơn 5 MB.",
+      "avatarTooLargeTitle": "Ảnh quá lớn",
+      "cancelFailedFallback": "Chưa thể hủy thay đổi này.",
+      "cancelFailedTitle": "Hủy thất bại",
+      "codeNotSentFallback": "Chưa thể gửi lại mã.",
+      "codeNotSentTitle": "Chưa gửi được mã",
+      "codeNotVerifiedFallback": "Chưa thể xác minh mã này.",
+      "codeNotVerifiedTitle": "Chưa xác minh được mã",
+      "codeSentText": "Kiểm tra email mới để lấy mã xác minh.",
+      "codeSentTitle": "Đã gửi mã",
+      "emailChangeCancelledText": "Email hiện tại của bạn vẫn được giữ nguyên.",
+      "emailChangeCancelledTitle": "Đã hủy đổi email",
+      "emailUpdatedText": "Dùng email mới trong lần đăng nhập tiếp theo.",
+      "emailUpdatedTitle": "Đã cập nhật email",
+      "nothingToSaveText": "Cập nhật tên, email hoặc ảnh trước khi lưu.",
+      "nothingToSaveTitle": "Chưa có gì để lưu",
+      "profileNotUpdatedFallback": "Chưa thể lưu hồ sơ. Vui lòng thử lại.",
+      "profileNotUpdatedTitle": "Chưa cập nhật được hồ sơ",
+      "profileUpdatedText": "Thông tin tài khoản của bạn đã được cập nhật.",
+      "profileUpdatedTitle": "Đã cập nhật hồ sơ"
+    },
+    "verifyEmail": {
+      "action": "Xác minh email",
+      "backToProfile": "Quay lại hồ sơ",
+      "cancel": "Hủy đổi email",
+      "cancelAlertKeep": "Tiếp tục xác minh",
+      "cancelAlertMessage": "Email hiện tại sẽ được giữ trên tài khoản này.",
+      "cancelAlertTitle": "Hủy đổi email?",
+      "cancelAlertConfirm": "Hủy thay đổi",
+      "checkInbox": "Kiểm tra hộp thư",
+      "codeSentTo": "Mã đã gửi đến {{email}}",
+      "description": "Nhập mã 6 chữ số trước khi mã hết hạn.",
+      "expiresIn": "Hết hạn sau {{time}}",
+      "resend": "Gửi lại mã",
+      "resendIn": "Gửi lại sau {{time}}",
+      "title": "Xác minh email",
+      "unavailableDescription": "Bắt đầu đổi email từ hồ sơ của bạn.",
+      "unavailableTitle": "Hiện chưa thể xác minh"
+    },
+    "validation": {
+      "email": "Nhập email hợp lệ",
+      "firstName": "Tên quá ngắn",
+      "lastName": "Họ quá ngắn",
+      "otp": "Nhập mã 6 chữ số"
+    },
+    "photoPermission": {
+      "message": "Cho phép truy cập ảnh để chọn ảnh hồ sơ mới.",
+      "title": "Cần quyền truy cập ảnh"
+    }
+  },
+  "reminders": {
+    "accessibility": {
+      "cancelReminder": "Hủy nhắc nhở",
+      "deleteReminder": "Xóa nhắc nhở {{title}}",
+      "editReminder": "Sửa nhắc nhở {{title}}",
+      "nextMonth": "Tháng sau",
+      "openReminder": "Mở nhắc nhở {{title}} cho {{petName}}",
+      "previousMonth": "Tháng trước",
+      "selectDate": "Chọn ngày {{date}}",
+      "selectDateWithCount": "Chọn ngày {{date}}, có {{count}} nhắc nhở"
+    },
+    "actions": {
+      "add": "Thêm",
+      "addReminder": "Thêm nhắc nhở",
+      "apply": "Áp dụng",
+      "create": "Tạo nhắc nhở",
+      "reset": "Đặt lại",
+      "update": "Cập nhật nhắc nhở"
+    },
+    "calendar": {
+      "checking": "Đang kiểm tra việc chăm sóc...",
+      "count_one": "{{count}} việc chăm sóc",
+      "count_other": "{{count}} việc chăm sóc",
+      "emptyAllDescription": "Tạo nhắc nhở đầu tiên cho ăn uống, thuốc, chăm sóc lông hoặc vắc-xin.",
+      "emptyAllTitle": "Chưa có nhắc nhở",
+      "emptyDayDescription": "Thêm nhắc nhở để không bỏ lỡ việc chăm sóc thú cưng.",
+      "emptyDayTitle": "Ngày này chưa có nhắc nhở",
+      "loadErrorDescription": "Vui lòng thử lại.",
+      "loadErrorTitle": "Chưa tải được nhắc nhở",
+      "thisMonth": "Tháng này",
+      "today": "Hôm nay",
+      "unknownDate": "Không rõ ngày",
+      "weekdays": {
+        "friday": "T6",
+        "monday": "T2",
+        "saturday": "T7",
+        "sunday": "CN",
+        "thursday": "T5",
+        "tuesday": "T3",
+        "wednesday": "T4"
+      }
+    },
+    "detail": {
+      "date": "Ngày",
+      "repeat": "Lặp lại",
+      "time": "Giờ",
+      "title": "Chi tiết nhắc nhở"
+    },
+    "filters": {
+      "all": "Tất cả",
+      "allPets": "Tất cả thú cưng",
+      "allTypes": "Tất cả loại",
+      "pet": "Thú cưng",
+      "status": "Trạng thái",
+      "summaryTitle": "Bộ lọc",
+      "title": "Lọc nhắc nhở",
+      "type": "Loại"
+    },
+    "screen": {
+      "title": "Nhắc nhở của tôi"
+    },
+    "form": {
+      "description": {
+        "label": "Mô tả",
+        "placeholder": "Ghi chú tùy chọn"
+      },
+      "endRepeat": {
+        "label": "Kết thúc lặp lại",
+        "placeholder": "Không giới hạn"
+      },
+      "limitError": {
+        "description": "Kiểm tra kết nối rồi thử lại.",
+        "title": "Chưa kiểm tra được giới hạn nhắc nhở"
+      },
+      "limitLoading": {
+        "description": "YeuPet đang kiểm tra giới hạn trước khi thêm nhắc nhở mới.",
+        "title": "Đang kiểm tra gói"
+      },
+      "limitReached": {
+        "benefits": [
+          "Không giới hạn nhắc nhở đang hoạt động",
+          "Lịch chăm sóc lặp lại",
+          "Thêm hạn mức cho mọi thú cưng"
+        ],
+        "description": "Gói miễn phí gồm {{limit}} nhắc nhở đang hoạt động. Nâng cấp Premium để giữ mọi lịch chăm sóc đúng nhịp.",
+        "title": "Đã đạt giới hạn nhắc nhở"
+      },
+      "pet": {
+        "label": "Thú cưng"
+      },
+      "premiumRepeat": {
+        "description": "Chọn nhắc nhở một lần hoặc nâng cấp để tự động lặp lại việc chăm sóc này.",
+        "title": "Nhắc nhở lặp lại cần Premium"
+      },
+      "repeat": {
+        "label": "Lặp lại",
+        "note": "Lặp một lần theo mỗi chu kỳ đã chọn.",
+        "placeholder": "Không lặp lại"
+      },
+      "schedule": {
+        "label": "Ngày & giờ nhắc",
+        "placeholder": "Chọn ngày & giờ"
+      },
+      "titleField": {
+        "label": "Tiêu đề",
+        "placeholder": "Tiêu đề nhắc nhở"
+      },
+      "type": {
+        "label": "Loại",
+        "placeholder": "Chọn loại"
+      }
+    },
+    "noPet": "Chưa chọn thú cưng",
+    "popup": {
+      "deleteDescription": "Bạn có chắc muốn xóa nhắc nhở này không?",
+      "deleteTitle": "Xóa nhắc nhở"
+    },
+    "repeat": {
+      "custom": "Lặp tùy chỉnh",
+      "daily": "Mỗi ngày",
+      "monthly": "Mỗi tháng",
+      "none": "Không lặp lại",
+      "until": "{{repeat}} đến {{date}}",
+      "weekly": "Mỗi tuần",
+      "yearly": "Mỗi năm"
+    },
+    "sheet": {
+      "createTitle": "Tạo nhắc nhở",
+      "editTitle": "Sửa nhắc nhở"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "pending": "Đang chờ",
+      "sent": "Đã gửi"
+    },
+    "toast": {
+      "cannotDeleteText": "Nhắc nhở đã gửi hoặc đã hoàn tất sẽ được giữ trong lịch sử chăm sóc.",
+      "cannotDeleteTitle": "Không thể xóa nhắc nhở",
+      "cannotEditText": "Tạo nhắc nhở mới nếu việc chăm sóc này đã đổi trạng thái.",
+      "cannotEditTitle": "Không thể sửa nhắc nhở này",
+      "createErrorText": "Kiểm tra chi tiết nhắc nhở rồi thử lại.",
+      "createErrorTitle": "Chưa tạo được nhắc nhở",
+      "createSuccessText": "Việc chăm sóc mới đã có trong lịch của bạn.",
+      "createSuccessTitle": "Đã tạo nhắc nhở",
+      "deleteErrorText": "Làm mới danh sách nhắc nhở rồi thử lại.",
+      "deleteErrorTitle": "Chưa xóa được nhắc nhở",
+      "limitReachedText": "Nâng cấp Premium để tạo thêm nhắc nhở đang hoạt động.",
+      "limitReachedTitle": "Đã đạt giới hạn nhắc nhở",
+      "recurringBlockedText": "Chọn nhắc nhở một lần hoặc nâng cấp lên Premium.",
+      "recurringBlockedTitle": "Nhắc nhở lặp lại cần Premium",
+      "cancelErrorText": "Làm mới nhắc nhở rồi thử lại.",
+      "cancelErrorTitle": "Chưa hủy được nhắc nhở",
+      "updateErrorText": "Kiểm tra chi tiết nhắc nhở rồi thử lại.",
+      "updateErrorTitle": "Chưa cập nhật được nhắc nhở"
+    },
+    "type": {
+      "feeding": "Ăn uống",
+      "grooming": "Chăm sóc lông",
+      "medication": "Uống thuốc",
+      "vaccination": "Vắc-xin"
+    }
+  },
+  "serviceLauncher": {
+    "comingSoonDescription": "Tính năng này đang được phát triển và sẽ có trong bản cập nhật sau.",
+    "comingSoonTitle": "Sắp ra mắt",
+    "gotIt": "Đã hiểu",
+    "modules": {
+      "budget": {
+        "subtitle": "Theo dõi chi phí chăm sóc thú cưng",
+        "title": "Ngân sách"
+      },
+      "doctorAi": {
+        "subtitle": "Hỏi đáp chăm sóc thú cưng",
+        "title": "Doctor AI"
+      },
+      "events": {
+        "subtitle": "Sự kiện và hoạt động thú cưng",
+        "title": "Sự kiện"
+      },
+      "groomingClinic": {
+        "subtitle": "Đặt chăm sóc lông và khám thú y",
+        "title": "Chăm sóc lông & phòng khám"
+      },
+      "medicalRecord": {
+        "subtitle": "Hồ sơ sức khỏe và ảnh y tế",
+        "title": "Hồ sơ y tế"
+      },
+      "photosSocial": {
+        "subtitle": "Chia sẻ khoảnh khắc thú cưng",
+        "title": "Ảnh cộng đồng"
+      },
+      "sos": {
+        "subtitle": "Trợ giúp khẩn cấp cho thú cưng",
+        "title": "SOS"
+      },
+      "training": {
+        "subtitle": "Học mẹo chăm sóc và huấn luyện",
+        "title": "Huấn luyện"
+      }
     }
   },
   "settings": {
@@ -273,25 +1372,393 @@
     },
     "subscription": {
       "currentAccessThrough": "Quyền truy cập hiện có đến {{date}}",
-      "loadingDescription": "YeuPet đang kiểm tra gói và mức dùng.",
+      "loadingDescription": "YeuPet đang kiểm tra gói và mức sử dụng.",
       "loadingTitle": "Đang tải gói",
       "manage": "Quản lý gói",
       "plan": "Gói {{plan}}",
       "section": "Gói dịch vụ",
       "unavailableDescription": "Thử lại để làm mới trạng thái gói.",
       "unavailableTitle": "Chưa có thông tin gói",
-      "unlockCopy": "Theo dõi mức dùng và mở thêm tính năng chăm sóc thú cưng.",
+      "unlockCopy": "Theo dõi mức sử dụng và mở thêm tính năng chăm sóc thú cưng.",
       "upgrade": "Nâng cấp",
-      "usage": "Xem mức dùng",
-      "viewPlanUsage": "Xem mức dùng gói {{plan}}"
+      "usage": "Xem mức sử dụng",
+      "viewPlanUsage": "Xem mức sử dụng gói {{plan}}"
     },
     "title": "Cài đặt"
   },
+  "sitter": {
+    "accessibility": {
+      "bookingMessage": "Tin nhắn đặt chăm sóc",
+      "closeCitySelection": "Đóng chọn thành phố",
+      "closeFilters": "Đóng bộ lọc người chăm sóc",
+      "createProfile": "Tạo hồ sơ người chăm sóc",
+      "editProfile": "Sửa hồ sơ người chăm sóc",
+      "filterSitters": "Lọc người chăm sóc",
+      "loadingBookings": "Đang tải lượt đặt",
+      "loadingReviews": "Đang tải đánh giá người chăm sóc",
+      "loadingSitters": "Đang tải người chăm sóc",
+      "openBooking": "Mở lượt đặt {{title}}",
+      "openProfile": "Mở hồ sơ người chăm sóc {{name}}",
+      "rated": "Được đánh giá {{rating}}/5",
+      "removeFilter": "Xóa bộ lọc {{label}}",
+      "retryFailedMessage": "Gửi lại tin nhắn bị lỗi",
+      "retryLoadingReviews": "Thử tải thêm đánh giá người chăm sóc",
+      "searchCity": "Tìm tỉnh hoặc thành phố",
+      "sendBookingMessage": "Gửi tin nhắn đặt chăm sóc",
+      "showMoreReviews": "Hiển thị thêm đánh giá người chăm sóc",
+      "showNewMessages": "Hiển thị tin nhắn mới"
+    },
+    "availability": {
+      "available": "Đang nhận",
+      "paused": "Tạm dừng"
+    },
+    "booking": {
+      "actions": {
+        "accept": "Nhận",
+        "cancel": "Hủy",
+        "complete": "Hoàn tất",
+        "message": "Nhắn tin",
+        "reject": "Từ chối",
+        "review": "Đánh giá"
+      },
+      "chat": {
+        "couldNotLoadDescription": "Bản nháp của bạn vẫn an toàn. Thử tải lại cuộc trò chuyện.",
+        "couldNotLoadTitle": "Chưa tải được tin nhắn",
+        "couldNotOpenDescription": "Kiểm tra lượt đặt rồi thử lại.",
+        "couldNotOpenTitle": "Chưa mở được trò chuyện đặt chăm sóc",
+        "fallbackTitle": "Trò chuyện đặt chăm sóc",
+        "loadingMessages": "Đang tải tin nhắn",
+        "newMessages": "Tin nhắn mới",
+        "offline": "Đang ngoại tuyến. Tin nhắn mới sẽ được gửi qua kênh dự phòng bảo mật.",
+        "opening": "Đang mở trò chuyện đặt chăm sóc",
+        "placeholder": "Chia sẻ chi tiết chăm sóc hoặc giờ đến...",
+        "reconnecting": "Đang kết nối lại và kiểm tra tin nhắn mới...",
+        "sendFailedRetry": "Chưa gửi được tin nhắn. Chạm để thử lại.",
+        "startDescription": "Xác nhận hướng dẫn chăm sóc, chi tiết giờ đến hoặc điều người chăm sóc cần biết.",
+        "startTitle": "Bắt đầu trò chuyện",
+        "tapToRetry": "Chạm để thử lại",
+        "unavailableDescription": "Mở lại cuộc trò chuyện này từ một lượt đặt.",
+        "unavailableTitle": "Trò chuyện đặt chăm sóc chưa khả dụng",
+        "connecting": "Đang kết nối trò chuyện đặt chăm sóc..."
+      },
+      "detail": {
+        "bookingDetail": "Chi tiết đặt chăm sóc",
+        "bookingHold": "Giữ lịch đặt",
+        "cancelled": "Đã hủy",
+        "cancelPrefix": "Hủy: {{reason}}",
+        "carePrefix": "Chăm sóc: {{instructions}}",
+        "confirmed": "Đã xác nhận",
+        "dateAndTime": "Ngày và giờ",
+        "estimatedPrice": "Giá ước tính",
+        "externalPayment": "Thanh toán trực tiếp",
+        "externalPaymentNotice": "Ở giai đoạn này, YeuPet kết nối chủ thú cưng và người chăm sóc. Thanh toán cuối cùng và thỏa thuận chăm sóc sẽ do hai bên thống nhất trực tiếp.",
+        "holdExpires": "Giữ đến {{time}}",
+        "notes": "Ghi chú",
+        "owner": "Chủ thú cưng",
+        "ownerPrefix": "Chủ: {{notes}}",
+        "pet": "Thú cưng",
+        "petFallback": "Thú cưng {{id}}",
+        "priceToConfirm": "Giá chờ xác nhận",
+        "requestSent": "Đã gửi yêu cầu",
+        "service": "Dịch vụ",
+        "sitter": "Người chăm sóc",
+        "sitterFallback": "Người chăm sóc {{id}}",
+        "sitterPrefix": "Người chăm sóc: {{notes}}",
+        "toConfirm": "Chờ xác nhận"
+      },
+      "empty": {
+        "bookingsErrorDescription": "Thử lại để làm mới các lượt đặt người chăm sóc.",
+        "bookingsErrorTitle": "Chưa tải được lượt đặt",
+        "createProfileDescription": "Dùng biểu tượng bút ở đầu màn hình để tạo hồ sơ người chăm sóc trước khi nhận yêu cầu.",
+        "createProfileTitle": "Tạo hồ sơ người chăm sóc",
+        "noBookingsOwner": "Yêu cầu bạn gửi cho người chăm sóc sẽ xuất hiện ở đây.",
+        "noBookingsSitter": "Yêu cầu từ chủ thú cưng sẽ xuất hiện ở đây khi hồ sơ của bạn đang nhận yêu cầu.",
+        "noBookingsTitle": "Chưa có lượt đặt"
+      },
+      "rejectAlert": {
+        "confirm": "Từ chối",
+        "keep": "Giữ lại",
+        "message": "Chủ thú cưng sẽ biết bạn không thể nhận yêu cầu này.",
+        "title": "Từ chối lượt đặt?"
+      },
+      "roles": {
+        "owner": "Chủ thú cưng",
+        "sitter": "Người chăm sóc"
+      },
+      "statuses": {
+        "active": "Đang diễn ra",
+        "all": "Tất cả",
+        "cancelled": "Đã hủy",
+        "completed": "Đã hoàn tất",
+        "confirmed": "Đã xác nhận",
+        "pending": "Đang chờ",
+        "rejected": "Đã từ chối"
+      },
+      "tabs": {
+        "bookings": "Lượt đặt",
+        "findCare": "Tìm người chăm sóc"
+      },
+      "title": {
+        "careRequest": "Yêu cầu chăm sóc",
+        "petCareRequest": "Yêu cầu chăm sóc của {{name}}"
+      }
+    },
+    "detail": {
+      "about": "Giới thiệu",
+      "allReviewsLoaded": "Đã tải toàn bộ đánh giá",
+      "bioFallback": "Người chăm sóc này chưa thêm giới thiệu.",
+      "careDetails": "Chi tiết chăm sóc",
+      "daily": "Theo ngày",
+      "experience": "Kinh nghiệm",
+      "hourly": "Theo giờ",
+      "moreReviewsError": "Chưa tải được thêm đánh giá.",
+      "noReviewsDescription": "Đánh giá sẽ xuất hiện sau các lượt đặt đã hoàn tất.",
+      "noReviewsTitle": "Chưa có đánh giá",
+      "requestCare": "Yêu cầu chăm sóc",
+      "reviews": "Đánh giá",
+      "reviewsErrorDescription": "Thử lại để làm mới đánh giá người chăm sóc.",
+      "reviewsErrorTitle": "Chưa tải được đánh giá",
+      "serviceArea": "Khu vực phục vụ",
+      "showMoreReviews": "Hiển thị thêm đánh giá",
+      "totalReviews": "{{count}} đánh giá"
+    },
+    "estimate": {
+      "dailySummary_one": "{{count}} ngày · {{rate}} / ngày",
+      "dailySummary_other": "{{count}} ngày · {{rate}} / ngày",
+      "hourlySummary_one": "{{count}} giờ · {{rate}} / giờ",
+      "hourlySummary_other": "{{count}} giờ · {{rate}} / giờ",
+      "total": "Tổng ước tính",
+      "validTime": "Chọn thời gian chăm sóc hợp lệ"
+    },
+    "filters": {
+      "allCities": "Tất cả thành phố",
+      "any": "Bất kỳ",
+      "apply": "Áp dụng bộ lọc",
+      "custom": "Tùy chỉnh",
+      "customMaxPrice": "Giá tối đa tùy chỉnh",
+      "customMaxPriceA11y": "Giá tối đa tùy chỉnh bằng đồng Việt Nam",
+      "enterAmount": "Nhập số tiền",
+      "invalidPrice": "Nhập giá tối đa từ 0 đến 10.000.000 ₫.",
+      "location": "Khu vực",
+      "maxPrice": "Giá tối đa",
+      "minRating": "Đánh giá tối thiểu",
+      "rateChip": "Giá ≤ {{price}}",
+      "reset": "Đặt lại",
+      "supportText": "Tối đa {{price}} ₫",
+      "title": "Lọc người chăm sóc"
+    },
+    "form": {
+      "addPetDescription": "Tạo hồ sơ thú cưng trước khi yêu cầu người chăm sóc.",
+      "addPetTitle": "Thêm thú cưng trước",
+      "acceptRequests": "Nhận yêu cầu mới",
+      "bio": "Giới thiệu",
+      "bioPlaceholder": "Chia sẻ kinh nghiệm chăm sóc thú cưng của bạn",
+      "cancelBooking": "Hủy lượt đặt",
+      "careInstructions": "Hướng dẫn chăm sóc",
+      "careInstructionsPlaceholder": "Thức ăn, thuốc, đi dạo hoặc thói quen",
+      "city": "Thành phố",
+      "cityClear": "Chưa chọn",
+      "cityEmpty": "Chọn thành phố",
+      "comment": "Nhận xét",
+      "commentPlaceholder": "Điều gì diễn ra tốt?",
+      "createProfile": "Tạo hồ sơ người chăm sóc",
+      "dailyRate": "Giá theo ngày",
+      "displayName": "Tên hiển thị",
+      "displayNamePlaceholder": "Tên chủ thú cưng sẽ thấy",
+      "district": "Quận/Huyện",
+      "districtPlaceholder": "Hải Châu",
+      "endDate": "Ngày kết thúc",
+      "endTime": "Giờ kết thúc",
+      "experience": "Kinh nghiệm",
+      "experiencePlaceholder": "3 năm chăm sóc chó và mèo",
+      "hourlyRate": "Giá theo giờ",
+      "maxBookings": "Số lượt tối đa",
+      "message": "Tin nhắn",
+      "messagePlaceholder": "Hỏi hoặc chia sẻ chi tiết chăm sóc",
+      "ownerNotes": "Ghi chú của chủ nuôi",
+      "ownerNotesPlaceholder": "Điều người chăm sóc cần biết",
+      "pauseDescription": "Tạm dừng hồ sơ khi bạn chưa sẵn sàng.",
+      "pet": "Thú cưng",
+      "profile": "Hồ sơ",
+      "rating": "Đánh giá",
+      "ratingOption_one": "{{count}} sao",
+      "ratingOption_other": "{{count}} sao",
+      "reason": "Lý do",
+      "reasonPlaceholder": "Ghi chú tùy chọn cho bên còn lại",
+      "saveProfile": "Lưu hồ sơ người chăm sóc",
+      "sendBookingRequest": "Gửi yêu cầu đặt chăm sóc",
+      "sendMessage": "Gửi tin nhắn",
+      "serviceNotes": "Ghi chú dịch vụ",
+      "serviceNotesPlaceholder": "Thú cưng nhỏ, đi dạo ban ngày, chăm sóc qua đêm",
+      "serviceType": "Loại dịch vụ",
+      "services": "Dịch vụ",
+      "startDate": "Ngày bắt đầu",
+      "startTime": "Giờ bắt đầu",
+      "submitReview": "Gửi đánh giá",
+      "ward": "Phường/Xã",
+      "wardPlaceholder": "Tùy chọn"
+    },
+    "messages": {
+      "emptyDescription": "Dùng cuộc trò chuyện này để xác nhận chi tiết chăm sóc trước buổi hẹn.",
+      "emptyTitle": "Chưa có tin nhắn",
+      "errorDescription": "Thử lại để làm mới cuộc trò chuyện đặt chăm sóc này.",
+      "errorTitle": "Chưa tải được tin nhắn",
+      "justNow": "Vừa xong"
+    },
+    "profile": {
+      "become": "Trở thành người chăm sóc",
+      "edit": "Sửa hồ sơ người chăm sóc",
+      "fallbackName": "Người chăm sóc thú cưng",
+      "ownerFallback": "Chủ thú cưng",
+      "profileTitle": "Hồ sơ người chăm sóc",
+      "serviceSummaryFallback": "Chăm sóc thú cưng theo giờ hoặc theo ngày.",
+      "statusDescriptionAvailable": "Chủ thú cưng có thể tìm thấy bạn khi hồ sơ đang nhận yêu cầu.",
+      "statusDescriptionPaused": "Hồ sơ của bạn đang tạm dừng và ẩn khỏi yêu cầu mới.",
+      "statusFallbackName": "Hồ sơ đang hiển thị với chủ thú cưng",
+      "statusNotSetDescription": "Dùng biểu tượng bút ở đầu màn hình để tạo hồ sơ người chăm sóc.",
+      "statusNotSetTitle": "Chưa thiết lập"
+    },
+    "screen": {
+      "emptyFilteredDescription": "Xóa bộ lọc để xem thêm người chăm sóc tin cậy gần bạn.",
+      "emptySittersDescription": "Những người chăm sóc thú cưng đang nhận yêu cầu sẽ xuất hiện ở đây.",
+      "emptySittersTitle": "Không có người chăm sóc phù hợp",
+      "loadErrorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "loadErrorTitle": "Chưa tải được người chăm sóc",
+      "requestCare": "Yêu cầu chăm sóc",
+      "reviewSitter": "Đánh giá người chăm sóc",
+      "title": "Người chăm sóc"
+    },
+    "selectCity": {
+      "emptySearch": "Không có tỉnh/thành nào phù hợp với tìm kiếm.",
+      "searchPlaceholder": "Tìm tỉnh hoặc thành phố",
+      "title": "Chọn thành phố"
+    },
+    "serviceTypes": {
+      "daily": "Chăm sóc theo ngày",
+      "hourly": "Chăm sóc theo giờ"
+    },
+    "toast": {
+      "bookingCancelledText": "Hai bên có thể thấy lượt đặt này đã được hủy.",
+      "bookingCancelledTitle": "Đã hủy lượt đặt",
+      "bookingCompletedText": "Lượt chăm sóc này đã được ghi nhận là hoàn tất.",
+      "bookingCompletedTitle": "Đã hoàn tất lượt đặt",
+      "bookingConfirmedText": "Chủ thú cưng đã thấy bạn nhận yêu cầu này.",
+      "bookingConfirmedTitle": "Đã xác nhận lượt đặt",
+      "bookingDeclinedText": "Chủ thú cưng có thể sắp xếp chăm sóc theo cách khác.",
+      "bookingDeclinedTitle": "Đã từ chối lượt đặt",
+      "defaultErrorText": "Kiểm tra chi tiết rồi thử lại.",
+      "messageNotSent": "Chưa gửi được tin nhắn",
+      "profileCreatedText": "Chủ thú cưng có thể tìm thấy dịch vụ chăm sóc của bạn.",
+      "profileCreatedTitle": "Đã tạo hồ sơ người chăm sóc",
+      "profileNotCreated": "Chưa tạo được hồ sơ",
+      "profileNotUpdated": "Chưa cập nhật được hồ sơ",
+      "profileUpdatedText": "Chi tiết chăm sóc mới nhất của bạn đã hiển thị.",
+      "profileUpdatedTitle": "Đã cập nhật hồ sơ người chăm sóc",
+      "requestNotSent": "Chưa gửi được yêu cầu",
+      "requestSentText": "Người chăm sóc có thể xem yêu cầu chăm sóc của bạn.",
+      "requestSentTitle": "Đã gửi yêu cầu",
+      "reviewNotSubmitted": "Chưa gửi được đánh giá",
+      "reviewSubmittedText": "Phản hồi của bạn đã hiển thị trên hồ sơ người chăm sóc.",
+      "reviewSubmittedTitle": "Đã gửi đánh giá",
+      "bookingNotCancelled": "Chưa hủy được lượt đặt",
+      "bookingNotCompleted": "Chưa hoàn tất được lượt đặt",
+      "bookingNotConfirmed": "Chưa xác nhận được lượt đặt",
+      "bookingNotDeclined": "Chưa từ chối được lượt đặt"
+    }
+  },
   "subscription": {
+    "accessibility": {
+      "loadingDetails": "Đang tải chi tiết gói",
+      "managePremium": "Quản lý gói Premium",
+      "toggleDeveloperTools": "Bật tắt công cụ nhà phát triển gói",
+      "upgradePremium": "Nâng cấp Premium"
+    },
+    "actions": {
+      "close": "Đóng",
+      "manage": "Quản lý gói",
+      "mockDowngrade": "Giả lập hạ gói",
+      "mockUpgrade": "Giả lập nâng cấp",
+      "upgrade": "Nâng cấp Premium"
+    },
+    "benefits": {
+      "activeDescription": "Các công cụ chăm sóc mở rộng đã sẵn sàng để dùng.",
+      "activeIntro": "Tất cả quyền lợi bên dưới đang hoạt động trong gói của bạn.",
+      "disclaimer": "Pet Care AI chỉ đưa ra hướng dẫn chung và không thay thế chẩn đoán hoặc điều trị thú y.",
+      "items": [
+        "Không giới hạn thú cưng, nhắc nhở, hồ sơ và mục ngân sách",
+        "Nhắc nhở chăm sóc lặp lại",
+        "Thêm ảnh cho mỗi hồ sơ sức khỏe",
+        "Thống kê ngân sách theo năm và xuất tóm tắt y tế",
+        "Thêm kỷ niệm ảnh",
+        "300 tin nhắn AI với ngữ cảnh thú cưng và hồ sơ y tế"
+      ],
+      "upgradeDescription": "Mở rộng chăm sóc hằng ngày, hồ sơ, kỷ niệm và hỗ trợ AI.",
+      "upgradeIntro": "Premium giúp việc chăm sóc linh hoạt hơn khi gia đình thú cưng lớn dần.",
+      "upgradeTitle": "Nâng cấp Premium",
+      "activeTitle": "Quyền lợi Premium"
+    },
+    "developer": {
+      "currentTier": "Gói giả lập hiện tại: {{tier}}. Các điều khiển này không khả dụng trên môi trường production.",
+      "freeEnabledText": "Entitlement dev hiện dùng gói Free.",
+      "freeEnabledTitle": "Đã bật gói Free để test",
+      "premiumEnabledText": "Entitlement dev hiện dùng gói Premium.",
+      "premiumEnabledTitle": "Đã bật gói Premium để test",
+      "title": "Công cụ nhà phát triển",
+      "updateErrorFreeText": "Thử bật lại gói Free để test.",
+      "updateErrorPremiumText": "Thử bật lại gói Premium để test.",
+      "updateErrorTitle": "Chưa đổi được gói test"
+    },
+    "featureGroups": {
+      "ai": "Pet Care AI",
+      "budget": "Ngân sách",
+      "health": "Hồ sơ sức khỏe",
+      "petCare": "Chăm sóc thú cưng",
+      "photos": "Ảnh"
+    },
+    "features": {
+      "activeReminders": "Nhắc nhở đang hoạt động",
+      "aiMedicalHistory": "Ngữ cảnh lịch sử y tế",
+      "aiMessagesPerMonth": "Tin nhắn AI mỗi tháng",
+      "aiPetContext": "Ngữ cảnh thú cưng",
+      "budgetTransactions": "Giao dịch hằng tháng",
+      "exportMedicalSummary": "Xuất tóm tắt y tế",
+      "imagesPerRecord": "Ảnh mỗi hồ sơ",
+      "medicalRecords": "Hồ sơ y tế",
+      "pets": "Thú cưng",
+      "photos": "Ảnh",
+      "recurringReminders": "Nhắc nhở lặp lại",
+      "yearlyStatistics": "Thống kê theo năm"
+    },
+    "loading": {
+      "errorDescription": "Kiểm tra kết nối rồi thử lại.",
+      "errorTitle": "Chưa tải được chi tiết gói"
+    },
+    "paywall": {
+      "loadingDescription": "Đang kiểm tra kết nối cửa hàng bảo mật.",
+      "loadingTitle": "Đang tải tùy chọn Premium",
+      "purchaseErrorText": "Premium chưa được kích hoạt. Vui lòng thử lại.",
+      "purchaseErrorTitle": "Thanh toán thất bại",
+      "restoreErrorText": "YeuPet chưa khôi phục được giao dịch mua. Vui lòng thử lại.",
+      "restoreErrorTitle": "Khôi phục thất bại",
+      "unavailableDescription": "Vui lòng thử lại sau. Gói hiện tại của bạn không thay đổi.",
+      "unavailableTitle": "Chưa dùng được tùy chọn Premium"
+    },
     "period": {
       "activePlan": "Gói đang hoạt động",
-      "currentAccessThrough": "Quyền truy cập hiện có đến {{date}}",
-      "unlockCopy": "Theo dõi mức dùng và mở thêm tính năng chăm sóc thú cưng."
+      "currentAccessThrough": "Quyền truy cập hiện tại đến {{date}}",
+      "unlockCopy": "Theo dõi mức sử dụng và mở thêm tính năng chăm sóc thú cưng."
+    },
+    "plan": {
+      "free": "Miễn phí",
+      "freePlan": "Gói miễn phí",
+      "premiumPlan": "Gói Premium",
+      "upgradeCopy": "Nâng cấp để hỗ trợ thêm thú cưng, nhắc nhở, ảnh, hồ sơ sức khỏe và trò chuyện chăm sóc bằng AI."
+    },
+    "sections": {
+      "featureLimitsDescription": "Những gì gói hiện tại bao gồm trong chăm sóc thú cưng.",
+      "featureLimitsTitle": "Giới hạn tính năng",
+      "usageDescription": "Số liệu trực tiếp từ tài khoản YeuPet hiện tại.",
+      "usageTitle": "Tổng quan mức sử dụng"
     },
     "status": {
       "active": "Đang hoạt động",
@@ -300,6 +1767,43 @@
       "free": "Miễn phí",
       "grace_period": "Gia hạn thanh toán",
       "trialing": "Đang dùng thử"
+    },
+    "toast": {
+      "changesSyncingText": "Các thay đổi gói vẫn đang được làm mới trong YeuPet.",
+      "changesSyncingTitle": "Thay đổi vẫn đang đồng bộ",
+      "checkoutUnavailableText": "Chưa mở được thanh toán Premium. Vui lòng thử lại.",
+      "checkoutUnavailableTitle": "Chưa dùng được thanh toán",
+      "managementOpenErrorText": "Chưa mở được quản lý gói. Vui lòng thử lại.",
+      "managementUnavailableText": "Quản lý gói hiện chưa khả dụng.",
+      "managementUnavailableTitle": "Chưa dùng được quản lý gói",
+      "premiumUnavailableText": "Tùy chọn Premium hiện chưa khả dụng. Vui lòng thử lại sau.",
+      "premiumUnavailableTitle": "Chưa dùng được Premium",
+      "premiumUnlockedText": "Các công cụ chăm sóc Premium đã sẵn sàng.",
+      "premiumUnlockedTitle": "Đã mở Premium",
+      "syncingAfterPurchaseText": "Giao dịch trong cửa hàng đã thành công. YeuPet vẫn đang làm mới gói của bạn.",
+      "syncingGenericText": "YeuPet vẫn đang làm mới gói của bạn. Vui lòng kiểm tra lại sau.",
+      "syncingTitle": "Gói vẫn đang đồng bộ"
+    },
+    "usage": {
+      "items": {
+        "activeReminders": "Nhắc nhở đang hoạt động",
+        "aiMessages": "Tin nhắn AI",
+        "budgetTransactions": "Giao dịch ngân sách",
+        "medicalRecords": "Hồ sơ y tế",
+        "pets": "Thú cưng",
+        "photos": "Ảnh"
+      },
+      "period": {
+        "thisMonth": "trong tháng này"
+      }
+    },
+    "values": {
+      "included": "Bao gồm",
+      "notAvailable": "Chưa có",
+      "overLimit": "Bạn đã vượt giới hạn của gói này. Các mục hiện có vẫn khả dụng.",
+      "premiumOnly": "Chỉ Premium",
+      "unlimited": "Không giới hạn",
+      "usageOfLimit": "{{usage}} / {{limit}}"
     }
   },
   "state": {
@@ -319,19 +1823,173 @@
   "toast": {
     "notificationHint": "Mở màn hình liên quan"
   },
+  "training": {
+    "levelTitle": "Cấp độ {{level}}",
+    "levelCard": "Cấp độ {{level}} – {{title}}",
+    "levels": {
+      "advanced": {
+        "title": "Nâng cao"
+      },
+      "basic": {
+        "title": "Cơ bản"
+      },
+      "intermediate": {
+        "title": "Trung cấp"
+      }
+    },
+    "exercises": {
+      "callName": {
+        "goal": "Chó phản ứng khi nghe tên",
+        "steps": ["Gọi tên", "Khi chó nhìn", "Khen & thưởng"],
+        "title": "Gọi tên",
+        "tricks": ["Giữ giọng vui, thân thiện"]
+      },
+      "comeHere": {
+        "goal": "Chó chạy đến khi được gọi",
+        "steps": [
+          "Ngồi xuống và gọi tên",
+          "Nói 'Lại đây'",
+          "Thưởng khi chó đến gần"
+        ],
+        "title": "Lại đây",
+        "tricks": ["Luôn dùng giọng vui vẻ để khuyến khích"]
+      },
+      "fetch": {
+        "goal": "Chó nhặt đồ và mang về",
+        "steps": [
+          "Đưa đồ chơi cho chó ngậm",
+          "Nói 'Mang về'",
+          "Thưởng khi chó mang đến"
+        ],
+        "title": "Mang đồ",
+        "tricks": ["Bắt đầu với khoảng cách ngắn"]
+      },
+      "jumpThroughHoop": {
+        "goal": "Chó nhảy qua vòng khi được yêu cầu",
+        "steps": [
+          "Cầm vòng sát đất",
+          "Khuyến khích chó bước qua",
+          "Nâng dần vòng",
+          "Thưởng mỗi lần thành công"
+        ],
+        "title": "Nhảy qua vòng",
+        "tricks": ["Sử dụng giọng khích lệ mạnh mẽ"]
+      },
+      "lieDown": {
+        "goal": "Chó nằm khi ra hiệu",
+        "steps": [
+          "Yêu cầu chó ngồi",
+          "Hạ tay cầm đồ ăn xuống đất",
+          "Nói 'Nằm'",
+          "Thưởng khi chó nằm xuống"
+        ],
+        "title": "Nằm xuống",
+        "tricks": ["Luyện tập khi chó đã mệt sẽ dễ hơn"]
+      },
+      "rollOver": {
+        "goal": "Chó lăn tròn trên đất",
+        "steps": [
+          "Yêu cầu chó nằm",
+          "Dùng đồ ăn dẫn vòng qua vai chó",
+          "Nói 'Lăn'",
+          "Thưởng khi chó lăn tròn"
+        ],
+        "title": "Lăn tròn",
+        "tricks": ["Làm chậm và rõ ràng, chia nhỏ động tác"]
+      },
+      "shake": {
+        "goal": "Chó đưa chân khi được yêu cầu",
+        "steps": [
+          "Ngồi đối diện chó",
+          "Đưa tay ra và nói 'Bắt tay'",
+          "Thưởng khi chó đặt chân lên tay"
+        ],
+        "title": "Bắt tay",
+        "tricks": ["Có thể cầm nhẹ chân chó lúc đầu để hướng dẫn"]
+      },
+      "sit": {
+        "goal": "Chó ngồi khi ra hiệu",
+        "steps": [
+          "Cầm phần thưởng trên tay",
+          "Đưa tay lên trên đầu chó",
+          "Nói 'Ngồi'",
+          "Thưởng khi chó ngồi"
+        ],
+        "title": "Ngồi",
+        "tricks": ["Không ấn mông chó xuống, để chó tự ngồi"]
+      },
+      "stay": {
+        "goal": "Chó giữ nguyên vị trí khi được yêu cầu",
+        "steps": [
+          "Ra lệnh 'Ở yên'",
+          "Lùi lại vài bước",
+          "Quay lại thưởng nếu chó không di chuyển"
+        ],
+        "title": "Ở yên",
+        "tricks": ["Bắt đầu với thời gian ngắn và tăng dần"]
+      }
+    },
+    "title": "Huấn luyện",
+    "steps": "Các bước:",
+    "tricks": "Mẹo:"
+  },
   "validation": {
+    "birthdateFuture": "Ngày sinh không thể ở tương lai",
+    "dailyStartTomorrow": "Ngày bắt đầu phải từ ngày mai trở đi với chăm sóc theo ngày.",
+    "endAfterStart": "Thời gian kết thúc phải sau thời gian bắt đầu.",
     "exactLength": "{{field}} phải có đúng {{length}} ký tự",
     "fields": {
+      "address": "Địa chỉ",
+      "age": "Tuổi",
+      "amount": "Số tiền",
+      "attachments": "Tệp đính kèm",
+      "bio": "Giới thiệu",
+      "birthdate": "Ngày sinh",
+      "careInstructions": "Hướng dẫn chăm sóc",
+      "category": "Danh mục",
+      "city": "Tỉnh/thành",
+      "color": "Màu",
+      "dailyRate": "Giá theo ngày",
+      "date": "Ngày",
+      "description": "Mô tả",
+      "displayName": "Tên hiển thị",
+      "district": "Quận/huyện",
       "email": "Email",
+      "emoji": "Emoji",
+      "endTime": "Thời gian kết thúc",
+      "experience": "Kinh nghiệm",
       "firstName": "Tên",
+      "hourlyRate": "Giá theo giờ",
       "lastName": "Họ",
+      "message": "Tin nhắn",
+      "name": "Tên",
       "otpCode": "Mã OTP",
+      "ownerNotes": "Ghi chú của chủ nuôi",
       "password": "Mật khẩu",
-      "phoneNumber": "Số điện thoại"
+      "pet": "Thú cưng",
+      "phoneNumber": "Số điện thoại",
+      "rating": "Đánh giá",
+      "reason": "Lý do",
+      "recordType": "Loại hồ sơ",
+      "reminderName": "Tên nhắc nhở",
+      "review": "Nhận xét",
+      "schedule": "Lịch",
+      "serviceNotes": "Ghi chú dịch vụ",
+      "serviceType": "Loại dịch vụ",
+      "startTime": "Thời gian bắt đầu",
+      "title": "Tiêu đề",
+      "type": "Loại",
+      "ward": "Phường/xã"
     },
+    "fileSizeMaxMb": "Kích thước tệp phải nhỏ hơn {{size}} MB",
+    "imageTypes": "Chỉ chấp nhận định dạng .jpg, .jpeg, .png, .webp",
     "invalid": "{{field}} chưa hợp lệ",
+    "maxBookingsRange": "Số lịch tối đa phải từ {{min}} đến {{max}}.",
+    "maxLength": "{{field}} tối đa {{count}} ký tự.",
     "numbersOnly": "{{field}} chỉ được chứa số",
     "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
-    "required": "{{field}} không được để trống"
+    "required": "{{field}} không được để trống",
+    "selectVietnamCity": "Chọn tỉnh/thành từ danh sách tỉnh thành Việt Nam.",
+    "startTimeFuture": "Thời gian bắt đầu phải là thời điểm trong tương lai."
   }
 }

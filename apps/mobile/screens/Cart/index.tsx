@@ -16,12 +16,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { isEmpty } from "lodash";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { BottomActions } from "./BottomActions";
 import { CartItem } from "./CartItem";
 import { useUpdateCart } from "./hook/useUpdateCart";
 
 export const CartScreen = () => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -45,8 +47,8 @@ export const CartScreen = () => {
     mutationFn: deleteCartItemMutation,
     onError: (e) => {
       Toast.error({
-        title: "Item not removed",
-        text: e.errors?.[0].message ?? "Try removing this cart item again.",
+        title: t("commerce.cart.itemNotRemovedTitle"),
+        text: e.errors?.[0].message ?? t("commerce.cart.itemNotRemovedFallback"),
       });
     },
     onSuccess: (_, variable) => {
@@ -120,12 +122,14 @@ export const CartScreen = () => {
             />
             <View className="items-center px-10 gap-4">
               <Text variant="title1" className="font-semibold">
-                Your cart is empty!
+                {t("commerce.cart.emptyTitle")}
               </Text>
               <Text className="text-center">
-                Time to find some new favorites for your furry friend!
+                {t("commerce.cart.emptyDescription")}
               </Text>
-              <Button onPress={router.back}>Start Shopping</Button>
+              <Button onPress={router.back}>
+                {t("commerce.cart.emptyAction")}
+              </Button>
             </View>
           </View>
         )}

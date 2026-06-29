@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 
+import { i18n } from "@/i18n";
 import { SitterFilters } from "@/interfaces";
 import {
   createSitterFilterDraft,
@@ -63,7 +64,7 @@ export const SitterFiltersProvider = ({ children }: PropsWithChildren) => {
     const result = normalizeSitterFilterDraft(draftFilters);
 
     if (!result.filters) {
-      return result.error ?? "Check the filter values and try again.";
+      return result.error ?? i18n.t("apiError.genericText");
     }
 
     setAppliedFilters(result.filters);

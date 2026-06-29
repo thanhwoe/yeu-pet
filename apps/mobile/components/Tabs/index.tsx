@@ -1,7 +1,7 @@
 import { nativeShadows } from "@/theme/shadows";
 import { cn } from "@/utils";
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { LayoutChangeEvent, Pressable, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -11,91 +11,100 @@ import { Body } from "../ui/Typography";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-const SIZES = {
-  medium: {
-    width: 200,
-  },
-  large: {
-    width: 300,
-  },
-};
-
 interface IProps {
   tabs: { title: string; value: number }[];
   active: number;
   onChange: (v: number) => void;
   className?: string;
-  size?: "medium" | "large";
+  style?: ViewStyle;
 }
 
-export const Tabs = ({
-  tabs,
-  className,
-  active,
-  onChange,
-  size = "medium",
-}: IProps) => {
+const HORIZONTAL_PADDING = 4;
+const ACTIVE_INSET = 4;
+
+export const Tabs = ({ tabs, className, style, active, onChange }: IProps) => {
+  const [containerWidth, setContainerWidth] = useState(0);
   const translateX = useSharedValue(0);
 
-  const tabWidth = (SIZES[size].width - 8) / tabs.length;
+  const activeIndex = useMemo(() => {
+    const index = tabs.findIndex((tab) => tab.value === active);
+    return index >= 0 ? index : 0;
+  }, [active, tabs]);
 
-  const handleTabPress = (v: number, index: number) => {
-    onChange(v);
-    translateX.value = withSpring(index * tabWidth, {
+  const tabWidth =
+    containerWidth > 0
+      ? (containerWidth - HORIZONTAL_PADDING * 2) / tabs.length
+      : 0;
+
+  useEffect(() => {
+    if (!tabWidth) return;
+
+    translateX.value = withSpring(activeIndex * tabWidth, {
       damping: 20,
-      stiffness: 100,
+      stiffness: 120,
     });
-  };
+  }, [activeIndex, tabWidth, translateX]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    setContainerWidth(event.nativeEvent.layout.width);
+  };
 
   return (
     <View
+      onLayout={handleLayout}
       className={cn(
-        "bg-background-foreground rounded-24 p-4 relative",
+        "w-full bg-background-foreground rounded-24 p-4 relative",
         className,
       )}
-      style={{
-        width: SIZES[size].width,
-      }}
+      style={style}
     >
-      <AnimatedView
-        className="bg-background-primary"
-        style={[
-          {
-            width: tabWidth,
-            bottom: 6,
-            borderRadius: 24,
-            position: "absolute",
-            top: 6,
-            left: 4,
-            ...nativeShadows.floating,
-          },
-          animatedStyle,
-        ]}
-      />
+      {tabWidth > 0 ? (
+        <AnimatedView
+          className="bg-background-primary"
+          style={[
+            {
+              width: tabWidth,
+              top: ACTIVE_INSET,
+              bottom: ACTIVE_INSET,
+              left: HORIZONTAL_PADDING,
+              borderRadius: 24,
+              position: "absolute",
+              ...nativeShadows.floating,
+            },
+            animatedStyle,
+          ]}
+        />
+      ) : null}
 
-      {/* Tab Buttons */}
       <View className="flex-row">
-        {tabs.map((tab, index) => (
-          <TouchableOpacity
-            key={tab.title + index}
-            onPress={() => handleTabPress(tab.value, index)}
-            className="flex-1 items-center justify-center py-8"
-          >
-            <Body
-              className={cn({
-                "text-text-primary-inverse": active === tab.value,
-              })}
+        {tabs.map((tab) => {
+          const isActive = active === tab.value;
+
+          return (
+            <Pressable
+              key={tab.value}
+              onPress={() => onChange(tab.value)}
+              className="flex-1 items-center justify-center px-8 py-10"
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isActive }}
             >
-              {tab.title}
-            </Body>
-          </TouchableOpacity>
-        ))}
+              <Body
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}
+                className={cn("text-center", {
+                  "text-text-primary-inverse": isActive,
+                })}
+              >
+                {tab.title}
+              </Body>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );

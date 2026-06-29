@@ -13,12 +13,14 @@ import { useIsFocused } from "@react-navigation/native";
 import { type Href, useNavigation, useRouter } from "expo-router";
 import { PlusIcon, TrashIcon } from "phosphor-react-native";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 
 const AddIcon = withIconClassName(PlusIcon);
 const DeleteIcon = withIconClassName(TrashIcon);
 
 export const MedicalRecordScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const router = useRouter();
@@ -97,7 +99,9 @@ export const MedicalRecordScreen = () => {
       <BottomSheet
         useScrollView
         visible={openForm}
-        titleElement={<Body weight="semiBold">Upload your medical record</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("medicalRecords.list.uploadTitle")}</Body>
+        }
         onDismiss={handleCloseForm}
       >
         <MedicalRecordForm
@@ -112,7 +116,7 @@ export const MedicalRecordScreen = () => {
         <Options
           data={[
             {
-              label: "Delete",
+              label: t("medicalRecords.actions.delete"),
               value: selectedRecord,
               onPress: handleOpenDeletePopup,
               icon: (
@@ -130,8 +134,8 @@ export const MedicalRecordScreen = () => {
         visible={!!openDeletePopup}
         onCancel={handleCloseDeletePopup}
         onConfirm={handleDelete}
-        title="Remove medical record"
-        description="Are you sure you want to remove this medical record?"
+        title={t("medicalRecords.list.popupTitle")}
+        description={t("medicalRecords.list.popupDescription")}
         variant="delete"
         loading={isDeletingMedicalRecord}
       />

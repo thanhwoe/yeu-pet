@@ -1,11 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Body, Heading } from "@/components/ui/Typography";
-import { withIconClassName } from "@/hocs/withIconClassName";
-import { CaretRightIcon } from "phosphor-react-native";
 import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
-
-const CaretRight = withIconClassName(CaretRightIcon);
 
 export const DashboardCard = ({
   title,

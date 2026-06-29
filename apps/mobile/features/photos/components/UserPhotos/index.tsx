@@ -9,9 +9,11 @@ import { getListUserPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 export const UserPhotos = () => {
+  const { t } = useTranslation();
   const [viewerVisible, setViewerVisible] = useState(false);
   const [initialViewerIndex, setInitialViewerIndex] = useState(0);
   const {
@@ -72,8 +74,8 @@ export const UserPhotos = () => {
           <EmptyPhotos
             isLoading={isLoading}
             isError={isError}
-            title="No photos saved yet"
-            description="Your public and private pet memories will collect here after you upload them."
+            title={t("photos.empty.userTitle")}
+            description={t("photos.empty.userDescription")}
             onRetry={() => refetch()}
           />
         }

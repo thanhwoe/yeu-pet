@@ -10,7 +10,8 @@ import {
 } from "phosphor-react-native";
 import { memo } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { BOOKING_STATUS_FILTERS } from "../constants";
+import { useTranslation } from "react-i18next";
+import { getBookingStatusFilters } from "../constants";
 import {
   formatBookingHold,
   formatDateRange,
@@ -37,13 +38,16 @@ export const SitterCard = memo(
     sitter: IPetSitter;
     onPress: (sitter: IPetSitter) => void;
   }) => {
+    const { t } = useTranslation();
     const rating = Number(sitter.avgRating || 0).toFixed(1);
 
     return (
       <Pressable
         onPress={() => onPress(sitter)}
         accessibilityRole="button"
-        accessibilityLabel={`Open ${getSitterName(sitter)} sitter profile`}
+        accessibilityLabel={t("sitter.accessibility.openProfile", {
+          name: getSitterName(sitter),
+        })}
         className="rounded-24 border border-line-subtle bg-background-surface px-16 py-16 shadow-sm"
       >
         <View className="flex-row items-start gap-12">
@@ -95,7 +99,7 @@ export const SitterCard = memo(
         <View className="mt-14 flex-row gap-10">
           <View className="flex-1 rounded-18 bg-background-surface-muted px-12 py-10">
             <Body variant="body5" caps className="text-text-muted">
-              Hourly
+              {t("sitter.detail.hourly")}
             </Body>
             <Body variant="body3" weight="bold">
               {formatRate(sitter.hourlyRate)}
@@ -103,7 +107,7 @@ export const SitterCard = memo(
           </View>
           <View className="flex-1 rounded-18 bg-background-surface-muted px-12 py-10">
             <Body variant="body5" caps className="text-text-muted">
-              Daily
+              {t("sitter.detail.daily")}
             </Body>
             <Body variant="body3" weight="bold">
               {formatRate(sitter.dailyRate)}
@@ -125,52 +129,59 @@ export const BookingCard = ({
   booking: ISitterBooking;
   role: "owner" | "sitter";
   onPress: (booking: ISitterBooking) => void;
-}) => (
-  <Pressable
-    accessibilityRole="button"
-    accessibilityLabel={`Open ${getBookingTitle(booking, role)} booking`}
-    onPress={() => onPress(booking)}
-    className="rounded-24 border border-line-subtle mb-8 bg-background-surface px-16 py-16"
-  >
-    <View className="flex-row items-start gap-12">
-      <Avatar size="medium" source={getPetAvatar(booking.pet)} />
-      <View className="flex-1">
-        <View className="flex-row items-start justify-between gap-10">
-          <View className="flex-1">
-            <Heading variant="h6" weight="bold" numberOfLines={1}>
-              {getBookingTitle(booking, role)}
-            </Heading>
-            <Body variant="body4" className="text-text-muted">
-              {getBookingPetName(booking)} · {getBookingServiceLabel(booking)}
-            </Body>
-          </View>
-          <StatusBadge status={booking.status} />
-        </View>
+}) => {
+  const { t } = useTranslation();
+  const bookingTitle = getBookingTitle(booking, role);
 
-        <View className="mt-12 gap-6">
-          <View className="flex-row items-center gap-8">
-            <Clock size={16} className="text-icon-secondary" />
-            <Body variant="body4">{formatDateRange(booking)}</Body>
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t("sitter.accessibility.openBooking", {
+        title: bookingTitle,
+      })}
+      onPress={() => onPress(booking)}
+      className="rounded-24 border border-line-subtle mb-8 bg-background-surface px-16 py-16"
+    >
+      <View className="flex-row items-start gap-12">
+        <Avatar size="medium" source={getPetAvatar(booking.pet)} />
+        <View className="flex-1">
+          <View className="flex-row items-start justify-between gap-10">
+            <View className="flex-1">
+              <Heading variant="h6" weight="bold" numberOfLines={1}>
+                {bookingTitle}
+              </Heading>
+              <Body variant="body4" className="text-text-muted">
+                {getBookingPetName(booking)} · {getBookingServiceLabel(booking)}
+              </Body>
+            </View>
+            <StatusBadge status={booking.status} />
           </View>
-          <View className="flex-row items-center gap-8">
-            <CurrencyCircleDollar size={16} className="text-icon-secondary" />
-            <Body variant="body4" className="text-text-muted">
-              {booking.totalPrice
-                ? formatRate(booking.totalPrice)
-                : "Price to confirm"}{" "}
-              · External payment
-            </Body>
+
+          <View className="mt-12 gap-6">
+            <View className="flex-row items-center gap-8">
+              <Clock size={16} className="text-icon-secondary" />
+              <Body variant="body4">{formatDateRange(booking)}</Body>
+            </View>
+            <View className="flex-row items-center gap-8">
+              <CurrencyCircleDollar size={16} className="text-icon-secondary" />
+              <Body variant="body4" className="text-text-muted">
+                {booking.totalPrice
+                  ? formatRate(booking.totalPrice)
+                  : t("sitter.booking.detail.priceToConfirm")}{" "}
+                · {t("sitter.booking.detail.externalPayment")}
+              </Body>
+            </View>
+            {formatBookingHold(booking) ? (
+              <Body variant="body5" className="text-text-muted">
+                {formatBookingHold(booking)}
+              </Body>
+            ) : null}
           </View>
-          {formatBookingHold(booking) ? (
-            <Body variant="body5" className="text-text-muted">
-              {formatBookingHold(booking)}
-            </Body>
-          ) : null}
         </View>
       </View>
-    </View>
-  </Pressable>
-);
+    </Pressable>
+  );
+};
 
 export const StatusFilterRow = ({
   value,
@@ -178,18 +189,22 @@ export const StatusFilterRow = ({
 }: {
   value?: SitterBookingStatus;
   onChange: (value?: SitterBookingStatus) => void;
-}) => (
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    className="mb-12 max-h-44"
-    contentContainerStyle={{
-      alignItems: "flex-start",
-      flexDirection: "row",
-      gap: 8,
-    }}
-  >
-    {BOOKING_STATUS_FILTERS.map((item) => {
+}) => {
+  useTranslation();
+  const bookingStatusFilters = getBookingStatusFilters();
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className="mb-12 max-h-44"
+      contentContainerStyle={{
+        alignItems: "flex-start",
+        flexDirection: "row",
+        gap: 8,
+      }}
+    >
+      {bookingStatusFilters.map((item) => {
       const active = item.value === value;
 
       return (
@@ -214,6 +229,7 @@ export const StatusFilterRow = ({
           </Body>
         </Pressable>
       );
-    })}
-  </ScrollView>
-);
+      })}
+    </ScrollView>
+  );
+};

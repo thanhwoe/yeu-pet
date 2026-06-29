@@ -13,6 +13,7 @@ import {
   TrashIcon,
 } from "phosphor-react-native";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Extrapolation,
@@ -48,6 +49,7 @@ interface IProps {
 
 export const DetailCard = memo<IProps>(
   ({ pet, isCenter, index, scrollX, onDelete, onEdit }) => {
+    const { t } = useTranslation();
     const rotation = useSharedValue(0);
     const [flipped, setFlipped] = useState(false);
     const theme =
@@ -136,20 +138,29 @@ export const DetailCard = memo<IProps>(
         return "";
       }
 
-      return `${result.years} Years · ${result.humanYears} Human Years`;
-    }, [pet.birthdate, pet.species]);
+      return t("pets.detail.ageSummary", {
+        humanYears: result.humanYears,
+        years: result.years,
+      });
+    }, [pet.birthdate, pet.species, t]);
 
     const birthdate = useMemo(() => {
       if (!pet.birthdate) {
-        return "-";
+        return t("common.notSet");
       }
 
       const date = dayjs(pet.birthdate);
 
-      return date.isValid() ? date.format("l") : "-";
-    }, [pet.birthdate]);
+      return date.isValid() ? date.format("l") : t("common.notSet");
+    }, [pet.birthdate, t]);
 
-    const weight = useMemo(() => formatPetWeight(pet) || "-", [pet]);
+    const weight = useMemo(
+      () => formatPetWeight(pet) || t("common.notSet"),
+      [pet, t],
+    );
+    const gender = pet.gender
+      ? t(`pets.gender.${pet.gender}`, { defaultValue: pet.gender })
+      : t("common.notSet");
 
     return (
       <Animated.View
@@ -209,15 +220,15 @@ export const DetailCard = memo<IProps>(
             <Heading
               variant="h4"
               weight="bold"
-              className="text-white capitalize"
+              className="text-white"
               numberOfLines={3}
             >
               {pet.name}
             </Heading>
-            <Body variant="body2" className="text-white capitalize">
-              {pet.gender}
+            <Body variant="body2" className="text-white">
+              {gender}
             </Body>
-            <Body variant="body2" className="text-white capitalize">
+            <Body variant="body2" className="text-white">
               {age}
             </Body>
           </View>
@@ -230,7 +241,9 @@ export const DetailCard = memo<IProps>(
                   " size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
-                accessibilityLabel={`Show ${pet.name} details`}
+                accessibilityLabel={t("pets.detail.showDetailsAccessibility", {
+                  name: pet.name,
+                })}
                 accessibilityRole="button"
                 onPress={flip}
               >
@@ -241,7 +254,9 @@ export const DetailCard = memo<IProps>(
                   "size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
-                accessibilityLabel={`Edit ${pet.name}`}
+                accessibilityLabel={t("pets.detail.editAccessibility", {
+                  name: pet.name,
+                })}
                 accessibilityRole="button"
                 onPress={() => onEdit(pet)}
               >
@@ -252,7 +267,9 @@ export const DetailCard = memo<IProps>(
                   " size-36 rounded-18 items-center justify-center shadow-shadow-primary elevation-md",
                   theme.color,
                 )}
-                accessibilityLabel={`Delete ${pet.name}`}
+                accessibilityLabel={t("pets.detail.deleteAccessibility", {
+                  name: pet.name,
+                })}
                 accessibilityRole="button"
                 onPress={() => onDelete(pet)}
               >
@@ -285,9 +302,9 @@ export const DetailCard = memo<IProps>(
               />
             </View>
             <View>
-              <Body className="text-white capitalize">{pet.name}</Body>
-              <Body variant="body2" className="text-white capitalize">
-                {pet.breed}
+              <Body className="text-white">{pet.name}</Body>
+              <Body variant="body2" className="text-white">
+                {pet.breed || t("common.notSet")}
               </Body>
             </View>
           </View>
@@ -295,23 +312,23 @@ export const DetailCard = memo<IProps>(
           {/* Detail rows */}
           <View className="flex-row flex-wrap gap-8 mb-14">
             <DetailItem
-              label="Gender"
-              value={pet.gender}
+              label={t("pets.detail.gender")}
+              value={gender}
               color={theme.detail}
             />
             <DetailItem
-              label="Birthdate"
+              label={t("pets.detail.birthdate")}
               value={birthdate}
               color={theme.detail}
             />
             <DetailItem
-              label="Weight"
+              label={t("pets.detail.weight")}
               value={weight}
               color={theme.detail}
             />
             <DetailItem
-              label="Fur color"
-              value={pet.color ?? ""}
+              label={t("pets.detail.furColor")}
+              value={pet.color ?? t("common.notSet")}
               color={theme.detail}
             />
           </View>
@@ -319,7 +336,7 @@ export const DetailCard = memo<IProps>(
           {/* Bio */}
           <View className={cn("rounded-14 p-12", theme.detail)}>
             <Body variant="body5" caps className="mb-6 text-grey-80">
-              About
+              {t("pets.detail.about")}
             </Body>
             <Body
               variant="body3"
@@ -327,7 +344,7 @@ export const DetailCard = memo<IProps>(
               numberOfLines={2}
               className="text-black"
             >
-              {pet.notes}
+              {pet.notes || t("common.notSet")}
             </Body>
           </View>
 
@@ -337,7 +354,9 @@ export const DetailCard = memo<IProps>(
               "absolute top-18 right-18 size-36 rounded-18 justify-center items-center shadow-shadow-primary elevation-md",
               theme.color,
             )}
-            accessibilityLabel={`Hide ${pet.name} details`}
+            accessibilityLabel={t("pets.detail.hideDetailsAccessibility", {
+              name: pet.name,
+            })}
             accessibilityRole="button"
             onPress={flip}
             activeOpacity={0.8}
@@ -368,7 +387,7 @@ const DetailItem = ({
     <Body
       variant="body3"
       weight="semiBold"
-      className="capitalize text-black"
+      className="text-black"
       numberOfLines={1}
     >
       {value}

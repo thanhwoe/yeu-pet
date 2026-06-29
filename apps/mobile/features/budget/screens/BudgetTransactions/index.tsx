@@ -22,6 +22,7 @@ import {
   getBudgetTransactionQuery,
   updateBudgetTransactionMutation,
 } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import { groupBudgetTransactions } from "@/utils/budget";
 import {
   useInfiniteQuery,
@@ -33,11 +34,13 @@ import dayjs from "dayjs";
 import { useNavigation } from "expo-router";
 import { PlusIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity } from "react-native";
 
 const AddIcon = withIconClassName(PlusIcon);
 
 export const BudgetTransactionsScreen = () => {
+  const { t } = useTranslation();
   const [transactionEdit, setTransactionEdit] = useState<IBudgetTransaction>();
   const [transactionDelete, setTransactionDelete] =
     useState<IBudgetTransaction>();
@@ -51,7 +54,7 @@ export const BudgetTransactionsScreen = () => {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
-          accessibilityLabel="Add budget transaction"
+          accessibilityLabel={t("budget.accessibility.addTransaction")}
           accessibilityRole="button"
           onPress={() => setOpenTransactionForm(true)}
         >
@@ -59,7 +62,7 @@ export const BudgetTransactionsScreen = () => {
         </TouchableOpacity>
       ),
     });
-  }, []);
+  }, [navigation, t]);
 
   const { data: categories } = useQuery({
     queryKey: BUDGET_CATEGORY_KEY.list({ limit: 20 }),
@@ -127,10 +130,12 @@ export const BudgetTransactionsScreen = () => {
         setOpenTransactionForm(false);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Transaction not added",
-          text: e.message || "Check the transaction details and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.transactionCreateErrorTitle",
+            textKey: "budget.toast.transactionCreateErrorText",
+          }),
+        );
       },
       onSettled: () => {
         queryClient.invalidateQueries({
@@ -155,10 +160,12 @@ export const BudgetTransactionsScreen = () => {
         setTransactionEdit(undefined);
       },
       onError: (e) => {
-        Toast.error({
-          title: "Transaction not updated",
-          text: e.message || "Check the transaction details and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.transactionUpdateErrorTitle",
+            textKey: "budget.toast.transactionUpdateErrorText",
+          }),
+        );
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
@@ -186,10 +193,12 @@ export const BudgetTransactionsScreen = () => {
         });
       },
       onError: (e) => {
-        Toast.error({
-          title: "Transaction not removed",
-          text: e.message || "Refresh your transactions and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "budget.toast.transactionDeleteErrorTitle",
+            textKey: "budget.toast.transactionDeleteErrorText",
+          }),
+        );
       },
       onSettled: () => {
         queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_KEY.all });
@@ -258,8 +267,8 @@ export const BudgetTransactionsScreen = () => {
         visible={!!transactionDelete}
         onCancel={handleCancel}
         onConfirm={handleDelete}
-        title="Remove Transaction"
-        description="Are you sure you want to remove this transaction?"
+        title={t("budget.transactions.popupTitle")}
+        description={t("budget.transactions.popupDescription")}
         variant="delete"
         loading={isTransactionDeleting}
       />

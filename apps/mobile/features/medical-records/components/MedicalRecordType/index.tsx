@@ -1,18 +1,12 @@
 import { Body } from "@/components/ui/Typography";
 import { IMedicalRecord } from "@/interfaces";
 import { cva } from "class-variance-authority";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
   type: IMedicalRecord["recordType"];
 }
-
-const TYPE_LABEL: Record<IMedicalRecord["recordType"], string> = {
-  vaccination: "Vaccination",
-  checkup: "Checkup",
-  surgery: "Surgery",
-  medication: "Medication",
-};
 
 const wrapperStyle = cva("self-start rounded-full border px-10 py-5", {
   variants: {
@@ -36,10 +30,12 @@ const textStyle = cva("font-semiBold", {
 });
 
 export const MedicalRecordType = ({ type }: IProps) => {
+  const { t } = useTranslation();
+
   return (
     <View className={wrapperStyle({ type })}>
       <Body variant="body5" className={textStyle({ type })}>
-        {TYPE_LABEL[type]}
+        {t(`medicalRecords.type.${type}`)}
       </Body>
     </View>
   );

@@ -1,6 +1,6 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { z } from "zod";
-import { ERROR_MESSAGE } from "./messages";
+import { ERROR_MESSAGE, VALIDATION_MESSAGE } from "./messages";
 import { isVietnamProvinceCityName } from "./vietnam-location-options";
 
 export const REGEX = {
@@ -57,7 +57,7 @@ const optionalPetDate = z.preprocess(
     .nullable()
     .optional()
     .refine((value) => !value || value.getTime() <= Date.now(), {
-      message: "Birthdate cannot be in the future",
+      message: VALIDATION_MESSAGE.BIRTHDATE_NOT_FUTURE(),
     }),
 );
 
@@ -71,10 +71,10 @@ const petAvatarSchema = z
   .nullable()
   .optional()
   .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), {
-    message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
+    message: VALIDATION_MESSAGE.IMAGE_TYPES(),
   })
   .refine((val) => !val || !val.size || val.size <= MAX_FILE_SIZE, {
-    message: "File size must be less than 5MB",
+    message: VALIDATION_MESSAGE.FILE_SIZE_MAX_MB(),
   });
 
 export const signUpSchema = z.object({
@@ -196,7 +196,7 @@ export const petInfoSchema = z.object({
     })
     .trim()
     .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Name"))
-    .max(100, "Name must be at most 100 characters"),
+    .max(100, VALIDATION_MESSAGE.MAX_LENGTH("Name", 100)),
   age: z
     .string()
     .optional()
@@ -315,10 +315,10 @@ export const medicalRecordSchema = z
             size: z.number().optional(),
           })
           .refine((val) => ACCEPTED_IMAGE_TYPES.includes(val.type), {
-            message: "Only .jpg, .jpeg, .png, .webp formats are accepted",
+            message: VALIDATION_MESSAGE.IMAGE_TYPES(),
           })
           .refine((val) => !val.size || val.size <= MAX_FILE_SIZE, {
-            message: "File size must be less than 5MB",
+            message: VALIDATION_MESSAGE.FILE_SIZE_MAX_MB(),
           }),
       )
       .optional(),
@@ -363,27 +363,27 @@ const startOfLocalDayTime = (date: Date) => {
 export const sitterProfileSchema = z.object({
   displayName: optionalTrimmedString(
     100,
-    "Display name must be at most 100 characters.",
+    VALIDATION_MESSAGE.MAX_LENGTH("Display name", 100),
   ),
   city: optionalTrimmedString(
     100,
-    "City must be at most 100 characters.",
+    VALIDATION_MESSAGE.MAX_LENGTH("City", 100),
   ).refine((value) => value === undefined || isVietnamProvinceCityName(value), {
-    message: "Select a city from the Vietnam province and city list.",
+    message: VALIDATION_MESSAGE.SELECT_VIETNAM_CITY(),
   }),
   district: optionalTrimmedString(
     100,
-    "District must be at most 100 characters.",
+    VALIDATION_MESSAGE.MAX_LENGTH("District", 100),
   ),
-  ward: optionalTrimmedString(100, "Ward must be at most 100 characters."),
+  ward: optionalTrimmedString(100, VALIDATION_MESSAGE.MAX_LENGTH("Ward", 100)),
   experience: optionalTrimmedString(
     200,
-    "Experience must be at most 200 characters.",
+    VALIDATION_MESSAGE.MAX_LENGTH("Experience", 200),
   ),
-  bio: optionalTrimmedString(200, "Bio must be at most 200 characters."),
+  bio: optionalTrimmedString(200, VALIDATION_MESSAGE.MAX_LENGTH("Bio", 200)),
   serviceNotes: optionalTrimmedString(
     400,
-    "Service notes must be at most 400 characters.",
+    VALIDATION_MESSAGE.MAX_LENGTH("Service notes", 400),
   ),
   hourlyRate: sitterRateSchema("Hourly rate"),
   dailyRate: sitterRateSchema("Daily rate"),
@@ -397,7 +397,7 @@ export const sitterProfileSchema = z.object({
         value === undefined ||
         (Number.isInteger(value) && value >= 1 && value <= 10),
       {
-        message: "Max bookings must be between 1 and 10.",
+        message: VALIDATION_MESSAGE.MAX_BOOKINGS_RANGE(),
       },
     ),
   isAvailable: z.boolean().optional(),
@@ -419,17 +419,17 @@ export const sitterBookingSchema = z
     }),
     ownerNotes: optionalTrimmedString(
       500,
-      "Owner notes must be at most 500 characters.",
+      VALIDATION_MESSAGE.MAX_LENGTH("Owner notes", 500),
     ),
     careInstructions: optionalTrimmedString(
       500,
-      "Care instructions must be at most 500 characters.",
+      VALIDATION_MESSAGE.MAX_LENGTH("Care instructions", 500),
     ),
   })
   .refine(
     (data) => data.type !== "hourly" || data.startTime.getTime() > Date.now(),
     {
-      message: "Start time must be in the future.",
+      message: VALIDATION_MESSAGE.START_TIME_FUTURE(),
       path: ["startTime"],
     },
   )
@@ -438,7 +438,7 @@ export const sitterBookingSchema = z
       data.type !== "daily" ||
       startOfLocalDayTime(data.startTime) > startOfLocalDayTime(new Date()),
     {
-      message: "Start date must be tomorrow or later for daily care.",
+      message: VALIDATION_MESSAGE.DAILY_START_TOMORROW(),
       path: ["startTime"],
     },
   )
@@ -454,7 +454,7 @@ export const sitterBookingSchema = z
       return data.endTime.getTime() > data.startTime.getTime();
     },
     {
-      message: "End must be after the start.",
+      message: VALIDATION_MESSAGE.END_AFTER_START(),
       path: ["endTime"],
     },
   );
@@ -463,7 +463,7 @@ export const sitterCancelSchema = z.object({
   reason: z
     .string()
     .trim()
-    .max(240, "Reason must be at most 240 characters.")
+    .max(240, VALIDATION_MESSAGE.MAX_LENGTH("Reason", 240))
     .optional(),
 });
 
@@ -474,7 +474,7 @@ export const sitterMessageSchema = z.object({
     })
     .trim()
     .min(1, ERROR_MESSAGE.FIELD_REQUIRED("Message"))
-    .max(2000, "Message must be at most 2000 characters."),
+    .max(2000, VALIDATION_MESSAGE.MAX_LENGTH("Message", 2000)),
 });
 
 export const sitterReviewSchema = z.object({
@@ -484,7 +484,7 @@ export const sitterReviewSchema = z.object({
   comment: z
     .string()
     .trim()
-    .max(500, "Review must be at most 500 characters.")
+    .max(500, VALIDATION_MESSAGE.MAX_LENGTH("Review", 500))
     .optional(),
 });
 

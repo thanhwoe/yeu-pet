@@ -17,6 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import {
   InteractionManager,
   LayoutChangeEvent,
@@ -46,6 +47,7 @@ export const CommentComposer = memo(
     bottomInset,
     onLayout,
   }: CommentComposerProps) => {
+    const { t } = useTranslation();
     const [content, setContent] = useState("");
     const inputRef = useRef<ElementRef<typeof BottomSheetTextInput>>(null);
     const { colorScheme } = useColorScheme();
@@ -73,8 +75,8 @@ export const CommentComposer = memo(
 
       if (!trimmedContent) {
         Toast.warn({
-          title: "Write a comment",
-          text: "Add some text before posting your comment.",
+          title: t("photos.comments.toastEmptyTitle"),
+          text: t("photos.comments.toastEmptyText"),
         });
         return;
       }
@@ -85,7 +87,7 @@ export const CommentComposer = memo(
       } catch {
         // The mutation handler already restores optimistic state and shows a toast.
       }
-    }, [content, onSubmit]);
+    }, [content, onSubmit, t]);
 
     return (
       <View
@@ -101,8 +103,10 @@ export const CommentComposer = memo(
             onBlur={onCancelReply}
             placeholder={
               replyingTo
-                ? `Replying to ${replyingTo.accounts.firstName || "comment"}`
-                : "Write a comment"
+                ? t("photos.comments.replyPlaceholder", {
+                    name: replyingTo.accounts.firstName || t("photos.comments.commentAccessibility"),
+                  })
+                : t("photos.comments.writePlaceholder")
             }
             placeholderTextColor={themeColors["--text-subtle"]}
             multiline
@@ -110,7 +114,7 @@ export const CommentComposer = memo(
             className="max-h-72 min-h-30 flex-1 text-body3 text-text-primary mb-6"
           />
           <TouchableOpacity
-            accessibilityLabel="Send comment"
+            accessibilityLabel={t("photos.comments.sendAccessibility")}
             accessibilityRole="button"
             activeOpacity={0.82}
             className={cn(

@@ -9,9 +9,11 @@ import { getListSocialPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 export const SocialPhotos = () => {
+  const { t } = useTranslation();
   const [viewerVisible, setViewerVisible] = useState(false);
   const [initialViewerIndex, setInitialViewerIndex] = useState(0);
   const {
@@ -71,8 +73,8 @@ export const SocialPhotos = () => {
           <EmptyPhotos
             isLoading={isLoading}
             isError={isError}
-            title="No shared photos yet"
-            description="When the community shares public pet moments, they will appear here."
+            title={t("photos.empty.socialTitle")}
+            description={t("photos.empty.socialDescription")}
             onRetry={() => refetch()}
           />
         }

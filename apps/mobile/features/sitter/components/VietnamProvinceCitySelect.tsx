@@ -10,6 +10,7 @@ import { cn } from "@/utils";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { CaretDownIcon, CheckIcon, XIcon } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -38,16 +39,20 @@ const normalizeSearchValue = (value: string) =>
 export const VietnamProvinceCitySelect = ({
   value,
   onChange,
-  label = "City",
-  emptyLabel = "Select city",
-  clearLabel = "Not selected",
+  label,
+  emptyLabel,
+  clearLabel,
   errorMessage,
 }: VietnamProvinceCitySelectProps) => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState("");
   const resolvedValue = resolveVietnamProvinceCityName(value);
-  const displayValue = resolvedValue ?? value?.trim() ?? emptyLabel;
+  const effectiveLabel = label ?? t("sitter.form.city");
+  const effectiveEmptyLabel = emptyLabel ?? t("sitter.form.cityEmpty");
+  const effectiveClearLabel = clearLabel ?? t("sitter.form.cityClear");
+  const displayValue = resolvedValue ?? value?.trim() ?? effectiveEmptyLabel;
   const normalizedSearch = normalizeSearchValue(search.trim());
   const options = useMemo(
     () =>
@@ -107,14 +112,14 @@ export const VietnamProvinceCitySelect = ({
 
   return (
     <View className="gap-8">
-      {label ? (
+      {effectiveLabel ? (
         <Body variant="body3" weight="semiBold">
-          {label}
+          {effectiveLabel}
         </Body>
       ) : null}
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${label || "City"}: ${displayValue}`}
+        accessibilityLabel={`${effectiveLabel}: ${displayValue}`}
         accessibilityState={{ expanded: visible }}
         onPress={() => setVisible(true)}
         className={cn(
@@ -149,11 +154,11 @@ export const VietnamProvinceCitySelect = ({
         >
           <View className="flex-row items-center justify-between border-b border-line-subtle px-20 py-12">
             <Heading variant="h5" weight="bold">
-              Select city
+              {t("sitter.selectCity.title")}
             </Heading>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Close city selection"
+              accessibilityLabel={t("sitter.accessibility.closeCitySelection")}
               onPress={close}
               className="h-44 w-44 items-center justify-center rounded-full bg-background-surface-muted"
             >
@@ -163,8 +168,8 @@ export const VietnamProvinceCitySelect = ({
 
           <View className="px-20 py-16">
             <InputField
-              accessibilityLabel="Search province or city"
-              placeholder="Search province or city"
+              accessibilityLabel={t("sitter.accessibility.searchCity")}
+              placeholder={t("sitter.selectCity.searchPlaceholder")}
               value={search}
               onChangeText={setSearch}
               autoCapitalize="none"
@@ -203,7 +208,7 @@ export const VietnamProvinceCitySelect = ({
                       !value && "text-action-secondary-foreground",
                     )}
                   >
-                    {clearLabel}
+                    {effectiveClearLabel}
                   </Body>
                   {!value ? (
                     <Check
@@ -217,7 +222,7 @@ export const VietnamProvinceCitySelect = ({
             }
             ListEmptyComponent={
               <Body variant="body3" center className="py-24 text-text-muted">
-                No province or city matches your search.
+                {t("sitter.selectCity.emptySearch")}
               </Body>
             }
           />

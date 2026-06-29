@@ -6,6 +6,7 @@ import {
   IChatMessage,
   IPagination,
 } from "@/interfaces";
+import { i18n } from "@/i18n";
 import {
   createAiConversationMutation,
   getAiConversationsQuery,
@@ -19,8 +20,8 @@ import { v4 } from "uuid";
 
 const CONVERSATION_PARAMS = { page: 1, limit: 20 };
 const MESSAGE_PARAMS = { page: 1, limit: 50 };
-const FALLBACK_ASSISTANT_MESSAGE =
-  "I could not reply right now. Please try again in a moment. For urgent symptoms, contact a veterinarian or emergency clinic now.";
+const getAssistantErrorMessage = () =>
+  i18n.t("ai.fallback.assistantErrorMessage");
 
 type DoctorAiMessage = AiMessage & {
   typingCompleted?: boolean;
@@ -96,7 +97,7 @@ export function useDoctorAiChat({ petId }: { petId: string | null }) {
     if (
       !activeConversationId &&
       matchingConversation &&
-      !messagesQuery.data?.data.length
+      !messagesQuery.data?.data?.length
     ) {
       setActiveConversationId(matchingConversation.id);
       setActiveConversationPetId(matchingConversation.petId ?? null);
@@ -104,7 +105,7 @@ export function useDoctorAiChat({ petId }: { petId: string | null }) {
   }, [
     activeConversationId,
     matchingConversation,
-    messagesQuery.data?.data.length,
+    messagesQuery.data?.data?.length,
   ]);
 
   const sendMutation = useMutation<
@@ -355,7 +356,7 @@ function toAssistantMessage(response: AiStreamResult): DoctorAiMessage {
     content:
       response.content ??
       response.message?.content ??
-      "Sorry, I could not generate a response. Please try again.",
+      i18n.t("ai.fallback.generateResponse"),
     conversationId: "",
     createdAt: new Date().toISOString(),
     id: v4(),
@@ -390,7 +391,7 @@ function createOptimisticUserMessage(
 function createAssistantErrorMessage(): DoctorAiMessage {
   return {
     accountId: "",
-    content: FALLBACK_ASSISTANT_MESSAGE,
+    content: getAssistantErrorMessage(),
     conversationId: "",
     createdAt: new Date().toISOString(),
     id: v4(),

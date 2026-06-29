@@ -7,6 +7,7 @@ import { createSitterBookingMessageMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AppState } from "react-native";
 import { v4 as uuid } from "uuid";
 import { createSitterChatSocket, SitterChatSocket } from "./sitterChatSocket";
@@ -41,6 +42,7 @@ const mergeMessage = (
 };
 
 export const useSitterChat = (bookingId: string) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const messagesQuery = useSitterBookingMessages(bookingId);
   const currentUser = useUserInfoStore.use.user();
@@ -119,10 +121,10 @@ export const useSitterChat = (bookingId: string) => {
               : item,
           ),
         );
-        setLastError("Message could not send. Tap it to try again.");
+        setLastError(t("sitter.chat.sendFailedRetry"));
       }
     },
-    [bookingId, queryClient, reconcileServerMessage],
+    [bookingId, queryClient, reconcileServerMessage, t],
   );
 
   const emitMessage = useCallback(

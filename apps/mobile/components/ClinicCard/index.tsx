@@ -13,6 +13,7 @@ import {
   PhoneCallIcon,
 } from "phosphor-react-native";
 import { memo, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "../ui/Avatar";
 import { Text } from "../ui/Text";
@@ -26,6 +27,7 @@ interface ClinicCardProps {
   data: IClinic;
 }
 export const ClinicCard = memo(({ data }: ClinicCardProps) => {
+  const { t } = useTranslation();
   const isOpen = useMemo(() => checkIsOpening(data), [data]);
   const validPhone = useMemo(() => {
     if (!data.phone || !isValidPhoneNumber(data.phone, "VN")) {
@@ -54,15 +56,21 @@ export const ClinicCard = memo(({ data }: ClinicCardProps) => {
           <Text variant="heading">{data.name}</Text>
           <View className="flex-row gap-1 items-center">
             <ClockIcon size={14} className="text-foreground" />
-            <Text variant="subhead">Open time: {data.open_time}</Text>
+            <Text variant="subhead">
+              {t("common.places.openTime", { time: data.open_time })}
+            </Text>
           </View>
           <View className="flex-row gap-1 items-center">
             <ClockIcon size={14} className="text-foreground" />
-            <Text variant="subhead">Close time: {data.close_time}</Text>
+            <Text variant="subhead">
+              {t("common.places.closeTime", { time: data.close_time })}
+            </Text>
           </View>
           <View className="flex-row gap-1 items-center">
             <PhoneSimpleIcon size={14} className="text-foreground" />
-            <Text variant="subhead">Phone: {data.phone}</Text>
+            <Text variant="subhead">
+              {t("common.places.phone", { phone: data.phone })}
+            </Text>
           </View>
         </View>
         <View className="gap-4">
@@ -97,7 +105,7 @@ export const ClinicCard = memo(({ data }: ClinicCardProps) => {
       <View className="flex-row gap-1 items-center">
         <LocationIcon size={14} className="text-foreground" />
         <Text variant="subhead" className="flex-shrink">
-          Address: {data.address}
+          {t("common.places.address", { address: data.address })}
         </Text>
       </View>
     </View>

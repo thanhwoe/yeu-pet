@@ -13,11 +13,13 @@ import { IMedicalRecord } from "@/interfaces";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { TrashIcon } from "phosphor-react-native";
 import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, ListRenderItem, View } from "react-native";
 
 const DeleteIcon = withIconClassName(TrashIcon);
 
 export const MedicalRecordListScreen = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const navigation = useNavigation();
   const { petId, petName } = useLocalSearchParams<{
@@ -46,9 +48,9 @@ export const MedicalRecordListScreen = () => {
     if (!petName) return;
 
     navigation.setOptions({
-      title: `${petName} Records`,
+      title: t("medicalRecords.list.petRecordsTitle", { petName }),
     });
-  }, [navigation, petName]);
+  }, [navigation, petName, t]);
 
   const keyExtractor = useCallback((item: IMedicalRecord) => item.id, []);
 
@@ -86,9 +88,9 @@ export const MedicalRecordListScreen = () => {
           />
         </View>
       ) : (
-        <Body center>No medical records yet</Body>
+        <Body center>{t("medicalRecords.list.empty")}</Body>
       ),
-    [isLoading],
+    [isLoading, t],
   );
 
   const listFooterComponent = useMemo(
@@ -111,7 +113,7 @@ export const MedicalRecordListScreen = () => {
   const optionsData = useMemo(
     () => [
       {
-        label: "Delete",
+        label: t("medicalRecords.actions.delete"),
         value: selectedRecord,
         onPress: handleOpenDeletePopup,
         icon: (
@@ -123,7 +125,7 @@ export const MedicalRecordListScreen = () => {
         ),
       },
     ],
-    [handleOpenDeletePopup, selectedRecord],
+    [handleOpenDeletePopup, selectedRecord, t],
   );
 
   return (
@@ -157,8 +159,8 @@ export const MedicalRecordListScreen = () => {
         visible={openDeletePopup}
         onCancel={handleCloseDeletePopup}
         onConfirm={handleDelete}
-        title="Remove medical record"
-        description="Are you sure you want to remove this medical record?"
+        title={t("medicalRecords.list.popupTitle")}
+        description={t("medicalRecords.list.popupDescription")}
         variant="delete"
         loading={isDeletingMedicalRecord}
       />

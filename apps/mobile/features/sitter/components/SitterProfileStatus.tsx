@@ -1,5 +1,6 @@
 import { Body, Heading } from "@/components/ui/Typography";
 import { IPetSitter } from "@/interfaces";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { getLocationLine } from "../utils";
 import { AvailabilityBadge, SectionLabel } from "./SitterPrimitives";
@@ -9,15 +10,17 @@ export const SitterProfileStatus = ({
 }: {
   profile: IPetSitter | null;
 }) => {
+  const { t } = useTranslation();
+
   if (!profile) {
     return (
       <View className="mb-16 rounded-24 border border-line-subtle bg-background-surface px-16 py-14">
-        <SectionLabel>Sitter profile</SectionLabel>
+        <SectionLabel>{t("sitter.profile.profileTitle")}</SectionLabel>
         <Heading variant="h6" weight="bold" className="mt-4">
-          Not set up yet
+          {t("sitter.profile.statusNotSetTitle")}
         </Heading>
         <Body variant="body4" className="mt-4 text-text-muted">
-          Use the pencil in the header to create your sitter profile.
+          {t("sitter.profile.statusNotSetDescription")}
         </Body>
       </View>
     );
@@ -28,7 +31,7 @@ export const SitterProfileStatus = ({
       <View className="flex-row items-start justify-between gap-12">
         <View className="flex-1">
           <Heading variant="h6" weight="bold" numberOfLines={1}>
-            {profile.displayName || "Profile visible to owners"}
+            {profile.displayName || t("sitter.profile.statusFallbackName")}
           </Heading>
           <Body variant="body4" className="text-text-muted" numberOfLines={1}>
             {getLocationLine(profile)}
@@ -38,8 +41,8 @@ export const SitterProfileStatus = ({
       </View>
       <Body variant="body4" className="text-text-muted">
         {profile.isAvailable
-          ? "Owners can discover you while your profile is available."
-          : "Your profile is paused and hidden from new requests."}
+          ? t("sitter.profile.statusDescriptionAvailable")
+          : t("sitter.profile.statusDescriptionPaused")}
       </Body>
     </View>
   );

@@ -3,9 +3,11 @@ import { PET_KEY, SUBSCRIPTION_KEY } from "@/constants/query-keys";
 import { IPetInfoForm } from "@/constants/validation";
 import { IPagination, IPet, SubscriptionEntitlements } from "@/interfaces";
 import { deletePetMutation, updatePetMutation } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import { formatPetWeight } from "@/utils/pet";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const toPetGender = (value?: string | null): IPetInfoForm["gender"] => {
   if (value === "male" || value === "female" || value === "unknown") {
@@ -31,6 +33,7 @@ const toPetSpecies = (value?: string | null): IPetInfoForm["species"] => {
 };
 
 export const usePetCardSection = () => {
+  const { t } = useTranslation();
   const [petEdit, setPetEdit] = useState<IPet>();
   const [petDelete, setPetDelete] = useState<IPet>();
   const queryClient = useQueryClient();
@@ -38,10 +41,12 @@ export const usePetCardSection = () => {
   const { mutateAsync: updatePet, isPending: isUpdating } = useMutation({
     mutationFn: updatePetMutation,
     onError(e) {
-      Toast.error({
-        title: "Pet not updated",
-        text: e.message || "Check the pet details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "pets.toast.updateErrorTitle",
+          textKey: "pets.toast.updateErrorText",
+        }),
+      );
     },
     onSuccess(res, variable) {
       queryClient.setQueryData(PET_KEY.list(), (old: IPagination<IPet>) => {
@@ -63,8 +68,8 @@ export const usePetCardSection = () => {
         };
       });
       Toast.success({
-        title: "Pet details updated",
-        text: `${res.name}'s information is now up to date.`,
+        title: t("pets.toast.updateSuccessTitle"),
+        text: t("pets.toast.updateSuccessText", { name: res.name }),
       });
       setPetEdit(undefined);
     },
@@ -73,10 +78,12 @@ export const usePetCardSection = () => {
   const { mutateAsync: deletePet, isPending: isDeleting } = useMutation({
     mutationFn: deletePetMutation,
     onError(e) {
-      Toast.error({
-        title: "Pet not removed",
-        text: e.message || "Please try removing this pet again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "pets.toast.deleteErrorTitle",
+          textKey: "pets.toast.deleteErrorText",
+        }),
+      );
     },
     onSuccess(_, petId) {
       setPetDelete(undefined);

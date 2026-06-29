@@ -14,6 +14,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutChangeEvent,
   type NativeScrollEvent,
@@ -112,6 +113,7 @@ export const PhotoGalleryViewer = ({
   fetchNextPage,
   onClose,
 }: PhotoGalleryViewerProps) => {
+  const { t } = useTranslation();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const listRef = useRef<FlashList<IPhoto>>(null);
@@ -416,14 +418,14 @@ export const PhotoGalleryViewer = ({
 
         {isListReady && isAtLoadedEnd && isFetchNextPageError && (
           <Pressable
-            accessibilityLabel="Retry loading more photos"
+            accessibilityLabel={t("photos.view.retryLoadingMore")}
             accessibilityRole="button"
             className="absolute min-h-44 self-center justify-center rounded-full bg-black/65 px-18"
             onPress={() => requestNextPage(true)}
             style={{ bottom: insets.bottom + 24 }}
           >
             <Text variant="footnote" className="font-bold text-white">
-              Retry loading photos
+              {t("photos.view.retryLoadingPhotos")}
             </Text>
           </Pressable>
         )}

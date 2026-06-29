@@ -10,12 +10,14 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { useNavigation } from "expo-router";
 import { PlusIcon } from "phosphor-react-native";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, TouchableOpacity, View } from "react-native";
 import { CategoryItem } from "./CategoryItem";
 
 const AddIcon = withIconClassName(PlusIcon);
 
 export const BudgetCategoriesScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const {
     categories,
@@ -43,7 +45,7 @@ export const BudgetCategoriesScreen = () => {
       headerRight: () => (
         <TouchableOpacity
           className="bg-background-secondary-pressed p-8 rounded-8"
-          accessibilityLabel="Add budget category"
+          accessibilityLabel={t("budget.accessibility.addCategory")}
           accessibilityRole="button"
           onPress={openCreateForm}
         >
@@ -51,7 +53,7 @@ export const BudgetCategoriesScreen = () => {
         </TouchableOpacity>
       ),
     });
-  }, [navigation, openCreateForm]);
+  }, [navigation, openCreateForm, t]);
 
   return (
     <ScreenContainer>
@@ -94,9 +96,9 @@ export const BudgetCategoriesScreen = () => {
           return (
             <StateView
               variant="empty"
-              title="No category added yet"
-              description="Create categories to understand where your pet budget goes."
-              actionLabel="Add new category"
+              title={t("budget.categories.emptyTitle")}
+              description={t("budget.categories.emptyDescription")}
+              actionLabel={t("budget.actions.addNewCategory")}
               onAction={openCreateForm}
               className="mt-40"
             />
@@ -121,10 +123,12 @@ export const BudgetCategoriesScreen = () => {
         visible={!!categoryDelete}
         onCancel={closeDeleteConfirm}
         onConfirm={handleDelete}
-        title="Remove Category"
+        title={t("budget.categories.popupTitle")}
         description={
           categoryDelete
-            ? `Remove ${categoryDelete.name} from your budget categories?`
+            ? t("budget.categories.popupDescription", {
+                name: categoryDelete.name,
+              })
             : undefined
         }
         variant="delete"

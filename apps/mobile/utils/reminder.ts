@@ -3,9 +3,9 @@ import {
   IReminder,
   ReminderRepeatFrequency,
   ReminderStatus,
-  VisibleReminderStatus,
 } from "@/interfaces";
 import dayjs from "dayjs";
+import type { TFunction } from "i18next";
 import { isEmpty } from "lodash";
 import type { ExpandableCalendarProps } from "react-native-calendars";
 
@@ -18,28 +18,6 @@ const NON_DELETABLE_REMINDER_STATUSES = new Set<ReminderStatus>([
 
 export const canDeleteReminder = (status: ReminderStatus) =>
   !NON_DELETABLE_REMINDER_STATUSES.has(status);
-
-export const REMINDER_STATUS_LABELS: Record<VisibleReminderStatus, string> = {
-  pending: "Pending",
-  sent: "Sent",
-  cancelled: "Cancelled",
-};
-
-export const REMINDER_TYPE_LABELS = {
-  feeding: "Feeding",
-  grooming: "Grooming",
-  vaccination: "Vaccination",
-  medication: "Medication",
-} as const;
-
-export const REMINDER_REPEAT_LABELS: Record<ReminderRepeatFrequency, string> = {
-  none: "Does not repeat",
-  daily: "Every day",
-  weekly: "Every week",
-  monthly: "Every month",
-  yearly: "Every year",
-  custom: "Custom repeat",
-};
 
 export const toReminderDate = (value?: string | Date | null) => {
   if (!value) return null;
@@ -61,33 +39,44 @@ export const isSameLocalDay = (
   return !!leftKey && !!rightKey && leftKey === rightKey;
 };
 
-export const formatReminderDate = (value?: string | Date | null) => {
+export const formatReminderDateLabel = (
+  value: string | Date | null | undefined,
+  t: TFunction,
+) => {
   const parsed = toReminderDate(value);
 
-  if (!parsed) return "Unknown date";
-  if (parsed.isSame(dayjs(), "day")) return "Today";
+  if (!parsed) return t("reminders.calendar.unknownDate");
+  if (parsed.isSame(dayjs(), "day")) return t("reminders.calendar.today");
 
   return parsed.format("D MMMM YYYY");
 };
 
-export const formatReminderMonth = (value?: string | Date | null) =>
-  toReminderDate(value)?.format("MMMM YYYY") ?? "This month";
+export const formatReminderMonthLabel = (
+  value: string | Date | null | undefined,
+  t: TFunction,
+) =>
+  toReminderDate(value)?.format("MMMM YYYY") ??
+  t("reminders.calendar.thisMonth");
 
 export const formatReminderTime = (value?: string | Date | null) =>
   toReminderDate(value)?.format("HH:mm") ?? "--:--";
 
-export const formatReminderRepeat = (
-  frequency?: ReminderRepeatFrequency | null,
-  until?: string | Date | null,
+export const formatReminderRepeatLabel = (
+  frequency: ReminderRepeatFrequency | null | undefined,
+  until: string | Date | null | undefined,
+  t: TFunction,
 ) => {
-  const label = REMINDER_REPEAT_LABELS[frequency ?? "none"];
+  const repeat = t(`reminders.repeat.${frequency ?? "none"}`);
   const parsedUntil = toReminderDate(until);
 
   if (!parsedUntil || frequency === "none" || !frequency) {
-    return label;
+    return repeat;
   }
 
-  return `${label} until ${parsedUntil.format("D MMM YYYY")}`;
+  return t("reminders.repeat.until", {
+    date: parsedUntil.format("D MMM YYYY"),
+    repeat,
+  });
 };
 
 export const getMonthRange = (value?: string | Date | null) => {

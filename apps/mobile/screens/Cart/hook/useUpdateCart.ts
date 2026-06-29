@@ -4,8 +4,10 @@ import { updateCartMutation, UpdateCartParams } from "@/services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const useUpdateCart = (delay: number = 1000) => {
+  const { t } = useTranslation();
   const pendingUpdatesRef = useRef<Map<string, UpdateCartParams>>(new Map());
   const debouncedUpdateRef = useRef<ReturnType<typeof debounce> | null>(null);
 
@@ -17,10 +19,10 @@ export const useUpdateCart = (delay: number = 1000) => {
     mutationFn: updateCartMutation,
     onError: (e) => {
       Toast.error({
-        title: "Cart not updated",
+        title: t("commerce.cart.notUpdatedTitle"),
         text:
           e.errors?.[0].message ??
-          "Check the quantity and try updating your cart again.",
+          t("commerce.cart.notUpdatedFallback"),
       });
     },
     onSuccess: () => {

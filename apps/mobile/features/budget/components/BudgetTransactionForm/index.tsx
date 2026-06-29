@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 
 interface IProps {
@@ -40,6 +41,7 @@ export const BudgetTransactionForm = ({
   categories,
   submitting,
 }: IProps) => {
+  const { t } = useTranslation();
   const { control, handleSubmit } = useForm<
     IBudgetTransactionFormInput,
     unknown,
@@ -131,7 +133,7 @@ export const BudgetTransactionForm = ({
   const petOptions = useMemo(
     () => [
       {
-        label: "No specific pet",
+        label: t("budget.form.pet.noSpecific"),
         value: NO_PET_VALUE,
       },
       ...(pets?.data ?? []).map((pet) => ({
@@ -139,22 +141,22 @@ export const BudgetTransactionForm = ({
         value: pet.id,
       })),
     ],
-    [pets?.data],
+    [pets?.data, t],
   );
 
   const handleSubmitForm = async (data: IBudgetTransactionForm) => {
     if (isCreating && (isCheckingMonthlyUsage || isMonthlyUsageError)) {
       Toast.warn({
-        title: "Could not confirm your transaction limit",
-        text: "Try checking your plan again before adding this transaction.",
+        title: t("budget.limit.confirmErrorTitle"),
+        text: t("budget.limit.confirmErrorText"),
       });
       return;
     }
 
     if (isCreating && !transactionLimit.allowed) {
       Toast.warn({
-        title: "Monthly transaction limit reached",
-        text: "Choose another month or upgrade to Premium.",
+        title: t("budget.limit.limitReachedTitle"),
+        text: t("budget.limit.limitReachedText"),
       });
       return;
     }
@@ -167,8 +169,8 @@ export const BudgetTransactionForm = ({
       <View className="min-h-240 px-26 pb-safe-offset-8">
         <StateView
           variant="loading"
-          title="Checking your plan"
-          description="Making sure there is room for another transaction."
+          title={t("budget.limit.loadingTitle")}
+          description={t("budget.limit.loadingDescription")}
         />
       </View>
     );
@@ -179,9 +181,9 @@ export const BudgetTransactionForm = ({
       <View className="min-h-240 px-26 pb-safe-offset-8">
         <StateView
           variant="error"
-          title="Could not check your transaction limit"
-          description="Check your connection and try again."
-          actionLabel="Try again"
+          title={t("budget.limit.transactionLimitErrorTitle")}
+          description={t("budget.limit.transactionLimitErrorDescription")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void refetchEntitlements()}
         />
       </View>
@@ -196,24 +198,27 @@ export const BudgetTransactionForm = ({
       {isCheckingMonthlyUsage ? (
         <StateView
           variant="loading"
-          title="Checking this month"
-          description="Confirming how many transactions are already saved."
+          title={t("budget.limit.checkMonthTitle")}
+          description={t("budget.limit.checkMonthDescription")}
           className="min-h-128 rounded-20 bg-background-surface-muted px-16 py-16"
         />
       ) : isMonthlyUsageError ? (
         <StateView
           variant="error"
-          title="Could not check this month"
-          description="Try again before adding this transaction."
-          actionLabel="Try again"
+          title={t("budget.limit.monthErrorTitle")}
+          description={t("budget.limit.monthErrorDescription")}
+          actionLabel={t("common.tryAgain")}
           onAction={() => void monthlyUsageQuery.refetch()}
           className="min-h-128 rounded-20 bg-background-surface-muted px-16 py-16"
         />
       ) : isCreating && !transactionLimit.allowed ? (
         <PaywallNotice
           variant="inline"
-          title="Monthly transaction limit reached"
-          description={`Free plan includes ${transactionLimit.limit} transactions for ${limitPeriod.format("MMMM YYYY")}. Choose another month or upgrade to Premium.`}
+          title={t("budget.limit.limitReachedTitle")}
+          description={t("budget.limit.limitReachedDescription", {
+            limit: transactionLimit.limit,
+            period: limitPeriod.format("MMMM YYYY"),
+          })}
           loading={isUpgrading}
           onAction={() => void upgrade()}
         />
@@ -222,14 +227,14 @@ export const BudgetTransactionForm = ({
       <EnhancedInputController
         control={control}
         name="description"
-        label="Description"
-        placeholder="Description"
+        label={t("budget.form.description.label")}
+        placeholder={t("budget.form.description.placeholder")}
       />
       <EnhancedInputController
         control={control}
         name="amount"
-        label="Amount"
-        placeholder="Amount"
+        label={t("budget.form.amount.label")}
+        placeholder={t("budget.form.amount.placeholder")}
         keyboardType="numeric"
         format={(v: string) => {
           const numericValue = v.replace(/[^0-9]/g, "");
@@ -242,8 +247,8 @@ export const BudgetTransactionForm = ({
       >
         control={control}
         name="categoryId"
-        label="Category"
-        placeholder="Select category"
+        label={t("budget.form.category.label")}
+        placeholder={t("budget.form.category.placeholder")}
         options={categoryOptions}
       />
       <OptionInputController<
@@ -252,8 +257,8 @@ export const BudgetTransactionForm = ({
       >
         control={control}
         name="petId"
-        label="Pet"
-        placeholder="No specific pet"
+        label={t("budget.form.pet.label")}
+        placeholder={t("budget.form.pet.noSpecific")}
         options={petOptions}
       />
       <DateTimePickerController<
@@ -262,8 +267,8 @@ export const BudgetTransactionForm = ({
       >
         name="date"
         control={control}
-        label="Date"
-        placeholder="Select date"
+        label={t("budget.form.date.label")}
+        placeholder={t("budget.form.date.placeholder")}
         mode="date"
         format={(val) => date(val).format("LL")}
         maximumDate={new Date()}
@@ -280,7 +285,9 @@ export const BudgetTransactionForm = ({
             !transactionLimit.allowed)
         }
       >
-        {!!defaultValues ? "Update transaction" : "Add transaction"}
+        {defaultValues
+          ? t("budget.actions.updateTransaction")
+          : t("budget.actions.addTransaction")}
       </Button>
     </KeyboardAvoidingView>
   );

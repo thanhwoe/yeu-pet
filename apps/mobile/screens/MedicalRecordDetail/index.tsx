@@ -26,6 +26,7 @@ import {
   WarningCircleIcon,
 } from "phosphor-react-native";
 import { ReactNode, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 const ViewIcon = withIconClassName(EyeIcon);
@@ -38,6 +39,7 @@ const ProcessingIcon = withIconClassName(ClockIcon);
 const FailedIcon = withIconClassName(WarningCircleIcon);
 
 export const MedicalRecordDetailScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const galleryRef = useRef<ImageGalleryRef>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -72,13 +74,13 @@ export const MedicalRecordDetailScreen = () => {
           className="bg-background-secondary-pressed p-8 rounded-8"
           onPress={handleOpenOptions}
           accessibilityRole="button"
-          accessibilityLabel="Medical record options"
+          accessibilityLabel={t("medicalRecords.detail.options")}
         >
           <OptionsIcon className="text-icon-primary" weight="bold" />
         </TouchableOpacity>
       ),
     });
-  }, [handleOpenOptions, navigation]);
+  }, [handleOpenOptions, navigation, t]);
 
   if (!data || isLoading) {
     return (
@@ -95,10 +97,20 @@ export const MedicalRecordDetailScreen = () => {
     >
       <HeroSummaryCard data={data} petName={petName} />
 
-      <SectionCard title="Information">
-        <InfoRow label="Description" value={data.description} multiline />
-        <InfoRow label="Vet Clinic" value={data.vetClinic} />
-        <InfoRow label="Vet Name" value={data.vetName} />
+      <SectionCard title={t("medicalRecords.detail.information")}>
+        <InfoRow
+          label={t("medicalRecords.detail.description")}
+          value={data.description}
+          multiline
+        />
+        <InfoRow
+          label={t("medicalRecords.detail.vetClinic")}
+          value={data.vetClinic}
+        />
+        <InfoRow
+          label={t("medicalRecords.detail.vetName")}
+          value={data.vetName}
+        />
       </SectionCard>
 
       <AttachmentSection
@@ -111,13 +123,13 @@ export const MedicalRecordDetailScreen = () => {
         <Options
           data={[
             {
-              label: "Edit",
+              label: t("medicalRecords.actions.edit"),
               value: data,
               onPress: handleOpenEditForm,
               icon: <EditIcon size={24} className="text-icon-primary" />,
             },
             {
-              label: "Delete",
+              label: t("medicalRecords.actions.delete"),
               value: data,
               onPress: handleOpenDeletePopup,
               icon: (
@@ -134,7 +146,9 @@ export const MedicalRecordDetailScreen = () => {
       <BottomSheet
         useScrollView
         visible={openEditForm}
-        titleElement={<Body weight="semiBold">Edit medical record</Body>}
+        titleElement={
+          <Body weight="semiBold">{t("medicalRecords.detail.editTitle")}</Body>
+        }
         onDismiss={handleCloseEditForm}
       >
         <MedicalRecordForm
@@ -148,8 +162,8 @@ export const MedicalRecordDetailScreen = () => {
         visible={!!openDeletePopup}
         onCancel={handleCloseDeletePopup}
         onConfirm={handleDelete}
-        title="Remove medical record"
-        description="Are you sure you want to remove this medical record?"
+        title={t("medicalRecords.list.popupTitle")}
+        description={t("medicalRecords.list.popupDescription")}
         variant="delete"
         loading={isDeletingMedicalRecord}
       />
@@ -164,6 +178,8 @@ const HeroSummaryCard = ({
   data: IMedicalRecordDetail;
   petName?: string;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-18 py-18 shadow-sm">
       <View className="flex-row items-start justify-between gap-12">
@@ -180,12 +196,14 @@ const HeroSummaryCard = ({
           {petName}
         </Body>
         <Body variant="body4" className="text-text-muted">
-          Date: {date(data.date).format("LL")}
+          {t("medicalRecords.detail.date", {
+            date: date(data.date).format("LL"),
+          })}
         </Body>
       </View>
 
       <Body variant="body4" className="text-text-muted">
-        Record ID: {shortID(data.id)}
+        {t("medicalRecords.detail.recordId", { id: shortID(data.id) })}
       </Body>
     </View>
   );
@@ -217,6 +235,7 @@ const InfoRow = ({
   value?: string | null;
   multiline?: boolean;
 }) => {
+  const { t } = useTranslation();
   const hasValue = !!value?.trim();
 
   return (
@@ -229,7 +248,7 @@ const InfoRow = ({
         className={cn(hasValue ? "text-text-primary" : "text-text-muted")}
         numberOfLines={multiline ? undefined : 2}
       >
-        {hasValue ? value : "Not provided"}
+        {hasValue ? value : t("medicalRecords.detail.notProvided")}
       </Body>
     </View>
   );
@@ -242,13 +261,14 @@ const AttachmentSection = ({
   data: IMedicalRecordDetail;
   onOpen: (index: number) => void;
 }) => {
+  const { t } = useTranslation();
   const hasAttachments = data.medicalAttachments.length > 0;
 
   return (
     <View className="gap-12">
       <View className="flex-row items-center justify-between gap-12">
         <Heading variant="h6" weight="bold">
-          Medical attachments
+          {t("medicalRecords.attachments.label")}
         </Heading>
         <Body variant="body4" className="text-text-muted">
           {data.medicalAttachments.length}
@@ -277,12 +297,14 @@ const AttachmentStateCard = ({
 }: {
   status: IMedicalRecord["attachmentStatus"];
 }) => {
+  const { t } = useTranslation();
+
   if (status === "processing") {
     return (
       <StateCard
         icon={<ProcessingIcon size={22} className="text-status-warning-icon" />}
-        title="Attachments are processing"
-        description="Images will appear here when processing finishes."
+        title={t("medicalRecords.attachments.processingTitle")}
+        description={t("medicalRecords.attachments.processingDescription")}
       />
     );
   }
@@ -291,8 +313,10 @@ const AttachmentStateCard = ({
     return (
       <StateCard
         icon={<FailedIcon size={22} className="text-status-danger-icon" />}
-        title="Attachment processing failed"
-        description="Edit this record and upload the image again."
+        title={t("medicalRecords.attachments.processingFailedTitle")}
+        description={t(
+          "medicalRecords.attachments.processingFailedDescription",
+        )}
       />
     );
   }
@@ -302,8 +326,8 @@ const AttachmentStateCard = ({
       icon={
         <AttachmentIcon size={22} className="text-feature-medical-accent" />
       }
-      title="No attachments yet"
-      description="Add photos or documents when you edit this record."
+      title={t("medicalRecords.attachments.noneTitle")}
+      description={t("medicalRecords.attachments.noneDescription")}
     />
   );
 };
@@ -345,6 +369,7 @@ const AttachmentCard = ({
   status: IMedicalRecord["attachmentStatus"];
   onOpen: (index: number) => void;
 }) => {
+  const { t } = useTranslation();
   const imageUri = attachment.thumbnailUrl || attachment.url;
   const canUseAttachment = !!attachment.url && status !== "processing";
 
@@ -355,7 +380,9 @@ const AttachmentCard = ({
           onPress={() => onOpen(index)}
           disabled={!canUseAttachment}
           accessibilityRole="imagebutton"
-          accessibilityLabel={`View medical attachment ${index + 1}`}
+          accessibilityLabel={t("medicalRecords.attachments.viewAttachment", {
+            index: index + 1,
+          })}
           className={cn(
             "h-72 w-72 overflow-hidden rounded-18 bg-background-surface-muted",
             !canUseAttachment && "opacity-60",
@@ -366,26 +393,30 @@ const AttachmentCard = ({
 
         <View className="min-w-0 flex-1 justify-center gap-5">
           <Body variant="body3" weight="semiBold" numberOfLines={1}>
-            Medical image
+            {t("medicalRecords.attachments.image")}
           </Body>
           <Body variant="body4" className="text-text-muted" numberOfLines={1}>
-            Attachment {shortID(attachment.id)}
+            {t("medicalRecords.attachments.attachmentId", {
+              id: shortID(attachment.id),
+            })}
           </Body>
           <Body variant="body4" className="text-text-muted" numberOfLines={1}>
-            Uploaded {date(attachment.createdAt).format("L")}
+            {t("medicalRecords.attachments.uploaded", {
+              date: date(attachment.createdAt).format("L"),
+            })}
           </Body>
         </View>
       </View>
 
       <View className="flex-row gap-8">
         <AttachmentAction
-          label="View"
+          label={t("medicalRecords.attachments.view")}
           disabled={!canUseAttachment}
           icon={<ViewIcon size={18} className="text-icon-primary" />}
           onPress={() => onOpen(index)}
         />
         <AttachmentAction
-          label="Save"
+          label={t("medicalRecords.actions.save")}
           disabled={!canUseAttachment}
           icon={<DownloadIcon size={18} className="text-icon-primary" />}
           onPress={() => saveImageToGallery(attachment.url)}

@@ -9,13 +9,13 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminder } from "@/interfaces";
 import { cn } from "@/utils";
 import {
-  formatReminderDate,
-  formatReminderRepeat,
+  formatReminderDateLabel,
+  formatReminderRepeatLabel,
   formatReminderTime,
-  REMINDER_TYPE_LABELS,
 } from "@/utils/reminder";
 import { XCircleIcon } from "phosphor-react-native";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 
 const CancelIcon = withIconClassName(XCircleIcon);
@@ -35,6 +35,7 @@ export const ReminderDetailSheet = ({
   onDismiss,
   onCancelReminder,
 }: ReminderDetailSheetProps) => {
+  const { t } = useTranslation();
   const runAction = async (
     action: (item: IReminder) => Promise<void> | void,
   ) => {
@@ -49,7 +50,7 @@ export const ReminderDetailSheet = ({
       name="reminder-detail"
       visible={visible && Boolean(reminder)}
       onDismiss={onDismiss}
-      titleElement={<Body weight="semiBold">Reminder details</Body>}
+      titleElement={<Body weight="semiBold">{t("reminders.detail.title")}</Body>}
       useScrollView
     >
       {reminder ? (
@@ -63,8 +64,8 @@ export const ReminderDetailSheet = ({
                     {reminder.title}
                   </Heading>
                   <Body variant="body3" className="text-text-muted">
-                    {reminder.pets?.name ?? "No pet"} ·{" "}
-                    {REMINDER_TYPE_LABELS[reminder.type]}
+                    {reminder.pets?.name ?? t("reminders.noPet")} ·{" "}
+                    {t(`reminders.type.${reminder.type}`)}
                   </Body>
                 </View>
               </View>
@@ -80,18 +81,19 @@ export const ReminderDetailSheet = ({
 
           <View className="gap-10 rounded-20 bg-background-surface-muted p-14">
             <DetailRow
-              label="Date"
-              value={formatReminderDate(reminder.scheduledAt)}
+              label={t("reminders.detail.date")}
+              value={formatReminderDateLabel(reminder.scheduledAt, t)}
             />
             <DetailRow
-              label="Time"
+              label={t("reminders.detail.time")}
               value={formatReminderTime(reminder.scheduledAt)}
             />
             <DetailRow
-              label="Repeat"
-              value={formatReminderRepeat(
+              label={t("reminders.detail.repeat")}
+              value={formatReminderRepeatLabel(
                 reminder.repeatFrequency,
                 reminder.repeatUntil,
+                t,
               )}
             />
           </View>
@@ -100,7 +102,8 @@ export const ReminderDetailSheet = ({
             <View className="items-center gap-12 pt-4">
               <View className="flex-row flex-wrap justify-center gap-12">
                 <DetailActionButton
-                  label="Cancel"
+                  label={t("common.cancel")}
+                  accessibilityLabel={t("reminders.accessibility.cancelReminder")}
                   disabled={actioning}
                   className="bg-status-danger-surface"
                   textClassName="text-status-danger-text"
@@ -141,6 +144,7 @@ const DetailActionButton = ({
   icon,
   className,
   textClassName,
+  accessibilityLabel,
   disabled,
   onPress,
 }: {
@@ -148,12 +152,13 @@ const DetailActionButton = ({
   icon: ReactNode;
   className: string;
   textClassName: string;
+  accessibilityLabel?: string;
   disabled?: boolean;
   onPress: () => void;
 }) => (
   <Pressable
     accessibilityRole="button"
-    accessibilityLabel={`${label} reminder`}
+    accessibilityLabel={accessibilityLabel ?? label}
     accessibilityState={{ disabled, busy: disabled }}
     disabled={disabled}
     onPress={onPress}

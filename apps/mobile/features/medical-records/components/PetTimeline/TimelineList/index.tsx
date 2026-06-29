@@ -10,6 +10,7 @@ import { getListReminderQuery } from "@/services";
 import { date } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -17,6 +18,7 @@ interface IProps {
 }
 
 export const TimelineList = ({ pet }: IProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { data, isLoading } = useQuery({
     queryKey: REMINDER_KEY.list({ petId: pet.id }),
@@ -56,7 +58,7 @@ export const TimelineList = ({ pet }: IProps) => {
         }}
       >
         <Text className="text-text-upcoming-title text-center">
-          {pet.name}&apos;s reminders
+          {t("medicalRecords.timeline.petReminders", { name: pet.name })}
         </Text>
 
         <View className="items-center overflow-hidden gap-2 justify-center flex-1 bg-background-white rounded-2xl">
@@ -67,12 +69,12 @@ export const TimelineList = ({ pet }: IProps) => {
               source={require("@/assets/images/funny-cat.png")}
             />
           </View>
-          <Text>Don&apos;t forget to add a reminder</Text>
+          <Text>{t("medicalRecords.timeline.emptyReminder")}</Text>
           <Button
             variant="secondary"
             onPress={() => router.push("/(tabs)/(reminder)")}
           >
-            Add reminder
+            {t("medicalRecords.timeline.addReminder")}
           </Button>
         </View>
       </View>
@@ -87,7 +89,7 @@ export const TimelineList = ({ pet }: IProps) => {
       }}
     >
       <Text className="text-text-upcoming-title text-center">
-        {pet.name}&apos;s reminders
+        {t("medicalRecords.timeline.petReminders", { name: pet.name })}
       </Text>
       {data?.map((reminder) => {
         return (

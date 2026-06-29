@@ -7,6 +7,7 @@ import { getPhotoCommentRepliesQuery } from "@/services";
 import { cn, date } from "@/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, TouchableOpacity, View } from "react-native";
 import { isOptimisticComment, LIMIT } from "./utils";
 
@@ -37,6 +38,7 @@ export const PhotoCommentItem = ({
   onReply,
   onToggleReplies,
 }: PhotoCommentItemProps) => {
+  const { t } = useTranslation();
   const canDelete =
     currentUserId === comment.accountId || currentUserId === photoOwnerId;
   const isRepliesExpanded = expandedReplyIds.has(comment.id);
@@ -58,9 +60,9 @@ export const PhotoCommentItem = ({
         <View className="flex-1 gap-5">
           <Pressable
             accessibilityHint={
-              canOpenActions ? "Long press to open comment actions." : undefined
+              canOpenActions ? t("photos.comments.actionHint") : undefined
             }
-            accessibilityLabel="Comment"
+            accessibilityLabel={t("photos.comments.commentAccessibility")}
             accessibilityRole={canOpenActions ? "button" : undefined}
             delayLongPress={260}
             hitSlop={8}
@@ -95,32 +97,39 @@ export const PhotoCommentItem = ({
             <Text variant="caption1" className="text-text-subtle">
               {comment.createdAt
                 ? date(comment.createdAt).fromNow()
-                : "Recently"}
+                : t("photos.comments.recently")}
             </Text>
             {!isOptimisticComment(comment.id) && (
               <TouchableOpacity
-                accessibilityLabel="Reply to comment"
+                accessibilityLabel={t(
+                  "photos.comments.replyToCommentAccessibility",
+                )}
                 accessibilityRole="button"
                 activeOpacity={0.82}
                 onPress={() => onReply(comment)}
               >
                 <Text variant="caption1" className="text-text-muted">
-                  Reply
+                  {t("photos.comments.reply")}
                 </Text>
               </TouchableOpacity>
             )}
             {!!comment.replyCount && (
               <TouchableOpacity
                 accessibilityLabel={
-                  isRepliesExpanded ? "Hide replies" : "View replies"
+                  isRepliesExpanded
+                    ? t("photos.comments.hideReplies")
+                    : t("photos.comments.viewReplies")
                 }
                 accessibilityRole="button"
                 activeOpacity={0.82}
                 onPress={() => onToggleReplies(comment.id)}
               >
                 <Text variant="caption1" className="text-text-muted">
-                  {isRepliesExpanded ? "Hide" : "View"} {comment.replyCount}{" "}
-                  {comment.replyCount === 1 ? "reply" : "replies"}
+                  {isRepliesExpanded
+                    ? t("photos.comments.hide")
+                    : t("photos.comments.viewRepliesCount", {
+                        count: comment.replyCount,
+                      })}
                 </Text>
               </TouchableOpacity>
             )}
@@ -163,6 +172,7 @@ const CommentReplies = ({
   onLongPress: (comment: IPhotoComment) => void;
   onReply: (comment: IPhotoComment) => void;
 }) => {
+  const { t } = useTranslation();
   const {
     data: replies = [],
     fetchNextPage,
@@ -219,7 +229,7 @@ const CommentReplies = ({
       ))}
       {hasNextPage && (
         <TouchableOpacity
-          accessibilityLabel="Load more replies"
+          accessibilityLabel={t("photos.comments.loadMoreReplies")}
           accessibilityRole="button"
           activeOpacity={0.82}
           className="self-start px-2 py-2"
@@ -227,7 +237,9 @@ const CommentReplies = ({
           onPress={handleFetchMore}
         >
           <Text variant="caption1" className="font-medium text-text-muted">
-            {isFetchingNextPage ? "Loading replies..." : "View more replies"}
+            {isFetchingNextPage
+              ? t("photos.comments.loadingReplies")
+              : t("photos.comments.viewMoreReplies")}
           </Text>
         </TouchableOpacity>
       )}
@@ -252,6 +264,7 @@ const PhotoReplyItem = ({
   onLongPress: (comment: IPhotoComment) => void;
   onReply: (comment: IPhotoComment) => void;
 }) => {
+  const { t } = useTranslation();
   const canDelete =
     currentUserId === comment.accountId || currentUserId === photoOwnerId;
   const canOpenActions =
@@ -271,9 +284,9 @@ const PhotoReplyItem = ({
       <View className="flex-1 gap-4">
         <Pressable
           accessibilityHint={
-            canOpenActions ? "Long press to open reply actions." : undefined
+            canOpenActions ? t("photos.comments.replyActionHint") : undefined
           }
-          accessibilityLabel="Reply"
+          accessibilityLabel={t("photos.comments.replyAccessibility")}
           accessibilityRole={canOpenActions ? "button" : undefined}
           delayLongPress={260}
           hitSlop={8}
@@ -305,17 +318,21 @@ const PhotoReplyItem = ({
         </Pressable>
         <View className="flex-row items-center gap-10 px-4">
           <Text variant="caption1" className="text-text-subtle">
-            {comment.createdAt ? date(comment.createdAt).fromNow() : "Recently"}
+            {comment.createdAt
+              ? date(comment.createdAt).fromNow()
+              : t("photos.comments.recently")}
           </Text>
           {!isOptimisticComment(comment.id) && (
             <TouchableOpacity
-              accessibilityLabel="Reply to comment"
+              accessibilityLabel={t(
+                "photos.comments.replyToCommentAccessibility",
+              )}
               accessibilityRole="button"
               activeOpacity={0.82}
               onPress={() => onReply(comment)}
             >
               <Text variant="caption1" className="text-text-muted">
-                Reply
+                {t("photos.comments.reply")}
               </Text>
             </TouchableOpacity>
           )}

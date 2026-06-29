@@ -8,6 +8,7 @@ import { IMedicalRecord, IPet } from "@/interfaces";
 import { cn } from "@/utils";
 import { CaretDownIcon, FileTextIcon } from "phosphor-react-native";
 import React, { memo, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -32,6 +33,7 @@ interface MedicalRecordContainerProps {
 
 export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
   ({ pet, onRecordPress, onMorePress, onSeeAllPress }) => {
+    const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
 
     // Animated values
@@ -133,7 +135,7 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
             }}
           >
             <Body variant="body3" weight="semiBold" className="text-text-link">
-              See all
+              {t("medicalRecords.list.seeAll")}
             </Body>
           </TouchableOpacity>
 
@@ -179,7 +181,7 @@ export const MedicalRecordContainer = memo<MedicalRecordContainerProps>(
 
                   <View className="min-w-0 flex-1">
                     <Body variant="body3" weight="semiBold">
-                      No medical records yet
+                      {t("medicalRecords.list.empty")}
                     </Body>
                   </View>
                 </View>

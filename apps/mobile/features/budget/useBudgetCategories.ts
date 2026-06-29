@@ -13,6 +13,7 @@ import {
   getBudgetCategoryQuery,
   updateBudgetCategoryMutation,
 } from "@/services";
+import { getApiErrorToast } from "@/utils";
 import {
   useInfiniteQuery,
   useMutation,
@@ -34,13 +35,16 @@ export const useBudgetCategories = () => {
       getBudgetCategoryQuery({ limit: CATEGORY_LIMIT, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      if (!lastPage.meta.hasNextPage) return undefined;
-      return lastPage.meta.page + 1;
+      if (!lastPage.meta?.hasNextPage) return undefined;
+      return (lastPage.meta.page ?? 1) + 1;
     },
   });
 
   const categories = useMemo(
-    () => categoriesQuery.data?.pages.flatMap((page) => page.data) ?? [],
+    () =>
+      categoriesQuery.data?.pages.flatMap((page) =>
+        Array.isArray(page.data) ? page.data : [],
+      ) ?? [],
     [categoriesQuery.data?.pages],
   );
 
@@ -89,10 +93,12 @@ export const useBudgetCategories = () => {
       closeForm();
     },
     onError: (e) => {
-      Toast.error({
-        title: "Category not created",
-        text: e.message || "Check the category details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "budget.toast.categoryCreateErrorTitle",
+          textKey: "budget.toast.categoryCreateErrorText",
+        }),
+      );
     },
   });
 
@@ -103,10 +109,12 @@ export const useBudgetCategories = () => {
       closeForm();
     },
     onError: (e) => {
-      Toast.error({
-        title: "Category not updated",
-        text: e.message || "Check the category details and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "budget.toast.categoryUpdateErrorTitle",
+          textKey: "budget.toast.categoryUpdateErrorText",
+        }),
+      );
     },
   });
 
@@ -116,10 +124,12 @@ export const useBudgetCategories = () => {
       invalidateBudgetData();
     },
     onError: (e) => {
-      Toast.error({
-        title: "Category not removed",
-        text: e.message || "Move its transactions or try again.",
-      });
+      Toast.error(
+        getApiErrorToast(e, {
+          titleKey: "budget.toast.categoryDeleteErrorTitle",
+          textKey: "budget.toast.categoryDeleteErrorText",
+        }),
+      );
     },
     onSettled: () => {
       closeDeleteConfirm();

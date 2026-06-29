@@ -10,26 +10,28 @@ import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const STATUS_FILTERS: { label: string; value?: VisibleReminderStatus }[] = [
-  { label: "All" },
-  { label: "Pending", value: "pending" },
-  { label: "Sent", value: "sent" },
-  { label: "Cancelled", value: "cancelled" },
+const STATUS_FILTERS: { labelKey: string; value?: VisibleReminderStatus }[] = [
+  { labelKey: "reminders.filters.all" },
+  { labelKey: "reminders.status.pending", value: "pending" },
+  { labelKey: "reminders.status.sent", value: "sent" },
+  { labelKey: "reminders.status.cancelled", value: "cancelled" },
 ];
 
-const TYPE_FILTERS: { label: string; value?: ReminderType }[] = [
-  { label: "All types" },
-  { label: "Feeding", value: "feeding" },
-  { label: "Grooming", value: "grooming" },
-  { label: "Vaccination", value: "vaccination" },
-  { label: "Medication", value: "medication" },
+const TYPE_FILTERS: { labelKey: string; value?: ReminderType }[] = [
+  { labelKey: "reminders.filters.allTypes" },
+  { labelKey: "reminders.type.feeding", value: "feeding" },
+  { labelKey: "reminders.type.grooming", value: "grooming" },
+  { labelKey: "reminders.type.vaccination", value: "vaccination" },
+  { labelKey: "reminders.type.medication", value: "medication" },
 ];
 
 export const ReminderFilterDrawer = ({
   navigation,
 }: DrawerContentComponentProps) => {
+  const { t } = useTranslation();
   const statusFilter = useReminderUiStore((state) => state.statusFilter);
   const typeFilter = useReminderUiStore((state) => state.typeFilter);
   const petFilter = useReminderUiStore((state) => state.petFilter);
@@ -73,7 +75,7 @@ export const ReminderFilterDrawer = ({
       <View className="flex-1">
         <View className="border-b border-line-subtle px-20 pb-18 pt-20">
           <Heading variant="h5" weight="bold">
-            Filter reminders
+            {t("reminders.filters.title")}
           </Heading>
         </View>
 
@@ -81,31 +83,31 @@ export const ReminderFilterDrawer = ({
           showsVerticalScrollIndicator={false}
           contentContainerClassName="gap-22 px-20 py-20"
         >
-          <FilterGroup title="Status">
+          <FilterGroup title={t("reminders.filters.status")}>
             {STATUS_FILTERS.map((item) => (
               <FilterOption
-                key={item.label}
-                label={item.label}
+                key={item.labelKey}
+                label={t(item.labelKey)}
                 selected={draftStatus === item.value}
                 onPress={() => setDraftStatus(item.value)}
               />
             ))}
           </FilterGroup>
 
-          <FilterGroup title="Type">
+          <FilterGroup title={t("reminders.filters.type")}>
             {TYPE_FILTERS.map((item) => (
               <FilterOption
-                key={item.label}
-                label={item.label}
+                key={item.labelKey}
+                label={t(item.labelKey)}
                 selected={draftType === item.value}
                 onPress={() => setDraftType(item.value)}
               />
             ))}
           </FilterGroup>
 
-          <FilterGroup title="Pet">
+          <FilterGroup title={t("reminders.filters.pet")}>
             <FilterOption
-              label="All pets"
+              label={t("reminders.filters.allPets")}
               selected={!draftPetId}
               onPress={() => setDraftPetId(undefined)}
             />
@@ -127,7 +129,7 @@ export const ReminderFilterDrawer = ({
             wrapperClassName="flex-1"
             onPress={handleReset}
           >
-            Reset
+            {t("reminders.actions.reset")}
           </Button>
           <Button
             variant="secondary"
@@ -135,7 +137,7 @@ export const ReminderFilterDrawer = ({
             wrapperClassName="flex-1"
             onPress={handleApply}
           >
-            Apply
+            {t("reminders.actions.apply")}
           </Button>
         </View>
       </View>

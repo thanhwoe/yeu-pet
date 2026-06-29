@@ -6,6 +6,7 @@ import { hexToRgba } from "@/utils";
 import { formatBudgetCurrency } from "@/utils/budget";
 import { Link } from "expo-router";
 import { memo, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -16,6 +17,7 @@ interface IProps {
 
 export const BudgetCategoryStatistic = memo<IProps>(
   ({ data, title, allowManage = false }) => {
+    const { t } = useTranslation();
     const chartDate = useMemo(() => {
       return data.map((i) => ({
         label: i.category.id,
@@ -38,7 +40,7 @@ export const BudgetCategoryStatistic = memo<IProps>(
           )}
           {allowManage && (
             <Link href="/budget/categories">
-              <Body className="text-text-link">Manage</Body>
+              <Body className="text-text-link">{t("budget.actions.manage")}</Body>
             </Link>
           )}
         </View>

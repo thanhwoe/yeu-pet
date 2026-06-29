@@ -5,6 +5,7 @@ import { IPhotoComment } from "@/interfaces";
 import { useBottomSheetScrollableCreator } from "@gorhom/bottom-sheet";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutChangeEvent,
   type ScrollViewProps,
@@ -35,6 +36,7 @@ export const PhotoCommentsSheet = ({
   onDismiss,
   onCommentCountChange,
 }: PhotoCommentsSheetProps) => {
+  const { t } = useTranslation();
   const [composerHeight, setComposerHeight] = useState(0);
   const insets = useSafeAreaInsets();
   const BottomSheetScrollable =
@@ -144,7 +146,7 @@ export const PhotoCommentsSheet = ({
     <BottomSheet
       visible={visible}
       onDismiss={handleDismiss}
-      titleElement={<Body weight="semiBold">Comments</Body>}
+      titleElement={<Body weight="semiBold">{t("photos.comments.sheetTitle")}</Body>}
       useScrollView={false}
       useContentWrapper={false}
       enableDynamicSizing={false}

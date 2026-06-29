@@ -10,11 +10,13 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Device from "expo-device";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { InteractionManager, Platform } from "react-native";
 import { Toast } from "../Toast";
 
 export const UserSync = () => {
   const { user, updateUser, updateDeviceInfo } = useUserInfoStore();
+  const { t } = useTranslation();
 
   const isAuthenticated = !!user;
 
@@ -29,8 +31,8 @@ export const UserSync = () => {
     mutationFn: saveDeviceInfoMutation,
     onError(e) {
       Toast.error({
-        title: "Device sync failed",
-        text: e.message || "Notification setup will retry later.",
+        title: t("common.sync.deviceFailedTitle"),
+        text: e.message || t("common.sync.deviceFailedText"),
       });
     },
   });

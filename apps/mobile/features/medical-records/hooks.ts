@@ -1,6 +1,7 @@
 import { Toast } from "@/components/Toast";
 import { MEDICAL_RECORDS_KEY, PET_KEY } from "@/constants/query-keys";
 import { IMedicalRecordForm } from "@/constants/validation";
+import { i18n } from "@/i18n";
 import {
   IMedicalRecord,
   IMedicalRecordDetail,
@@ -14,7 +15,7 @@ import {
   getMedicalRecordsByPetIdQuery,
   updateMedicalRecordMutation,
 } from "@/services";
-import { shortID } from "@/utils";
+import { getApiErrorToast, shortID } from "@/utils";
 import {
   InfiniteData,
   QueryClient,
@@ -414,10 +415,12 @@ export function useMedicalRecordList() {
         });
       },
       onError: (e) => {
-        Toast.error({
-          title: "Record not created",
-          text: e.message || "Check the medical record and try again.",
-        });
+        Toast.error(
+          getApiErrorToast(e, {
+            titleKey: "medicalRecords.toast.createErrorTitle",
+            textKey: "medicalRecords.toast.createErrorText",
+          }),
+        );
       },
     });
 
@@ -433,24 +436,26 @@ export function useMedicalRecordList() {
       setSelectedRecord(null);
     },
     onError: (error) => {
-      Toast.error({
-        title: "Record not removed",
-        text: error.message || "Refresh the records and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          titleKey: "medicalRecords.toast.deleteErrorTitle",
+          textKey: "medicalRecords.toast.deleteErrorText",
+        }),
+      );
     },
   });
 
   const handleOpenForm = useCallback(() => {
-    if (petData?.data.length) {
+    if (petData?.data?.length) {
       setOpenForm(true);
       return;
     }
 
     Toast.warn({
-      title: "Add a pet first",
-      text: "A medical record must be linked to one of your pets.",
+      title: i18n.t("medicalRecords.toast.addPetFirstTitle"),
+      text: i18n.t("medicalRecords.toast.addPetFirstText"),
     });
-  }, [petData?.data.length]);
+  }, [petData?.data?.length]);
 
   const handleCloseForm = useCallback(() => setOpenForm(false), []);
 
@@ -569,10 +574,12 @@ export function useMedicalRecordDetail({
       setOpenOptions(false);
     },
     onError: (error) => {
-      Toast.error({
-        title: "Record not updated",
-        text: error.message || "Check the medical record and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          titleKey: "medicalRecords.toast.updateErrorTitle",
+          textKey: "medicalRecords.toast.updateErrorText",
+        }),
+      );
     },
   });
 
@@ -589,10 +596,12 @@ export function useMedicalRecordDetail({
       onDeleted?.();
     },
     onError: (error) => {
-      Toast.error({
-        title: "Record not removed",
-        text: error.message || "Refresh the record and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          titleKey: "medicalRecords.toast.deleteErrorTitle",
+          textKey: "medicalRecords.toast.detailDeleteErrorText",
+        }),
+      );
     },
   });
 
@@ -747,10 +756,12 @@ export function useMedicalRecordPetList(petId?: string) {
       setSelectedRecord(null);
     },
     onError: (error) => {
-      Toast.error({
-        title: "Record not removed",
-        text: error.message || "Refresh the records and try again.",
-      });
+      Toast.error(
+        getApiErrorToast(error, {
+          titleKey: "medicalRecords.toast.deleteErrorTitle",
+          textKey: "medicalRecords.toast.deleteErrorText",
+        }),
+      );
     },
   });
 

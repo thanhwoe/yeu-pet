@@ -14,14 +14,12 @@ import {
   Icon as PhosphorIcon,
 } from "phosphor-react-native";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
-const COMING_SOON_DESCRIPTION =
-  "This feature is being developed and will be available in a future update.";
-
 type ServiceModule = {
-  title: string;
-  subTitle: string;
+  titleKey: string;
+  subTitleKey: string;
   icon: PhosphorIcon;
   themeClassName: string;
   route?: Href;
@@ -29,60 +27,61 @@ type ServiceModule = {
 
 const SERVICE_MODULES: ServiceModule[] = [
   {
-    title: "Medical Record",
-    subTitle: "Health records & medical images",
+    titleKey: "serviceLauncher.modules.medicalRecord.title",
+    subTitleKey: "serviceLauncher.modules.medicalRecord.subtitle",
     icon: FilesIcon,
     themeClassName: "text-accent-orange",
     route: "/medical-record",
   },
   {
-    title: "Budget",
-    subTitle: "Track pet care expenses",
+    titleKey: "serviceLauncher.modules.budget.title",
+    subTitleKey: "serviceLauncher.modules.budget.subtitle",
     icon: CoinsIcon,
     themeClassName: "text-accent-yellow",
     route: "/budget",
   },
   {
-    title: "Photos Social",
-    subTitle: "Share pet moments",
+    titleKey: "serviceLauncher.modules.photosSocial.title",
+    subTitleKey: "serviceLauncher.modules.photosSocial.subtitle",
     icon: ImagesIcon,
     themeClassName: "text-accent-pink",
     route: "/photos",
   },
   {
-    title: "Doctor AI",
-    subTitle: "Ask pet-care questions",
+    titleKey: "serviceLauncher.modules.doctorAi.title",
+    subTitleKey: "serviceLauncher.modules.doctorAi.subtitle",
     icon: ChatsIcon,
     themeClassName: "text-accent-blue",
     route: "/doctor-ai",
   },
   {
-    title: "Grooming & Clinic",
-    subTitle: "Book grooming and vet visits",
+    titleKey: "serviceLauncher.modules.groomingClinic.title",
+    subTitleKey: "serviceLauncher.modules.groomingClinic.subtitle",
     icon: HairDryerIcon,
     themeClassName: "text-accent-purple",
   },
   {
-    title: "Training",
-    subTitle: "Learn care & training tips",
+    titleKey: "serviceLauncher.modules.training.title",
+    subTitleKey: "serviceLauncher.modules.training.subtitle",
     icon: BarbellIcon,
     themeClassName: "text-accent-teal",
   },
   {
-    title: "Events",
-    subTitle: "Pet events and activities",
+    titleKey: "serviceLauncher.modules.events.title",
+    subTitleKey: "serviceLauncher.modules.events.subtitle",
     icon: NewspaperClippingIcon,
     themeClassName: "text-accent-cyan",
   },
   {
-    title: "SOS",
-    subTitle: "Emergency help for pets",
+    titleKey: "serviceLauncher.modules.sos.title",
+    subTitleKey: "serviceLauncher.modules.sos.subtitle",
     icon: BellRingingIcon,
     themeClassName: "text-accent-red",
   },
 ];
 
 export default function Screen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [showComingSoon, setShowComingSoon] = useState(false);
 
@@ -103,12 +102,12 @@ export default function Screen() {
       <View className="flex-row gap-16 flex-wrap pt-safe-offset-8 px-18">
         {SERVICE_MODULES.map((service) => (
           <ServiceCard
-            key={service.title}
-            title={service.title}
-            subTitle={service.subTitle}
+            key={service.titleKey}
+            title={t(service.titleKey)}
+            subTitle={t(service.subTitleKey)}
             icon={service.icon}
             themeClassName={service.themeClassName}
-            accessibilityLabel={service.title}
+            accessibilityLabel={t(service.titleKey)}
             accessibilityRole="button"
             onPress={() => handleServicePress(service)}
           />
@@ -117,9 +116,9 @@ export default function Screen() {
 
       <Popup
         visible={showComingSoon}
-        title="Coming soon"
-        description={COMING_SOON_DESCRIPTION}
-        cancelLabel="Got it"
+        title={t("serviceLauncher.comingSoonTitle")}
+        description={t("serviceLauncher.comingSoonDescription")}
+        cancelLabel={t("serviceLauncher.gotIt")}
         onCancel={() => setShowComingSoon(false)}
       />
     </ScreenContainer>

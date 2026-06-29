@@ -5,6 +5,7 @@ import { getCartCountQuery } from "@/services";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { debounce } from "lodash";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -12,6 +13,7 @@ interface IProps {
 }
 
 export const StoreHeader = ({ onSearchChange }: IProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const { data } = useQuery({
@@ -25,7 +27,7 @@ export const StoreHeader = ({ onSearchChange }: IProps) => {
     <View className="flex-row gap-2 px-5 pb-1">
       <SearchInput
         onChange={debouncedSearch}
-        placeholder="Enter clinic name"
+        placeholder={t("commerce.product.searchPlaceholder")}
         className="flex-1"
       />
 

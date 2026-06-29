@@ -7,6 +7,7 @@ import {
 } from "@/features/photos/utils";
 import { IPhoto } from "@/interfaces";
 import { memo, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { ImageStyle, Pressable } from "react-native";
 
 interface PhotoItemProps {
@@ -15,6 +16,7 @@ interface PhotoItemProps {
   onPress: (index: number) => void;
 }
 export const PhotoItem = memo(({ data, index, onPress }: PhotoItemProps) => {
+  const { t } = useTranslation();
   const columnIndex = index % GRID_COLUMNS;
 
   const thumbnailStyle = useMemo<ImageStyle>(
@@ -36,11 +38,15 @@ export const PhotoItem = memo(({ data, index, onPress }: PhotoItemProps) => {
     const ownerName = `${ownerFirstName} ${ownerLastName}`.trim();
 
     if (ownerName) {
-      return `Open photo by ${ownerName}`;
+      return t("photos.accessibility.openPhotoBy", { name: ownerName });
     }
 
-    return data.caption ? `Open photo: ${data.caption}` : "Open photo";
-  }, [data.accounts, data.caption]);
+    return data.caption
+      ? t("photos.accessibility.openPhotoWithCaption", {
+          caption: data.caption,
+        })
+      : t("photos.accessibility.openPhoto");
+  }, [data.accounts, data.caption, t]);
   const handlePress = useCallback(() => onPress(index), [index, onPress]);
 
   return (

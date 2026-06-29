@@ -8,6 +8,7 @@ import { withIconClassName } from "@/hocs/withIconClassName";
 import { IPetSitter, ISitterReview } from "@/interfaces";
 import { date } from "@/utils";
 import { MapPinIcon, PawPrintIcon, StarIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { formatRate, getLocationLine, getSitterName } from "../utils";
 import { AvailabilityBadge, InfoRow } from "./SitterPrimitives";
@@ -21,10 +22,11 @@ const getReviewerName = (review: ISitterReview) => {
     .filter(Boolean)
     .join(" ");
 
-  return name || "Pet owner";
+  return name || "";
 };
 
 const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
+  const { t } = useTranslation();
   const reviewsQuery = useSitterReviews(sitter.id);
   const reviews = reviewsQuery.data?.pages.flatMap((page) => page.data) ?? [];
   const totalReviews =
@@ -34,17 +36,17 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
     <View className="gap-12">
       <View className="flex-row items-center justify-between gap-12">
         <Heading variant="h6" weight="bold">
-          Reviews
+          {t("sitter.detail.reviews")}
         </Heading>
         <Body variant="body4" className="text-text-muted">
-          {totalReviews} total
+          {t("sitter.detail.totalReviews", { count: totalReviews })}
         </Body>
       </View>
 
       {reviewsQuery.isLoading ? (
         <View
           accessibilityRole="progressbar"
-          accessibilityLabel="Loading sitter reviews"
+          accessibilityLabel={t("sitter.accessibility.loadingReviews")}
           className="gap-10"
         >
           <Skeleton
@@ -63,9 +65,9 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
       ) : reviewsQuery.isError && !reviews.length ? (
         <StateView
           variant="error"
-          title="Reviews could not load"
-          description="Try again to refresh sitter reviews."
-          actionLabel="Retry"
+          title={t("sitter.detail.reviewsErrorTitle")}
+          description={t("sitter.detail.reviewsErrorDescription")}
+          actionLabel={t("common.retry")}
           onAction={() => reviewsQuery.refetch()}
           className="min-h-140"
         />
@@ -83,11 +85,14 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
                   numberOfLines={1}
                   className="min-w-0 flex-1"
                 >
-                  {getReviewerName(review)}
+                  {getReviewerName(review) ||
+                    t("sitter.profile.ownerFallback")}
                 </Body>
                 <View
                   accessible
-                  accessibilityLabel={`Rated ${review.rating} out of 5`}
+                  accessibilityLabel={t("sitter.accessibility.rated", {
+                    rating: review.rating,
+                  })}
                   className="shrink-0 flex-row items-center gap-4"
                 >
                   <Star
@@ -120,15 +125,15 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
           {reviewsQuery.isFetchNextPageError ? (
             <View className="items-center gap-8 py-4">
               <Body variant="body4" className="text-center text-text-muted">
-                More reviews could not load.
+                {t("sitter.detail.moreReviewsError")}
               </Body>
               <Button
                 variant="outline"
                 size="md"
                 onPress={() => reviewsQuery.fetchNextPage()}
-                accessibilityLabel="Retry loading more sitter reviews"
+                accessibilityLabel={t("sitter.accessibility.retryLoadingReviews")}
               >
-                Try again
+                {t("common.tryAgain")}
               </Button>
             </View>
           ) : reviewsQuery.hasNextPage ? (
@@ -137,21 +142,21 @@ const RecentSitterReviews = ({ sitter }: { sitter: IPetSitter }) => {
               size="md"
               loading={reviewsQuery.isFetchingNextPage}
               onPress={() => reviewsQuery.fetchNextPage()}
-              accessibilityLabel="Show more sitter reviews"
+              accessibilityLabel={t("sitter.accessibility.showMoreReviews")}
             >
-              Show more reviews
+              {t("sitter.detail.showMoreReviews")}
             </Button>
           ) : (
             <Body variant="body4" className="py-4 text-center text-text-muted">
-              All reviews loaded
+              {t("sitter.detail.allReviewsLoaded")}
             </Body>
           )}
         </View>
       ) : (
         <StateView
           variant="empty"
-          title="No reviews yet"
-          description="Reviews will appear after completed bookings."
+          title={t("sitter.detail.noReviewsTitle")}
+          description={t("sitter.detail.noReviewsDescription")}
           className="min-h-128"
         />
       )}
@@ -167,115 +172,123 @@ export const SitterDetail = ({
   sitter: IPetSitter;
   canRequestCare: boolean;
   onRequestCare: () => void;
-}) => (
-  <View className="gap-16 px-16">
-    <View className="gap-14 rounded-28 border border-line-subtle bg-background-surface px-16 py-16">
-      <View className="flex-row items-start gap-14">
-        <Avatar
-          size="huge"
-          source={{ uri: sitter.account?.avatarUrl ?? undefined }}
-        />
-        <View className="flex-1">
-          <View className="flex-row items-start justify-between gap-10">
-            <View className="flex-1">
-              <Heading variant="h5" weight="bold" numberOfLines={1}>
-                {getSitterName(sitter)}
-              </Heading>
-              <Body
-                variant="body3"
-                className="text-text-muted"
-                numberOfLines={1}
-              >
-                {getLocationLine(sitter)}
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <View className="gap-16 px-16">
+      <View className="gap-14 rounded-28 border border-line-subtle bg-background-surface px-16 py-16">
+        <View className="flex-row items-start gap-14">
+          <Avatar
+            size="huge"
+            source={{ uri: sitter.account?.avatarUrl ?? undefined }}
+          />
+          <View className="flex-1">
+            <View className="flex-row items-start justify-between gap-10">
+              <View className="flex-1">
+                <Heading variant="h5" weight="bold" numberOfLines={1}>
+                  {getSitterName(sitter)}
+                </Heading>
+                <Body
+                  variant="body3"
+                  className="text-text-muted"
+                  numberOfLines={1}
+                >
+                  {getLocationLine(sitter)}
+                </Body>
+              </View>
+              <AvailabilityBadge available={sitter.isAvailable} />
+            </View>
+
+            <View className="mt-10 flex-row items-center gap-4">
+              <Star
+                size={16}
+                weight="fill"
+                className="text-status-warning-icon"
+              />
+              <Body variant="body3" weight="semiBold">
+                {Number(sitter.avgRating || 0).toFixed(1)}
+              </Body>
+              <Body variant="body4" className="text-text-muted">
+                {`(${t("sitter.detail.totalReviews", {
+                  count: sitter.totalReviews || 0,
+                })})`}
               </Body>
             </View>
-            <AvailabilityBadge available={sitter.isAvailable} />
-          </View>
-
-          <View className="mt-10 flex-row items-center gap-4">
-            <Star
-              size={16}
-              weight="fill"
-              className="text-status-warning-icon"
-            />
-            <Body variant="body3" weight="semiBold">
-              {Number(sitter.avgRating || 0).toFixed(1)}
-            </Body>
-            <Body variant="body4" className="text-text-muted">
-              ({sitter.totalReviews || 0} reviews)
-            </Body>
           </View>
         </View>
+
+        <View className="flex-row gap-10">
+          <View className="flex-1 rounded-20 bg-background-surface-muted px-12 py-12">
+            <Body variant="body5" caps className="text-text-muted">
+              {t("sitter.detail.hourly")}
+            </Body>
+            <Body variant="body3" weight="bold">
+              {formatRate(sitter.hourlyRate)}
+            </Body>
+          </View>
+          <View className="flex-1 rounded-20 bg-background-surface-muted px-12 py-12">
+            <Body variant="body5" caps className="text-text-muted">
+              {t("sitter.detail.daily")}
+            </Body>
+            <Body variant="body3" weight="bold">
+              {formatRate(sitter.dailyRate)}
+            </Body>
+          </View>
+        </View>
+
+        {canRequestCare ? (
+          <Button onPress={onRequestCare}>
+            {t("sitter.detail.requestCare")}
+          </Button>
+        ) : null}
       </View>
 
-      <View className="flex-row gap-10">
-        <View className="flex-1 rounded-20 bg-background-surface-muted px-12 py-12">
-          <Body variant="body5" caps className="text-text-muted">
-            Hourly
-          </Body>
-          <Body variant="body3" weight="bold">
-            {formatRate(sitter.hourlyRate)}
-          </Body>
-        </View>
-        <View className="flex-1 rounded-20 bg-background-surface-muted px-12 py-12">
-          <Body variant="body5" caps className="text-text-muted">
-            Daily
-          </Body>
-          <Body variant="body3" weight="bold">
-            {formatRate(sitter.dailyRate)}
-          </Body>
-        </View>
-      </View>
-
-      {canRequestCare ? (
-        <Button onPress={onRequestCare}>Request care</Button>
-      ) : null}
-    </View>
-
-    <View className="gap-10 rounded-24 border border-line-subtle bg-background-surface px-16 py-16">
-      <Heading variant="h6" weight="bold">
-        About
-      </Heading>
-      <Body variant="body3" className="text-text-muted">
-        {sitter.bio || "This sitter has not added a bio yet."}
-      </Body>
-      {sitter.serviceNotes ? (
+      <View className="gap-10 rounded-24 border border-line-subtle bg-background-surface px-16 py-16">
+        <Heading variant="h6" weight="bold">
+          {t("sitter.detail.about")}
+        </Heading>
         <Body variant="body3" className="text-text-muted">
-          {sitter.serviceNotes}
+          {sitter.bio || t("sitter.detail.bioFallback")}
         </Body>
-      ) : null}
-    </View>
+        {sitter.serviceNotes ? (
+          <Body variant="body3" className="text-text-muted">
+            {sitter.serviceNotes}
+          </Body>
+        ) : null}
+      </View>
 
-    <View className="gap-12 rounded-24 border border-line-subtle bg-background-surface px-16 py-16">
-      <Heading variant="h6" weight="bold">
-        Care details
-      </Heading>
-      <InfoRow
-        icon={
-          <MapPin
-            size={16}
-            weight="duotone"
-            className="text-feature-sitter-accent"
-          />
-        }
-        label="Service area"
-        value={getLocationLine(sitter)}
-      />
-      {sitter.experience ? (
+      <View className="gap-12 rounded-24 border border-line-subtle bg-background-surface px-16 py-16">
+        <Heading variant="h6" weight="bold">
+          {t("sitter.detail.careDetails")}
+        </Heading>
         <InfoRow
           icon={
-            <PawPrint
+            <MapPin
               size={16}
               weight="duotone"
               className="text-feature-sitter-accent"
             />
           }
-          label="Experience"
-          value={sitter.experience}
+          label={t("sitter.detail.serviceArea")}
+          value={getLocationLine(sitter)}
         />
-      ) : null}
-    </View>
+        {sitter.experience ? (
+          <InfoRow
+            icon={
+              <PawPrint
+                size={16}
+                weight="duotone"
+                className="text-feature-sitter-accent"
+              />
+            }
+            label={t("sitter.detail.experience")}
+            value={sitter.experience}
+          />
+        ) : null}
+      </View>
 
-    <RecentSitterReviews sitter={sitter} />
-  </View>
-);
+      <RecentSitterReviews sitter={sitter} />
+    </View>
+  );
+};

@@ -21,6 +21,7 @@ import parsePhoneNumber from "libphonenumber-js";
 import { orderBy } from "lodash";
 import { TrashIcon } from "phosphor-react-native";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, ListRenderItem, Pressable, View } from "react-native";
 import { AddressForm } from "./AddressForm";
 
@@ -41,6 +42,7 @@ interface ShippingAddressItemProps {
 
 const ShippingAddressItem = memo(
   ({ item, selected, onSelect, onDelete }: ShippingAddressItemProps) => {
+    const { t } = useTranslation();
     const phoneNumber = useMemo(
       () => parsePhoneNumber(item.phone)?.formatNational(),
       [item.phone],
@@ -79,7 +81,7 @@ const ShippingAddressItem = memo(
         {item.is_default ? (
           <View className="bg-background-secondary self-start px-2 rounded-xl">
             <Text variant="footnote" className="text-text-primary-inverse">
-              Default
+              {t("commerce.address.default")}
             </Text>
           </View>
         ) : (
@@ -99,6 +101,7 @@ const ShippingAddressItem = memo(
 ShippingAddressItem.displayName = "ShippingAddressItem";
 
 export const ShippingAddressScreen = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { action } = useLocalSearchParams();
   const { setShippingAddress, shippingAddress, clearShippingAddress } =
@@ -121,10 +124,10 @@ export const ShippingAddressScreen = () => {
       mutationFn: createShippingAddressMutation,
       onError: (e: MutationError) => {
         Toast.error({
-          title: "Address not added",
+          title: t("commerce.address.notAddedTitle"),
           text:
             e.errors?.[0]?.message ??
-            "Check the address details and try again.",
+            t("commerce.address.notAddedFallback"),
         });
       },
       onSuccess: () => {
@@ -143,8 +146,8 @@ export const ShippingAddressScreen = () => {
       mutationFn: deleteShippingAddressMutation,
       onError: (e: MutationError) => {
         Toast.error({
-          title: "Address not removed",
-          text: e.errors?.[0]?.message ?? "Try removing this address again.",
+          title: t("commerce.address.notRemovedTitle"),
+          text: e.errors?.[0]?.message ?? t("commerce.address.notRemovedFallback"),
         });
       },
       onSuccess: () => {
@@ -162,12 +165,12 @@ export const ShippingAddressScreen = () => {
 
   const handleDelete = useCallback((id: string) => {
     Alert.alert(
-      "Delete shipping address",
-      "Are you sure you want to remove this address?",
+      t("commerce.address.deleteTitle"),
+      t("commerce.address.deleteMessage"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Remove",
+          text: t("commerce.address.deleteConfirm"),
           onPress: () => {
             deleteShippingAddress(id);
             if (shippingAddress?.id === id) {
@@ -178,7 +181,7 @@ export const ShippingAddressScreen = () => {
         },
       ]
     );
-  }, [clearShippingAddress, deleteShippingAddress, shippingAddress?.id]);
+  }, [clearShippingAddress, deleteShippingAddress, shippingAddress?.id, t]);
 
   const renderItem = useCallback<ListRenderItem<IShippingAddress>>(
     ({ item }) => {
@@ -206,13 +209,15 @@ export const ShippingAddressScreen = () => {
     }
     return (
       <View className="p-10 gap-2">
-        <Text className="text-center font-medium">No shipping addresses</Text>
+        <Text className="text-center font-medium">
+          {t("commerce.address.emptyTitle")}
+        </Text>
         <Text className="text-center">
-          You haven&apos;t added any shipping addresses yet.
+          {t("commerce.address.emptyDescription")}
         </Text>
       </View>
     );
-  }, [isLoading]);
+  }, [isLoading, t]);
 
   const sortedShippingAddresses = useMemo(() => {
     return orderBy(
@@ -233,14 +238,16 @@ export const ShippingAddressScreen = () => {
       />
       <View className="-mx-5 px-5 pt-3 pb-safe-or-4 bg-background-screen">
         <Button onPress={openBottomSheetForm} loading={deleting}>
-          Add new address
+          {t("commerce.address.add")}
         </Button>
       </View>
       <BottomSheet
         keyboardBehavior="interactive"
         visible={openBottomSheet}
         onDismiss={closeBottomSheet}
-        titleElement={<Text className="font-medium">Add new address</Text>}
+        titleElement={
+          <Text className="font-medium">{t("commerce.address.add")}</Text>
+        }
       >
         <AddressForm onSubmit={createShippingAddress} loading={creating} />
       </BottomSheet>

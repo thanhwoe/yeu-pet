@@ -5,6 +5,7 @@ import { IProductDetail } from "@/interfaces";
 import { calculateDiscountPercentage } from "@/utils";
 import isEmpty from "lodash/isEmpty";
 import { StarIcon } from "phosphor-react-native";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { ImageSlider } from "../ImageSlider";
 import { SectionSkeleton } from "./SectionSkeleton";
@@ -17,6 +18,8 @@ interface IProps {
 }
 
 export const InfoSection = ({ data, loading }: IProps) => {
+  const { t } = useTranslation();
+
   if (loading && !data) return <SectionSkeleton />;
   return (
     <>
@@ -68,7 +71,7 @@ export const InfoSection = ({ data, loading }: IProps) => {
             |
           </Text>
           <Text variant="caption1" className="text-text-secondary">
-            Sold {data?.sold_count}
+            {t("commerce.product.sold", { count: data?.sold_count ?? 0 })}
           </Text>
         </View>
       </View>
@@ -76,7 +79,7 @@ export const InfoSection = ({ data, loading }: IProps) => {
       {/* Product detail -------- */}
       {/* TODO: render rich text */}
       <View className="gap-2 py-2">
-        <Text className="font-semibold">Product detail</Text>
+        <Text className="font-semibold">{t("commerce.product.detail")}</Text>
         <Text variant="body2">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod ducimus
           ratione quaerat dolores molestiae quidem quas minima iste, eaque

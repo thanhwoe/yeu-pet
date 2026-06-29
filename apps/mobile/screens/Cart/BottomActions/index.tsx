@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Text } from "@/components/ui/Text";
 import { ICartResponse } from "@/interfaces";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface IProps {
@@ -19,12 +20,13 @@ export const BottomActions = ({
   hasSelectedItems,
   onToggleSelectAll,
 }: IProps) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
     <BottomActionWrapper className="flex-row items-center">
       <Checkbox
-        label="Select all"
+        label={t("commerce.cart.selectAll")}
         defaultValue={cartSummary?.selected_all}
         key={String(cartSummary?.selected_all)}
         onChange={onToggleSelectAll}
@@ -44,7 +46,7 @@ export const BottomActions = ({
         loading={loading}
         onPress={() => router.push("/checkout")}
       >
-        Checkout
+        {t("commerce.cart.checkout")}
       </Button>
     </BottomActionWrapper>
   );

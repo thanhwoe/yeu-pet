@@ -3,7 +3,6 @@ import { BUDGET_STATISTIC_KEY } from "@/constants/query-keys";
 import { BudgetCategoryStatistic } from "@/features/budget/components/BudgetCategoryStatistic";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { getBudgetMonthlyStatisticsQuery } from "@/services";
-import { formatCurrency } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import {
@@ -13,6 +12,7 @@ import {
 } from "phosphor-react-native";
 import { memo } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import {
   DashboardAction,
   DashboardCard,
@@ -27,9 +27,8 @@ const Wallet = withIconClassName(WalletIcon);
 const Receipt = withIconClassName(ReceiptIcon);
 const WarningCircle = withIconClassName(WarningCircleIcon);
 
-const formatSpending = (value: number) => formatCurrency(value, "₫", "vi-VN");
-
 export const BudgetStatisticSection = memo(() => {
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     data: statisticMonthly,
@@ -46,8 +45,8 @@ export const BudgetStatisticSection = memo(() => {
 
   return (
     <DashboardCard
-      title="Budget Summary"
-      subtitle="This month's care spending"
+      title={t("home.budget.title")}
+      subtitle={t("home.budget.subtitle")}
       icon={
         <View className="size-40 items-center justify-center rounded-14 bg-feature-budget-surface">
           <Wallet
@@ -61,7 +60,7 @@ export const BudgetStatisticSection = memo(() => {
       {isLoading ? (
         <View
           accessibilityRole="progressbar"
-          accessibilityLabel="Loading budget summary"
+          accessibilityLabel={t("home.budget.loadingAccessibility")}
           className="gap-10"
         >
           <Skeleton
@@ -84,9 +83,9 @@ export const BudgetStatisticSection = memo(() => {
               />
             </View>
           }
-          title="Spending could not load"
-          description="Try again to refresh this month's care spending."
-          actionLabel="Retry"
+          title={t("home.budget.errorTitle")}
+          description={t("home.budget.errorDescription")}
+          actionLabel={t("common.retry")}
           onAction={() => refetch()}
         />
       ) : spendingByCategory.length === 0 ? (
@@ -100,9 +99,9 @@ export const BudgetStatisticSection = memo(() => {
               />
             </View>
           }
-          title="No spending recorded this month"
-          description="Track food, clinic visits, medication and grooming costs."
-          actionLabel="Open Budget"
+          title={t("home.budget.emptyTitle")}
+          description={t("home.budget.emptyDescription")}
+          actionLabel={t("home.budget.action")}
           onAction={openBudget}
         />
       ) : (
@@ -110,8 +109,8 @@ export const BudgetStatisticSection = memo(() => {
           <BudgetCategoryStatistic data={spendingByCategory} />
 
           <DashboardAction
-            label="Open Budget"
-            accessibilityLabel="Open budget"
+            label={t("home.budget.action")}
+            accessibilityLabel={t("home.budget.actionAccessibility")}
             onPress={openBudget}
           />
         </View>

@@ -5,24 +5,22 @@ import { ReminderTypeIcon } from "@/features/reminders/components/ReminderIcons"
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IReminder } from "@/interfaces";
 import { getUpcomingReminderQuery } from "@/services";
-import { cn } from "@/utils";
+import { cn, date } from "@/utils";
 import {
-  formatReminderRepeat,
-  REMINDER_TYPE_LABELS,
   sortRemindersByTime,
   toReminderDate,
 } from "@/utils/reminder";
 import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
 import { useRouter } from "expo-router";
+import { type TFunction } from "i18next";
 import {
   CalendarCheckIcon,
   CalendarPlusIcon,
-  CaretRightIcon,
   ClockIcon,
   WarningCircleIcon,
 } from "phosphor-react-native";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import {
   DashboardAction,
   DashboardCard,
@@ -32,29 +30,47 @@ import { HOME_REMINDER_PARAMS } from "./homeQueries";
 
 const CalendarIcon = withIconClassName(CalendarCheckIcon);
 const CalendarPlus = withIconClassName(CalendarPlusIcon);
-const CaretRight = withIconClassName(CaretRightIcon);
 const Clock = withIconClassName(ClockIcon);
 const WarningCircle = withIconClassName(WarningCircleIcon);
 
-const formatDashboardDueTime = (value: string) => {
+const formatDashboardDueTime = (value: string, t: TFunction) => {
   const dueAt = toReminderDate(value);
 
-  if (!dueAt) return "Time not set";
+  if (!dueAt) return t("home.reminders.timeNotSet");
 
-  const today = dayjs();
-  const time = dueAt.format("HH:mm");
+  const today = date();
+  const time = dueAt.format("LT");
 
-  if (dueAt.isSame(today, "day")) return `Today · ${time}`;
+  if (dueAt.isSame(today, "day")) {
+    return t("home.reminders.today", { time });
+  }
   if (dueAt.isSame(today.add(1, "day"), "day")) {
-    return `Tomorrow · ${time}`;
+    return t("home.reminders.tomorrow", { time });
   }
 
-  const date = new Intl.DateTimeFormat("en", {
-    day: "numeric",
-    month: "short",
-  }).format(dueAt.toDate());
+  return t("home.reminders.dueDate", {
+    date: dueAt.format("ll"),
+    time,
+  });
+};
 
-  return `${date} · ${time}`;
+const formatDashboardRepeat = (
+  frequency: IReminder["repeatFrequency"],
+  until: IReminder["repeatUntil"],
+  t: TFunction,
+) => {
+  const repeatFrequency = frequency ?? "none";
+  const repeat = t(`reminders.repeat.${repeatFrequency}`);
+  const parsedUntil = toReminderDate(until);
+
+  if (!parsedUntil || repeatFrequency === "none") {
+    return repeat;
+  }
+
+  return t("reminders.repeat.until", {
+    date: parsedUntil.format("ll"),
+    repeat,
+  });
 };
 
 const ReminderItem = ({
@@ -64,10 +80,12 @@ const ReminderItem = ({
   data: IReminder;
   isNext: boolean;
 }) => {
-  const petName = data.pets?.name?.trim() || "All pets";
-  const repeatSummary = formatReminderRepeat(
+  const { t } = useTranslation();
+  const petName = data.pets?.name?.trim() || t("home.reminders.allPets");
+  const repeatSummary = formatDashboardRepeat(
     data.repeatFrequency,
     data.repeatUntil,
+    t,
   );
   const repeats = data.repeatFrequency && data.repeatFrequency !== "none";
 
@@ -93,7 +111,7 @@ const ReminderItem = ({
                 caps
                 className="text-feature-reminder-accent"
               >
-                Next
+                {t("home.reminders.next")}
               </Body>
             </View>
           ) : null}
@@ -108,14 +126,14 @@ const ReminderItem = ({
         </View>
 
         <Body variant="body4" className="text-text-muted" numberOfLines={1}>
-          {petName} · {REMINDER_TYPE_LABELS[data.type]}
+          {petName} · {t(`reminders.type.${data.type}`)}
         </Body>
 
         <View className="flex-row flex-wrap items-center gap-x-6 gap-y-2">
           <View className="flex-row items-center gap-4">
             <Clock size={14} weight="bold" className="text-icon-secondary" />
             <Body variant="body4" weight="semiBold">
-              {formatDashboardDueTime(data.scheduledAt)}
+              {formatDashboardDueTime(data.scheduledAt, t)}
             </Body>
           </View>
           {repeats ? (
@@ -130,6 +148,7 @@ const ReminderItem = ({
 };
 
 export const ReminderSection = () => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const { data, isError, isLoading, refetch } = useQuery({
@@ -142,8 +161,8 @@ export const ReminderSection = () => {
 
   return (
     <DashboardCard
-      title="Upcoming Reminders"
-      subtitle="Next care tasks"
+      title={t("home.reminders.title")}
+      subtitle={t("home.reminders.subtitle")}
       icon={
         <View className="size-40 items-center justify-center rounded-14 bg-feature-reminder-surface">
           <CalendarIcon
@@ -158,7 +177,7 @@ export const ReminderSection = () => {
         {isLoading ? (
           <View
             accessibilityRole="progressbar"
-            accessibilityLabel="Loading upcoming reminders"
+            accessibilityLabel={t("home.reminders.loadingAccessibility")}
             className="gap-10"
           >
             <Skeleton
@@ -181,9 +200,9 @@ export const ReminderSection = () => {
                 />
               </View>
             }
-            title="Reminders could not load"
-            description="Try again to see the next care tasks."
-            actionLabel="Retry"
+            title={t("home.reminders.errorTitle")}
+            description={t("home.reminders.errorDescription")}
+            actionLabel={t("common.retry")}
             onAction={() => refetch()}
           />
         ) : reminders.length === 0 ? (
@@ -197,9 +216,9 @@ export const ReminderSection = () => {
                 />
               </View>
             }
-            title="No upcoming reminders"
-            description="Add the next vaccine, medication, feeding or grooming reminder."
-            actionLabel="Add Reminder"
+            title={t("home.reminders.emptyTitle")}
+            description={t("home.reminders.emptyDescription")}
+            actionLabel={t("home.reminders.emptyAction")}
             onAction={openReminders}
           />
         ) : (
@@ -212,8 +231,8 @@ export const ReminderSection = () => {
               />
             ))}
             <DashboardAction
-              label="View all reminders"
-              accessibilityLabel="View all reminders"
+              label={t("home.reminders.action")}
+              accessibilityLabel={t("home.reminders.actionAccessibility")}
               onPress={openReminders}
             />
           </>

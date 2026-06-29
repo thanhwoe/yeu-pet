@@ -9,6 +9,7 @@ import { cn } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { SitterSkeleton } from "./SitterPrimitives";
 
@@ -23,6 +24,7 @@ export const MessageThread = ({
   onSend: (data: ISitterMessageForm) => Promise<void>;
   loading: boolean;
 }) => {
+  const { t } = useTranslation();
   const messagesQuery = useSitterBookingMessages(booking.id);
   const { control, handleSubmit, reset } = useForm<ISitterMessageForm>({
     resolver: zodResolver(sitterMessageSchema),
@@ -43,9 +45,9 @@ export const MessageThread = ({
       ) : messagesQuery.isError ? (
         <StateView
           variant="error"
-          title="Messages could not load"
-          description="Try again to refresh this booking thread."
-          actionLabel="Retry"
+          title={t("sitter.messages.errorTitle")}
+          description={t("sitter.messages.errorDescription")}
+          actionLabel={t("common.retry")}
           onAction={() => messagesQuery.refetch()}
           className="min-h-140"
         />
@@ -73,7 +75,7 @@ export const MessageThread = ({
                 >
                   {message.createdAt
                     ? dayjs(message.createdAt).format("DD MMM, HH:mm")
-                    : "Just now"}
+                    : t("sitter.messages.justNow")}
                 </Body>
                 <Body
                   variant="body3"
@@ -90,8 +92,8 @@ export const MessageThread = ({
       ) : (
         <StateView
           variant="empty"
-          title="No messages yet"
-          description="Use this thread to confirm care details before the visit."
+          title={t("sitter.messages.emptyTitle")}
+          description={t("sitter.messages.emptyDescription")}
           className="min-h-140"
         />
       )}
@@ -99,13 +101,13 @@ export const MessageThread = ({
       <InputController<ISitterMessageForm>
         control={control}
         name="content"
-        label="Message"
-        placeholder="Ask or share care details"
+        label={t("sitter.form.message")}
+        placeholder={t("sitter.form.messagePlaceholder")}
         multiline
         numberOfLines={3}
       />
       <Button loading={loading} onPress={() => handleSubmit(submit)()}>
-        Send message
+        {t("sitter.form.sendMessage")}
       </Button>
     </View>
   );

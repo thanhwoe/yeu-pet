@@ -9,8 +9,10 @@ import { completeOnboardingMutation } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
+import { type TFunction } from "i18next";
 import { ArrowRightIcon } from "phosphor-react-native";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   ListRenderItem,
@@ -26,28 +28,27 @@ const ArrowRight = withIconClassName(ArrowRightIcon);
 const IMAGE_WIDTH = (SCREEN_WIDTH * 60) / 100;
 const IMAGE_HEIGHT = (SCREEN_HEIGHT * 60) / 100;
 
-const getData = () => [
+const getData = (t: TFunction) => [
   {
     image: require("../../assets/images/onboarding-1.png"),
-    title: "Find pet care services around your location",
-    subtitle:
-      "Just turn on your location and you will find the nearest pet care you wish.",
+    title: t("onboarding.slides.0.title"),
+    subtitle: t("onboarding.slides.0.subtitle"),
   },
   {
     image: require("../../assets/images/onboarding-2.png"),
-    title: "Let us give the best treatment",
-    subtitle:
-      "Get the best treatment for your animal with us. We will take care of the rest.",
+    title: t("onboarding.slides.1.title"),
+    subtitle: t("onboarding.slides.1.subtitle"),
   },
   {
     image: require("../../assets/images/onboarding-3.png"),
-    title: "Book appointment with us!",
-    subtitle: "What do you think? book our veterinarians now.",
+    title: t("onboarding.slides.2.title"),
+    subtitle: t("onboarding.slides.2.subtitle"),
   },
 ];
 
 export default function WelcomeScreen() {
-  const DATA = useRef(getData()).current;
+  const { t } = useTranslation();
+  const DATA = useMemo(() => getData(t), [t]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const { updateUser, logout } = useUserInfoStore();
@@ -56,15 +57,15 @@ export default function WelcomeScreen() {
     mutationFn: completeOnboardingMutation,
     onSuccess: (res) => {
       Toast.success({
-        title: "Setup complete",
-        text: "YeuPet is ready for your pet-care routine.",
+        title: t("onboarding.toast.completeTitle"),
+        text: t("onboarding.toast.completeText"),
       });
       updateUser(res);
     },
     onError: (e) => {
       Toast.error({
-        title: "Setup could not finish",
-        text: e.message || "Please sign in and try again.",
+        title: t("onboarding.toast.errorTitle"),
+        text: e.message || t("onboarding.toast.errorFallback"),
       });
       logout();
     },
