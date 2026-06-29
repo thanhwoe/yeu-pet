@@ -59,7 +59,7 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 mt-40 items-center">
+      <View className="flex-1 mt-24 items-center">
         <Skeleton
           className="rounded-28"
           backgroundClassName="bg-background-surface-muted"
@@ -74,7 +74,7 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
 
   if (isError) {
     return (
-      <View className="mx-20 mt-40 rounded-24 border border-line-subtle bg-background-surface">
+      <View className="mx-20 mt-24 rounded-24 border border-line-subtle bg-background-surface">
         <StateView
           variant="error"
           title={t("pets.carousel.loadErrorTitle")}
@@ -87,7 +87,7 @@ export const PetCardCarousel = memo<IProps>(({ onDelete, onEdit }) => {
   }
 
   return (
-    <View className="flex-1 mt-40">
+    <View className="flex-1 mt-24">
       {/* Cards */}
       {isSingleCard ? (
         <View className="items-center justify-center">

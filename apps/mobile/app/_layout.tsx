@@ -15,12 +15,20 @@ import { useEffect } from "react";
 import { BackHeader } from "@/components/Headers/BackHeader";
 import { ProductDetailHeader } from "@/components/Headers/ProductDetailHeader";
 import { Providers } from "@/components/Providers";
+import { Toast } from "@/components/Toast";
 import { UserSync } from "@/components/UserSync";
-import { NOTIFICATIONS_KEY, REMINDER_KEY } from "@/constants/query-keys";
+import {
+  AI_KEY,
+  NOTIFICATIONS_KEY,
+  PHOTOS_KEY,
+  REMINDER_KEY,
+  SITTER_BOOKING_KEY,
+} from "@/constants/query-keys";
 import { RevenueCatSync } from "@/features/subscriptions/components/RevenueCatSync";
 import { markNotificationReadMutation } from "@/services";
 import { configureRevenueCat } from "@/services/revenuecat";
 import { useUserInfoStore } from "@/stores/user-info";
+import { normalizeForegroundNotification } from "@/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import "../global.css";
@@ -195,12 +203,14 @@ const RootNavigation = () => {
 const NotificationNavigationHandler = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const openNotification = (message: RemoteMessage) => {
       const notificationData = message.data ?? {};
       const deepLink = notificationData.deepLink;
       const notificationId = notificationData.notificationId;
+      const notification = normalizeForegroundNotification(message);
 
       if (typeof notificationId === "string" && notificationId) {
         void markNotificationReadMutation(notificationId)
@@ -212,8 +222,41 @@ const NotificationNavigationHandler = () => {
           .catch(() => undefined);
       }
 
-      if (notificationData.notificationType === "reminder_due") {
-        void queryClient.invalidateQueries({ queryKey: REMINDER_KEY.all });
+      if (notification?.category === "reminder") {
+        void queryClient.invalidateQueries({
+          queryKey: REMINDER_KEY.all,
+        });
+      }
+
+      if (notification?.category === "booking") {
+        void queryClient.invalidateQueries({
+          queryKey: SITTER_BOOKING_KEY.all,
+        });
+      }
+
+      if (notification?.category === "social") {
+        void queryClient.invalidateQueries({ queryKey: PHOTOS_KEY.all });
+      }
+
+      if (notification?.category === "ai") {
+        void queryClient.invalidateQueries({ queryKey: AI_KEY.all });
+      }
+
+      if (notification) {
+        Toast.notification({
+          title: notification.title,
+          text: notification.message,
+          notificationType: notification.category,
+          accessibilityLabel: `${notification.title}. ${notification.message}`,
+          accessibilityHint: notification.deepLink
+            ? t("toast.notificationHint")
+            : undefined,
+          onPress: notification.deepLink
+            ? () => {
+                router.push(notification.deepLink as Href);
+              }
+            : undefined,
+        });
       }
 
       if (typeof deepLink === "string" && deepLink.startsWith("/")) {
@@ -235,7 +278,7 @@ const NotificationNavigationHandler = () => {
       .catch(() => undefined);
 
     return unsubscribeOpened;
-  }, [queryClient, router]);
+  }, [queryClient, router, t]);
 
   return null;
 };

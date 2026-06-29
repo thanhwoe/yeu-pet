@@ -8,10 +8,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { BudgetStatisticSection } from "./BudgetStatisticSection";
-import {
-  HOME_BUDGET_MONTHLY_KEY,
-  HOME_REMINDER_PARAMS,
-} from "./homeQueries";
+import { HOME_BUDGET_MONTHLY_KEY } from "./homeQueries";
 import { PetCardSection } from "./PetCardSection";
 import { ReminderSection } from "./ReminderSection";
 
@@ -25,7 +22,7 @@ export const HomeScreen = () => {
       await Promise.all([
         queryClient.refetchQueries({ queryKey: PET_KEY.list() }),
         queryClient.refetchQueries({
-          queryKey: REMINDER_KEY.upcoming(HOME_REMINDER_PARAMS),
+          queryKey: REMINDER_KEY.all,
         }),
         queryClient.refetchQueries({
           queryKey: BUDGET_STATISTIC_KEY.detail(HOME_BUDGET_MONTHLY_KEY),

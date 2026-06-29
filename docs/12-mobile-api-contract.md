@@ -61,10 +61,11 @@ DELETE /me
 }
 ```
 
-Response is `204 No Content`. The endpoint validates the password, blocks
-deletion while the user has pending, confirmed, or active sitter bookings as an
-owner or sitter, anonymizes retained account/booking data, clears session and
-device records, and queues storage cleanup for uploaded files.
+Response is `204 No Content`. The endpoint validates the password, cancels
+expired pending booking holds, blocks deletion while the user has unexpired
+pending, confirmed, or active sitter bookings as an owner or sitter, anonymizes
+retained account/booking data, clears session and device records, and queues
+storage cleanup for uploaded files.
 
 Public account deletion resource placeholder:
 `https://yeupet.app/account-deletion`

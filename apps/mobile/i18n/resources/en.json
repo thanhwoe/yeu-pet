@@ -507,6 +507,32 @@
       "morning": "Good morning!",
       "openNotifications": "Open notifications"
     },
+    "greeting": {
+      "fallbackName": "friend",
+      "petFallback": "Your pet",
+      "reminderFallback": "a care task",
+      "timeFallback": "the scheduled time",
+      "title": "{{greeting}}, {{name}}",
+      "titleNight": "Still up, {{name}}?",
+      "welcomeTitle": "Welcome to YeuPet",
+      "time": {
+        "morning": "Good morning",
+        "noon": "Good afternoon",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening",
+        "night": "Still up?"
+      },
+      "subtitle": {
+        "fallback": "Let's take care of your pets today.",
+        "noPets": "Add your first pet to start tracking care.",
+        "noToday": "No care tasks scheduled for today.",
+        "nextToday": "{{petName}} has {{title}} at {{time}}.",
+        "overdue_one": "You have {{count}} overdue reminder.",
+        "overdue_other": "You have {{count}} overdue reminders.",
+        "todayCount_one": "You have {{count}} care task today.",
+        "todayCount_other": "You have {{count}} care tasks today."
+      }
+    },
     "budget": {
       "action": "Open Budget",
       "actionAccessibility": "Open budget",

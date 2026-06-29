@@ -507,6 +507,32 @@
       "morning": "Chào buổi sáng!",
       "openNotifications": "Mở thông báo"
     },
+    "greeting": {
+      "fallbackName": "bạn",
+      "petFallback": "Bé",
+      "reminderFallback": "một việc chăm sóc",
+      "timeFallback": "giờ đã đặt",
+      "title": "{{greeting}}, {{name}}",
+      "titleNight": "{{greeting}}, {{name}}",
+      "welcomeTitle": "Chào mừng đến với YeuPet",
+      "time": {
+        "morning": "Chào buổi sáng",
+        "noon": "Chào buổi trưa",
+        "afternoon": "Chào buổi chiều",
+        "evening": "Chào buổi tối",
+        "night": "Khuya rồi"
+      },
+      "subtitle": {
+        "fallback": "Hãy cùng chăm sóc các bé hôm nay nhé.",
+        "noPets": "Thêm thú cưng đầu tiên để bắt đầu theo dõi chăm sóc.",
+        "noToday": "Hôm nay chưa có lịch chăm sóc nào.",
+        "nextToday": "{{petName}} có {{title}} lúc {{time}}.",
+        "overdue_one": "Bạn có {{count}} nhắc nhở đã quá hạn.",
+        "overdue_other": "Bạn có {{count}} nhắc nhở đã quá hạn.",
+        "todayCount_one": "Bạn có {{count}} việc cần chăm sóc hôm nay.",
+        "todayCount_other": "Bạn có {{count}} việc cần chăm sóc hôm nay."
+      }
+    },
     "budget": {
       "action": "Mở ngân sách",
       "actionAccessibility": "Mở ngân sách",
