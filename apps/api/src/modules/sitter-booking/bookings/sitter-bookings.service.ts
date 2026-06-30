@@ -51,6 +51,8 @@ const OWNER_OVERLAP_MESSAGE =
   'You already have a pending or active booking with this sitter during the selected time.';
 const SITTER_FULLY_BOOKED_MESSAGE =
   'This pet sitter is fully booked for the selected timeframe';
+const COMPLETE_TOO_EARLY_MESSAGE =
+  'This booking can be completed after the scheduled end time.';
 
 type SitterBookingRelationSource = sitter_bookings &
   Partial<SitterBookingWithRelations>;
@@ -59,6 +61,7 @@ type SitterBookingResponse<T extends sitter_bookings = sitter_bookings> = Omit<
   T,
   'accounts' | 'pets' | 'pet_sitters'
 > & {
+  hasReview: boolean;
   payment: {
     inApp: false;
     note: string;
@@ -472,6 +475,14 @@ export class SitterBookingsService {
       );
     }
 
+    if (dayjs().isBefore(dayjs(booking.end_time))) {
+      throw new BadRequestException({
+        errorCode: API_ERROR_CODES.SITTER_BOOKING_COMPLETE_TOO_EARLY,
+        message: COMPLETE_TOO_EARLY_MESSAGE,
+        messageKey: 'errors.sitterBooking.completeTooEarly',
+      });
+    }
+
     const completedBooking = await this.sitterBookingsRepository.update(id, {
       status: sitter_bookings_status.completed,
     });
@@ -770,11 +781,13 @@ export class SitterBookingsService {
       accounts: owner,
       pet_sitters: sitter,
       pets: pet,
+      sitter_reviews: review,
       ...baseBooking
     } = booking as SitterBookingRelationSource;
 
     return {
       ...baseBooking,
+      hasReview: Boolean(review),
       payment: {
         inApp: false as const,
         note: baseBooking.payment_note ?? EXTERNAL_PAYMENT_NOTE,

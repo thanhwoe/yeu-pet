@@ -84,6 +84,7 @@ export interface ISitterBooking {
     inApp?: boolean;
     note?: string | null;
   } | null;
+  hasReview?: boolean;
   expiresAt: string | null;
   confirmedAt: string | null;
   cancelledBy: string | null;

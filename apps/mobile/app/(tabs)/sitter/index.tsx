@@ -1,3 +1,3 @@
-import { SitterScreen } from "@/features/sitter/screens/SitterScreen";
+import { SitterExploreScreen } from "@/features/sitter/screens/SitterExploreScreen";
 
-export default SitterScreen;
+export default SitterExploreScreen;

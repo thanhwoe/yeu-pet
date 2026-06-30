@@ -428,6 +428,11 @@ export class SitterBookingsRepository implements ISitterBookingsRepository {
           },
         },
       },
+      sitter_reviews: {
+        select: {
+          id: true,
+        },
+      },
     };
   }
 }

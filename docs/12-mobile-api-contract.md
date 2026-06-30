@@ -332,6 +332,8 @@ POST   /sitter-bookings/:id/messages
 ```
 
 Payment is external in Phase 1. Booking responses include payment metadata for mobile copy.
+Sitter bookings can only be completed after their scheduled end time.
+Completed booking responses include `hasReview` so owner clients can hide duplicate review actions.
 
 ## AI
 

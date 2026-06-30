@@ -1,11 +1,6 @@
 import { i18n } from "@/i18n";
 import { SitterBookingStatus, SitterBookingType } from "@/interfaces";
 
-export const getScreenTabs = () => [
-  { title: i18n.t("sitter.booking.tabs.findCare"), value: 0 },
-  { title: i18n.t("sitter.booking.tabs.bookings"), value: 1 },
-];
-
 export const getBookingRoleTabs = () => [
   { title: i18n.t("sitter.booking.roles.owner"), value: 0 },
   { title: i18n.t("sitter.booking.roles.sitter"), value: 1 },
@@ -57,6 +52,7 @@ export const getBookingStatusFilters = (): {
   { label: i18n.t("sitter.booking.statuses.all") },
   { label: i18n.t("sitter.booking.statuses.pending"), value: "pending" },
   { label: i18n.t("sitter.booking.statuses.confirmed"), value: "confirmed" },
+  { label: i18n.t("sitter.booking.statuses.active"), value: "active" },
   { label: i18n.t("sitter.booking.statuses.completed"), value: "completed" },
   { label: i18n.t("sitter.booking.statuses.cancelled"), value: "cancelled" },
 ];

@@ -481,6 +481,7 @@
       "activeBookings": "Account cannot be deleted while you have active bookings. Please complete or cancel your bookings first."
     },
     "sitterBooking": {
+      "completeTooEarly": "This booking can be completed after the scheduled end time.",
       "fullyBooked": "This sitter is fully booked for the selected time. Please choose another time.",
       "ownerActive": "You already have a pending or active booking with this sitter.",
       "ownerOverlap": "You already have a pending or active booking with this sitter during the selected time."
@@ -569,7 +570,9 @@
     }
   },
   "navigation": {
+    "bookingDetail": "Booking detail",
     "bookingMessages": "Booking messages",
+    "bookingRequest": "Request care",
     "cart": "Cart",
     "checkout": "Checkout",
     "doctorAi": "Doctor AI",
@@ -579,7 +582,10 @@
     "notifications": "Notifications",
     "photos": "Share photos",
     "planUsage": "Plan & Usage",
-    "shippingAddress": "Shipping Address"
+    "shippingAddress": "Shipping Address",
+    "sitterBookings": "My bookings",
+    "sitterDetail": "Sitter detail",
+    "sitterProfile": "Sitter profile"
   },
   "notFound": {
     "action": "Go to home screen!",
@@ -1480,7 +1486,9 @@
       "loadingReviews": "Loading sitter reviews",
       "loadingSitters": "Loading sitters",
       "openBooking": "Open {{title}} booking",
+      "openBookings": "Open sitter bookings",
       "openProfile": "Open {{name}} sitter profile",
+      "openProfileManager": "Open sitter profile",
       "rated": "Rated {{rating}} out of 5",
       "removeFilter": "Remove {{label}} filter",
       "retryFailedMessage": "Retry failed message",
@@ -1538,12 +1546,21 @@
         "cancelled": "Cancelled",
         "cancelPrefix": "Cancel: {{reason}}",
         "carePrefix": "Care: {{instructions}}",
+        "completeAvailableAfter": "Complete available after {{time}}",
         "confirmed": "Confirmed",
         "dateAndTime": "Date and time",
+        "emptyDescription": "This booking may have been removed or is no longer available.",
+        "emptyTitle": "Booking not found",
         "estimatedPrice": "Estimated price",
         "externalPayment": "External payment",
         "externalPaymentNotice": "YeuPet connects owners and sitters in this phase. Final payment and care arrangements happen between both sides.",
         "holdExpires": "Hold expires {{time}}",
+        "loadErrorDescription": "Try again to refresh this booking and its latest status.",
+        "loadErrorTitle": "Booking could not load",
+        "loadingDescription": "Checking the pet, sitter, schedule, and latest status.",
+        "loadingTitle": "Loading booking",
+        "missingDescription": "Open a booking from My bookings to view its details.",
+        "missingTitle": "No booking selected",
         "notes": "Notes",
         "owner": "Owner",
         "ownerPrefix": "Owner: {{notes}}",
@@ -1560,11 +1577,15 @@
       "empty": {
         "bookingsErrorDescription": "Try again to refresh your sitter bookings.",
         "bookingsErrorTitle": "Bookings could not load",
-        "createProfileDescription": "Use the pencil in the header to create your sitter profile before receiving requests.",
+        "createProfileDescription": "Use a sitter profile to receive booking requests from pet owners.",
         "createProfileTitle": "Create your sitter profile",
+        "findCareAction": "Find care",
         "noBookingsOwner": "Requests you send to sitters will appear here.",
         "noBookingsSitter": "Requests from pet owners will appear here after your profile is available.",
         "noBookingsTitle": "No bookings yet"
+      },
+      "screen": {
+        "subtitle": "Track requests you send and care bookings you receive."
       },
       "rejectAlert": {
         "confirm": "Reject",
@@ -1600,18 +1621,28 @@
       "bioFallback": "This sitter has not added a bio yet.",
       "careDetails": "Care details",
       "daily": "Daily",
+      "emptyDescription": "This sitter profile may have been removed or is no longer available.",
+      "emptyTitle": "Sitter profile not found",
       "experience": "Experience",
       "hourly": "Hourly",
+      "loadErrorDescription": "Try again to refresh this sitter profile.",
+      "loadErrorTitle": "Sitter profile could not load",
+      "loadingDescription": "Checking availability, rates, and reviews.",
+      "loadingTitle": "Loading sitter profile",
+      "missingDescription": "Choose a sitter from the care list to view their profile.",
+      "missingTitle": "No sitter selected",
       "moreReviewsError": "More reviews could not load.",
       "noReviewsDescription": "Reviews will appear after completed bookings.",
       "noReviewsTitle": "No reviews yet",
+      "ownProfileNotice": "This is your sitter profile, so pet owners will use it to request care from you.",
       "requestCare": "Request care",
       "reviews": "Reviews",
       "reviewsErrorDescription": "Try again to refresh sitter reviews.",
       "reviewsErrorTitle": "Reviews could not load",
       "serviceArea": "Service area",
       "showMoreReviews": "Show more reviews",
-      "totalReviews": "{{count}} total"
+      "totalReviews": "{{count}} total",
+      "unavailableNotice": "This sitter is paused right now and is not accepting new care requests."
     },
     "estimate": {
       "dailySummary_one": "{{count}} day · {{rate}} / day",
@@ -1697,17 +1728,47 @@
       "justNow": "Just now"
     },
     "profile": {
+      "benefitArea": "Show where you can provide care and what kind of service you offer.",
+      "benefitRates": "Set hourly and daily rates so owners know what to expect.",
+      "benefitRequests": "Receive booking requests from owners looking for trusted care.",
       "become": "Become a sitter",
+      "completedBookings": "Completed bookings",
       "edit": "Edit sitter profile",
+      "emptyDescription": "Create a profile when you are ready to receive pet-care requests from YeuPet owners.",
+      "emptyTitle": "Share your care services",
+      "errorDescription": "Try again to refresh your sitter profile.",
+      "errorTitle": "Profile could not load",
       "fallbackName": "Pet sitter",
+      "formDescription": "Keep your care area, rates, and availability clear for pet owners.",
+      "loadingDescription": "Checking your sitter profile.",
+      "loadingTitle": "Loading sitter profile",
       "ownerFallback": "Pet owner",
+      "preview": "Preview public profile",
       "profileTitle": "Sitter profile",
+      "rating": "Rating",
       "serviceSummaryFallback": "Pet care by hour or day.",
+      "serviceDescription": "Service description",
       "statusDescriptionAvailable": "Owners can discover you while your profile is available.",
       "statusDescriptionPaused": "Your profile is paused and hidden from new requests.",
       "statusFallbackName": "Profile visible to owners",
-      "statusNotSetDescription": "Use the pencil in the header to create your sitter profile.",
+      "statusNotSetDescription": "Create your sitter profile to start receiving care requests.",
       "statusNotSetTitle": "Not set up yet"
+    },
+    "request": {
+      "emptyDescription": "This sitter profile may have been removed or is no longer available.",
+      "emptyTitle": "Sitter profile not found",
+      "loadErrorDescription": "Try again to refresh the sitter and your pet list.",
+      "loadErrorTitle": "Request form could not load",
+      "loadingDescription": "Checking sitter details and your pets.",
+      "loadingTitle": "Preparing request",
+      "missingDescription": "Choose a sitter before sending a care request.",
+      "missingTitle": "No sitter selected",
+      "ownProfileDescription": "Pet owners will use your public profile to request care from you.",
+      "ownProfileTitle": "This is your sitter profile",
+      "subtitle": "Add your pet, care time, and the details this sitter should review.",
+      "title": "Request care",
+      "unavailableDescription": "This sitter is paused right now. Choose another sitter who is accepting new requests.",
+      "unavailableTitle": "Sitter is not available"
     },
     "screen": {
       "emptyFilteredDescription": "Clear filters to see more trusted sitters nearby.",
@@ -1717,6 +1778,7 @@
       "loadErrorTitle": "Could not load sitters",
       "requestCare": "Request care",
       "reviewSitter": "Review sitter",
+      "subtitle": "Find trusted care for your pet.",
       "title": "Sitter"
     },
     "selectCity": {

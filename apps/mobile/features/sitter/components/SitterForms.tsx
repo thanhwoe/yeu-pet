@@ -40,6 +40,8 @@ import { VietnamProvinceCitySelect } from "./VietnamProvinceCitySelect";
 
 const BottomSheetInputController =
   withBottomSheetKeyboardEvents(InputController);
+const ProfileInputController = InputController;
+const RequestInputController = InputController;
 
 const HOUR_MS = 1000 * 60 * 60;
 const DAY_MS = HOUR_MS * 24;
@@ -365,7 +367,7 @@ export const BookingRequestForm = ({
           </Body>
         ) : null}
       </View>
-      <BottomSheetInputController
+      <RequestInputController
         control={control}
         name="careInstructions"
         label={t("sitter.form.careInstructions")}
@@ -373,7 +375,7 @@ export const BookingRequestForm = ({
         multiline
         numberOfLines={3}
       />
-      <BottomSheetInputController
+      <RequestInputController
         control={control}
         name="ownerNotes"
         label={t("sitter.form.ownerNotes")}
@@ -475,13 +477,13 @@ export const SitterProfileForm = ({
 
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
         <SectionLabel>{t("sitter.form.profile")}</SectionLabel>
-        <BottomSheetInputController
+        <ProfileInputController
           control={control}
           name="displayName"
           label={t("sitter.form.displayName")}
           placeholder={t("sitter.form.displayNamePlaceholder")}
         />
-        <BottomSheetInputController
+        <ProfileInputController
           control={control}
           name="bio"
           label={t("sitter.form.bio")}
@@ -489,7 +491,7 @@ export const SitterProfileForm = ({
           multiline
           numberOfLines={3}
         />
-        <BottomSheetInputController
+        <ProfileInputController
           control={control}
           name="experience"
           label={t("sitter.form.experience")}
@@ -506,14 +508,14 @@ export const SitterProfileForm = ({
           errorMessage={cityError?.message}
         />
         <View className="flex-row gap-12">
-          <BottomSheetInputController
+          <ProfileInputController
             control={control}
             name="district"
             label={t("sitter.form.district")}
             placeholder={t("sitter.form.districtPlaceholder")}
             className="flex-1"
           />
-          <BottomSheetInputController
+          <ProfileInputController
             control={control}
             name="ward"
             label={t("sitter.form.ward")}
@@ -526,7 +528,7 @@ export const SitterProfileForm = ({
       <View className="gap-14 rounded-24 border border-line-subtle bg-background-surface px-14 py-14">
         <SectionLabel>{t("sitter.form.services")}</SectionLabel>
         <View className="flex-row gap-12">
-          <BottomSheetInputController
+          <ProfileInputController
             control={control}
             name="hourlyRate"
             label={t("sitter.form.hourlyRate")}
@@ -534,7 +536,7 @@ export const SitterProfileForm = ({
             placeholder="100000"
             className="flex-1"
           />
-          <BottomSheetInputController
+          <ProfileInputController
             control={control}
             name="dailyRate"
             label={t("sitter.form.dailyRate")}
@@ -543,14 +545,14 @@ export const SitterProfileForm = ({
             className="flex-1"
           />
         </View>
-        <BottomSheetInputController
+        <ProfileInputController
           control={control}
           name="maxConcurrentBookings"
           label={t("sitter.form.maxBookings")}
           keyboardType="numeric"
           placeholder="1"
         />
-        <BottomSheetInputController
+        <ProfileInputController
           control={control}
           name="serviceNotes"
           label={t("sitter.form.serviceNotes")}

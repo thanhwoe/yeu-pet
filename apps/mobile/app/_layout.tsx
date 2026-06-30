@@ -154,6 +154,41 @@ const RootNavigation = () => {
           }}
         />
         <Stack.Screen
+          name="sitter/bookings"
+          options={{
+            header: BackHeader,
+            title: t("navigation.sitterBookings"),
+          }}
+        />
+        <Stack.Screen
+          name="sitter/profile"
+          options={{
+            header: BackHeader,
+            title: t("navigation.sitterProfile"),
+          }}
+        />
+        <Stack.Screen
+          name="sitter/[sitterId]"
+          options={{
+            header: BackHeader,
+            title: t("navigation.sitterDetail"),
+          }}
+        />
+        <Stack.Screen
+          name="sitter/request/[sitterId]"
+          options={{
+            header: BackHeader,
+            title: t("navigation.bookingRequest"),
+          }}
+        />
+        <Stack.Screen
+          name="sitter-bookings/[id]/index"
+          options={{
+            header: BackHeader,
+            title: t("navigation.bookingDetail"),
+          }}
+        />
+        <Stack.Screen
           name="sitter-bookings/[id]/chat"
           options={{
             header: BackHeader,

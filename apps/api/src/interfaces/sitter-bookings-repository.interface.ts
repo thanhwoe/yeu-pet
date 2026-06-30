@@ -3,6 +3,7 @@ import {
   accounts,
   pet_sitters,
   pets,
+  sitter_reviews,
   sitter_bookings,
   sitter_bookings_status,
 } from '@app/generated/prisma/client';
@@ -61,6 +62,7 @@ export interface SitterInformation {
       avatar_url: string | null;
     };
   };
+  sitter_reviews: Pick<sitter_reviews, 'id'> | null;
 }
 
 export type SitterBookingWithRelations = sitter_bookings & SitterInformation;

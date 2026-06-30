@@ -481,6 +481,7 @@
       "activeBookings": "Không thể xóa tài khoản khi bạn còn lịch đặt đang hoạt động. Vui lòng hoàn tất hoặc hủy lịch đặt trước."
     },
     "sitterBooking": {
+      "completeTooEarly": "Chỉ có thể hoàn tất lượt đặt sau thời gian kết thúc đã hẹn.",
       "fullyBooked": "Người chăm sóc này đã kín lịch trong khung giờ đã chọn. Vui lòng chọn thời gian khác.",
       "ownerActive": "Bạn đã có yêu cầu hoặc lịch đặt đang hoạt động với người chăm sóc này.",
       "ownerOverlap": "Bạn đã có yêu cầu hoặc lịch đặt với người chăm sóc này trong khung giờ đã chọn."
@@ -569,7 +570,9 @@
     }
   },
   "navigation": {
+    "bookingDetail": "Chi tiết lượt đặt",
     "bookingMessages": "Tin nhắn đặt lịch",
+    "bookingRequest": "Yêu cầu chăm sóc",
     "cart": "Giỏ hàng",
     "checkout": "Thanh toán",
     "doctorAi": "Doctor AI",
@@ -579,7 +582,10 @@
     "notifications": "Thông báo",
     "photos": "Chia sẻ ảnh",
     "planUsage": "Gói & mức sử dụng",
-    "shippingAddress": "Địa chỉ giao hàng"
+    "shippingAddress": "Địa chỉ giao hàng",
+    "sitterBookings": "Lượt đặt của tôi",
+    "sitterDetail": "Chi tiết người chăm sóc",
+    "sitterProfile": "Hồ sơ người chăm sóc"
   },
   "notFound": {
     "action": "Về màn hình chính",
@@ -1480,7 +1486,9 @@
       "loadingReviews": "Đang tải đánh giá người chăm sóc",
       "loadingSitters": "Đang tải người chăm sóc",
       "openBooking": "Mở lượt đặt {{title}}",
+      "openBookings": "Mở lượt đặt người chăm sóc",
       "openProfile": "Mở hồ sơ người chăm sóc {{name}}",
+      "openProfileManager": "Mở hồ sơ người chăm sóc",
       "rated": "Được đánh giá {{rating}}/5",
       "removeFilter": "Xóa bộ lọc {{label}}",
       "retryFailedMessage": "Gửi lại tin nhắn bị lỗi",
@@ -1538,12 +1546,21 @@
         "cancelled": "Đã hủy",
         "cancelPrefix": "Hủy: {{reason}}",
         "carePrefix": "Chăm sóc: {{instructions}}",
+        "completeAvailableAfter": "Có thể hoàn tất sau {{time}}",
         "confirmed": "Đã xác nhận",
         "dateAndTime": "Ngày và giờ",
+        "emptyDescription": "Lượt đặt này có thể đã được gỡ hoặc không còn khả dụng.",
+        "emptyTitle": "Không tìm thấy lượt đặt",
         "estimatedPrice": "Giá ước tính",
         "externalPayment": "Thanh toán trực tiếp",
         "externalPaymentNotice": "Ở giai đoạn này, YeuPet kết nối chủ thú cưng và người chăm sóc. Thanh toán cuối cùng và thỏa thuận chăm sóc sẽ do hai bên thống nhất trực tiếp.",
         "holdExpires": "Giữ đến {{time}}",
+        "loadErrorDescription": "Thử lại để làm mới lượt đặt và trạng thái mới nhất.",
+        "loadErrorTitle": "Chưa tải được lượt đặt",
+        "loadingDescription": "Đang kiểm tra thú cưng, người chăm sóc, lịch hẹn và trạng thái mới nhất.",
+        "loadingTitle": "Đang tải lượt đặt",
+        "missingDescription": "Mở một lượt đặt từ Lượt đặt của tôi để xem chi tiết.",
+        "missingTitle": "Chưa chọn lượt đặt",
         "notes": "Ghi chú",
         "owner": "Chủ thú cưng",
         "ownerPrefix": "Chủ: {{notes}}",
@@ -1560,11 +1577,15 @@
       "empty": {
         "bookingsErrorDescription": "Thử lại để làm mới các lượt đặt người chăm sóc.",
         "bookingsErrorTitle": "Chưa tải được lượt đặt",
-        "createProfileDescription": "Dùng biểu tượng bút ở đầu màn hình để tạo hồ sơ người chăm sóc trước khi nhận yêu cầu.",
+        "createProfileDescription": "Dùng hồ sơ người chăm sóc để nhận yêu cầu đặt chăm sóc từ chủ thú cưng.",
         "createProfileTitle": "Tạo hồ sơ người chăm sóc",
+        "findCareAction": "Tìm người chăm sóc",
         "noBookingsOwner": "Yêu cầu bạn gửi cho người chăm sóc sẽ xuất hiện ở đây.",
         "noBookingsSitter": "Yêu cầu từ chủ thú cưng sẽ xuất hiện ở đây khi hồ sơ của bạn đang nhận yêu cầu.",
         "noBookingsTitle": "Chưa có lượt đặt"
+      },
+      "screen": {
+        "subtitle": "Theo dõi yêu cầu bạn gửi và lịch chăm sóc bạn nhận."
       },
       "rejectAlert": {
         "confirm": "Từ chối",
@@ -1600,18 +1621,28 @@
       "bioFallback": "Người chăm sóc này chưa thêm giới thiệu.",
       "careDetails": "Chi tiết chăm sóc",
       "daily": "Theo ngày",
+      "emptyDescription": "Hồ sơ người chăm sóc này có thể đã được gỡ hoặc không còn khả dụng.",
+      "emptyTitle": "Không tìm thấy hồ sơ người chăm sóc",
       "experience": "Kinh nghiệm",
       "hourly": "Theo giờ",
+      "loadErrorDescription": "Thử lại để làm mới hồ sơ người chăm sóc này.",
+      "loadErrorTitle": "Chưa tải được hồ sơ người chăm sóc",
+      "loadingDescription": "Đang kiểm tra trạng thái nhận yêu cầu, giá và đánh giá.",
+      "loadingTitle": "Đang tải hồ sơ người chăm sóc",
+      "missingDescription": "Chọn một người chăm sóc từ danh sách để xem hồ sơ.",
+      "missingTitle": "Chưa chọn người chăm sóc",
       "moreReviewsError": "Chưa tải được thêm đánh giá.",
       "noReviewsDescription": "Đánh giá sẽ xuất hiện sau các lượt đặt đã hoàn tất.",
       "noReviewsTitle": "Chưa có đánh giá",
+      "ownProfileNotice": "Đây là hồ sơ người chăm sóc của bạn, nên chủ thú cưng sẽ dùng hồ sơ này để gửi yêu cầu cho bạn.",
       "requestCare": "Yêu cầu chăm sóc",
       "reviews": "Đánh giá",
       "reviewsErrorDescription": "Thử lại để làm mới đánh giá người chăm sóc.",
       "reviewsErrorTitle": "Chưa tải được đánh giá",
       "serviceArea": "Khu vực phục vụ",
       "showMoreReviews": "Hiển thị thêm đánh giá",
-      "totalReviews": "{{count}} đánh giá"
+      "totalReviews": "{{count}} đánh giá",
+      "unavailableNotice": "Người chăm sóc này đang tạm dừng và chưa nhận yêu cầu mới."
     },
     "estimate": {
       "dailySummary_one": "{{count}} ngày · {{rate}} / ngày",
@@ -1697,17 +1728,47 @@
       "justNow": "Vừa xong"
     },
     "profile": {
+      "benefitArea": "Cho biết khu vực chăm sóc và loại dịch vụ bạn cung cấp.",
+      "benefitRates": "Đặt giá theo giờ và theo ngày để chủ thú cưng dễ cân nhắc.",
+      "benefitRequests": "Nhận yêu cầu đặt chăm sóc từ chủ thú cưng đang tìm người tin cậy.",
       "become": "Trở thành người chăm sóc",
+      "completedBookings": "Lượt chăm sóc đã hoàn tất",
       "edit": "Sửa hồ sơ người chăm sóc",
+      "emptyDescription": "Tạo hồ sơ khi bạn sẵn sàng nhận yêu cầu chăm sóc thú cưng từ chủ thú cưng trên YeuPet.",
+      "emptyTitle": "Chia sẻ dịch vụ chăm sóc của bạn",
+      "errorDescription": "Thử lại để làm mới hồ sơ người chăm sóc.",
+      "errorTitle": "Chưa tải được hồ sơ",
       "fallbackName": "Người chăm sóc thú cưng",
+      "formDescription": "Giữ khu vực chăm sóc, giá dịch vụ và trạng thái nhận yêu cầu thật rõ ràng cho chủ thú cưng.",
+      "loadingDescription": "Đang kiểm tra hồ sơ người chăm sóc của bạn.",
+      "loadingTitle": "Đang tải hồ sơ người chăm sóc",
       "ownerFallback": "Chủ thú cưng",
+      "preview": "Xem hồ sơ công khai",
       "profileTitle": "Hồ sơ người chăm sóc",
+      "rating": "Đánh giá",
       "serviceSummaryFallback": "Chăm sóc thú cưng theo giờ hoặc theo ngày.",
+      "serviceDescription": "Mô tả dịch vụ",
       "statusDescriptionAvailable": "Chủ thú cưng có thể tìm thấy bạn khi hồ sơ đang nhận yêu cầu.",
       "statusDescriptionPaused": "Hồ sơ của bạn đang tạm dừng và ẩn khỏi yêu cầu mới.",
       "statusFallbackName": "Hồ sơ đang hiển thị với chủ thú cưng",
-      "statusNotSetDescription": "Dùng biểu tượng bút ở đầu màn hình để tạo hồ sơ người chăm sóc.",
+      "statusNotSetDescription": "Tạo hồ sơ người chăm sóc để bắt đầu nhận yêu cầu chăm sóc.",
       "statusNotSetTitle": "Chưa thiết lập"
+    },
+    "request": {
+      "emptyDescription": "Hồ sơ người chăm sóc này có thể đã được gỡ hoặc không còn khả dụng.",
+      "emptyTitle": "Không tìm thấy hồ sơ người chăm sóc",
+      "loadErrorDescription": "Thử lại để làm mới thông tin người chăm sóc và danh sách thú cưng.",
+      "loadErrorTitle": "Chưa tải được form yêu cầu",
+      "loadingDescription": "Đang kiểm tra thông tin người chăm sóc và thú cưng của bạn.",
+      "loadingTitle": "Đang chuẩn bị yêu cầu",
+      "missingDescription": "Chọn người chăm sóc trước khi gửi yêu cầu chăm sóc.",
+      "missingTitle": "Chưa chọn người chăm sóc",
+      "ownProfileDescription": "Chủ thú cưng sẽ dùng hồ sơ công khai của bạn để gửi yêu cầu chăm sóc cho bạn.",
+      "ownProfileTitle": "Đây là hồ sơ người chăm sóc của bạn",
+      "subtitle": "Thêm thú cưng, thời gian chăm sóc và những chi tiết người chăm sóc cần xem.",
+      "title": "Yêu cầu chăm sóc",
+      "unavailableDescription": "Người chăm sóc này đang tạm dừng. Hãy chọn người khác đang nhận yêu cầu mới.",
+      "unavailableTitle": "Người chăm sóc chưa khả dụng"
     },
     "screen": {
       "emptyFilteredDescription": "Xóa bộ lọc để xem thêm người chăm sóc tin cậy gần bạn.",
@@ -1717,7 +1778,8 @@
       "loadErrorTitle": "Chưa tải được người chăm sóc",
       "requestCare": "Yêu cầu chăm sóc",
       "reviewSitter": "Đánh giá người chăm sóc",
-      "title": "Người chăm sóc"
+      "subtitle": "Tìm người chăm sóc đáng tin cậy cho thú cưng của bạn.",
+      "title": "Chăm hộ"
     },
     "selectCity": {
       "emptySearch": "Không có tỉnh/thành nào phù hợp với tìm kiếm.",

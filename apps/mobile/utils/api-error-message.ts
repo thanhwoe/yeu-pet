@@ -28,6 +28,7 @@ const ERROR_CODE_TO_KEY: Record<string, string> = {
   OTP_INVALID: "errors.auth.otpInvalid",
   PREMIUM_REQUIRED: "errors.subscription.premiumRequired",
   REQUEST_FAILED: "apiError.genericText",
+  SITTER_BOOKING_COMPLETE_TOO_EARLY: "errors.sitterBooking.completeTooEarly",
   SITTER_BOOKING_FULLY_BOOKED: "errors.sitterBooking.fullyBooked",
   SITTER_BOOKING_OWNER_ACTIVE: "errors.sitterBooking.ownerActive",
   SITTER_BOOKING_OWNER_OVERLAP: "errors.sitterBooking.ownerOverlap",

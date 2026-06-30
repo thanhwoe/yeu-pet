@@ -84,6 +84,8 @@ export const TRANSLATIONS: TranslationDictionary = {
       'Bạn đã có yêu cầu hoặc lịch đặt với người chăm sóc này trong khung giờ đã chọn.',
     'errors.sitterBooking.fullyBooked':
       'Người chăm sóc này đã kín lịch trong khung giờ đã chọn. Vui lòng chọn thời gian khác.',
+    'errors.sitterBooking.completeTooEarly':
+      'Chỉ có thể hoàn tất lịch chăm sóc sau thời gian kết thúc đã hẹn.',
     'errors.subscription.petLimitReached':
       'Bạn đã đạt giới hạn số thú cưng của gói hiện tại.',
     'errors.subscription.reminderLimitReached':
@@ -178,6 +180,8 @@ export const TRANSLATIONS: TranslationDictionary = {
       'You already have a pending or active booking with this sitter during the selected time.',
     'errors.sitterBooking.fullyBooked':
       'This sitter is fully booked for the selected time. Please choose another time.',
+    'errors.sitterBooking.completeTooEarly':
+      'This booking can be completed after the scheduled end time.',
     'errors.subscription.petLimitReached':
       'You have reached the pet limit for your current plan.',
     'errors.subscription.reminderLimitReached':

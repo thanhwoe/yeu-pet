@@ -9,10 +9,12 @@ import {
   PawPrintIcon,
   UserCircleIcon,
 } from "phosphor-react-native";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { isSitterBookingChatActive } from "../constants";
 import {
+  formatBookingCompleteAvailability,
   formatBookingHold,
   formatDateRange,
   formatDateTime,
@@ -22,6 +24,7 @@ import {
   getBookingSitterName,
   getBookingTitle,
   getOwnerName,
+  isSitterBookingCompleteReady,
 } from "../utils";
 import { InfoRow, StatusBadge } from "./SitterPrimitives";
 
@@ -53,12 +56,38 @@ export const BookingDetail = ({
   onReview: (booking: ISitterBooking) => void;
 }) => {
   const { t } = useTranslation();
+  const [now, setNow] = useState(() => Date.now());
   const canSitterRespond = role === "sitter" && booking.status === "pending";
+  const isCompletableStatus = ["confirmed", "active"].includes(booking.status);
+  const isCompletionReady = isSitterBookingCompleteReady(booking, now);
   const canComplete =
-    role === "sitter" && ["confirmed", "active"].includes(booking.status);
+    role === "sitter" && isCompletableStatus && isCompletionReady;
+  const completeAvailabilityLabel =
+    role === "sitter" && isCompletableStatus && !isCompletionReady
+      ? formatBookingCompleteAvailability(booking)
+      : undefined;
   const canCancel = ["pending", "confirmed"].includes(booking.status);
   const canMessage = isSitterBookingChatActive(booking.status);
-  const canReview = role === "owner" && booking.status === "completed";
+  const canReview =
+    role === "owner" && booking.status === "completed" && !booking.hasReview;
+
+  useEffect(() => {
+    if (role !== "sitter" || !isCompletableStatus || isCompletionReady) {
+      return;
+    }
+
+    const endTime = new Date(booking.endTime).getTime();
+    if (!Number.isFinite(endTime) || endTime <= now) {
+      return;
+    }
+
+    const timer = setTimeout(
+      () => setNow(Date.now()),
+      Math.min(endTime - now, 60_000),
+    );
+
+    return () => clearTimeout(timer);
+  }, [booking.endTime, isCompletableStatus, isCompletionReady, now, role]);
 
   const holdLabel = formatBookingHold(booking);
   const cancelledByLabel =
@@ -279,6 +308,11 @@ export const BookingDetail = ({
               {t("sitter.booking.actions.reject")}
             </Button>
           </>
+        ) : null}
+        {completeAvailabilityLabel ? (
+          <Body variant="body4" className="w-full text-center text-text-muted">
+            {completeAvailabilityLabel}
+          </Body>
         ) : null}
         {canComplete ? (
           <Button

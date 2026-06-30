@@ -14,10 +14,12 @@ export const formatRate = (value: string | number) =>
 const formatShortId = (value?: string | null) =>
   value ? value.slice(0, 8) : undefined;
 
-const getFullName = (party?: {
-  firstName?: string | null;
-  lastName?: string | null;
-} | null) =>
+const getFullName = (
+  party?: {
+    firstName?: string | null;
+    lastName?: string | null;
+  } | null,
+) =>
   [party?.firstName, party?.lastName].filter(Boolean).join(" ").trim() ||
   undefined;
 
@@ -26,7 +28,28 @@ export const formatDateTime = (value?: string | null) => {
 
   const date = dayjs(value);
 
-  return date.isValid() ? date.format("DD MMM YYYY, HH:mm") : i18n.t("common.notSet");
+  return date.isValid()
+    ? date.format("DD MMM YYYY, HH:mm")
+    : i18n.t("common.notSet");
+};
+
+export const isSitterBookingCompleteReady = (
+  booking: ISitterBooking,
+  now: Date | number = Date.now(),
+) => {
+  const end = dayjs(booking.endTime);
+
+  return end.isValid() && !dayjs(now).isBefore(end);
+};
+
+export const formatBookingCompleteAvailability = (booking: ISitterBooking) => {
+  const end = dayjs(booking.endTime);
+
+  return end.isValid()
+    ? i18n.t("sitter.booking.detail.completeAvailableAfter", {
+        time: end.format("DD MMM YYYY, HH:mm"),
+      })
+    : undefined;
 };
 
 export const formatDateRange = (booking: ISitterBooking) => {
@@ -55,7 +78,9 @@ export const getSitterName = (sitter: IPetSitter) => {
     .filter(Boolean)
     .join(" ");
 
-  return sitter.displayName || accountName || i18n.t("sitter.profile.fallbackName");
+  return (
+    sitter.displayName || accountName || i18n.t("sitter.profile.fallbackName")
+  );
 };
 
 export const getOwnerName = (owner?: ISitterBookingParty | null) =>

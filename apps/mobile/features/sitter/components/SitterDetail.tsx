@@ -168,10 +168,12 @@ export const SitterDetail = ({
   sitter,
   canRequestCare,
   onRequestCare,
+  requestUnavailableText,
 }: {
   sitter: IPetSitter;
   canRequestCare: boolean;
   onRequestCare: () => void;
+  requestUnavailableText?: string;
 }) => {
   const { t } = useTranslation();
 
@@ -241,6 +243,12 @@ export const SitterDetail = ({
           <Button onPress={onRequestCare}>
             {t("sitter.detail.requestCare")}
           </Button>
+        ) : requestUnavailableText ? (
+          <View className="rounded-18 border border-line-subtle bg-background-surface-muted px-12 py-12">
+            <Body variant="body4" className="text-text-muted">
+              {requestUnavailableText}
+            </Body>
+          </View>
         ) : null}
       </View>
 

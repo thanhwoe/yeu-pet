@@ -31,6 +31,14 @@ interface ISitterBookingQuery {
   role?: "owner" | "sitter";
 }
 
+const isNotFoundError = (error: unknown) =>
+  Boolean(
+    error &&
+      typeof error === "object" &&
+      "statusCode" in error &&
+      error.statusCode === 404,
+  );
+
 export const getSittersQuery = (params?: ISitterQuery) =>
   APIs.get<IPagination<IPetSitter>>(API_ROUTES.SITTERS, {
     params,
@@ -40,8 +48,17 @@ export const getSittersQuery = (params?: ISitterQuery) =>
 export const getSitterDetailQuery = (id: string) =>
   APIs.get<IPetSitter>(API_ROUTES.SITTER_DETAIL(id));
 
-export const getMySitterProfileQuery = () =>
-  APIs.get<IPetSitter | null>(API_ROUTES.MY_SITTER_PROFILE);
+export const getMySitterProfileQuery = async () => {
+  try {
+    return await APIs.get<IPetSitter>(API_ROUTES.MY_SITTER_PROFILE);
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      return null;
+    }
+
+    throw error;
+  }
+};
 
 export const registerSitterMutation = (params: IPetSitterForm) =>
   APIs.post<IPetSitter>(API_ROUTES.CREATE_MY_SITTER_PROFILE, { data: params });

@@ -120,6 +120,7 @@ const bookingWithRelations = {
       avatar_url: 'https://example.com/sitter.png',
     },
   },
+  sitter_reviews: null,
 };
 
 const expiredBooking = {
@@ -518,6 +519,33 @@ describe('SitterBookingsService', () => {
     ]);
   });
 
+  it('rejects completion before the scheduled end time', async () => {
+    petSittersRepository.findByUser.mockResolvedValue({
+      id: sitterId,
+    } as never);
+    sitterBookingsRepository.findById.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.active,
+      end_time: new Date('2999-01-01T12:00:00.000Z'),
+    } as never);
+
+    try {
+      await service.complete({ id: sitterAccountId } as accounts, bookingId);
+      fail('Expected complete to reject before the scheduled end time');
+    } catch (error) {
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect((error as BadRequestException).getResponse()).toMatchObject({
+        errorCode: 'SITTER_BOOKING_COMPLETE_TOO_EARLY',
+        messageKey: 'errors.sitterBooking.completeTooEarly',
+      });
+    }
+
+    expect(sitterBookingsRepository.update.mock.calls).toHaveLength(0);
+    expect(
+      notificationsService.sendSitterBookingStatusNotification.mock.calls,
+    ).toHaveLength(0);
+  });
+
   it('notifies the owner when the sitter cancels a booking', async () => {
     sitterBookingsRepository.findById.mockResolvedValue(
       bookingWithRelations as never,
@@ -559,6 +587,24 @@ describe('SitterBookingsService', () => {
     expect(
       notificationsService.sendSitterBookingStatusNotification.mock.calls,
     ).toHaveLength(0);
+  });
+
+  it('marks booking responses as reviewed when a review exists', async () => {
+    sitterBookingsRepository.findById.mockResolvedValue({
+      ...bookingWithRelations,
+      status: sitter_bookings_status.completed,
+      sitter_reviews: {
+        id: '123e4567-e89b-42d3-a456-426614174006',
+      },
+    } as never);
+
+    const result = await service.findOne(user, bookingId);
+
+    expect(result).toMatchObject({
+      id: bookingId,
+      hasReview: true,
+    });
+    expect('sitter_reviews' in result).toBe(false);
   });
 
   it('returns not found when the booking sitter is missing on confirmation', async () => {
