@@ -1,4 +1,3 @@
-import * as Haptics from "expo-haptics";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
 import { GestureResponderEvent, Pressable } from "react-native";
@@ -15,7 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { darkColorTheme, lightColorTheme } from "@/theme/colors";
 import { nativeShadows } from "@/theme/shadows";
 import { getColors } from "@/theme/utils";
-import { cn } from "@/utils";
+import { cn, triggerHaptic } from "@/utils";
 import { BottomTabBarButtonProps } from "expo-router/js-tabs";
 import {
   CalendarHeartIcon,
@@ -119,7 +118,7 @@ const AnimatedTabButton = ({
   }));
 
   const handlePress = (e: GestureResponderEvent) => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    triggerHaptic("impactLight");
     onPress?.(e);
   };
 

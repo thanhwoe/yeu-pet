@@ -11,7 +11,7 @@ import {
 } from "@/features/sitter/filters";
 import { useSitterFilters } from "@/features/sitter/SitterFiltersContext";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import { cn } from "@/utils";
+import { cn, triggerHaptic } from "@/utils";
 import {
   type DrawerContentComponentProps,
   useDrawerStatus,
@@ -224,7 +224,10 @@ const FilterChip = ({
   <Pressable
     accessibilityRole="radio"
     accessibilityState={{ selected }}
-    onPress={onPress}
+    onPress={() => {
+      triggerHaptic("selection");
+      onPress();
+    }}
     className={cn(
       "min-h-44 items-center justify-center rounded-full border border-line-subtle bg-background-surface px-14 py-9",
       selected && "border-action-primary bg-action-secondary",

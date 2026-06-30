@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Pressable, PressableProps, View, ViewStyle } from "react-native";
 
-import { cn } from "@/utils";
+import { cn, triggerHaptic, type HapticFeedback } from "@/utils";
 import { Spinner } from "../Spinner";
 import { Text } from "../Text";
 import {
@@ -19,6 +19,7 @@ const BORDER_CURVE: ViewStyle = {
 type ButtonProps = Omit<PressableProps, "children"> &
   ButtonVariants &
   React.PropsWithChildren & {
+    hapticFeedback?: HapticFeedback | false;
     loading?: boolean;
     wrapperClassName?: string;
   };
@@ -30,10 +31,22 @@ export const Button = ({
   style = BORDER_CURVE,
   children,
   disabled,
+  hapticFeedback,
   loading,
+  onPress,
   wrapperClassName,
   ...props
 }: ButtonProps) => {
+  const resolvedHapticFeedback =
+    hapticFeedback ?? (variant === "destructive" ? "warning" : undefined);
+  const handlePress: PressableProps["onPress"] = (event) => {
+    if (resolvedHapticFeedback) {
+      triggerHaptic(resolvedHapticFeedback);
+    }
+
+    onPress?.(event);
+  };
+
   return (
     <Pressable
       style={style}
@@ -41,6 +54,7 @@ export const Button = ({
       className={wrapperClassName}
       accessibilityRole="button"
       accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      onPress={handlePress}
       {...props}
     >
       {({ pressed }) => (

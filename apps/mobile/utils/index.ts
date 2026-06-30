@@ -4,6 +4,7 @@ export * from "./api-error-message";
 export * from "./dayjsConfig";
 export * from "./date-time";
 export * from "./foreground-notification";
+export * from "./haptics";
 export * from "./notification";
 export * from "./number";
 export * from "./query";

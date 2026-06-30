@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/ui/Spinner";
 import { Text } from "@/components/ui/Text";
-import { cn } from "@/utils";
+import { cn, triggerHaptic } from "@/utils";
 import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
@@ -70,6 +70,14 @@ export function SettingsRow({
     return content;
   }
 
+  const handlePress = () => {
+    if (destructive) {
+      triggerHaptic("warning");
+    }
+
+    onPress();
+  };
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -79,7 +87,7 @@ export function SettingsRow({
       }
       accessibilityState={{ disabled, busy: loading }}
       disabled={disabled || loading}
-      onPress={onPress}
+      onPress={handlePress}
     >
       {({ pressed }) => (
         <View className={cn(pressed && "bg-background-secondary")}>

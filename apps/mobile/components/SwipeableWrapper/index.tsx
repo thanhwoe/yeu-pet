@@ -1,4 +1,4 @@
-import { cn } from "@/utils";
+import { cn, triggerHaptic, type HapticFeedback } from "@/utils";
 import React, { ReactNode } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 import {
@@ -26,6 +26,7 @@ interface ActionButton {
   contentClassName?: string;
   accessibilityLabel?: string;
   disabled?: boolean;
+  hapticFeedback?: HapticFeedback | false;
   loading?: boolean;
 }
 
@@ -184,9 +185,15 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
     };
   });
 
-  const handleActionPress = (action: ActionButton) => {
+  const handleActionPress = (
+    action: ActionButton,
+    defaultHapticFeedback: HapticFeedback,
+  ) => {
     // Reset position and trigger action
     translateX.value = withSpring(0, springConfig);
+    if (action.hapticFeedback !== false) {
+      triggerHaptic(action.hapticFeedback ?? defaultHapticFeedback);
+    }
     action.onPress();
   };
 
@@ -222,7 +229,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
                 alignItems: "center",
                 width: "100%",
               }}
-              onPress={() => handleActionPress(leftAction)}
+              onPress={() => handleActionPress(leftAction, "selection")}
               activeOpacity={0.8}
               disabled={leftAction.disabled || leftAction.loading}
               accessibilityLabel={leftAction.accessibilityLabel}
@@ -275,7 +282,7 @@ export const SwipeableWrapper: React.FC<SwipeableWrapperProps> = ({
                 alignItems: "center",
                 width: "100%",
               }}
-              onPress={() => handleActionPress(rightAction)}
+              onPress={() => handleActionPress(rightAction, "warning")}
               activeOpacity={0.8}
               disabled={rightAction.disabled || rightAction.loading}
               accessibilityLabel={rightAction.accessibilityLabel}

@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import type { NotificationCategory } from "@/interfaces";
+import { triggerHaptic } from "@/utils";
 import { Text } from "../ui/Text";
 import { Background } from "./Background";
 import { Close } from "./Close";
@@ -307,6 +308,7 @@ export function Toast() {
 }
 
 Toast.error = (params: ToastParams) => {
+  triggerHaptic("error");
   getRef()?.show({ ...params, type: ToastVariants.ERROR });
 };
 
@@ -323,9 +325,11 @@ Toast.notification = (params: ToastParams) => {
 };
 
 Toast.success = (params: ToastParams) => {
+  triggerHaptic("success");
   getRef()?.show({ ...params, type: ToastVariants.SUCCESS });
 };
 
 Toast.warn = (params: ToastParams) => {
+  triggerHaptic("warning");
   getRef()?.show({ ...params, type: ToastVariants.WARNING });
 };
