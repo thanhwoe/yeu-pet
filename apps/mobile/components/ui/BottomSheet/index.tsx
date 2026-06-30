@@ -67,7 +67,7 @@ export const BottomSheet = ({
     android: "fillParent",
     ios: "extend",
   }),
-  android_keyboardInputMode = "adjustResize",
+  android_keyboardInputMode,
   ...rest
 }: BottomSheetProps) => {
   const insets = useSafeAreaInsets();
@@ -79,6 +79,20 @@ export const BottomSheet = ({
     [colorScheme],
   );
   const sheetBackgroundColor = themeColors["--background-surface"];
+  const resolvedAndroidKeyboardInputMode = useMemo<
+    BottomSheetModalProps["android_keyboardInputMode"]
+  >(() => {
+    if (Platform.OS !== "android") {
+      return android_keyboardInputMode;
+    }
+
+    if (android_keyboardInputMode) {
+      return android_keyboardInputMode;
+    }
+
+    // Gorhom skips interactive keyboard positioning when Android is in adjustResize.
+    return keyboardBehavior === "interactive" ? "adjustPan" : "adjustResize";
+  }, [android_keyboardInputMode, keyboardBehavior]);
 
   const handleDismiss = useCallback(() => {
     isPresentedRef.current = false;
@@ -188,7 +202,7 @@ export const BottomSheet = ({
       ]}
       keyboardBlurBehavior={keyboardBlurBehavior}
       keyboardBehavior={keyboardBehavior}
-      android_keyboardInputMode={android_keyboardInputMode}
+      android_keyboardInputMode={resolvedAndroidKeyboardInputMode}
       enableDynamicSizing={enableDynamicSizing}
       footerComponent={footer ? renderFooter : undefined}
       index={index}

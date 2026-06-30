@@ -39,8 +39,6 @@ const CaretRight = withIconClassName(CaretRightIcon);
 const SUPPORT_EMAIL = "support@yeupet.app";
 const PRIVACY_URL = "https://yeupet.app/privacy";
 const TERMS_URL = "https://yeupet.app/terms";
-// TODO(store-compliance): replace with the hosted Google Play account deletion page before submission.
-const ACCOUNT_DELETION_RESOURCE_URL = "https://yeupet.app/account-deletion";
 
 const getInitials = (name: string) => {
   const initials = name
@@ -491,14 +489,6 @@ export function SettingsScreen() {
             title={t("settings.helpLegal.termsOfService")}
             value={t("common.open")}
             onPress={() => openExternalLink(TERMS_URL)}
-          />
-          <SettingsRow
-            title={t("settings.helpLegal.accountDeletionResource")}
-            description={t(
-              "settings.helpLegal.accountDeletionResourceDescription",
-            )}
-            value={t("common.open")}
-            onPress={() => openExternalLink(ACCOUNT_DELETION_RESOURCE_URL)}
           />
         </SettingsSection>
 

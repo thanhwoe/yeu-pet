@@ -86,7 +86,6 @@ export function BudgetScreen() {
     queryKey: BUDGET_CATEGORY_KEY.list({ limit: 20 }),
     queryFn: () => getBudgetCategoryQuery({ limit: 20 }),
   });
-  console.log(JSON.stringify(categories, null, 2));
 
   const { data: budgetData, isLoading: isLoadingBudget } = useQuery({
     queryKey: BUDGET_KEY.detail(`${actualMonth} ${monthYear.year}`),
