@@ -1624,7 +1624,7 @@
     "filters": {
       "allCities": "Tất cả thành phố",
       "any": "Bất kỳ",
-      "apply": "Áp dụng bộ lọc",
+      "apply": "Áp dụng",
       "custom": "Tùy chỉnh",
       "customMaxPrice": "Giá tối đa tùy chỉnh",
       "customMaxPriceA11y": "Giá tối đa tùy chỉnh bằng đồng Việt Nam",

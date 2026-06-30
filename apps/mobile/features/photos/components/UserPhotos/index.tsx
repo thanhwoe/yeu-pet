@@ -3,7 +3,7 @@ import { PHOTOS_KEY } from "@/constants/query-keys";
 import { EmptyPhotos } from "@/features/photos/components/EmptyPhotos";
 import { PhotoGalleryViewer } from "@/features/photos/components/PhotoGalleryViewer";
 import { PhotoItem } from "@/features/photos/components/PhotoItem";
-import { ITEM_WIDTH, LIMIT } from "@/features/photos/utils";
+import { LIMIT } from "@/features/photos/utils";
 import { IPhoto } from "@/interfaces";
 import { getListUserPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
@@ -69,7 +69,6 @@ export const UserPhotos = () => {
         numColumns={3}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        estimatedItemSize={ITEM_WIDTH}
         ListEmptyComponent={
           <EmptyPhotos
             isLoading={isLoading}

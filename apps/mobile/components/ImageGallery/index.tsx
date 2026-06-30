@@ -113,7 +113,7 @@ export const ImageGallery = memo(
             customTransition={transition}
           />
 
-          <StatusBar style="light" translucent={true} />
+          <StatusBar style="light" />
         </Animated.View>
       </Modal>
     );

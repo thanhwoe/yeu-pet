@@ -9,8 +9,7 @@ import { MedicalRecordForm } from "@/features/medical-records/components/Medical
 import { useMedicalRecordList } from "@/features/medical-records/hooks";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import { IMedicalRecord } from "@/interfaces";
-import { useIsFocused } from "@react-navigation/native";
-import { type Href, useNavigation, useRouter } from "expo-router";
+import { type Href, useIsFocused, useNavigation, useRouter } from "expo-router";
 import { PlusIcon, TrashIcon } from "phosphor-react-native";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";

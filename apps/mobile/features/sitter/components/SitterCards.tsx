@@ -9,8 +9,8 @@ import {
   StarIcon,
 } from "phosphor-react-native";
 import { memo } from "react";
-import { Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, ScrollView, View } from "react-native";
 import { getBookingStatusFilters } from "../constants";
 import {
   formatBookingHold,
@@ -205,30 +205,30 @@ export const StatusFilterRow = ({
       }}
     >
       {bookingStatusFilters.map((item) => {
-      const active = item.value === value;
+        const active = item.value === value;
 
-      return (
-        <Pressable
-          key={item.label}
-          accessibilityRole="button"
-          accessibilityState={{ selected: active }}
-          onPress={() => onChange(item.value)}
-          className={cn(
-            "h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14",
-            active && "border-action-primary bg-action-primary",
-          )}
-        >
-          <Body
-            variant="body4"
-            weight="semiBold"
-            className={
-              active ? "text-action-primary-foreground" : "text-text-muted"
-            }
+        return (
+          <Pressable
+            key={item.label}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active }}
+            onPress={() => onChange(item.value)}
+            className={cn(
+              "h-44 justify-center rounded-full border border-line-subtle bg-background-surface px-14",
+              active && "border-action-primary bg-action-primary",
+            )}
           >
-            {item.label}
-          </Body>
-        </Pressable>
-      );
+            <Body
+              variant="body4"
+              weight="semiBold"
+              className={
+                active ? "text-action-primary-foreground" : "text-text-muted"
+              }
+            >
+              {item.label}{" "}
+            </Body>
+          </Pressable>
+        );
       })}
     </ScrollView>
   );

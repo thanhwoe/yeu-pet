@@ -4,10 +4,9 @@ import { isEmpty } from "lodash";
 import { MagnifyingGlassIcon, XIcon } from "phosphor-react-native";
 import { memo, useCallback, useState } from "react";
 import {
-  NativeSyntheticEvent,
   Pressable,
   TextInput,
-  TextInputFocusEventData,
+  TextInputProps,
   View,
 } from "react-native";
 import { inputStyles, searchStyles } from "./styles";
@@ -26,9 +25,12 @@ interface IProps {
   disabled?: boolean;
   error?: boolean;
   autoFocus?: boolean;
-  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
-  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onFocus?: TextInputProps["onFocus"];
+  onBlur?: TextInputProps["onBlur"];
 }
+
+type TextInputFocusHandler = NonNullable<TextInputProps["onFocus"]>;
+type TextInputBlurHandler = NonNullable<TextInputProps["onBlur"]>;
 
 export const SearchInput = memo<IProps>(
   ({
@@ -48,16 +50,16 @@ export const SearchInput = memo<IProps>(
     const [value, setValue] = useState(defaultValue || "");
     const [focus, setFocus] = useState(false);
 
-    const handleFocus = useCallback(
-      (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleFocus = useCallback<TextInputFocusHandler>(
+      (e) => {
         setFocus(true);
         onFocus?.(e);
       },
       [onFocus]
     );
 
-    const handleBlur = useCallback(
-      (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleBlur = useCallback<TextInputBlurHandler>(
+      (e) => {
         setFocus(false);
         onBlur?.(e);
       },

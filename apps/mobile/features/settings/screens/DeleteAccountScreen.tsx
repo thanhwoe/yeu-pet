@@ -33,7 +33,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const ArrowLeft = withIconClassName(ArrowLeftIcon);
 const Trash = withIconClassName(TrashIcon);

@@ -14,7 +14,7 @@ export const usePayment = () => {
     null,
   );
 
-  const handlePayWithVNPay = (amount: number) => {};
+  const handlePayWithVNPay = (_amount: number) => {};
 
   const handlePayWithZaloPay = () => {};
 
@@ -38,8 +38,7 @@ export const usePayment = () => {
   };
 
   const handleDeepLink = useCallback(({ url }: Linking.EventType) => {
-    const deepLink = new URL(url);
-    const params = deepLink.searchParams;
+    void new URL(url).searchParams;
   }, []);
 
   useEffect(() => {

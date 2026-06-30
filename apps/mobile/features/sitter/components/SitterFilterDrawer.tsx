@@ -14,7 +14,7 @@ import { cn } from "@/utils";
 import {
   type DrawerContentComponentProps,
   useDrawerStatus,
-} from "@react-navigation/drawer";
+} from "expo-router/drawer";
 import { XIcon } from "phosphor-react-native";
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -112,7 +112,6 @@ export const CartScreen = () => {
             isDeleting={isDeleting}
           />
         )}
-        estimatedItemSize={100}
         ListEmptyComponent={() => (
           <View>
             <Image

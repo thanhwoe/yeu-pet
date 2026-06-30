@@ -51,7 +51,7 @@ export const PetTimeline = ({ data, isLoading, selectedPet }: IProps) => {
     highestMeasuredFrameIndex: number;
     averageItemLength: number;
   }) => {
-    const wait = new Promise((resolve) => setTimeout(resolve, 500));
+    const wait = new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
     wait.then(() => {
       listRef.current?.scrollToIndex({
         index: info.index,

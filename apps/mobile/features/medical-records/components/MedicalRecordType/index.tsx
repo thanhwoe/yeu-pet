@@ -35,7 +35,7 @@ export const MedicalRecordType = ({ type }: IProps) => {
   return (
     <View className={wrapperStyle({ type })}>
       <Body variant="body5" className={textStyle({ type })}>
-        {t(`medicalRecords.type.${type}`)}
+        {t(`medicalRecords.type.${type}`)}{" "}
       </Body>
     </View>
   );

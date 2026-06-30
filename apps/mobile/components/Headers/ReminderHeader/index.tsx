@@ -1,7 +1,7 @@
 import { Heading } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
-import type { DrawerHeaderProps } from "@react-navigation/drawer";
-import { DrawerActions } from "@react-navigation/native";
+import type { DrawerHeaderProps } from "expo-router/drawer";
+import { DrawerActions } from "expo-router/react-navigation";
 import { SlidersHorizontalIcon } from "phosphor-react-native";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";

@@ -7,11 +7,9 @@ import {
   type RefAttributes,
 } from "react";
 import {
-  NativeSyntheticEvent,
   Platform,
   StyleSheet,
   TextInput,
-  TextInputFocusEventData,
   TextInputProps,
   View,
 } from "react-native";
@@ -21,6 +19,8 @@ import { Body } from "../Typography";
 import { InputVariants, inputVariants, supportTextVariants } from "./styles";
 
 type InputComponentProps = TextInputProps & RefAttributes<TextInput>;
+type TextInputFocusHandler = NonNullable<TextInputProps["onFocus"]>;
+type TextInputBlurHandler = NonNullable<TextInputProps["onBlur"]>;
 
 export interface InputFieldProps
   extends TextInputProps, Omit<InputVariants, "multiline"> {
@@ -60,16 +60,16 @@ export const InputField = forwardRef(
     const [focus, setFocus] = useState(false);
     const InputComponent = inputComponent ?? TextInput;
 
-    const handleFocus = useCallback(
-      (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleFocus = useCallback<TextInputFocusHandler>(
+      (e) => {
         setFocus(true);
         onFocus?.(e);
       },
       [onFocus],
     );
 
-    const handleBlur = useCallback(
-      (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleBlur = useCallback<TextInputBlurHandler>(
+      (e) => {
         setFocus(false);
         onBlur?.(e);
       },

@@ -109,7 +109,6 @@ export function ListClinicScreen() {
         keyExtractor={keyExtractor}
         ListEmptyComponent={listEmptyComponent}
         showsVerticalScrollIndicator={false}
-        estimatedItemSize={186}
         renderItem={renderClinic}
         onEndReached={handleEndReached}
       />

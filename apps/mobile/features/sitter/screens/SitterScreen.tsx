@@ -1,5 +1,5 @@
-import { Tabs } from "@/components/Tabs";
 import { Popup } from "@/components/Popup";
+import { Tabs } from "@/components/Tabs";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
 import { StateView } from "@/components/ui/StateView";
@@ -39,11 +39,11 @@ import {
 } from "@/interfaces";
 import { useUserInfoStore } from "@/stores/user-info";
 import { cn } from "@/utils";
-import { DrawerActions } from "@react-navigation/native";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { DrawerActions } from "expo-router/react-navigation";
 import { PencilSimpleIcon, SlidersHorizontalIcon } from "phosphor-react-native";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Pressable, View } from "react-native";
 
@@ -61,14 +61,17 @@ export const SitterScreen = () => {
     role?: string;
     bookingId?: string;
   }>();
-  const openedBookingIdRef = useRef<string | undefined>(undefined);
   const { data: linkedBooking } = useSitterBookingDetail(bookingId);
   const currentUser = useUserInfoStore.use.user();
-  const screenTabs = getScreenTabs();
-  const bookingRoleTabs = getBookingRoleTabs();
-  const [activeTab, setActiveTab] = useState(screenTabs[0].value);
-  const [bookingRoleTab, setBookingRoleTab] = useState(
-    bookingRoleTabs[0].value,
+  const screenTabs = useMemo(() => getScreenTabs(), [t]);
+  const bookingRoleTabs = useMemo(() => getBookingRoleTabs(), [t]);
+  const [activeTab, setActiveTab] = useState(() =>
+    tab === "bookings" || bookingId ? screenTabs[1].value : screenTabs[0].value,
+  );
+  const [bookingRoleTab, setBookingRoleTab] = useState(() =>
+    role === "sitter" || bookingId
+      ? bookingRoleTabs[1].value
+      : bookingRoleTabs[0].value,
   );
   const [bookingStatus, setBookingStatus] = useState<
     SitterBookingStatus | undefined
@@ -79,6 +82,7 @@ export const SitterScreen = () => {
   const [selectedBooking, setSelectedBooking] = useState<ISitterBooking | null>(
     null,
   );
+  const [openedBookingId, setOpenedBookingId] = useState<string>();
   const [bookingForCancel, setBookingForCancel] =
     useState<ISitterBooking | null>(null);
   const [bookingForComplete, setBookingForComplete] =
@@ -161,27 +165,26 @@ export const SitterScreen = () => {
     [bookingRoleTab, hydrateBooking, ownerBookings, sitterBookings],
   );
 
-  useEffect(() => {
-    if (tab === "bookings" || bookingId) {
-      setActiveTab(screenTabs[1].value);
-    }
-    if (role === "sitter" || bookingId) {
-      setBookingRoleTab(bookingRoleTabs[1].value);
-    }
-  }, [bookingId, bookingRoleTabs, role, screenTabs, tab]);
-
-  useEffect(() => {
-    if (!bookingId || openedBookingIdRef.current === bookingId) {
-      return;
+  const routeBooking = useMemo(() => {
+    if (!bookingId || openedBookingId === bookingId) {
+      return null;
     }
 
     const booking =
       linkedBooking ?? activeBookings.find((item) => item.id === bookingId);
-    if (booking) {
-      openedBookingIdRef.current = bookingId;
-      setSelectedBooking(hydrateBooking(booking));
+
+    return booking ? hydrateBooking(booking) : null;
+  }, [activeBookings, bookingId, hydrateBooking, linkedBooking, openedBookingId]);
+
+  const visibleBooking = selectedBooking ?? routeBooking;
+
+  const closeBookingDetail = useCallback(() => {
+    if (!selectedBooking && routeBooking?.id === bookingId) {
+      setOpenedBookingId(bookingId);
     }
-  }, [activeBookings, bookingId, hydrateBooking, linkedBooking]);
+
+    setSelectedBooking(null);
+  }, [bookingId, routeBooking?.id, selectedBooking]);
 
   const openSitterDetail = useCallback((sitter: IPetSitter) => {
     setSelectedSitter(null);
@@ -247,24 +250,24 @@ export const SitterScreen = () => {
 
   const openBookingMessages = useCallback(
     (booking: ISitterBooking) => {
-      setSelectedBooking(null);
+      closeBookingDetail();
       router.push({
         pathname: "/sitter-bookings/[id]/chat",
         params: { id: booking.id },
       });
     },
-    [router],
+    [closeBookingDetail, router],
   );
 
   const openCancelBooking = useCallback((booking: ISitterBooking) => {
-    setSelectedBooking(null);
+    closeBookingDetail();
     setBookingForCancel(booking);
-  }, []);
+  }, [closeBookingDetail]);
 
   const openBookingReview = useCallback((booking: ISitterBooking) => {
-    setSelectedBooking(null);
+    closeBookingDetail();
     setBookingForReview(booking);
-  }, []);
+  }, [closeBookingDetail]);
 
   return (
     <ScreenContainer>
@@ -327,7 +330,6 @@ export const SitterScreen = () => {
           data={sitters}
           keyExtractor={(item) => item.id}
           contentContainerClassName="gap-16 pb-safe"
-          estimatedItemSize={190}
           showsVerticalScrollIndicator={false}
           renderItem={renderSitter}
           refreshing={isRefreshing}
@@ -383,7 +385,6 @@ export const SitterScreen = () => {
               data={activeBookings}
               keyExtractor={(item) => item.id}
               contentContainerClassName="pb-safe"
-              estimatedItemSize={154}
               showsVerticalScrollIndicator={false}
               renderItem={renderBooking}
               refreshing={isRefreshing}
@@ -496,8 +497,8 @@ export const SitterScreen = () => {
       </BottomSheet>
 
       <BottomSheet
-        visible={!!selectedBooking}
-        onDismiss={() => setSelectedBooking(null)}
+        visible={!!visibleBooking}
+        onDismiss={closeBookingDetail}
         titleElement={
           <Body weight="semiBold">
             {t("sitter.booking.detail.bookingDetail")}
@@ -505,9 +506,9 @@ export const SitterScreen = () => {
         }
         useScrollView
       >
-        {selectedBooking ? (
+        {visibleBooking ? (
           <BookingDetail
-            booking={selectedBooking}
+            booking={visibleBooking}
             role={activeBookingRole}
             loading={isMutatingBooking}
             onOpenMessages={openBookingMessages}
@@ -515,10 +516,13 @@ export const SitterScreen = () => {
             onReview={openBookingReview}
             onAccept={(booking) => {
               void acceptBooking(booking.id).then(() =>
-                setSelectedBooking(null),
+                closeBookingDetail(),
               );
             }}
-            onComplete={setBookingForComplete}
+            onComplete={(booking) => {
+              closeBookingDetail();
+              setBookingForComplete(booking);
+            }}
             onReject={(booking) => {
               Alert.alert(
                 t("sitter.booking.rejectAlert.title"),
@@ -533,7 +537,7 @@ export const SitterScreen = () => {
                     style: "destructive",
                     onPress: () => {
                       void rejectBooking(booking.id).then(() =>
-                        setSelectedBooking(null),
+                        closeBookingDetail(),
                       );
                     },
                   },

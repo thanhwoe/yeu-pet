@@ -110,7 +110,6 @@ export function ListSpaScreen() {
         keyExtractor={keyExtractor}
         ListEmptyComponent={listEmptyComponent}
         showsVerticalScrollIndicator={false}
-        estimatedItemSize={186}
         renderItem={renderSpa}
         onEndReached={handleEndReached}
       />

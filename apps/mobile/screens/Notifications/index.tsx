@@ -351,7 +351,6 @@ export const NotificationsScreen = () => {
         data={filteredNotifications}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        estimatedItemSize={92}
         ItemSeparatorComponent={NotificationSeparator}
         ListEmptyComponent={
           <NotificationEmptyState filter={filter} isLoading={isLoading} />

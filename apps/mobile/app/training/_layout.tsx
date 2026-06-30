@@ -1,5 +1,5 @@
 import { BackHeader } from "@/components/Headers/BackHeader";
-import { ParamListBase, RouteProp } from "@react-navigation/native";
+import { ParamListBase, RouteProp } from "expo-router/react-navigation";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
 interface RouteParams {

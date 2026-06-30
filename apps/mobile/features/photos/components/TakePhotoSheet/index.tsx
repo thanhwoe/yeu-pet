@@ -164,11 +164,14 @@ export const TakePhotoSheet = ({ onDismiss, visible, image }: IProps) => {
           <>
             <View style={styles.previewFrame}>
               <Image source={{ uri: image?.uri }} style={styles.previewImage} />
-              <CaptionInput
-                placeholder={t("photos.composer.captionPlaceholder")}
-                onChangeText={setCaption}
-                containerClassName="absolute bottom-12 left-12 right-12"
-              />
+              <View className="absolute bottom-12 left-12 right-12">
+                <CaptionInput
+                  fullWidth
+                  value={caption}
+                  placeholder={t("photos.composer.captionPlaceholder")}
+                  onChangeText={setCaption}
+                />
+              </View>
             </View>
             <View className="w-full flex-row items-center justify-center gap-16">
               <SubmitButton onPress={handleSubmit} disabled={isPending} />

@@ -3,7 +3,7 @@ import { PHOTOS_KEY } from "@/constants/query-keys";
 import { EmptyPhotos } from "@/features/photos/components/EmptyPhotos";
 import { PhotoGalleryViewer } from "@/features/photos/components/PhotoGalleryViewer";
 import { PhotoItem } from "@/features/photos/components/PhotoItem";
-import { ITEM_WIDTH, LIMIT } from "@/features/photos/utils";
+import { LIMIT } from "@/features/photos/utils";
 import { IPhoto } from "@/interfaces";
 import { getListSocialPhotosQuery } from "@/services";
 import { FlashList, ListRenderItem } from "@shopify/flash-list";
@@ -85,7 +85,6 @@ export const SocialPhotos = () => {
             </View>
           ) : null
         }
-        estimatedItemSize={ITEM_WIDTH}
         showsVerticalScrollIndicator={false}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.4}

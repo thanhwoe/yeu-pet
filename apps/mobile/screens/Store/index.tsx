@@ -79,7 +79,6 @@ export const StoreScreen = () => {
         ListFooterComponent={() => (isFetchingNextPage ? <ListLoader /> : null)}
         showsVerticalScrollIndicator={false}
         numColumns={2}
-        estimatedItemSize={236}
         onEndReachedThreshold={0}
         renderItem={({ item, index }) => (
           <ProductCard data={item} index={index} />

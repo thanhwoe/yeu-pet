@@ -167,7 +167,6 @@ export const PhotoCommentsSheet = ({
               renderScrollComponent={BottomSheetScrollable}
               keyExtractor={keyExtractor}
               renderItem={renderItem}
-              estimatedItemSize={118}
               ItemSeparatorComponent={CommentSeparator}
               ListEmptyComponent={
                 <CommentEmptyState isLoading={isLoading || isFetching} />

@@ -8,18 +8,15 @@ interface MedicalRecordStatusChipProps {
   status: IMedicalRecord["attachmentStatus"];
 }
 
-const wrapperStyle = cva(
-  "self-start rounded-full border px-10 py-5",
-  {
-    variants: {
-      status: {
-        ready: "border-status-success-border bg-status-success-surface",
-        processing: "border-status-warning-border bg-status-warning-surface",
-        failed: "border-status-danger-border bg-status-danger-surface",
-      },
+const wrapperStyle = cva("self-start rounded-full border px-10 py-5", {
+  variants: {
+    status: {
+      ready: "border-status-success-border bg-status-success-surface",
+      processing: "border-status-warning-border bg-status-warning-surface",
+      failed: "border-status-danger-border bg-status-danger-surface",
     },
   },
-);
+});
 
 const textStyle = cva("font-semiBold", {
   variants: {
@@ -39,7 +36,7 @@ export const MedicalRecordStatusChip = ({
   return (
     <View className={wrapperStyle({ status })}>
       <Body variant="body5" className={textStyle({ status })}>
-        {t(`medicalRecords.status.${status}`)}
+        {t(`medicalRecords.status.${status}`)}{" "}
       </Body>
     </View>
   );

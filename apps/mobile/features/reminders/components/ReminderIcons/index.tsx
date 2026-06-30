@@ -1,3 +1,4 @@
+import { Body } from "@/components/ui/Typography";
 import { withIconClassName } from "@/hocs/withIconClassName";
 import {
   ReminderStatus,
@@ -16,9 +17,8 @@ import {
   XCircleIcon,
 } from "phosphor-react-native";
 import { ComponentType } from "react";
-import { View } from "react-native";
-import { Body } from "@/components/ui/Typography";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 
 const BoneIcon = withIconClassName(Bone);
 const SyringeIcon = withIconClassName(Syringe);
@@ -141,12 +141,8 @@ export const ReminderStatusChip = ({
       )}
     >
       <Icon size={20} weight="fill" className={color} {...props} />
-      <Body
-        variant="body2"
-        className={cn(color)}
-        weight="semiBold"
-      >
-        {t(`reminders.status.${status}`)}
+      <Body variant="body2" className={cn(color)} weight="semiBold">
+        {t(`reminders.status.${status}`)}{" "}
       </Body>
     </View>
   );

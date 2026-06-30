@@ -14,9 +14,8 @@ import {
 } from "@/services";
 import { useUserInfoStore } from "@/stores/user-info";
 import { date } from "@/utils";
-import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { BellRingingIcon } from "phosphor-react-native";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

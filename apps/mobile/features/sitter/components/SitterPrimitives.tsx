@@ -5,8 +5,8 @@ import { SitterBookingStatus } from "@/interfaces";
 import { cn } from "@/utils";
 import { CurrencyCircleDollarIcon } from "phosphor-react-native";
 import { ReactNode } from "react";
-import { View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 import { getBookingStatusLabel, SITTER_SKELETON_ITEMS } from "../constants";
 
 const CurrencyCircleDollar = withIconClassName(CurrencyCircleDollarIcon);
@@ -33,7 +33,7 @@ export const StatusBadge = ({ status }: { status: SitterBookingStatus }) => {
   return (
     <View className={cn("rounded-full border px-10 py-5", className[status])}>
       <Body variant="body5" weight="semiBold" className={textClassName[status]}>
-        {getBookingStatusLabel(status)}
+        {getBookingStatusLabel(status)}{" "}
       </Body>
     </View>
   );

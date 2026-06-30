@@ -1,6 +1,6 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { type TFunction } from "i18next";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const required = (t: TFunction, fieldKey: string) =>
   t("validation.required", { field: t(fieldKey) });

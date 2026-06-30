@@ -181,7 +181,6 @@ export const VietnamProvinceCitySelect = ({
             data={options}
             keyExtractor={(item) => item.code}
             renderItem={renderOption}
-            estimatedItemSize={54}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             contentContainerClassName="pb-safe"

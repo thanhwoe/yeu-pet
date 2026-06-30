@@ -5,7 +5,7 @@ import { useReminderUiStore } from "@/features/reminders/store";
 import { ReminderType, VisibleReminderStatus } from "@/interfaces";
 import { getListPetQuery } from "@/services";
 import { cn } from "@/utils";
-import type { DrawerContentComponentProps } from "@react-navigation/drawer";
+import type { DrawerContentComponentProps } from "expo-router/drawer";
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";

@@ -32,7 +32,7 @@ import {
   Pressable,
   View,
 } from "react-native";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const ArrowLeft = withIconClassName(ArrowLeftIcon);
 const Camera = withIconClassName(CameraIcon);
@@ -339,9 +339,6 @@ export function ProfileDetailScreen() {
               </Text>
             )}
           </View>
-          <Button size="sm" variant="outline" onPress={handlePickAvatar}>
-            {t("profile.detail.changePhoto")}
-          </Button>
         </View>
 
         <View className="gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-16 py-16">

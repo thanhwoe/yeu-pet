@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import { cssInterop } from "nativewind";
 import { KeyboardAvoidingView, Platform, UIManager } from "react-native";

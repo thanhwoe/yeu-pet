@@ -3,7 +3,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { Text } from "@/components/ui/Text";
 import { PhotoView } from "@/features/photos/components/PhotoView";
 import { IPhoto } from "@/interfaces";
-import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import { FlashList, FlashListRef, ListRenderItem } from "@shopify/flash-list";
 import { Image as ExpoImage } from "expo-image";
 import {
   memo,
@@ -116,7 +116,7 @@ export const PhotoGalleryViewer = ({
   const { t } = useTranslation();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const listRef = useRef<FlashList<IPhoto>>(null);
+  const listRef = useRef<FlashListRef<IPhoto>>(null);
   const wasVisibleRef = useRef(false);
   const lastFetchPhotoCountRef = useRef(-1);
   const pendingIndexAfterDeleteRef = useRef<number | null>(null);
@@ -142,11 +142,6 @@ export const PhotoGalleryViewer = ({
     Math.max(initialIndex, 0),
     Math.max(visiblePhotos.length - 1, 0),
   );
-  const estimatedListSize = useMemo(
-    () => ({ height: pageHeight, width: pageWidth }),
-    [pageHeight, pageWidth],
-  );
-
   const handleClose = useCallback(() => {
     setIsInteractionLocked(false);
     onClose();
@@ -326,12 +321,6 @@ export const PhotoGalleryViewer = ({
   );
 
   const keyExtractor = useCallback((photo: IPhoto) => photo.id, []);
-  const overrideItemLayout = useCallback(
-    (layout: { size?: number }) => {
-      layout.size = pageHeight;
-    },
-    [pageHeight],
-  );
   const handleMomentumScrollEnd = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       if (pageHeight <= 0 || visiblePhotos.length === 0) {
@@ -382,12 +371,8 @@ export const PhotoGalleryViewer = ({
             extraData={currentIndex}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            style={[styles.list, !isListReady && styles.listHidden]}
-            estimatedItemSize={pageHeight}
-            estimatedListSize={estimatedListSize}
-            estimatedFirstItemOffset={0}
+            style={isListReady ? styles.list : styles.listHidden}
             initialScrollIndex={safeInitialIndex}
-            overrideItemLayout={overrideItemLayout}
             pagingEnabled
             horizontal={false}
             snapToInterval={pageHeight}
@@ -444,6 +429,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listHidden: {
+    flex: 1,
     opacity: 0,
   },
   page: {

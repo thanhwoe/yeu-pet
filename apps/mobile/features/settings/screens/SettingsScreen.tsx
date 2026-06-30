@@ -505,7 +505,6 @@ export function SettingsScreen() {
 
         <SettingsSection title={t("settings.session.section")}>
           <SettingsRow
-            title={t("settings.session.logout")}
             description={t("settings.session.description")}
             destructive
             className="bg-danger-surface"

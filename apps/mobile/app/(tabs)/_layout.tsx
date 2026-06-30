@@ -1,9 +1,8 @@
 import * as Haptics from "expo-haptics";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
-import { GestureResponderEvent, Pressable, View } from "react-native";
+import { GestureResponderEvent, Pressable } from "react-native";
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -17,7 +16,7 @@ import { darkColorTheme, lightColorTheme } from "@/theme/colors";
 import { nativeShadows } from "@/theme/shadows";
 import { getColors } from "@/theme/utils";
 import { cn } from "@/utils";
-import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
+import { BottomTabBarButtonProps } from "expo-router/js-tabs";
 import {
   CalendarHeartIcon,
   GearSixIcon,
@@ -33,13 +32,19 @@ const Home = withIconClassName(HouseIcon);
 const Service = withIconClassName(PawPrintIcon);
 const Sitter = withIconClassName(HandHeartIcon);
 
-// Custom animated tab button component
+const isTabFocused = (props: BottomTabBarButtonProps) =>
+  props["aria-selected"] === true ||
+  String(props["aria-selected"]) === "true" ||
+  props.accessibilityState?.selected === true;
+
 const AnimatedTabButton = ({
   children,
   focused,
   label,
   onPress,
   onLongPress,
+  onPressIn,
+  onPressOut,
   testID,
 }: {
   children: React.ReactNode;
@@ -47,6 +52,8 @@ const AnimatedTabButton = ({
   label: string;
   onPress?: (e: GestureResponderEvent) => void;
   onLongPress?: ((e: GestureResponderEvent) => void) | null;
+  onPressIn?: ((e: GestureResponderEvent) => void) | null;
+  onPressOut?: ((e: GestureResponderEvent) => void) | null;
   testID?: string;
 }) => {
   const scale = useSharedValue(focused ? 1.05 : 1);
@@ -112,13 +119,23 @@ const AnimatedTabButton = ({
   }));
 
   const handlePress = (e: GestureResponderEvent) => {
-    runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress?.(e);
+  };
+
+  const handlePressIn = (e: GestureResponderEvent) => {
+    onPressIn?.(e);
+  };
+
+  const handlePressOut = (e: GestureResponderEvent) => {
+    onPressOut?.(e);
   };
 
   return (
     <Pressable
       onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       onLongPress={onLongPress ?? undefined}
       testID={testID}
       accessibilityLabel={`${label} tab`}
@@ -127,38 +144,36 @@ const AnimatedTabButton = ({
       className="flex-1 justify-center items-center py-8"
     >
       <Animated.View
-        style={[containerAnimatedStyle]}
-        className="py-8 px-12 rounded-16 h-40 items-center justify-center relative"
+        style={containerAnimatedStyle}
+        className="h-40 items-center justify-center overflow-hidden rounded-16"
       >
-        {/* Background highlight */}
         <Animated.View
           style={[backgroundAnimatedStyle]}
           className="absolute inset-0 bg-background-secondary-highlight rounded-16"
         />
 
-        <View className="flex-row items-center justify-center h-full w-full relative">
-          {/* Icon container - positioned absolutely for better control */}
-          <Animated.View
-            style={[iconAnimatedStyle]}
-            className="absolute justify-center items-center z-10"
-          >
-            {children}
-          </Animated.View>
+        <Animated.View
+          style={[iconAnimatedStyle]}
+          className="absolute items-center justify-center"
+        >
+          {children}
+        </Animated.View>
 
-          {/* Label container - positioned on the right */}
-          <Animated.View
-            style={[labelAnimatedStyle]}
-            className="overflow-hidden absolute"
+        <Animated.View
+          style={[labelAnimatedStyle]}
+          className="absolute h-full items-center justify-center overflow-hidden"
+        >
+          <Body
+            weight="semiBold"
+            variant="body4"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.82}
+            className="text-center text-text-secondary"
           >
-            <Body
-              weight="semiBold"
-              variant="body3"
-              className="whitespace-nowrap text-text-secondary"
-            >
-              {label}
-            </Body>
-          </Animated.View>
-        </View>
+            {label}
+          </Body>
+        </Animated.View>
       </Animated.View>
     </Pressable>
   );
@@ -172,9 +187,9 @@ const iconProps = (
   className: string;
 } => ({
   size: 24,
-  weight: props["aria-selected"] ? "fill" : "regular",
+  weight: isTabFocused(props) ? "fill" : "regular",
   className: cn("text-icon-secondary", {
-    "text-icon-tertiary": props["aria-selected"],
+    "text-icon-tertiary": isTabFocused(props),
   }),
 });
 
@@ -205,7 +220,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <AnimatedTabButton
               {...props}
-              focused={props["aria-selected"] || false}
+              focused={isTabFocused(props)}
               label="Home"
             >
               <Home {...iconProps(props)} />
@@ -220,7 +235,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <AnimatedTabButton
               {...props}
-              focused={props["aria-selected"] || false}
+              focused={isTabFocused(props)}
               label="Reminder"
             >
               <Calendar {...iconProps(props)} />
@@ -235,7 +250,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <AnimatedTabButton
               {...props}
-              focused={props["aria-selected"] || false}
+              focused={isTabFocused(props)}
               label="Service"
             >
               <Service {...iconProps(props)} />
@@ -256,7 +271,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <AnimatedTabButton
               {...props}
-              focused={props["aria-selected"] || false}
+              focused={isTabFocused(props)}
               label="Sitter"
             >
               <Sitter {...iconProps(props)} />
@@ -271,7 +286,7 @@ export default function TabLayout() {
           tabBarButton: (props) => (
             <AnimatedTabButton
               {...props}
-              focused={props["aria-selected"] || false}
+              focused={isTabFocused(props)}
               label="Settings"
             >
               <Settings {...iconProps(props)} />

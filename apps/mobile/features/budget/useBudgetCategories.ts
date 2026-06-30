@@ -1,7 +1,7 @@
 import { Toast } from "@/components/Toast";
 import {
-  BUDGET_KEY,
   BUDGET_CATEGORY_KEY,
+  BUDGET_KEY,
   BUDGET_STATISTIC_KEY,
   BUDGET_TRANSACTION_KEY,
 } from "@/constants/query-keys";
@@ -36,14 +36,14 @@ export const useBudgetCategories = () => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.meta?.hasNextPage) return undefined;
-      return (lastPage.meta.page ?? 1) + 1;
+      return (lastPage.meta?.page ?? 1) + 1;
     },
   });
 
   const categories = useMemo(
     () =>
       categoriesQuery.data?.pages.flatMap((page) =>
-        Array.isArray(page.data) ? page.data : [],
+        Array.isArray(page?.data) ? page?.data : [],
       ) ?? [],
     [categoriesQuery.data?.pages],
   );

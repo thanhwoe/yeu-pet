@@ -3,19 +3,17 @@ const path = require("path");
 
 const {
   AndroidConfig,
+  CodeGenerator,
+  IOSConfig,
   withAndroidManifest,
   withDangerousMod,
   withMainApplication,
   withXcodeProject,
-} = require("@expo/config-plugins");
-const {
-  mergeContents,
-} = require("@expo/config-plugins/build/utils/generateCode");
-const { getSourceRoot } = require("@expo/config-plugins/build/ios/Paths");
-const {
-  addResourceFileToGroup,
-  getProjectName,
-} = require("@expo/config-plugins/build/ios/utils/Xcodeproj");
+} = require("expo/config-plugins");
+
+const { mergeContents } = CodeGenerator;
+const { getSourceRoot } = IOSConfig.Paths;
+const { addResourceFileToGroup, getProjectName } = IOSConfig.XcodeUtils;
 
 const DEFAULT_SOUNDS = [
   {

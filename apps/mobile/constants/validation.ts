@@ -1,5 +1,5 @@
 import { isValidPhoneNumber } from "libphonenumber-js";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ERROR_MESSAGE, VALIDATION_MESSAGE } from "./messages";
 import { isVietnamProvinceCityName } from "./vietnam-location-options";
 

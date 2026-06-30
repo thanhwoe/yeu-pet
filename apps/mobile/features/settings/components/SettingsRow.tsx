@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 interface SettingsRowProps {
-  title: string;
+  title?: string;
   description?: string;
   value?: string;
   children?: ReactNode;
@@ -38,12 +38,14 @@ export function SettingsRow({
       )}
     >
       <View className="flex-1 gap-2">
-        <Text
-          variant="body2"
-          className={cn("font-semibold", destructive && "text-danger-text")}
-        >
-          {title}
-        </Text>
+        {title && (
+          <Text
+            variant="body2"
+            className={cn("font-semibold", destructive && "text-danger-text")}
+          >
+            {title}
+          </Text>
+        )}
         {description ? (
           <Text variant="footnote" className="text-text-muted">
             {description}

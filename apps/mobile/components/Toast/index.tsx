@@ -278,7 +278,7 @@ export const ToastRoot = ({ ref }: ToastRootProps) => {
 
 const styles = StyleSheet.create({
   overlayRoot: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     elevation: 9999,
     zIndex: 9999,
   },
