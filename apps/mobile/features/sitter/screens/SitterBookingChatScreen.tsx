@@ -1,3 +1,7 @@
+import {
+  AppKeyboardChatScrollView,
+  AppKeyboardStickyView,
+} from "@/components/keyboard";
 import { Spinner } from "@/components/ui/Spinner";
 import { StateView } from "@/components/ui/StateView";
 import { Body } from "@/components/ui/Typography";
@@ -25,16 +29,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
-  KeyboardAvoidingView,
+  LayoutChangeEvent,
   ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Platform,
   Pressable,
+  ScrollViewProps,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 import type { LocalChatMessage } from "../chat/sitterChat.types";
 import { useSitterChat } from "../chat/useSitterChat";
 
@@ -66,6 +71,8 @@ export const SitterBookingChatScreen = () => {
   const [showNewMessages, setShowNewMessages] = useState(false);
   const listRef = useRef<FlatList<LocalChatMessage>>(null);
   const previousCountRef = useRef(0);
+  const footerHeight = useSharedValue(0);
+  const [footerOffset, setFooterOffset] = useState(0);
 
   const isOwner = booking?.accountId === currentUserId;
   const partnerName = booking
@@ -111,6 +118,28 @@ export const SitterBookingChatScreen = () => {
     if (!canSendMessages) return;
     if (sendMessage(draft)) setDraft("");
   };
+
+  const handleFooterLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const nextHeight = event.nativeEvent.layout.height;
+      footerHeight.value = nextHeight;
+      setFooterOffset((currentHeight) =>
+        Math.abs(currentHeight - nextHeight) < 1 ? currentHeight : nextHeight,
+      );
+    },
+    [footerHeight],
+  );
+
+  const renderChatScrollComponent = useCallback(
+    (props: ScrollViewProps) => (
+      <AppKeyboardChatScrollView
+        {...props}
+        extraContentPadding={footerHeight}
+        offset={footerOffset}
+      />
+    ),
+    [footerHeight, footerOffset],
+  );
 
   const renderMessage = useCallback<ListRenderItem<LocalChatMessage>>(
     ({ item }) => {
@@ -231,11 +260,7 @@ export const SitterBookingChatScreen = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-background"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 16}
-    >
+    <View className="flex-1 bg-background">
       <View className="gap-2 border-b border-line-subtle bg-background-surface px-16 pb-12 pt-4">
         <Body variant="body2" weight="semiBold" numberOfLines={1}>
           {partnerName}
@@ -298,6 +323,7 @@ export const SitterBookingChatScreen = () => {
             keyboardDismissMode="interactive"
             keyboardShouldPersistTaps="handled"
             onScroll={handleScroll}
+            renderScrollComponent={renderChatScrollComponent}
             scrollEventThrottle={100}
             ListEmptyComponent={
               <StateView
@@ -336,47 +362,54 @@ export const SitterBookingChatScreen = () => {
       )}
 
       {canSendMessages ? (
-        <View className="gap-6 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
-          <View className="min-h-54 flex-row items-end gap-10 rounded-24 border border-line-subtle bg-background-surface px-14 py-8">
-            <TextInput
-              accessibilityLabel={t("sitter.accessibility.bookingMessage")}
-              autoCorrect
-              className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
-              maxLength={2000}
-              multiline
-              onChangeText={setDraft}
-              placeholder={t("sitter.booking.chat.placeholder")}
-              textAlignVertical="top"
-              value={draft}
-            />
-            <TouchableOpacity
-              accessibilityLabel={t("sitter.accessibility.sendBookingMessage")}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !draft.trim() }}
-              activeOpacity={0.82}
-              className={cn(
-                "h-44 w-44 items-center justify-center rounded-full bg-action-primary",
-                !draft.trim() && "bg-background-surface-muted",
-              )}
-              disabled={!draft.trim()}
-              onPress={submit}
-            >
-              <PaperPlaneTilt
-                size={20}
-                weight="fill"
-                className={
-                  draft.trim()
-                    ? "text-action-primary-foreground"
-                    : "text-icon-secondary"
-                }
+        <AppKeyboardStickyView
+          includeBottomInset={false}
+          onLayout={handleFooterLayout}
+        >
+          <View className="gap-6 border-t border-line-subtle bg-background px-16 pb-safe pt-10">
+            <View className="min-h-54 flex-row items-end gap-10 rounded-24 border border-line-subtle bg-background-surface px-14 py-8">
+              <TextInput
+                accessibilityLabel={t("sitter.accessibility.bookingMessage")}
+                autoCorrect
+                className="max-h-120 min-h-38 flex-1 py-8 text-body2 text-text-primary placeholder:text-text-placeholder selection:text-text-link"
+                maxLength={2000}
+                multiline
+                onChangeText={setDraft}
+                placeholder={t("sitter.booking.chat.placeholder")}
+                textAlignVertical="top"
+                value={draft}
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityLabel={t(
+                  "sitter.accessibility.sendBookingMessage",
+                )}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !draft.trim() }}
+                activeOpacity={0.82}
+                className={cn(
+                  "h-44 w-44 items-center justify-center rounded-full bg-action-primary",
+                  !draft.trim() && "bg-background-surface-muted",
+                )}
+                disabled={!draft.trim()}
+                onPress={submit}
+              >
+                <PaperPlaneTilt
+                  size={20}
+                  weight="fill"
+                  className={
+                    draft.trim()
+                      ? "text-action-primary-foreground"
+                      : "text-icon-secondary"
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+            <Body variant="body5" className="text-right text-text-muted">
+              {draft.length}/2000
+            </Body>
           </View>
-          <Body variant="body5" className="text-right text-text-muted">
-            {draft.length}/2000
-          </Body>
-        </View>
+        </AppKeyboardStickyView>
       ) : null}
-    </KeyboardAvoidingView>
+    </View>
   );
 };

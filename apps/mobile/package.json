@@ -72,6 +72,7 @@
     "react-native-css-interop": "0.2.3",
     "react-native-gesture-handler": "~2.31.2",
     "react-native-get-random-values": "^1.11.0",
+    "react-native-keyboard-controller": "1.21.6",
     "react-native-markdown-display": "^7.0.2",
     "react-native-pager-view": "8.0.1",
     "react-native-purchases": "^10.4.0",

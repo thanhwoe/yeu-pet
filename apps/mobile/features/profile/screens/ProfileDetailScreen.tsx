@@ -1,5 +1,6 @@
 import { InputController } from "@/components/InputController";
 import { Toast } from "@/components/Toast";
+import { AppKeyboardAwareScrollView } from "@/components/keyboard";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ScreenContainer } from "@/components/ui/ScreenContainer";
@@ -25,13 +26,7 @@ import {
 import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  View,
-} from "react-native";
+import { Alert, Pressable, View } from "react-native";
 import { z } from "zod/v4";
 
 const ArrowLeft = withIconClassName(ArrowLeftIcon);
@@ -285,98 +280,96 @@ export function ProfileDetailScreen() {
   }
 
   return (
-    <ScreenContainer scrollEnabled className="bg-background">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="gap-24 px-20 pb-120 pt-safe-offset-14"
-      >
-        <View className="flex-row items-center gap-12">
+    <AppKeyboardAwareScrollView
+      className="flex-1 bg-background"
+      contentContainerClassName="gap-24 px-20 pb-120 pt-safe-offset-14"
+      keyboardDismissMode="on-drag"
+      showsVerticalScrollIndicator={false}
+    >
+      <View className="flex-row items-center gap-12">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("profile.accessibility.goBack")}
+          onPress={() => router.back()}
+          className="h-44 w-44 items-center justify-center rounded-full bg-background-surface"
+        >
+          <ArrowLeft size={22} className="text-icon-primary" />
+        </Pressable>
+      </View>
+
+      <View className="items-center gap-12 rounded-24 border-hairline border-line-subtle bg-background-surface px-20 py-22">
+        <View>
+          <Avatar
+            size="huge"
+            source={{ uri: avatarUri }}
+            onPress={handlePickAvatar}
+            accessibilityLabel={t("profile.accessibility.profileAvatar")}
+          />
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={t("profile.accessibility.goBack")}
-            onPress={() => router.back()}
-            className="h-44 w-44 items-center justify-center rounded-full bg-background-surface"
+            accessibilityLabel={t("profile.accessibility.changePhoto")}
+            onPress={handlePickAvatar}
+            className="absolute -bottom-2 -right-6 h-38 w-38 items-center justify-center rounded-full bg-background-primary"
           >
-            <ArrowLeft size={22} className="text-icon-primary" />
+            <Camera
+              size={19}
+              weight="fill"
+              className="text-icon-primary-inverse"
+            />
           </Pressable>
         </View>
-
-        <View className="items-center gap-12 rounded-24 border-hairline border-line-subtle bg-background-surface px-20 py-22">
-          <View>
-            <Avatar
-              size="huge"
-              source={{ uri: avatarUri }}
-              onPress={handlePickAvatar}
-              accessibilityLabel={t("profile.accessibility.profileAvatar")}
-            />
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("profile.accessibility.changePhoto")}
-              onPress={handlePickAvatar}
-              className="absolute -bottom-2 -right-6 h-38 w-38 items-center justify-center rounded-full bg-background-primary"
-            >
-              <Camera
-                size={19}
-                weight="fill"
-                className="text-icon-primary-inverse"
-              />
-            </Pressable>
-          </View>
-          <View className="items-center gap-2">
-            <Text variant="title3" className="font-bold">
-              {getDisplayName(
-                user.firstName,
-                user.lastName,
-                t("profile.detail.fallbackName"),
-              )}
-            </Text>
-            <Text variant="footnote" className="text-text-muted">
-              {user.phone}
-            </Text>
-            {user.email && (
-              <Text variant="footnote" className="text-text-muted">
-                {user.email}
-              </Text>
+        <View className="items-center gap-2">
+          <Text variant="title3" className="font-bold">
+            {getDisplayName(
+              user.firstName,
+              user.lastName,
+              t("profile.detail.fallbackName"),
             )}
-          </View>
+          </Text>
+          <Text variant="footnote" className="text-text-muted">
+            {user.phone}
+          </Text>
+          {user.email && (
+            <Text variant="footnote" className="text-text-muted">
+              {user.email}
+            </Text>
+          )}
         </View>
+      </View>
 
-        <View className="gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-16 py-16">
-          <InputController<ProfileDetailInput, ProfileDetailForm>
-            control={control}
-            name="firstName"
-            label={t("profile.form.firstName.label")}
-            placeholder={t("profile.form.firstName.placeholder")}
-            autoCapitalize="words"
-          />
-          <InputController<ProfileDetailInput, ProfileDetailForm>
-            control={control}
-            name="lastName"
-            label={t("profile.form.lastName.label")}
-            placeholder={t("profile.form.lastName.placeholder")}
-            autoCapitalize="words"
-          />
-          <InputController<ProfileDetailInput, ProfileDetailForm>
-            control={control}
-            name="email"
-            label={t("profile.form.email.label")}
-            placeholder={t("profile.form.email.placeholder")}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            prefix={
-              <EnvelopeSimple size={18} className="text-icon-secondary" />
-            }
-          />
-        </View>
+      <View className="gap-14 rounded-24 border-hairline border-line-subtle bg-background-surface px-16 py-16">
+        <InputController<ProfileDetailInput, ProfileDetailForm>
+          control={control}
+          name="firstName"
+          label={t("profile.form.firstName.label")}
+          placeholder={t("profile.form.firstName.placeholder")}
+          autoCapitalize="words"
+        />
+        <InputController<ProfileDetailInput, ProfileDetailForm>
+          control={control}
+          name="lastName"
+          label={t("profile.form.lastName.label")}
+          placeholder={t("profile.form.lastName.placeholder")}
+          autoCapitalize="words"
+        />
+        <InputController<ProfileDetailInput, ProfileDetailForm>
+          control={control}
+          name="email"
+          label={t("profile.form.email.label")}
+          placeholder={t("profile.form.email.placeholder")}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          prefix={<EnvelopeSimple size={18} className="text-icon-secondary" />}
+        />
+      </View>
 
-        <Button
-          disabled={!isDirty && !avatar}
-          loading={isSaving}
-          onPress={() => handleSubmit(handleSave)()}
-        >
-          {t("profile.detail.saveChanges")}
-        </Button>
-      </KeyboardAvoidingView>
-    </ScreenContainer>
+      <Button
+        disabled={!isDirty && !avatar}
+        loading={isSaving}
+        onPress={() => handleSubmit(handleSave)()}
+      >
+        {t("profile.detail.saveChanges")}
+      </Button>
+    </AppKeyboardAwareScrollView>
   );
 }

@@ -1,4 +1,8 @@
 import { PaywallNotice } from "@/components/PaywallNotice";
+import {
+  AppKeyboardChatScrollView,
+  AppKeyboardStickyView,
+} from "@/components/keyboard";
 import { Avatar } from "@/components/ui/Avatar";
 import { Image } from "@/components/ui/Image";
 import { Text } from "@/components/ui/Text";
@@ -24,13 +28,14 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
+  LayoutChangeEvent,
   ScrollView,
+  ScrollViewProps,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 
 const SendIcon = withIconClassName(PaperPlaneTiltIcon);
 const LockKey = withIconClassName(LockKeyIcon);
@@ -49,12 +54,17 @@ export const DoctorAIScreen = () => {
   const userInfo = useUserInfoStore.use.user();
   const [composerValue, setComposerValue] = useState("");
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const footerHeight = useSharedValue(0);
+  const [footerOffset, setFooterOffset] = useState(0);
 
   const petsQuery = useQuery({
     queryKey: PET_KEY.list(),
     queryFn: getListPetQuery,
   });
-  const pets = useMemo(() => petsQuery.data?.data ?? [], [petsQuery.data?.data]);
+  const pets = useMemo(
+    () => petsQuery.data?.data ?? [],
+    [petsQuery.data?.data],
+  );
   const {
     entitlements,
     getLimitState,
@@ -133,6 +143,28 @@ export const DoctorAIScreen = () => {
     setComposerValue(prompt);
   }, []);
 
+  const handleFooterLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const nextHeight = event.nativeEvent.layout.height;
+      footerHeight.value = nextHeight;
+      setFooterOffset((currentHeight) =>
+        Math.abs(currentHeight - nextHeight) < 1 ? currentHeight : nextHeight,
+      );
+    },
+    [footerHeight],
+  );
+
+  const renderChatScrollComponent = useCallback(
+    (props: ScrollViewProps) => (
+      <AppKeyboardChatScrollView
+        {...props}
+        extraContentPadding={footerHeight}
+        offset={footerOffset}
+      />
+    ),
+    [footerHeight, footerOffset],
+  );
+
   const handleTypingComplete = useCallback(
     (id: string) => {
       markTypingComplete(id);
@@ -202,10 +234,7 @@ export const DoctorAIScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-background"
-    >
+    <View className="flex-1 bg-background">
       <View className="flex-1 px-16">
         <FlatList
           ref={flatListRef}
@@ -219,33 +248,41 @@ export const DoctorAIScreen = () => {
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={emptyState}
           ListHeaderComponent={listHeader}
+          renderScrollComponent={renderChatScrollComponent}
           renderItem={renderMessage}
           showsVerticalScrollIndicator={false}
         />
       </View>
-      {quotaExhausted ? (
-        <View className="border-t border-line-subtle bg-background px-16 pb-safe pt-10">
-          <PaywallNotice
-            variant="blocking"
-            title={t("ai.paywall.blockingTitle")}
-            description={t("ai.paywall.blockingDescription")}
-            benefits={t("ai.paywall.benefits", {
-              returnObjects: true,
-            }) as string[]}
-            loading={isUpgrading}
-            onAction={() => void upgrade()}
+      <AppKeyboardStickyView
+        includeBottomInset={false}
+        onLayout={handleFooterLayout}
+      >
+        {quotaExhausted ? (
+          <View className="border-t border-line-subtle bg-background px-16 pb-safe pt-10">
+            <PaywallNotice
+              variant="blocking"
+              title={t("ai.paywall.blockingTitle")}
+              description={t("ai.paywall.blockingDescription")}
+              benefits={
+                t("ai.paywall.benefits", {
+                  returnObjects: true,
+                }) as string[]
+              }
+              loading={isUpgrading}
+              onAction={() => void upgrade()}
+            />
+          </View>
+        ) : (
+          <MessageComposer
+            disabled={isGeneratingMessage}
+            loading={isGeneratingMessage}
+            onChangeText={setComposerValue}
+            onSubmit={handleSubmitComposer}
+            value={composerValue}
           />
-        </View>
-      ) : (
-        <MessageComposer
-          disabled={isGeneratingMessage}
-          loading={isGeneratingMessage}
-          onChangeText={setComposerValue}
-          onSubmit={handleSubmitComposer}
-          value={composerValue}
-        />
-      )}
-    </KeyboardAvoidingView>
+        )}
+      </AppKeyboardStickyView>
+    </View>
   );
 };
 
@@ -566,9 +603,7 @@ const MessageComposer = memo(
             multiline
             onChangeText={onChangeText}
             placeholder={
-              loading
-                ? t("ai.composer.thinking")
-                : t("ai.composer.placeholder")
+              loading ? t("ai.composer.thinking") : t("ai.composer.placeholder")
             }
             textAlignVertical="top"
             value={value}

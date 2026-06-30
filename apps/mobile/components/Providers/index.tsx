@@ -9,15 +9,12 @@ import {
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useInitialize } from "@/hooks/useInitialize";
 import {
-  getUserSettingsQuery,
-  markNotificationReadMutation,
-} from "@/services";
-import {
   changeAppLanguage,
   detectDeviceLanguage,
   getCurrentLanguage,
   i18n,
 } from "@/i18n";
+import { getUserSettingsQuery, markNotificationReadMutation } from "@/services";
 import { useUserInfoStore } from "@/stores";
 import { themes } from "@/theme";
 import {
@@ -40,10 +37,11 @@ import {
 } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef } from "react";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { I18nextProvider, useTranslation } from "react-i18next";
 import { AppLoader } from "../AppLoader";
 import { Toast } from "../Toast";
 
@@ -52,6 +50,7 @@ export const Providers = ({ children }: Required<Children>) =>
     [
       GestureHandlerProvider,
       SafeAreaProvider,
+      KeyboardControllerProvider,
       TranslationProvider,
       QueryProvider,
       InitialProvider,
@@ -124,7 +123,7 @@ const InitialProvider = ({ children }: Children) => {
     }
 
     const nextLanguage = hasSession
-      ? userSettings?.language ?? getCurrentLanguage()
+      ? (userSettings?.language ?? getCurrentLanguage())
       : detectDeviceLanguage();
 
     void changeAppLanguage(nextLanguage);
@@ -232,6 +231,16 @@ const GestureHandlerProvider = ({ children }: Children) => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     {children}
   </GestureHandlerRootView>
+);
+
+const KeyboardControllerProvider = ({ children }: Children) => (
+  <KeyboardProvider
+    navigationBarTranslucent={false}
+    preserveEdgeToEdge={false}
+    statusBarTranslucent={false}
+  >
+    {children}
+  </KeyboardProvider>
 );
 
 const TranslationProvider = ({ children }: Children) => (

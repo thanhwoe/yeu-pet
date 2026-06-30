@@ -1,11 +1,11 @@
 import { InputController } from "@/components/InputController";
+import { AppKeyboardAvoidingView } from "@/components/keyboard";
 import { Button } from "@/components/ui/Button";
 import { IResetPasswordForm } from "@/constants/validation";
 import { createResetPasswordSchema } from "@/features/auth/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PropsWithChildren, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 
 interface IProps extends PropsWithChildren {
@@ -32,10 +32,7 @@ export const ResetPasswordForm = ({
   });
 
   return (
-    <KeyboardAvoidingView
-      className="gap-8"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <AppKeyboardAvoidingView className="gap-8">
       <InputController<IResetPasswordForm>
         control={control}
         placeholder={t("auth.form.phone.placeholder")}
@@ -66,6 +63,6 @@ export const ResetPasswordForm = ({
       >
         {t("auth.form.resetPassword")}
       </Button>
-    </KeyboardAvoidingView>
+    </AppKeyboardAvoidingView>
   );
 };

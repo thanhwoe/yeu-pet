@@ -1,12 +1,12 @@
 import { InputController } from "@/components/InputController";
 import { PhoneInputController } from "@/components/PhoneInputController";
+import { AppKeyboardAvoidingView } from "@/components/keyboard";
 import { Button } from "@/components/ui/Button";
 import { ISignUpForm } from "@/constants/validation";
 import { createSignUpSchema } from "@/features/auth/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 
 interface IProps {
@@ -24,10 +24,7 @@ export const SignUpForm = ({ onSubmit, isSubmitting }: IProps) => {
   });
 
   return (
-    <KeyboardAvoidingView
-      className="gap-8"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <AppKeyboardAvoidingView className="gap-8">
       <PhoneInputController<ISignUpForm>
         control={control}
         placeholder={t("auth.form.phone.placeholder")}
@@ -60,6 +57,6 @@ export const SignUpForm = ({ onSubmit, isSubmitting }: IProps) => {
       >
         {t("auth.common.signUp")}
       </Button>
-    </KeyboardAvoidingView>
+    </AppKeyboardAvoidingView>
   );
 };

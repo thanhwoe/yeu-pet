@@ -1,3 +1,4 @@
+import { AppKeyboardAvoidingView } from "@/components/keyboard";
 import { Button } from "@/components/ui/Button";
 import { InputField } from "@/components/ui/InputField";
 import { Body, Heading } from "@/components/ui/Typography";
@@ -18,13 +19,7 @@ import {
 import { XIcon } from "phosphor-react-native";
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { VietnamProvinceCitySelect } from "./VietnamProvinceCitySelect";
 
@@ -78,10 +73,7 @@ export const SitterFilterDrawer = ({
         drawerStatus === "closed" ? "no-hide-descendants" : "auto"
       }
     >
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <AppKeyboardAvoidingView className="flex-1">
         <View className="flex-row items-center justify-between border-b border-line-subtle px-20 pb-16 pt-12">
           <Heading variant="h5" weight="bold">
             {t("sitter.filters.title")}
@@ -191,7 +183,7 @@ export const SitterFilterDrawer = ({
             {t("sitter.filters.apply")}
           </Button>
         </View>
-      </KeyboardAvoidingView>
+      </AppKeyboardAvoidingView>
     </SafeAreaView>
   );
 };
